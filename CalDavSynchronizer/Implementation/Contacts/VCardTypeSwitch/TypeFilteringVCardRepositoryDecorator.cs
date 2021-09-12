@@ -27,80 +27,80 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
 {
-  class TypeFilteringVCardRepositoryDecorator<TContext> : IEntityRepository<WebResourceName, string, vCard, TContext>
-  {
-    private readonly IEntityRepository<WebResourceName, string, vCard, TContext> _decorated;
-    private readonly VCardType _typeToFilter;
-    private readonly IVCardTypeDetector _typeDetector;
-
-    public TypeFilteringVCardRepositoryDecorator (IEntityRepository<WebResourceName, string, vCard, TContext> decorated, VCardType typeToFilter, IVCardTypeDetector typeDetector)
+    class TypeFilteringVCardRepositoryDecorator<TContext> : IEntityRepository<WebResourceName, string, vCard, TContext>
     {
-      if (decorated == null)
-        throw new ArgumentNullException (nameof (decorated));
-      if (typeDetector == null)
-        throw new ArgumentNullException (nameof (typeDetector));
+        private readonly IEntityRepository<WebResourceName, string, vCard, TContext> _decorated;
+        private readonly VCardType _typeToFilter;
+        private readonly IVCardTypeDetector _typeDetector;
 
-      _decorated = decorated;
-      _typeToFilter = typeToFilter;
-      _typeDetector = typeDetector;
-    }
-
-    public async Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetAllVersions (IEnumerable<WebResourceName> idsOfknownEntities, TContext context, IGetVersionsLogger logger)
-    {
-      var versions = await _decorated.GetAllVersions (idsOfknownEntities, context, logger).ConfigureAwait (false);
-      return (await _typeDetector.GetVCardTypesAndCleanupCache (versions))
-        .Where (t => t.Type == _typeToFilter)
-        .Select (t => t.Id)
-        .ToArray ();
-    }
-
-    public Task<bool> TryDelete (WebResourceName entityId, string version, TContext context, IEntitySynchronizationLogger logger)
-    {
-      return _decorated.TryDelete (entityId, version, context, logger);
-    }
-
-    public Task<EntityVersion<WebResourceName, string>> TryUpdate (WebResourceName entityId, string version, vCard entityToUpdate, Func<vCard, Task<vCard>> entityModifier, TContext context, IEntitySynchronizationLogger logger)
-    {
-      return _decorated.TryUpdate (entityId, version, entityToUpdate, entityModifier, context, logger);
-    }
-
-    public async Task<EntityVersion<WebResourceName, string>> Create (Func<vCard, Task<vCard>> entityInitializer, TContext context)
-    {
-      // TODO: to prevent the entity from being loaded in the next sync run, since it is unknown to the cache, it should be added here to the cache of the _typeDetector
-      return await _decorated.Create (
-        async vCard =>
+        public TypeFilteringVCardRepositoryDecorator(IEntityRepository<WebResourceName, string, vCard, TContext> decorated, VCardType typeToFilter, IVCardTypeDetector typeDetector)
         {
-          var initialized = await entityInitializer(vCard);
-          if (_typeToFilter == VCardType.Group)
-            initialized.Kind = vCardKindType.Group;
-          return initialized;
-        },
-        context);
-    }
+            if (decorated == null)
+                throw new ArgumentNullException(nameof(decorated));
+            if (typeDetector == null)
+                throw new ArgumentNullException(nameof(typeDetector));
 
-    public Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery, TContext context, IGetVersionsLogger logger)
-    {
-      return _decorated.GetVersions (idsOfEntitiesToQuery, context, logger);
-    }
+            _decorated = decorated;
+            _typeToFilter = typeToFilter;
+            _typeDetector = typeDetector;
+        }
 
-    public async Task<IEnumerable<EntityWithId<WebResourceName, vCard>>> Get (ICollection<WebResourceName> ids, ILoadEntityLogger logger, TContext context)
-    {
-      return (await _decorated.Get (ids, logger, context)).Where(c => _typeDetector.GetVCardType(c.Entity) == _typeToFilter);
-    }
+        public async Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetAllVersions(IEnumerable<WebResourceName> idsOfknownEntities, TContext context, IGetVersionsLogger logger)
+        {
+            var versions = await _decorated.GetAllVersions(idsOfknownEntities, context, logger).ConfigureAwait(false);
+            return (await _typeDetector.GetVCardTypesAndCleanupCache(versions))
+                .Where(t => t.Type == _typeToFilter)
+                .Select(t => t.Id)
+                .ToArray();
+        }
 
-    public Task VerifyUnknownEntities (Dictionary<WebResourceName, string> unknownEntites, TContext context)
-    {
-      return _decorated.VerifyUnknownEntities (unknownEntites, context);
-    }
+        public Task<bool> TryDelete(WebResourceName entityId, string version, TContext context, IEntitySynchronizationLogger logger)
+        {
+            return _decorated.TryDelete(entityId, version, context, logger);
+        }
 
-    public void Cleanup(vCard entity)
-    {
-      _decorated.Cleanup(entity);
-    }
+        public Task<EntityVersion<WebResourceName, string>> TryUpdate(WebResourceName entityId, string version, vCard entityToUpdate, Func<vCard, Task<vCard>> entityModifier, TContext context, IEntitySynchronizationLogger logger)
+        {
+            return _decorated.TryUpdate(entityId, version, entityToUpdate, entityModifier, context, logger);
+        }
 
-    public void Cleanup(IEnumerable<vCard> entities)
-    {
-      _decorated.Cleanup(entities);
+        public async Task<EntityVersion<WebResourceName, string>> Create(Func<vCard, Task<vCard>> entityInitializer, TContext context)
+        {
+            // TODO: to prevent the entity from being loaded in the next sync run, since it is unknown to the cache, it should be added here to the cache of the _typeDetector
+            return await _decorated.Create(
+                async vCard =>
+                {
+                    var initialized = await entityInitializer(vCard);
+                    if (_typeToFilter == VCardType.Group)
+                        initialized.Kind = vCardKindType.Group;
+                    return initialized;
+                },
+                context);
+        }
+
+        public Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetVersions(IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery, TContext context, IGetVersionsLogger logger)
+        {
+            return _decorated.GetVersions(idsOfEntitiesToQuery, context, logger);
+        }
+
+        public async Task<IEnumerable<EntityWithId<WebResourceName, vCard>>> Get(ICollection<WebResourceName> ids, ILoadEntityLogger logger, TContext context)
+        {
+            return (await _decorated.Get(ids, logger, context)).Where(c => _typeDetector.GetVCardType(c.Entity) == _typeToFilter);
+        }
+
+        public Task VerifyUnknownEntities(Dictionary<WebResourceName, string> unknownEntites, TContext context)
+        {
+            return _decorated.VerifyUnknownEntities(unknownEntites, context);
+        }
+
+        public void Cleanup(vCard entity)
+        {
+            _decorated.Cleanup(entity);
+        }
+
+        public void Cleanup(IEnumerable<vCard> entities)
+        {
+            _decorated.Cleanup(entities);
+        }
     }
-  }
 }

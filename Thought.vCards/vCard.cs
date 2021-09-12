@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -12,7 +11,6 @@ using System.Text;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     A vCard object for exchanging personal contact information.
     /// </summary>
@@ -37,7 +35,6 @@ namespace Thought.vCards
     [Serializable]
     public class vCard
     {
-
         private vCardAccessClassification accessClassification;
         private string additionalNames;
         private DateTime? anniversary;
@@ -87,7 +84,6 @@ namespace Thought.vCards
         /// </summary>
         public vCard()
         {
-
             // Per Microsoft best practices, string properties should
             // never return null.  String properties should always
             // return String.Empty.
@@ -140,10 +136,8 @@ namespace Thought.vCards
         public vCard(TextReader input)
             : this()
         {
-
             vCardReader reader = new vCardStandardReader();
             reader.ReadInto(this, input);
-
         }
 
 
@@ -163,7 +157,6 @@ namespace Thought.vCards
                 vCardReader reader = new vCardStandardReader();
                 reader.ReadInto(this, streamReader);
             }
-
         }
 
 
@@ -172,14 +165,8 @@ namespace Thought.vCards
         /// </summary>
         public vCardAccessClassification AccessClassification
         {
-            get
-            {
-                return this.accessClassification;
-            }
-            set
-            {
-                this.accessClassification = value;
-            }
+            get { return this.accessClassification; }
+            set { this.accessClassification = value; }
         }
 
 
@@ -192,29 +179,17 @@ namespace Thought.vCards
         /// <seealso cref="Nicknames"/>
         public string AdditionalNames
         {
-            get
-            {
-                return this.additionalNames ?? string.Empty;
-            }
-            set
-            {
-                this.additionalNames = value;
-            }
+            get { return this.additionalNames ?? string.Empty; }
+            set { this.additionalNames = value; }
         }
-    
+
         /// <summary>
         ///     The anniversary of the person.
         /// </summary>
         public DateTime? Anniversary
         {
-          get
-          {
-            return this.anniversary;
-          }
-          set
-          {
-            this.anniversary = value;
-          }
+            get { return this.anniversary; }
+            set { this.anniversary = value; }
         }
 
         /// <summary>
@@ -222,14 +197,8 @@ namespace Thought.vCards
         /// </summary>
         public DateTime? BirthDate
         {
-            get
-            {
-                return this.birthDate;
-            }
-            set
-            {
-                this.birthDate = value;
-            }
+            get { return this.birthDate; }
+            set { this.birthDate = value; }
         }
 
 
@@ -242,10 +211,7 @@ namespace Thought.vCards
         /// </remarks>
         public StringCollection Categories
         {
-            get
-            {
-                return this.categories;
-            }
+            get { return this.categories; }
         }
 
 
@@ -255,10 +221,7 @@ namespace Thought.vCards
         /// <seealso cref="vCardCertificate"/>
         public vCardCertificateCollection Certificates
         {
-            get
-            {
-                return this.certificates;
-            }
+            get { return this.certificates; }
         }
 
 
@@ -267,10 +230,7 @@ namespace Thought.vCards
         /// </summary>
         public vCardDeliveryAddressCollection DeliveryAddresses
         {
-            get
-            {
-                return this.deliveryAddresses;
-            }
+            get { return this.deliveryAddresses; }
         }
 
 
@@ -279,10 +239,7 @@ namespace Thought.vCards
         /// </summary>
         public vCardDeliveryLabelCollection DeliveryLabels
         {
-            get
-            {
-                return this.deliveryLabels;
-            }
+            get { return this.deliveryLabels; }
         }
 
 
@@ -293,14 +250,8 @@ namespace Thought.vCards
         /// <seealso cref="Organization"/>
         public string Department
         {
-            get
-            {
-                return this.department ?? string.Empty;
-            }
-            set
-            {
-                this.department = value;
-            }
+            get { return this.department ?? string.Empty; }
+            set { this.department = value; }
         }
 
 
@@ -313,14 +264,8 @@ namespace Thought.vCards
         /// </remarks>
         public string DisplayName
         {
-            get
-            {
-                return this.displayName ?? string.Empty;
-            }
-            set
-            {
-                this.displayName = value;
-            }
+            get { return this.displayName ?? string.Empty; }
+            set { this.displayName = value; }
         }
 
 
@@ -330,10 +275,7 @@ namespace Thought.vCards
         /// <seealso cref="vCardEmailAddress"/>
         public vCardEmailAddressCollection EmailAddresses
         {
-            get
-            {
-                return this.emailAddresses;
-            }
+            get { return this.emailAddresses; }
         }
 
 
@@ -346,14 +288,8 @@ namespace Thought.vCards
         /// <seealso cref="Nicknames"/>
         public string FamilyName
         {
-            get
-            {
-                return this.familyName ?? string.Empty;
-            }
-            set
-            {
-                this.familyName = value;
-            }
+            get { return this.familyName ?? string.Empty; }
+            set { this.familyName = value; }
         }
 
 
@@ -372,14 +308,8 @@ namespace Thought.vCards
         /// <seealso cref="Nicknames"/>
         public string FormattedName
         {
-            get
-            {
-                return this.formattedName ?? string.Empty;
-            }
-            set
-            {
-                this.formattedName = value;
-            }
+            get { return this.formattedName ?? string.Empty; }
+            set { this.formattedName = value; }
         }
 
 
@@ -395,14 +325,8 @@ namespace Thought.vCards
         /// <seealso cref="vCardGender"/>
         public vCardGender Gender
         {
-            get
-            {
-                return this.gender;
-            }
-            set
-            {
-                this.gender = value;
-            }
+            get { return this.gender; }
+            set { this.gender = value; }
         }
 
         /// <summary>
@@ -416,14 +340,8 @@ namespace Thought.vCards
         /// <seealso cref="vCardKindType"/>
         public vCardKindType Kind
         {
-          get
-          {
-            return this.kind;
-          }
-          set
-          {
-            this.kind = value;
-          }
+            get { return this.kind; }
+            set { this.kind = value; }
         }
 
         /// <summary>
@@ -435,14 +353,8 @@ namespace Thought.vCards
         /// <seealso cref="Nicknames"/>
         public string GivenName
         {
-            get
-            {
-                return this.givenName ?? string.Empty;
-            }
-            set
-            {
-                this.givenName = value;
-            }
+            get { return this.givenName ?? string.Empty; }
+            set { this.givenName = value; }
         }
 
 
@@ -452,14 +364,8 @@ namespace Thought.vCards
         /// <seealso cref="Longitude"/>
         public float? Latitude
         {
-            get
-            {
-                return this.latitude;
-            }
-            set
-            {
-                this.latitude = value;
-            }
+            get { return this.latitude; }
+            set { this.latitude = value; }
         }
 
 
@@ -469,14 +375,8 @@ namespace Thought.vCards
         /// <seealso cref="Latitude"/>
         public float? Longitude
         {
-            get
-            {
-                return this.longitude;
-            }
-            set
-            {
-                this.longitude = value;
-            }
+            get { return this.longitude; }
+            set { this.longitude = value; }
         }
 
 
@@ -485,14 +385,8 @@ namespace Thought.vCards
         /// </summary>
         public string Mailer
         {
-            get
-            {
-                return this.mailer ?? string.Empty;
-            }
-            set
-            {
-                this.mailer = value;
-            }
+            get { return this.mailer ?? string.Empty; }
+            set { this.mailer = value; }
         }
 
         /// <summary>
@@ -500,10 +394,7 @@ namespace Thought.vCards
         /// </summary>
         public vCardMemberCollection Members
         {
-          get
-          {
-            return this.members;
-          }
+            get { return this.members; }
         }
 
         /// <summary>
@@ -512,14 +403,8 @@ namespace Thought.vCards
         /// <seealso cref="NameSuffix"/>
         public string NamePrefix
         {
-            get
-            {
-                return this.namePrefix ?? string.Empty;
-            }
-            set
-            {
-                this.namePrefix = value;
-            }
+            get { return this.namePrefix ?? string.Empty; }
+            set { this.namePrefix = value; }
         }
 
 
@@ -529,75 +414,48 @@ namespace Thought.vCards
         /// <seealso cref="NamePrefix"/>
         public string NameSuffix
         {
-            get
-            {
-                return this.nameSuffix ?? string.Empty;
-            }
-            set
-            {
-                this.nameSuffix = value;
-            }
+            get { return this.nameSuffix ?? string.Empty; }
+            set { this.nameSuffix = value; }
         }
 
-      /// <summary>
-      ///     The name of the assistant of the person.
-      /// </summary>
-      public string Assistant
-      {
-        get
+        /// <summary>
+        ///     The name of the assistant of the person.
+        /// </summary>
+        public string Assistant
         {
-          return this.assistant ?? string.Empty;
+            get { return this.assistant ?? string.Empty; }
+            set { this.assistant = value; }
         }
-        set
-        {
-          this.assistant = value;
-        }
-      }
 
-      /// <summary>
-      ///     The name of the spouse of the person.
-      /// </summary>
-      public string Spouse
-      {
-        get
+        /// <summary>
+        ///     The name of the spouse of the person.
+        /// </summary>
+        public string Spouse
         {
-          return this.spouse ?? string.Empty;
+            get { return this.spouse ?? string.Empty; }
+            set { this.spouse = value; }
         }
-        set
-        {
-          this.spouse = value;
-        }
-      }
 
-      /// <summary>
-      ///     The name of the manager of the person.
-      /// </summary>
+        /// <summary>
+        ///     The name of the manager of the person.
+        /// </summary>
 
-      public string Manager
-      {
-        get
+        public string Manager
         {
-          return this.manager ?? string.Empty;
+            get { return this.manager ?? string.Empty; }
+            set { this.manager = value; }
         }
-        set
-        {
-          this.manager = value;
-        }
-      }
 
-    /// <summary>
-    ///     A collection of nicknames for the person.
-    /// </summary>
-    /// <seealso cref="AdditionalNames"/>
-    /// <seealso cref="FamilyName"/>
-    /// <seealso cref="FormattedName"/>
-    /// <seealso cref="GivenName"/>
-    public StringCollection Nicknames
+        /// <summary>
+        ///     A collection of nicknames for the person.
+        /// </summary>
+        /// <seealso cref="AdditionalNames"/>
+        /// <seealso cref="FamilyName"/>
+        /// <seealso cref="FormattedName"/>
+        /// <seealso cref="GivenName"/>
+        public StringCollection Nicknames
         {
-            get
-            {
-                return this.nicknames;
-            }
+            get { return this.nicknames; }
         }
 
 
@@ -606,10 +464,7 @@ namespace Thought.vCards
         /// </summary>
         public vCardNoteCollection Notes
         {
-            get
-            {
-                return this.notes;
-            }
+            get { return this.notes; }
         }
 
 
@@ -620,14 +475,8 @@ namespace Thought.vCards
         /// <seealso cref="Organization"/>
         public string Office
         {
-            get
-            {
-                return this.office ?? string.Empty;
-            }
-            set
-            {
-                this.office = value;
-            }
+            get { return this.office ?? string.Empty; }
+            set { this.office = value; }
         }
 
 
@@ -639,14 +488,8 @@ namespace Thought.vCards
         /// <seealso cref="Title"/>
         public string Organization
         {
-            get
-            {
-                return this.organization ?? string.Empty;
-            }
-            set
-            {
-                this.organization = value;
-            }
+            get { return this.organization ?? string.Empty; }
+            set { this.organization = value; }
         }
 
 
@@ -655,10 +498,7 @@ namespace Thought.vCards
         /// </summary>
         public vCardPhoneCollection Phones
         {
-            get
-            {
-                return this.phones;
-            }
+            get { return this.phones; }
         }
 
 
@@ -668,10 +508,7 @@ namespace Thought.vCards
         /// </summary>
         public vCardPhotoCollection Photos
         {
-            get
-            {
-                return this.photos;
-            }
+            get { return this.photos; }
         }
 
 
@@ -680,14 +517,8 @@ namespace Thought.vCards
         /// </summary>
         public string ProductId
         {
-            get
-            {
-                return this.productId ?? string.Empty;
-            }
-            set
-            {
-                this.productId = value;
-            }
+            get { return this.productId ?? string.Empty; }
+            set { this.productId = value; }
         }
 
 
@@ -701,14 +532,8 @@ namespace Thought.vCards
         /// </remarks>
         public DateTime? RevisionDate
         {
-            get
-            {
-                return this.revisionDate;
-            }
-            set
-            {
-                this.revisionDate = value;
-            }
+            get { return this.revisionDate; }
+            set { this.revisionDate = value; }
         }
 
 
@@ -724,14 +549,8 @@ namespace Thought.vCards
         /// <seealso cref="Title"/>
         public string Role
         {
-            get
-            {
-                return this.role ?? string.Empty;
-            }
-            set
-            {
-                this.role = value;
-            }
+            get { return this.role ?? string.Empty; }
+            set { this.role = value; }
         }
 
 
@@ -747,10 +566,7 @@ namespace Thought.vCards
         /// </remarks>
         public vCardSourceCollection Sources
         {
-            get
-            {
-                return this.sources;
-            }
+            get { return this.sources; }
         }
 
 
@@ -760,14 +576,8 @@ namespace Thought.vCards
         /// </summary>
         public string TimeZone
         {
-            get
-            {
-                return this.timeZone ?? string.Empty;
-            }
-            set
-            {
-                this.timeZone = value;
-            }
+            get { return this.timeZone ?? string.Empty; }
+            set { this.timeZone = value; }
         }
 
 
@@ -778,14 +588,8 @@ namespace Thought.vCards
         /// <seealso cref="Role"/>
         public string Title
         {
-            get
-            {
-                return this.title ?? string.Empty;
-            }
-            set
-            {
-                this.title = value;
-            }
+            get { return this.title ?? string.Empty; }
+            set { this.title = value; }
         }
 
 
@@ -822,14 +626,8 @@ namespace Thought.vCards
         /// </remarks>
         public string UniqueId
         {
-            get
-            {
-                return this.uniqueId ?? string.Empty;
-            }
-            set
-            {
-                this.uniqueId = value;
-            }
+            get { return this.uniqueId ?? string.Empty; }
+            set { this.uniqueId = value; }
         }
 
 
@@ -840,10 +638,7 @@ namespace Thought.vCards
         /// <seealso cref="vCardWebsiteCollection"/>
         public vCardWebsiteCollection Websites
         {
-            get
-            {
-                return this.websites;
-            }
+            get { return this.websites; }
         }
 
         /// <summary>
@@ -869,5 +664,5 @@ namespace Thought.vCards
         {
             get { return this.otherProperties; }
         }
-  }
+    }
 }

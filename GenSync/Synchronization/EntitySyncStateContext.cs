@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,70 +26,69 @@ using GenSync.Synchronization.States;
 
 namespace GenSync.Synchronization
 {
-  class EntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> : IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
-  {
-    private IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _state;
-
-    public EntitySyncStateContext(IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> state)
+    class EntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> : IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
     {
-      if (state == null) throw new ArgumentNullException(nameof(state));
+        private IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _state;
 
-      _state = state;
-    }
+        public EntitySyncStateContext(IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> state)
+        {
+            if (state == null) throw new ArgumentNullException(nameof(state));
 
-    public void AddRequiredEntitiesToLoad(Func<TAtypeEntityId, bool> a, Func<TBtypeEntityId, bool> b)
-    {
-      _state.AddRequiredEntitiesToLoad(a, b);
-    }
+            _state = state;
+        }
 
-    public void SetState(IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> newState)
-    {
-      if (!ReferenceEquals(newState, _state))
-      {
-        _state.Dispose();
-        _state = newState;
-      }
-    }
+        public void AddRequiredEntitiesToLoad(Func<TAtypeEntityId, bool> a, Func<TBtypeEntityId, bool> b)
+        {
+            _state.AddRequiredEntitiesToLoad(a, b);
+        }
 
-    public void FetchRequiredEntities(IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> aEntities, IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> bEntites)
-    {
-      SetState(_state.FetchRequiredEntities(aEntities, bEntites));
-    }
+        public void SetState(IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> newState)
+        {
+            if (!ReferenceEquals(newState, _state))
+            {
+                _state.Dispose();
+                _state = newState;
+            }
+        }
 
-    public void Resolve()
-    {
-      SetState(_state.Resolve());
-    }
+        public void FetchRequiredEntities(IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> aEntities, IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> bEntites)
+        {
+            SetState(_state.FetchRequiredEntities(aEntities, bEntites));
+        }
 
-    public void AddSyncronizationJob(IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs, IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs, IEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity,TBtypeEntityId, TBtypeEntity> loggerFactory, TContext context)
-    {
-      _state.AddSyncronizationJob (this, aJobs, bJobs, loggerFactory, context);
-    }
+        public void Resolve()
+        {
+            SetState(_state.Resolve());
+        }
 
-    public void NotifyJobExecuted()
-    {
-      SetState(_state.NotifyJobExecuted ());
-    }
+        public void AddSyncronizationJob(IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs, IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs, IEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> loggerFactory, TContext context)
+        {
+            _state.AddSyncronizationJob(this, aJobs, bJobs, loggerFactory, context);
+        }
 
-    public void AddNewRelationNoThrow(Action<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> addAction)
-    {
-      _state.AddNewRelationNoThrow (addAction);
-    }
+        public void NotifyJobExecuted()
+        {
+            SetState(_state.NotifyJobExecuted());
+        }
 
-    public void Dispose()
-    {
-      _state.Dispose();
-    }
+        public void AddNewRelationNoThrow(Action<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> addAction)
+        {
+            _state.AddNewRelationNoThrow(addAction);
+        }
 
-    public void Accept(ISynchronizationStateVisitor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> visitor)
-    {
-      _state.Accept(this, visitor);
-    }
+        public void Dispose()
+        {
+            _state.Dispose();
+        }
 
-    public void Abort()
-    {
-      SetState (_state.Abort ());
+        public void Accept(ISynchronizationStateVisitor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> visitor)
+        {
+            _state.Accept(this, visitor);
+        }
+
+        public void Abort()
+        {
+            SetState(_state.Abort());
+        }
     }
-  }
-  
 }

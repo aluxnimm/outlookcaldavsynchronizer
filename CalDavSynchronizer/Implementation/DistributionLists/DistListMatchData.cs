@@ -14,18 +14,19 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using CalDavSynchronizer.Implementation.ComWrappers;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists
 {
-  struct DistListMatchData
-  {
-    public string DlName { get; }
-
-    public DistListMatchData(DistListItem entity)
+    struct DistListMatchData
     {
-      DlName = entity.DLName;
+        public string DlName { get; }
+
+        public DistListMatchData(DistListItem entity)
+        {
+            DlName = entity.DLName;
+        }
     }
-  }
 }

@@ -22,11 +22,11 @@ using CalDavSynchronizer.Scheduling;
 
 namespace CalDavSynchronizer
 {
-  public interface IComponentContainer : ICalDavSynchronizerCommands, IDisposable
-  {
-    event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
-    event EventHandler<SchedulerStatusEventArgs> StatusChanged;
+    public interface IComponentContainer : ICalDavSynchronizerCommands, IDisposable
+    {
+        event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
+        event EventHandler<SchedulerStatusEventArgs> StatusChanged;
 
-    Task InitializeSchedulerAndStartAsync();
-  }
+        Task InitializeSchedulerAndStartAsync();
+    }
 }

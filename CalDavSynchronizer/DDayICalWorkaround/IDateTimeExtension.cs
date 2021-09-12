@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.Implementation.Events;
 using DDay.iCal;
@@ -22,34 +23,34 @@ using NodaTime.TimeZones;
 
 namespace CalDavSynchronizer.DDayICalWorkaround
 {
-  public static class IDateTimeExtension
-  {
-    public static DateTime AsUtc (this IDateTime dateTime)
+    public static class IDateTimeExtension
     {
-      if (dateTime.IsUniversalTime)
-        return DateTime.SpecifyKind (dateTime.Value, DateTimeKind.Utc);
-      if (!string.IsNullOrEmpty (dateTime.TZID))
-      {
-        var zone = DateTimeZoneProviders.Tzdb.GetZoneOrNull (dateTime.TZID);
-        if (zone == null)
+        public static DateTime AsUtc(this IDateTime dateTime)
         {
-          var mappedTzid = TimeZoneMapper.WindowsToIanaOrNull (dateTime.TZID);
-          zone = mappedTzid != null
-            ? DateTimeZoneProviders.Tzdb.GetZoneOrNull (mappedTzid)
-            : BclDateTimeZone.ForSystemDefault();
-        }
-          
-        if (zone != null)
-        {
-          var localDateTime = LocalDateTime.FromDateTime (dateTime.Value);
-          var zonedDateTime = zone.AtLeniently (localDateTime);
-          var utcDateTime = zonedDateTime.ToDateTimeUtc();
-          return utcDateTime;
-        }
+            if (dateTime.IsUniversalTime)
+                return DateTime.SpecifyKind(dateTime.Value, DateTimeKind.Utc);
+            if (!string.IsNullOrEmpty(dateTime.TZID))
+            {
+                var zone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(dateTime.TZID);
+                if (zone == null)
+                {
+                    var mappedTzid = TimeZoneMapper.WindowsToIanaOrNull(dateTime.TZID);
+                    zone = mappedTzid != null
+                        ? DateTimeZoneProviders.Tzdb.GetZoneOrNull(mappedTzid)
+                        : BclDateTimeZone.ForSystemDefault();
+                }
 
-      }
-      // fallback
-      return DateTime.SpecifyKind (dateTime.Value, DateTimeKind.Local).ToUniversalTime();
+                if (zone != null)
+                {
+                    var localDateTime = LocalDateTime.FromDateTime(dateTime.Value);
+                    var zonedDateTime = zone.AtLeniently(localDateTime);
+                    var utcDateTime = zonedDateTime.ToDateTimeUtc();
+                    return utcDateTime;
+                }
+            }
+
+            // fallback
+            return DateTime.SpecifyKind(dateTime.Value, DateTimeKind.Local).ToUniversalTime();
+        }
     }
-  }
 }

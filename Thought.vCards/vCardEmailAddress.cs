@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -9,7 +8,6 @@ using System;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     An email address in a <see cref="vCard"/>.
     /// </summary>
@@ -23,13 +21,12 @@ namespace Thought.vCards
     /// <seealso cref="vCardEmailAddressType"/>
     public class vCardEmailAddress
     {
-
         private string address;
         private vCardEmailAddressType emailType;
         private ItemType itemType;
         private bool isPreferred;
-        
-   
+
+
         /// <summary>
         ///     Creates a new <see cref="vCardEmailAddress"/>.
         /// </summary>
@@ -57,9 +54,6 @@ namespace Thought.vCards
         }
 
 
- 
-
-
         /// <summary>
         ///     The email address.
         /// </summary>
@@ -68,14 +62,8 @@ namespace Thought.vCards
         /// </remarks>
         public string Address
         {
-            get
-            {
-                return this.address ?? string.Empty;
-            }
-            set
-            {
-                this.address = value;
-            }
+            get { return this.address ?? string.Empty; }
+            set { this.address = value; }
         }
 
 
@@ -84,14 +72,8 @@ namespace Thought.vCards
         /// </summary>
         public vCardEmailAddressType EmailType
         {
-            get
-            {
-                return this.emailType;
-            }
-            set
-            {
-                this.emailType = value;
-            }
+            get { return this.emailType; }
+            set { this.emailType = value; }
         }
 
 
@@ -100,24 +82,17 @@ namespace Thought.vCards
         /// </summary>
         public bool IsPreferred
         {
-            get
-            {
-                return this.isPreferred;
-            }
-            set
-            {
-                this.isPreferred = value;
-            }
+            get { return this.isPreferred; }
+            set { this.isPreferred = value; }
         }
 
         /// <summary>
         /// ItemType for this element (HOME,WORK,etc)
         /// </summary>
-        public ItemType ItemType {
-
+        public ItemType ItemType
+        {
             get { return this.itemType; }
             set { this.itemType = value; }
-        
         }
 
 
@@ -129,5 +104,4 @@ namespace Thought.vCards
             return this.address;
         }
     }
-
 }

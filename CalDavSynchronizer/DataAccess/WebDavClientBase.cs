@@ -22,57 +22,57 @@ using System.Xml;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public class WebDavClientBase
-  {
-    private readonly bool _acceptInvalidChars;
-
-    protected WebDavClientBase (bool acceptInvalidChars)
+    public class WebDavClientBase
     {
-      _acceptInvalidChars = acceptInvalidChars;
-    }
+        private readonly bool _acceptInvalidChars;
 
-    protected XmlDocumentWithNamespaceManager CreateXmlDocument (Stream webDavXmlStream, Uri uri)
-    {
-      var responseBody = DeserializeXmlStream (webDavXmlStream);
-
-      return CreateXmlDocumentWithNamespaceManager(uri, responseBody);
-    }
-
-    public static XmlDocumentWithNamespaceManager CreateXmlDocumentWithNamespaceManager(Uri uri, XmlDocument responseBody)
-    {
-      XmlNamespaceManager namespaceManager = new XmlNamespaceManager(responseBody.NameTable);
-
-      namespaceManager.AddNamespace("D", "DAV:");
-      namespaceManager.AddNamespace("C", "urn:ietf:params:xml:ns:caldav");
-      namespaceManager.AddNamespace("A", "urn:ietf:params:xml:ns:carddav");
-      namespaceManager.AddNamespace("E", "http://apple.com/ns/ical/");
-      namespaceManager.AddNamespace("CS", "http://calendarserver.org/ns/");
-
-      return new XmlDocumentWithNamespaceManager(responseBody, namespaceManager, uri);
-    }
-
-    private XmlDocument DeserializeXmlStream (Stream webDavXmlStream)
-    {
-      using (var reader = new StreamReader (webDavXmlStream, Encoding.UTF8))
-      {
-        if (_acceptInvalidChars)
+        protected WebDavClientBase(bool acceptInvalidChars)
         {
-          var settings = new XmlReaderSettings();
-          settings.CheckCharacters = false;
-          using (var xmlReader = XmlReader.Create (reader, settings))
-          {
-            XmlDocument responseBody = new XmlDocument();
-            responseBody.Load (xmlReader);
-            return responseBody;
-          }
+            _acceptInvalidChars = acceptInvalidChars;
         }
-        else
+
+        protected XmlDocumentWithNamespaceManager CreateXmlDocument(Stream webDavXmlStream, Uri uri)
         {
-          XmlDocument responseBody = new XmlDocument();
-          responseBody.Load (reader);
-          return responseBody;
+            var responseBody = DeserializeXmlStream(webDavXmlStream);
+
+            return CreateXmlDocumentWithNamespaceManager(uri, responseBody);
         }
-      }
+
+        public static XmlDocumentWithNamespaceManager CreateXmlDocumentWithNamespaceManager(Uri uri, XmlDocument responseBody)
+        {
+            XmlNamespaceManager namespaceManager = new XmlNamespaceManager(responseBody.NameTable);
+
+            namespaceManager.AddNamespace("D", "DAV:");
+            namespaceManager.AddNamespace("C", "urn:ietf:params:xml:ns:caldav");
+            namespaceManager.AddNamespace("A", "urn:ietf:params:xml:ns:carddav");
+            namespaceManager.AddNamespace("E", "http://apple.com/ns/ical/");
+            namespaceManager.AddNamespace("CS", "http://calendarserver.org/ns/");
+
+            return new XmlDocumentWithNamespaceManager(responseBody, namespaceManager, uri);
+        }
+
+        private XmlDocument DeserializeXmlStream(Stream webDavXmlStream)
+        {
+            using (var reader = new StreamReader(webDavXmlStream, Encoding.UTF8))
+            {
+                if (_acceptInvalidChars)
+                {
+                    var settings = new XmlReaderSettings();
+                    settings.CheckCharacters = false;
+                    using (var xmlReader = XmlReader.Create(reader, settings))
+                    {
+                        XmlDocument responseBody = new XmlDocument();
+                        responseBody.Load(xmlReader);
+                        return responseBody;
+                    }
+                }
+                else
+                {
+                    XmlDocument responseBody = new XmlDocument();
+                    responseBody.Load(reader);
+                    return responseBody;
+                }
+            }
+        }
     }
-  }
 }

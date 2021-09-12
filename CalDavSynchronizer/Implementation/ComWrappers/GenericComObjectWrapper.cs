@@ -14,41 +14,42 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Runtime.InteropServices;
 
 namespace CalDavSynchronizer.Implementation.ComWrappers
 {
-  public class GenericComObjectWrapper<T> : IDisposable
-      where T : class
-  {
-    private T _inner;
-
-    public GenericComObjectWrapper (T inner)
+    public class GenericComObjectWrapper<T> : IDisposable
+        where T : class
     {
-      _inner = inner;
+        private T _inner;
+
+        public GenericComObjectWrapper(T inner)
+        {
+            _inner = inner;
+        }
+
+        public T Inner
+        {
+            get { return _inner; }
+        }
+
+        public void Dispose()
+        {
+            if (_inner != null)
+            {
+                Marshal.FinalReleaseComObject(_inner);
+                _inner = null;
+            }
+        }
     }
 
-    public T Inner
+    public static class GenericComObjectWrapper
     {
-      get { return _inner; }
+        public static GenericComObjectWrapper<T> Create<T>(T inner) where T : class
+        {
+            return new GenericComObjectWrapper<T>(inner);
+        }
     }
-
-    public void Dispose ()
-    {
-      if (_inner != null)
-      {
-        Marshal.FinalReleaseComObject (_inner);
-        _inner = null;
-      }
-    }
-  }
-
-  public static class GenericComObjectWrapper
-  {
-    public static GenericComObjectWrapper<T> Create<T> (T inner) where T : class
-    {
-      return new GenericComObjectWrapper<T> (inner);
-    }
-  }
 }

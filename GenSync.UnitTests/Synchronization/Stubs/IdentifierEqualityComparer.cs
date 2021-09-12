@@ -14,33 +14,34 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 
 namespace GenSync.UnitTests.Synchronization.Stubs
 {
-  internal class IdentifierEqualityComparer : IEqualityComparer<Identifier>
-  {
-    public static readonly IEqualityComparer<Identifier> Instance = new IdentifierEqualityComparer();
-
-    private IdentifierEqualityComparer ()
+    internal class IdentifierEqualityComparer : IEqualityComparer<Identifier>
     {
+        public static readonly IEqualityComparer<Identifier> Instance = new IdentifierEqualityComparer();
+
+        private IdentifierEqualityComparer()
+        {
+        }
+
+        public bool Equals(Identifier x, Identifier y)
+        {
+            if (x == null && y == null)
+                return true;
+
+            if (x == null || y == null)
+                return false;
+
+            return StringComparer.InvariantCultureIgnoreCase.Compare(x.Value, y.Value) == 0;
+        }
+
+        public int GetHashCode(Identifier obj)
+        {
+            return obj.Value.ToLower().GetHashCode();
+        }
     }
-
-    public bool Equals (Identifier x, Identifier y)
-    {
-      if (x == null && y == null)
-        return true;
-
-      if (x == null || y == null)
-        return false;
-
-      return StringComparer.InvariantCultureIgnoreCase.Compare (x.Value, y.Value) == 0;
-    }
-
-    public int GetHashCode (Identifier obj)
-    {
-      return obj.Value.ToLower().GetHashCode();
-    }
-  }
 }

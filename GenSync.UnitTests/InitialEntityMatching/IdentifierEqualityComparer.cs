@@ -14,21 +14,22 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 
 namespace GenSync.UnitTests.InitialEntityMatching
 {
-  internal class IdentifierEqualityComparer<T> : IEqualityComparer<Identifier<T>>
-  {
-    public bool Equals (Identifier<T> x, Identifier<T> y)
+    internal class IdentifierEqualityComparer<T> : IEqualityComparer<Identifier<T>>
     {
-      return x.Value.Equals (y.Value);
-    }
+        public bool Equals(Identifier<T> x, Identifier<T> y)
+        {
+            return x.Value.Equals(y.Value);
+        }
 
-    public int GetHashCode (Identifier<T> obj)
-    {
-      return obj.GetHashCode();
+        public int GetHashCode(Identifier<T> obj)
+        {
+            return obj.GetHashCode();
+        }
     }
-  }
 }

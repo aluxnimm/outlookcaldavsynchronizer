@@ -14,25 +14,26 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using GenSync.Logging;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification
 {
-  public class NullTrayNotifer : ITrayNotifier
-  {
-    public static readonly ITrayNotifier Instance = new NullTrayNotifer();
-
-    private NullTrayNotifer()
+    public class NullTrayNotifer : ITrayNotifier
     {
-    }
+        public static readonly ITrayNotifier Instance = new NullTrayNotifer();
 
-    public void NotifyUser (SynchronizationReport report, bool notifyWarnings, bool notifyErrors)
-    {
-    }
+        private NullTrayNotifer()
+        {
+        }
 
-    public void Dispose()
-    { 
+        public void NotifyUser(SynchronizationReport report, bool notifyWarnings, bool notifyErrors)
+        {
+        }
+
+        public void Dispose()
+        {
+        }
     }
-  }
 }

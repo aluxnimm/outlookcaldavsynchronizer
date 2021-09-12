@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -21,50 +22,50 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.ComWrappers
 {
-  public class TaskItemWrapper : ITaskItemWrapper
-  {
-    public TaskItem Inner => _inner ?? throw new InvalidOperationException("Cannot access a disposed object!");
-
-    private TaskItem _inner;
-    private LoadTaskItemDelegate _load;
-
-    public TaskItemWrapper (TaskItem inner, LoadTaskItemDelegate load)
+    public class TaskItemWrapper : ITaskItemWrapper
     {
-      _load = load;
-      _inner = inner;
-    }
+        public TaskItem Inner => _inner ?? throw new InvalidOperationException("Cannot access a disposed object!");
 
-    public void SaveAndReload ()
-    {
-      Inner.Save();
-      var entryId = Inner.EntryID;
-      DisposeInner();
-      Thread.MemoryBarrier();
-      _inner = _load (entryId);
-    }
+        private TaskItem _inner;
+        private LoadTaskItemDelegate _load;
 
-    private void DisposeInner ()
-    {
-      Marshal.FinalReleaseComObject (Inner);
-      _inner = null;
-    }
+        public TaskItemWrapper(TaskItem inner, LoadTaskItemDelegate load)
+        {
+            _load = load;
+            _inner = inner;
+        }
 
-    public void Dispose ()
-    {
-      if (_inner != null)
-      {
-        DisposeInner();
-        _load = null;
-      }
-    }
+        public void SaveAndReload()
+        {
+            Inner.Save();
+            var entryId = Inner.EntryID;
+            DisposeInner();
+            Thread.MemoryBarrier();
+            _inner = _load(entryId);
+        }
 
-    public void Replace (TaskItem inner)
-    {
-      if (inner != Inner)
-      {
-        DisposeInner();
-        _inner = inner;
-      }
+        private void DisposeInner()
+        {
+            Marshal.FinalReleaseComObject(Inner);
+            _inner = null;
+        }
+
+        public void Dispose()
+        {
+            if (_inner != null)
+            {
+                DisposeInner();
+                _load = null;
+            }
+        }
+
+        public void Replace(TaskItem inner)
+        {
+            if (inner != Inner)
+            {
+                DisposeInner();
+                _inner = inner;
+            }
+        }
     }
-  }
 }

@@ -28,65 +28,62 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui
 {
-  public class NullUiService : IUiService
-  {
-    public  static readonly IUiService Instance = new NullUiService();
+    public class NullUiService : IUiService
+    {
+        public static readonly IUiService Instance = new NullUiService();
 
-    private NullUiService()
-    {
-    }
+        private NullUiService()
+        {
+        }
 
-    public void Show(ReportsViewModel reportsViewModel)
-    {
-      
-    }
+        public void Show(ReportsViewModel reportsViewModel)
+        {
+        }
 
-    public void Show(TransientProfileStatusesViewModel viewModel)
-    {
-      
-    }
+        public void Show(TransientProfileStatusesViewModel viewModel)
+        {
+        }
 
-    public bool ShowOptions(OptionsCollectionViewModel viewModel)
-    {
-      return false;
-    }
-    
-    public void ShowErrorDialog(string errorMessage, string title)
-    {
-      
-    }
+        public bool ShowOptions(OptionsCollectionViewModel viewModel)
+        {
+            return false;
+        }
 
-    public string ShowSaveDialog(string title)
-    {
-      return null;
-    }
-    public void ShowOXInfoDialog()
-    {
-    }
+        public void ShowErrorDialog(string errorMessage, string title)
+        {
+        }
 
-    public string ShowOpenDialog(string title)
-    {
-      return null;
-    }
+        public string ShowSaveDialog(string title)
+        {
+            return null;
+        }
 
-    public void ShowReport (string title, string reportText)
-    {
-     
-    }
+        public void ShowOXInfoDialog()
+        {
+        }
 
-    public bool ShowGeneralOptions(GeneralOptionsViewModel generalOptionsViewModel)
-    {
-      return false;
-    }
+        public string ShowOpenDialog(string title)
+        {
+            return null;
+        }
 
-    public IProgressUi Create(int maxValue)
-    {
-      return NullProgressUi.Instance;
-    }
+        public void ShowReport(string title, string reportText)
+        {
+        }
 
-    public IProfileType QueryProfileType(IReadOnlyCollection<IProfileType> profileTypes)
-    {
-      return null;
+        public bool ShowGeneralOptions(GeneralOptionsViewModel generalOptionsViewModel)
+        {
+            return false;
+        }
+
+        public IProgressUi Create(int maxValue)
+        {
+            return NullProgressUi.Instance;
+        }
+
+        public IProfileType QueryProfileType(IReadOnlyCollection<IProfileType> profileTypes)
+        {
+            return null;
+        }
     }
-  }
 }

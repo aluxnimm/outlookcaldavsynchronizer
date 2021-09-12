@@ -29,50 +29,50 @@ using log4net;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  class GoogleApiOperationExecutor : IGoogleApiOperationExecutor
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-    readonly ContactsRequest _contactFacade;
-    const int c_exponentialBackoffBaseMilliseconds = 100;
-    const int c_exponentialBackoffMaxRetries = 6;
-    private readonly Random _exponentialBackoffRandom = new Random();
-
-    public GoogleApiOperationExecutor (ContactsRequest contactFacade)
+    class GoogleApiOperationExecutor : IGoogleApiOperationExecutor
     {
-      if (contactFacade == null)
-        throw new ArgumentNullException (nameof (contactFacade));
-      _contactFacade = contactFacade;
-    }
+        private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-    public T Execute<T> (Func<ContactsRequest, T> operation)
-    {
-      for (int retryCount = 0;; retryCount++)
-      {
-        try
+        readonly ContactsRequest _contactFacade;
+        const int c_exponentialBackoffBaseMilliseconds = 100;
+        const int c_exponentialBackoffMaxRetries = 6;
+        private readonly Random _exponentialBackoffRandom = new Random();
+
+        public GoogleApiOperationExecutor(ContactsRequest contactFacade)
         {
-          return operation (_contactFacade);
+            if (contactFacade == null)
+                throw new ArgumentNullException(nameof(contactFacade));
+            _contactFacade = contactFacade;
         }
-        catch (GDataRequestException x) when
-            ((((x.InnerException as WebException)
-                ?.Response as HttpWebResponse)
-                ?.StatusCode == HttpStatusCode.ServiceUnavailable) &&
-             retryCount < c_exponentialBackoffMaxRetries)
-        {
-          var sleepMilliseconds = (int) Math.Pow (2, retryCount) * c_exponentialBackoffBaseMilliseconds + _exponentialBackoffRandom.Next (c_exponentialBackoffBaseMilliseconds);
-          s_logger.Warn ($"Retrying operation in {sleepMilliseconds}ms.");
-          Thread.Sleep (sleepMilliseconds);
-        }
-      }
-    }
 
-    public void Execute (Action<ContactsRequest> operation)
-    {
-      Execute (f =>
-      {
-        operation (f);
-        return 0;
-      });
+        public T Execute<T>(Func<ContactsRequest, T> operation)
+        {
+            for (int retryCount = 0;; retryCount++)
+            {
+                try
+                {
+                    return operation(_contactFacade);
+                }
+                catch (GDataRequestException x) when
+                ((((x.InnerException as WebException)
+                         ?.Response as HttpWebResponse)
+                     ?.StatusCode == HttpStatusCode.ServiceUnavailable) &&
+                 retryCount < c_exponentialBackoffMaxRetries)
+                {
+                    var sleepMilliseconds = (int) Math.Pow(2, retryCount) * c_exponentialBackoffBaseMilliseconds + _exponentialBackoffRandom.Next(c_exponentialBackoffBaseMilliseconds);
+                    s_logger.Warn($"Retrying operation in {sleepMilliseconds}ms.");
+                    Thread.Sleep(sleepMilliseconds);
+                }
+            }
+        }
+
+        public void Execute(Action<ContactsRequest> operation)
+        {
+            Execute(f =>
+            {
+                operation(f);
+                return 0;
+            });
+        }
     }
-  }
 }

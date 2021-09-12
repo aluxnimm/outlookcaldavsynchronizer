@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -12,7 +11,6 @@ using System.Net;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     A photo embedded in a vCard.
     /// </summary>
@@ -30,7 +28,6 @@ namespace Thought.vCards
     [Serializable]
     public class vCardPhoto
     {
-
         /// <summary>
         ///     The raw bytes of the image data.
         /// </summary>
@@ -49,7 +46,6 @@ namespace Thought.vCards
         private Uri url;
 
 
-
         private string encodedData;
 
 
@@ -65,7 +61,7 @@ namespace Thought.vCards
             if (buffer == null)
                 throw new ArgumentNullException("buffer");
 
-            this.data = (byte[])buffer.Clone();
+            this.data = (byte[]) buffer.Clone();
         }
 
 
@@ -77,7 +73,6 @@ namespace Thought.vCards
         /// </param>
         public vCardPhoto(Uri url)
         {
-
             if (url == null)
                 throw new ArgumentNullException("url");
 
@@ -93,12 +88,10 @@ namespace Thought.vCards
         /// </param>
         public vCardPhoto(string path)
         {
-
             if (string.IsNullOrEmpty(path))
                 throw new ArgumentNullException("path");
 
             this.url = new Uri(path);
-
         }
 
         /// <summary>
@@ -112,14 +105,12 @@ namespace Thought.vCards
         /// </param>
         public vCardPhoto(string data, bool isEncoded)
         {
-
             if (string.IsNullOrEmpty(data))
             {
                 throw new ArgumentNullException("data");
             }
 
             this.encodedData = data;
-
         }
 
 
@@ -131,7 +122,6 @@ namespace Thought.vCards
         /// </param>
         public vCardPhoto(Bitmap bitmap)
         {
-
             if (bitmap == null)
                 throw new ArgumentNullException("bitmap");
 
@@ -144,8 +134,7 @@ namespace Thought.vCards
             // Extract the bytes of the stream to the array.
 
             bytes.Seek(0, SeekOrigin.Begin);
-            bytes.Read(data, 0, (int)bytes.Length);
-
+            bytes.Read(data, 0, (int) bytes.Length);
         }
 
 
@@ -162,7 +151,6 @@ namespace Thought.vCards
         /// <seealso cref="Url"/>
         public void Fetch()
         {
-
             // An image can be fetched only if the URL
             // of the image is known.  Otherwise the
             // fetch operation makes no sense.
@@ -189,7 +177,6 @@ namespace Thought.vCards
 
             using (Stream responseStream = response.GetResponseStream())
             {
-
                 // Allocate space to hold the entire image.
 
                 this.data = new byte[response.ContentLength];
@@ -205,10 +192,8 @@ namespace Thought.vCards
                 responseStream.Read(
                     this.data,
                     0,
-                    (int)response.ContentLength);
-
+                    (int) response.ContentLength);
             }
-
         }
 
 
@@ -235,8 +220,6 @@ namespace Thought.vCards
                 MemoryStream stream = new MemoryStream(this.data);
                 return new Bitmap(stream);
             }
-
-
         }
 
 
@@ -252,7 +235,7 @@ namespace Thought.vCards
         /// </remarks>
         public byte[] GetBytes()
         {
-            return (byte[])this.data.Clone();
+            return (byte[]) this.data.Clone();
         }
 
 
@@ -263,10 +246,7 @@ namespace Thought.vCards
         /// <seealso cref="Fetch"/>
         public bool IsLoaded
         {
-            get
-            {
-                return this.data != null;
-            }
+            get { return this.data != null; }
         }
 
         /// <summary>
@@ -274,10 +254,7 @@ namespace Thought.vCards
         /// </summary>
         public bool HasEncodedData
         {
-            get
-            {
-                return this.encodedData != null;
-            }
+            get { return this.encodedData != null; }
         }
 
         /// <summary>
@@ -285,10 +262,7 @@ namespace Thought.vCards
         /// </summary>
         public string EncodedData
         {
-            get
-            {
-                return this.encodedData;
-            }
+            get { return this.encodedData; }
         }
 
 
@@ -302,14 +276,9 @@ namespace Thought.vCards
         /// <seealso cref="Fetch"/>
         public Uri Url
         {
-            get
-            {
-
-                return this.url;
-            }
+            get { return this.url; }
             set
             {
-
                 // This class maintains a byte array containing the raw
                 // bytes of the image.  The use can call the Fetch method
                 // to load the raw bytes from a remote link.  If the
@@ -331,7 +300,5 @@ namespace Thought.vCards
                 }
             }
         }
-
     }
-
 }

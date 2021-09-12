@@ -19,8 +19,8 @@ using System;
 
 namespace CalDavSynchronizer.Scheduling
 {
-  public interface ISynchronizationRunLogger
-  {
-    IDisposable LogStartSynchronizationRun ();
-  }
+    public interface ISynchronizationRunLogger
+    {
+        IDisposable LogStartSynchronizationRun();
+    }
 }

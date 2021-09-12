@@ -17,9 +17,9 @@
 
 namespace CalDavSynchronizer.ChangeWatching
 {
-  public interface IOutlookIdVisitor
-  {
-    void Visit (GenericId id);
-    void Visit (AppointmentId id);
-  }
+    public interface IOutlookIdVisitor
+    {
+        void Visit(GenericId id);
+        void Visit(AppointmentId id);
+    }
 }

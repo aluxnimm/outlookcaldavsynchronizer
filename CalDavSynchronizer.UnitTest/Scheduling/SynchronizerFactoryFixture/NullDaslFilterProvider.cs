@@ -20,26 +20,26 @@ using CalDavSynchronizer.Implementation;
 
 namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
 {
-  class NullDaslFilterProvider : IDaslFilterProvider
-  {
-    public string GetAppointmentFilter(bool isInstantSearchEnabled)
+    class NullDaslFilterProvider : IDaslFilterProvider
     {
-      throw new NotImplementedException();
-    }
+        public string GetAppointmentFilter(bool isInstantSearchEnabled)
+        {
+            throw new NotImplementedException();
+        }
 
-    public string GetTaskFilter(bool isInstantSearchEnabled)
-    {
-      throw new NotImplementedException();
-    }
+        public string GetTaskFilter(bool isInstantSearchEnabled)
+        {
+            throw new NotImplementedException();
+        }
 
-    public string GetContactFilter(bool isInstantSearchEnabled)
-    {
-      throw new NotImplementedException();
-    }
+        public string GetContactFilter(bool isInstantSearchEnabled)
+        {
+            throw new NotImplementedException();
+        }
 
-    public string GetDistListFilter(bool isInstantSearchEnabled)
-    {
-      throw new NotImplementedException();
+        public string GetDistListFilter(bool isInstantSearchEnabled)
+        {
+            throw new NotImplementedException();
+        }
     }
-  }
 }

@@ -20,17 +20,17 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
-  public class TaskEntityMatchData
-  {
-    public string Subject { get; }
-    public DateTime StartDate { get; }
-    public DateTime DueDate { get; }
-
-    public TaskEntityMatchData(TaskItem task)
+    public class TaskEntityMatchData
     {
-      Subject = task.Subject;
-      StartDate = task.StartDate;
-      DueDate = task.DueDate;
+        public string Subject { get; }
+        public DateTime StartDate { get; }
+        public DateTime DueDate { get; }
+
+        public TaskEntityMatchData(TaskItem task)
+        {
+            Subject = task.Subject;
+            StartDate = task.StartDate;
+            DueDate = task.DueDate;
+        }
     }
-  }
 }

@@ -14,19 +14,20 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Windows.Controls;
 
 namespace CalDavSynchronizer.Ui.Reports.Views
 {
-  /// <summary>
-  /// Interaction logic for ReportDetailView.xaml
-  /// </summary>
-  public partial class ReportDetailView : UserControl
-  {
-    public ReportDetailView ()
+    /// <summary>
+    /// Interaction logic for ReportDetailView.xaml
+    /// </summary>
+    public partial class ReportDetailView : UserControl
     {
-      InitializeComponent ();
+        public ReportDetailView()
+        {
+            InitializeComponent();
+        }
     }
-  }
 }

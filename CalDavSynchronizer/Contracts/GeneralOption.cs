@@ -14,45 +14,46 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace CalDavSynchronizer.Contracts
 {
-  public class GeneralOptions
-  {
-    public bool AcceptInvalidCharsInServerResponse { get; set; }
-    public bool UseUnsafeHeaderParsing { get; set; }
-    public bool StoreAppDataInRoamingFolder { get; set; }
-    public bool ShouldCheckForNewerVersions { get; set; }
-    public bool CheckIfOnline { get; set; }
-    public bool DisableCertificateValidation { get; set; }
-    public bool EnableClientCertificate { get; set; }
-    public bool EnableTls12 { get; set; }
-    public bool EnableTls13 { get; set; }
-    public bool EnableSsl3 { get; set; }
-    public TimeSpan CalDavConnectTimeout { get; set; }
-    public bool IncludeCustomMessageClasses { get; set; }
-    public bool IncludeEntityReportsWithoutErrorsOrWarnings { get; set; }
-    public bool LogEntityNames { get; set; }
-    public bool LogReportsWithWarnings { get; set; }
-    public bool LogReportsWithoutWarningsOrErrors { get; set; }
-    public bool ShowReportsWithWarningsImmediately { get; set; }
-    public bool ShowReportsWithErrorsImmediately { get; set; }
-    public int MaxReportAgeInDays { get; set; }
-    public bool EnableDebugLog { get; set; }
-    public bool EnableTrayIcon { get; set; }
-    public bool TriggerSyncAfterSendReceive { get; set; }
-    public bool ExpandAllSyncProfiles { get; set; }
-    public bool EnableAdvancedView { get; set; }
-    public bool QueryFoldersJustByGetTable { get; set; }
-    public bool ShowProgressBar { get; set; }
-    public int ThresholdForProgressDisplay { get; set; }
-    public int MaxSucessiveWarnings { get; set; }
-    public string CultureName { get; set; }
-
-    public GeneralOptions Clone()
+    public class GeneralOptions
     {
-      return (GeneralOptions)MemberwiseClone();
+        public bool AcceptInvalidCharsInServerResponse { get; set; }
+        public bool UseUnsafeHeaderParsing { get; set; }
+        public bool StoreAppDataInRoamingFolder { get; set; }
+        public bool ShouldCheckForNewerVersions { get; set; }
+        public bool CheckIfOnline { get; set; }
+        public bool DisableCertificateValidation { get; set; }
+        public bool EnableClientCertificate { get; set; }
+        public bool EnableTls12 { get; set; }
+        public bool EnableTls13 { get; set; }
+        public bool EnableSsl3 { get; set; }
+        public TimeSpan CalDavConnectTimeout { get; set; }
+        public bool IncludeCustomMessageClasses { get; set; }
+        public bool IncludeEntityReportsWithoutErrorsOrWarnings { get; set; }
+        public bool LogEntityNames { get; set; }
+        public bool LogReportsWithWarnings { get; set; }
+        public bool LogReportsWithoutWarningsOrErrors { get; set; }
+        public bool ShowReportsWithWarningsImmediately { get; set; }
+        public bool ShowReportsWithErrorsImmediately { get; set; }
+        public int MaxReportAgeInDays { get; set; }
+        public bool EnableDebugLog { get; set; }
+        public bool EnableTrayIcon { get; set; }
+        public bool TriggerSyncAfterSendReceive { get; set; }
+        public bool ExpandAllSyncProfiles { get; set; }
+        public bool EnableAdvancedView { get; set; }
+        public bool QueryFoldersJustByGetTable { get; set; }
+        public bool ShowProgressBar { get; set; }
+        public int ThresholdForProgressDisplay { get; set; }
+        public int MaxSucessiveWarnings { get; set; }
+        public string CultureName { get; set; }
+
+        public GeneralOptions Clone()
+        {
+            return (GeneralOptions) MemberwiseClone();
+        }
     }
-  }
 }

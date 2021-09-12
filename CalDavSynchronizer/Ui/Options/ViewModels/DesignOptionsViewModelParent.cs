@@ -21,21 +21,18 @@ using CalDavSynchronizer.Ui.Options.Models;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  class DesignOptionsViewModelParent : IOptionsViewModelParent
-  {
-    public void RequestCacheDeletion (IOptionsViewModel viewModel)
+    class DesignOptionsViewModelParent : IOptionsViewModelParent
     {
-      
-    }
+        public void RequestCacheDeletion(IOptionsViewModel viewModel)
+        {
+        }
 
-    public void RequestRemoval (IOptionsViewModel viewModel)
-    {
-    
-    }
+        public void RequestRemoval(IOptionsViewModel viewModel)
+        {
+        }
 
-    public void RequestAdd(IReadOnlyCollection<OptionsModel> options)
-    {
-      
+        public void RequestAdd(IReadOnlyCollection<OptionsModel> options)
+        {
+        }
     }
-  }
 }

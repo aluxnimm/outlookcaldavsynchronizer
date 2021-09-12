@@ -14,44 +14,45 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync.UnitTests.InitialEntityMatching
 {
-  public class PersonB
-  {
-    private readonly Identifier<string> _id;
-    private readonly string _age;
-    private readonly string _name;
-    private readonly string _version;
-
-    public PersonB (Identifier<string> id, string name, string age, string version)
+    public class PersonB
     {
-      _id = id;
-      _name = name;
-      _age = age;
-      _version = version;
-    }
+        private readonly Identifier<string> _id;
+        private readonly string _age;
+        private readonly string _name;
+        private readonly string _version;
+
+        public PersonB(Identifier<string> id, string name, string age, string version)
+        {
+            _id = id;
+            _name = name;
+            _age = age;
+            _version = version;
+        }
 
 
-    public Identifier<string> Id
-    {
-      get { return _id; }
-    }
+        public Identifier<string> Id
+        {
+            get { return _id; }
+        }
 
-    public string Age
-    {
-      get { return _age; }
-    }
+        public string Age
+        {
+            get { return _age; }
+        }
 
-    public string Name
-    {
-      get { return _name; }
-    }
+        public string Name
+        {
+            get { return _name; }
+        }
 
-    public string Version
-    {
-      get { return _version; }
+        public string Version
+        {
+            get { return _version; }
+        }
     }
-  }
 }

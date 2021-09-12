@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.Implementation.Contacts;
 using CalDavSynchronizer.Implementation.GoogleContacts;
@@ -22,20 +23,19 @@ using GenSync.Synchronization;
 
 namespace CalDavSynchronizer.Scheduling.ComponentCollectors
 {
-  public class AvailableGoogleContactSynchronizerSynchronizerComponents : AvailableSynchronizerComponents
-  {
-    public OutlookContactRepository<IGoogleContactContext> OutlookContactRepository { get; set; }
-    public GoogleContactRepository GoogleContactRepository { get; set; }
-    public IGoogleApiOperationExecutor GoogleApiOperationExecutor { get; set; }
-    public EntityRelationDataAccess<string, DateTime, GoogleContactRelationData, string, GoogleContactVersion> GoogleContactsEntityRelationDataAccess { get; set; }
-    public ISynchronizationContextFactory<IGoogleContactContext> GoogleContactContextFactory { get; set; }
-
-    public override DataAccessComponents GetDataAccessComponents ()
+    public class AvailableGoogleContactSynchronizerSynchronizerComponents : AvailableSynchronizerComponents
     {
-      return new DataAccessComponents
-      {
+        public OutlookContactRepository<IGoogleContactContext> OutlookContactRepository { get; set; }
+        public GoogleContactRepository GoogleContactRepository { get; set; }
+        public IGoogleApiOperationExecutor GoogleApiOperationExecutor { get; set; }
+        public EntityRelationDataAccess<string, DateTime, GoogleContactRelationData, string, GoogleContactVersion> GoogleContactsEntityRelationDataAccess { get; set; }
+        public ISynchronizationContextFactory<IGoogleContactContext> GoogleContactContextFactory { get; set; }
 
-      };
+        public override DataAccessComponents GetDataAccessComponents()
+        {
+            return new DataAccessComponents
+            {
+            };
+        }
     }
-  }
 }

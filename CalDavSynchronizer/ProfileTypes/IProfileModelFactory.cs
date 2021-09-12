@@ -20,12 +20,12 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.ProfileTypes
 {
-  public interface IProfileModelFactory
-  {
-    IProfileType ProfileType { get; }
-    OptionsModel CreateModelFromData(Contracts.Options data);
-    IOptionsViewModel CreateViewModel(OptionsModel model);
-    IOptionsViewModel CreateTemplateViewModel();
-    ProfileModelOptions ModelOptions { get; }
-  }
+    public interface IProfileModelFactory
+    {
+        IProfileType ProfileType { get; }
+        OptionsModel CreateModelFromData(Contracts.Options data);
+        IOptionsViewModel CreateViewModel(OptionsModel model);
+        IOptionsViewModel CreateTemplateViewModel();
+        ProfileModelOptions ModelOptions { get; }
+    }
 }

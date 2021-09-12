@@ -1,26 +1,21 @@
-
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Thought.vCards;
 
 namespace Tests
 {
-
     [TestClass]
     public sealed class vCardSubpropertyCollectionTests : IDisposable
     {
-
         #region [ Add_Name_Empty ]
 
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
         public void Add_Name_Empty()
         {
-
             vCardSubpropertyCollection subs =
                 new vCardSubpropertyCollection();
 
             subs.Add(string.Empty);
-
         }
 
         #endregion
@@ -30,12 +25,10 @@ namespace Tests
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
         public void Add_Name_Null()
         {
-
             vCardSubpropertyCollection subs =
                 new vCardSubpropertyCollection();
 
-            subs.Add((string)null);
-
+            subs.Add((string) null);
         }
 
         #endregion
@@ -45,7 +38,6 @@ namespace Tests
         [TestMethod]
         public void AddOrUpdate_NewNameValue()
         {
-
             vCardSubpropertyCollection subs =
                 new vCardSubpropertyCollection();
 
@@ -65,7 +57,6 @@ namespace Tests
                 "VALUE",
                 subs[0].Value,
                 "The subproperty does not have the correct value.");
-
         }
 
         #endregion
@@ -75,7 +66,6 @@ namespace Tests
         [TestMethod]
         public void AddOrUpdate_UpdatedValue()
         {
-
             vCardSubpropertyCollection subs =
                 new vCardSubpropertyCollection();
 
@@ -112,7 +102,6 @@ namespace Tests
                 "VALUE2",
                 subs[0].Value,
                 "The subproperty does not have the updated value.");
-
         }
 
         #endregion
@@ -122,7 +111,6 @@ namespace Tests
         [TestMethod]
         public void AddOrUpdate_UpdatedValueToNull()
         {
-
             vCardSubpropertyCollection subs =
                 new vCardSubpropertyCollection();
 
@@ -158,7 +146,6 @@ namespace Tests
             Assert.IsNull(
                 subs[0].Value,
                 "The updated value should be null.");
-
         }
 
         #endregion
@@ -168,8 +155,7 @@ namespace Tests
         [TestMethod]
         public void Contains()
         {
-
-            vCardSubpropertyCollection subs = 
+            vCardSubpropertyCollection subs =
                 new vCardSubpropertyCollection();
 
             subs.Add("NAME");
@@ -183,7 +169,7 @@ namespace Tests
                 "Subproperty names are not case-sensitive.");
 
             Assert.IsFalse(
-                subs.Contains((string)null),
+                subs.Contains((string) null),
                 "The Contains method should not return True for null.");
 
             Assert.IsFalse(
@@ -193,7 +179,6 @@ namespace Tests
             Assert.IsFalse(
                 subs.Contains("SOMENAME"),
                 "There is no subproperty with the specified name.");
-
         }
 
         #endregion
@@ -203,12 +188,10 @@ namespace Tests
         [TestMethod]
         public void Contains_Empty()
         {
-
             vCardSubpropertyCollection subs = new vCardSubpropertyCollection();
 
             Assert.IsFalse(
                 subs.Contains(string.Empty));
-
         }
 
         #endregion
@@ -218,12 +201,10 @@ namespace Tests
         [TestMethod]
         public void Contains_Null()
         {
-
             vCardSubpropertyCollection subs = new vCardSubpropertyCollection();
 
             Assert.IsFalse(
-                subs.Contains((string)null));
-
+                subs.Contains((string) null));
         }
 
         #endregion
@@ -244,12 +225,10 @@ namespace Tests
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
         public void GetValue_Name_Empty()
         {
-
             vCardSubpropertyCollection subs =
                 new vCardSubpropertyCollection();
 
             subs.GetValue(string.Empty);
-
         }
 
         #endregion
@@ -259,12 +238,10 @@ namespace Tests
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
         public void GetValue__Name_Null()
         {
-
             vCardSubpropertyCollection subs =
                 new vCardSubpropertyCollection();
 
-            subs.GetValue((string)null);
-
+            subs.GetValue((string) null);
         }
 
         #endregion
@@ -274,7 +251,6 @@ namespace Tests
         [TestMethod]
         public void GetValue_Name_ValueDoesNotExist()
         {
-
             vCardSubpropertyCollection subs =
                 new vCardSubpropertyCollection();
 
@@ -283,7 +259,6 @@ namespace Tests
             Assert.IsNull(
                 value1,
                 "A null value should have been returned.");
-
         }
 
         #endregion
@@ -293,7 +268,6 @@ namespace Tests
         [TestMethod]
         public void GetValue_Name_ValueExists()
         {
-
             vCardSubpropertyCollection subs =
                 new vCardSubpropertyCollection();
 
@@ -305,7 +279,6 @@ namespace Tests
                 "VALUE",
                 value,
                 "The value should have been returned.");
-
         }
 
         #endregion
@@ -334,7 +307,6 @@ namespace Tests
         [TestMethod]
         public void GetValue_ValueList_NameDoesNotExist_ListValueExists()
         {
-
             // The GetValue function should work even if
             // the potential value list is null.
 
@@ -344,13 +316,12 @@ namespace Tests
             subs.Add("VALUE");
 
             string value =
-                subs.GetValue("NAME", new string[] { "ABC", "VALUE" });
+                subs.GetValue("NAME", new string[] {"ABC", "VALUE"});
 
             Assert.AreEqual(
                 "VALUE",
                 value,
                 "The value should have been returned.");
-
         }
 
         #endregion
@@ -360,7 +331,6 @@ namespace Tests
         [TestMethod]
         public void GetValue_ValueList_NameDoesNotExist_NullList()
         {
-
             // The GetValue function should work even if
             // the potential value list is null.
 
@@ -368,12 +338,11 @@ namespace Tests
                 new vCardSubpropertyCollection();
 
             string value =
-                subs.GetValue("NAME", (string[])null);
+                subs.GetValue("NAME", (string[]) null);
 
             Assert.IsNull(
                 value,
                 "The value should be null.");
-
         }
 
         #endregion
@@ -383,7 +352,6 @@ namespace Tests
         [TestMethod]
         public void GetValue_ValueList_NameExists_NullList()
         {
-
             // The GetValue function should work even if
             // the potential value list is null.
 
@@ -393,13 +361,12 @@ namespace Tests
             subs.Add("NAME", "VALUE");
 
             string value =
-                subs.GetValue("NAME", (string[])null);
+                subs.GetValue("NAME", (string[]) null);
 
             Assert.AreEqual(
                 "VALUE",
                 value,
                 "The value should have been returned despite the null list.");
-
         }
 
         #endregion
@@ -412,7 +379,6 @@ namespace Tests
         [TestMethod]
         public void IndexOf()
         {
-
             vCardSubpropertyCollection subs =
                 new vCardSubpropertyCollection();
 
@@ -434,7 +400,6 @@ namespace Tests
                 2,
                 subs.IndexOf("NAME2"),
                 "The subproperty should be at index 2.");
-
         }
 
         #endregion
@@ -444,7 +409,6 @@ namespace Tests
         [TestMethod]
         public void IndexOf_EmptyName()
         {
-
             vCardSubpropertyCollection subs = new vCardSubpropertyCollection();
 
             // IndexOf should not raise an exception for an empty string.
@@ -461,7 +425,6 @@ namespace Tests
         [TestMethod]
         public void IndexOf_MissingValueInEmptyCollection()
         {
-
             vCardSubpropertyCollection subs =
                 new vCardSubpropertyCollection();
 
@@ -472,7 +435,6 @@ namespace Tests
             Assert.AreEqual(
                 -1,
                 subs.IndexOf("NAME"));
-
         }
 
         #endregion
@@ -482,7 +444,6 @@ namespace Tests
         [TestMethod]
         public void IndexOf_MissingValueInPopulatedCollection()
         {
-
             vCardSubpropertyCollection subs =
                 new vCardSubpropertyCollection();
 
@@ -493,7 +454,6 @@ namespace Tests
             Assert.AreEqual(
                 -1,
                 subs.IndexOf("NAME"));
-
         }
 
         #endregion
@@ -503,7 +463,6 @@ namespace Tests
         [TestMethod]
         public void IndexOf_Null()
         {
-
             vCardSubpropertyCollection subs = new vCardSubpropertyCollection();
 
             // The IndexOf method should not raise an exception
@@ -512,7 +471,7 @@ namespace Tests
 
             Assert.AreEqual(
                 -1,
-                subs.IndexOf((string)null));
+                subs.IndexOf((string) null));
         }
 
         #endregion
@@ -526,18 +485,16 @@ namespace Tests
         [TestMethod]
         public void IndexOfAny_NoMatches_EmptyCollection()
         {
-
             vCardSubpropertyCollection subs =
                 new vCardSubpropertyCollection();
 
             int index = subs.IndexOfAny(
-                new string[] { "FIND1", "FIND2", "FIND3" });
+                new string[] {"FIND1", "FIND2", "FIND3"});
 
             Assert.AreEqual(
                 -1,
                 index,
                 "No matches should have been found.");
-
         }
 
         #endregion
@@ -547,7 +504,6 @@ namespace Tests
         [TestMethod]
         public void IndexOfAny_NoMatches_PopulatedCollection()
         {
-
             vCardSubpropertyCollection subs =
                 new vCardSubpropertyCollection();
 
@@ -556,13 +512,12 @@ namespace Tests
             subs.Add("NAME3");
 
             int index = subs.IndexOfAny(
-                new string[] { "FIND1", "FIND2", "FIND3" });
+                new string[] {"FIND1", "FIND2", "FIND3"});
 
             Assert.AreEqual(
                 -1,
                 index,
                 "No matches should have been found.");
-
         }
 
         #endregion
@@ -572,7 +527,6 @@ namespace Tests
         [TestMethod]
         public void IndexOfAny_OneMatch()
         {
-
             vCardSubpropertyCollection subs =
                 new vCardSubpropertyCollection();
 
@@ -581,17 +535,18 @@ namespace Tests
             subs.Add("NAME2");
 
             int index = subs.IndexOfAny(
-                new string[] { "FIND0", "NAME1", "FIND2" });
+                new string[] {"FIND0", "NAME1", "FIND2"});
 
             Assert.AreEqual(
                 1,
                 index);
-
         }
 
         #endregion
 
-        public void Dispose() {//  driver.Dispose(); 
+        public void Dispose()
+        {
+            //  driver.Dispose(); 
         }
     }
 }

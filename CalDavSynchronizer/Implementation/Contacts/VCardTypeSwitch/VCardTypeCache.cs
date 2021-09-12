@@ -22,36 +22,36 @@ using CalDavSynchronizer.DataAccess;
 
 namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
 {
-  public class VCardTypeCache : IVCardTypeCache
-  {
-    private readonly IVCardTypeCacheDataAccess _dataAccess;
-    private readonly WeakReference<Dictionary<WebResourceName, VCardEntry>> _entriesReference = new WeakReference<Dictionary<WebResourceName, VCardEntry>> (new Dictionary<WebResourceName, VCardEntry> ());
-    private bool _areEntriesInitiallyLoaded;
-
-    public VCardTypeCache (IVCardTypeCacheDataAccess dataAccess)
+    public class VCardTypeCache : IVCardTypeCache
     {
-      _dataAccess = dataAccess;
-    }
+        private readonly IVCardTypeCacheDataAccess _dataAccess;
+        private readonly WeakReference<Dictionary<WebResourceName, VCardEntry>> _entriesReference = new WeakReference<Dictionary<WebResourceName, VCardEntry>>(new Dictionary<WebResourceName, VCardEntry>());
+        private bool _areEntriesInitiallyLoaded;
 
-    public Dictionary<WebResourceName, VCardEntry> GetEntries ()
-    {
-      Dictionary<WebResourceName, VCardEntry> entries;
-      if (!(_areEntriesInitiallyLoaded && _entriesReference.TryGetTarget (out entries)))
-      {
-        entries = _dataAccess.Load ().ToDictionary (e => e.Id);
-        _entriesReference.SetTarget (entries);
-        _areEntriesInitiallyLoaded = true;
-      }
+        public VCardTypeCache(IVCardTypeCacheDataAccess dataAccess)
+        {
+            _dataAccess = dataAccess;
+        }
 
-      return new Dictionary<WebResourceName, VCardEntry> (entries);
-    }
+        public Dictionary<WebResourceName, VCardEntry> GetEntries()
+        {
+            Dictionary<WebResourceName, VCardEntry> entries;
+            if (!(_areEntriesInitiallyLoaded && _entriesReference.TryGetTarget(out entries)))
+            {
+                entries = _dataAccess.Load().ToDictionary(e => e.Id);
+                _entriesReference.SetTarget(entries);
+                _areEntriesInitiallyLoaded = true;
+            }
 
-    public void SetEntries (Dictionary<WebResourceName, VCardEntry> entries)
-    {
-      var copiedEntries = new Dictionary<WebResourceName, VCardEntry> (entries);
-      _dataAccess.Save (copiedEntries.Values.ToArray ());
-      _entriesReference.SetTarget (copiedEntries);
-      _areEntriesInitiallyLoaded = true;
+            return new Dictionary<WebResourceName, VCardEntry>(entries);
+        }
+
+        public void SetEntries(Dictionary<WebResourceName, VCardEntry> entries)
+        {
+            var copiedEntries = new Dictionary<WebResourceName, VCardEntry>(entries);
+            _dataAccess.Save(copiedEntries.Values.ToArray());
+            _entriesReference.SetTarget(copiedEntries);
+            _areEntriesInitiallyLoaded = true;
+        }
     }
-  }
 }

@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -9,7 +8,6 @@ using System;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     The gender (male or female) of the contact.
     /// </summary>
@@ -24,7 +22,6 @@ namespace Thought.vCards
     /// <seealso cref="vCard.Gender"/>
     public enum vCardGender
     {
-
         /// <summary>
         ///     Unknown gender.
         /// </summary>
@@ -41,7 +38,5 @@ namespace Thought.vCards
         ///     Male gender.
         /// </summary>
         Male = 2
-
     }
-
 }

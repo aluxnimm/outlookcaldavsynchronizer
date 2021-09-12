@@ -22,29 +22,29 @@ using System.Windows.Interop;
 
 namespace CalDavSynchronizer.Ui.Views
 {
-  /// <summary>
-  /// Interaction logic for MainWindow.xaml
-  /// </summary>
-  public partial class ProgressWindow : Window
-  {
-    public ProgressWindow()
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class ProgressWindow : Window
     {
-      InitializeComponent ();
-      this.DataContextChanged += ProgressWindow_DataContextChanged;
-    }
+        public ProgressWindow()
+        {
+            InitializeComponent();
+            this.DataContextChanged += ProgressWindow_DataContextChanged;
+        }
 
-    private void ProgressWindow_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-    {
-      var viewModel = e.NewValue as ViewModels.ProgressViewModel;
-      if (viewModel != null)
-      {
-        viewModel.CloseRequested += ViewModel_CloseRequested;
-      }
-    }
+        private void ProgressWindow_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var viewModel = e.NewValue as ViewModels.ProgressViewModel;
+            if (viewModel != null)
+            {
+                viewModel.CloseRequested += ViewModel_CloseRequested;
+            }
+        }
 
-    private void ViewModel_CloseRequested (object sender, System.EventArgs e)
-    {
-      Close();
+        private void ViewModel_CloseRequested(object sender, System.EventArgs e)
+        {
+            Close();
+        }
     }
-  }
 }

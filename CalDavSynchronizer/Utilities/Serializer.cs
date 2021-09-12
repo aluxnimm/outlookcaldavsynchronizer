@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.IO;
 using System.Text;
@@ -22,44 +23,44 @@ using System.Xml.Serialization;
 
 namespace CalDavSynchronizer.Utilities
 {
-  public static class Serializer<T>
-  {
-    private static readonly XmlSerializer _xmlSerializer = new XmlSerializer (typeof (T));
-
-    public static string Serialize (T o)
+    public static class Serializer<T>
     {
-      var stringBuilder = new StringBuilder();
+        private static readonly XmlSerializer _xmlSerializer = new XmlSerializer(typeof(T));
 
-      using (var writer = new StringWriter (stringBuilder))
-      {
-        _xmlSerializer.Serialize (writer, o);
-      }
+        public static string Serialize(T o)
+        {
+            var stringBuilder = new StringBuilder();
 
-      return stringBuilder.ToString();
+            using (var writer = new StringWriter(stringBuilder))
+            {
+                _xmlSerializer.Serialize(writer, o);
+            }
+
+            return stringBuilder.ToString();
+        }
+
+        public static T Deserialize(string serialized)
+        {
+            using (var reader = new StringReader(serialized))
+            {
+                return (T) _xmlSerializer.Deserialize(reader);
+            }
+        }
+
+        public static T DeserializeFromWithoutCharacterCheck(Stream stream)
+        {
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.CheckCharacters = false;
+
+            using (var reader = XmlReader.Create(stream, settings))
+            {
+                return (T) _xmlSerializer.Deserialize(reader);
+            }
+        }
+
+        public static void SerializeTo(T o, Stream stream)
+        {
+            _xmlSerializer.Serialize(stream, o);
+        }
     }
-
-    public static T Deserialize (string serialized)
-    {
-      using (var reader = new StringReader (serialized))
-      {
-        return (T) _xmlSerializer.Deserialize (reader);
-      }
-    }
-
-    public static T DeserializeFromWithoutCharacterCheck (Stream stream)
-    {
-      XmlReaderSettings settings = new XmlReaderSettings ();
-      settings.CheckCharacters = false;
-     
-      using (var reader = XmlReader.Create (stream, settings))
-      {
-        return (T) _xmlSerializer.Deserialize (reader);
-      }
-    }
-
-    public static void SerializeTo (T o, Stream stream)
-    {
-      _xmlSerializer.Serialize (stream, o);
-    }
-  }
 }

@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,53 +23,54 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class ColorMapper
-  {
-    public static string MapCategoryColorToHtmlColor(OlCategoryColor color)
+    public class ColorMapper
     {
-      return HtmlColorByOutlookColor[color].Name;
+        public static string MapCategoryColorToHtmlColor(OlCategoryColor color)
+        {
+            return HtmlColorByOutlookColor[color].Name;
+        }
+
+        public static OlCategoryColor MapHtmlColorToCategoryColor(string htmlColor)
+        {
+            if (!OutlookColorByHtmlColorRgb.TryGetValue(ColorHelper.GetRgbValue(htmlColor), out var categoryColor))
+            {
+                categoryColor = ColorHelper.FindMatchingOutlookColorByHtmlColor(htmlColor);
+            }
+
+            return categoryColor;
+        }
+
+        private static readonly Dictionary<OlCategoryColor, X11Color> HtmlColorByOutlookColor = new Dictionary<OlCategoryColor, X11Color>
+        {
+            {OlCategoryColor.olCategoryColorRed, X11Colors.Red},
+            {OlCategoryColor.olCategoryColorOrange, X11Colors.Orange},
+            {OlCategoryColor.olCategoryColorPeach, X11Colors.Peachpuff},
+            {OlCategoryColor.olCategoryColorYellow, X11Colors.Yellow},
+            {OlCategoryColor.olCategoryColorGreen, X11Colors.Green},
+            {OlCategoryColor.olCategoryColorTeal, X11Colors.Lightseagreen},
+            {OlCategoryColor.olCategoryColorOlive, X11Colors.Olive},
+            {OlCategoryColor.olCategoryColorBlue, X11Colors.Blue},
+            {OlCategoryColor.olCategoryColorPurple, X11Colors.Purple},
+            {OlCategoryColor.olCategoryColorMaroon, X11Colors.Maroon},
+            {OlCategoryColor.olCategoryColorSteel, X11Colors.Lightsteelblue},
+            {OlCategoryColor.olCategoryColorDarkSteel, X11Colors.Steelblue},
+            {OlCategoryColor.olCategoryColorGray, X11Colors.Gray},
+            {OlCategoryColor.olCategoryColorDarkGray, X11Colors.Darkgray},
+            {OlCategoryColor.olCategoryColorBlack, X11Colors.Black},
+            {OlCategoryColor.olCategoryColorDarkRed, X11Colors.Darkred},
+            {OlCategoryColor.olCategoryColorDarkOrange, X11Colors.Darkorange},
+            {OlCategoryColor.olCategoryColorDarkPeach, X11Colors.Peru},
+            {OlCategoryColor.olCategoryColorDarkYellow, X11Colors.Yellowgreen},
+            {OlCategoryColor.olCategoryColorDarkGreen, X11Colors.Darkgreen},
+            {OlCategoryColor.olCategoryColorDarkTeal, X11Colors.Teal},
+            {OlCategoryColor.olCategoryColorDarkOlive, X11Colors.Darkolivegreen},
+            {OlCategoryColor.olCategoryColorDarkBlue, X11Colors.Darkblue},
+            {OlCategoryColor.olCategoryColorDarkPurple, X11Colors.Darkviolet},
+            {OlCategoryColor.olCategoryColorDarkMaroon, X11Colors.Palevioletred}
+        };
+
+        private static readonly Dictionary<int, OlCategoryColor> OutlookColorByHtmlColorRgb = HtmlColorByOutlookColor.ToDictionary(e => e.Value.Rgb, e => e.Key);
+
+        public static readonly HashSet<string> HtmlColorNames = new HashSet<string>(HtmlColorByOutlookColor.Values.Select(v => v.Name), StringComparer.InvariantCultureIgnoreCase);
     }
-
-    public static OlCategoryColor MapHtmlColorToCategoryColor(string htmlColor)
-    {
-      if (!OutlookColorByHtmlColorRgb.TryGetValue(ColorHelper.GetRgbValue(htmlColor), out var categoryColor))
-      {
-        categoryColor = ColorHelper.FindMatchingOutlookColorByHtmlColor(htmlColor);
-      }
-      return categoryColor;
-    }
-
-    private static readonly Dictionary<OlCategoryColor, X11Color> HtmlColorByOutlookColor = new Dictionary<OlCategoryColor, X11Color>
-    {
-      {OlCategoryColor.olCategoryColorRed, X11Colors.Red},
-      {OlCategoryColor.olCategoryColorOrange, X11Colors.Orange},
-      {OlCategoryColor.olCategoryColorPeach, X11Colors.Peachpuff},
-      {OlCategoryColor.olCategoryColorYellow, X11Colors.Yellow},
-      {OlCategoryColor.olCategoryColorGreen, X11Colors.Green},
-      {OlCategoryColor.olCategoryColorTeal, X11Colors.Lightseagreen},
-      {OlCategoryColor.olCategoryColorOlive, X11Colors.Olive},
-      {OlCategoryColor.olCategoryColorBlue, X11Colors.Blue},
-      {OlCategoryColor.olCategoryColorPurple, X11Colors.Purple},
-      {OlCategoryColor.olCategoryColorMaroon, X11Colors.Maroon},
-      {OlCategoryColor.olCategoryColorSteel, X11Colors.Lightsteelblue},
-      {OlCategoryColor.olCategoryColorDarkSteel, X11Colors.Steelblue},
-      {OlCategoryColor.olCategoryColorGray, X11Colors.Gray},
-      {OlCategoryColor.olCategoryColorDarkGray, X11Colors.Darkgray},
-      {OlCategoryColor.olCategoryColorBlack, X11Colors.Black},
-      {OlCategoryColor.olCategoryColorDarkRed, X11Colors.Darkred},
-      {OlCategoryColor.olCategoryColorDarkOrange, X11Colors.Darkorange},
-      {OlCategoryColor.olCategoryColorDarkPeach, X11Colors.Peru},
-      {OlCategoryColor.olCategoryColorDarkYellow, X11Colors.Yellowgreen},
-      {OlCategoryColor.olCategoryColorDarkGreen, X11Colors.Darkgreen},
-      {OlCategoryColor.olCategoryColorDarkTeal, X11Colors.Teal},
-      {OlCategoryColor.olCategoryColorDarkOlive, X11Colors.Darkolivegreen},
-      {OlCategoryColor.olCategoryColorDarkBlue, X11Colors.Darkblue},
-      {OlCategoryColor.olCategoryColorDarkPurple, X11Colors.Darkviolet},
-      {OlCategoryColor.olCategoryColorDarkMaroon, X11Colors.Palevioletred}
-    };
-
-    private static readonly Dictionary<int, OlCategoryColor> OutlookColorByHtmlColorRgb = HtmlColorByOutlookColor.ToDictionary(e => e.Value.Rgb, e => e.Key);
-
-    public static readonly HashSet<string> HtmlColorNames = new HashSet<string>(HtmlColorByOutlookColor.Values.Select(v => v.Name), StringComparer.InvariantCultureIgnoreCase);
-  }
 }

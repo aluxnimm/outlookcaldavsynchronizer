@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,52 +25,52 @@ using log4net;
 
 namespace GenSync.EntityRelationManagement
 {
-  public static class EntityRelationDataAccess
-  {
-    private const string s_relationStorageName = "relations.xml";
-
-    public static string GetRelationStoragePath (string profileDataDirectory)
+    public static class EntityRelationDataAccess
     {
-      return Path.Combine (profileDataDirectory, s_relationStorageName);
+        private const string s_relationStorageName = "relations.xml";
+
+        public static string GetRelationStoragePath(string profileDataDirectory)
+        {
+            return Path.Combine(profileDataDirectory, s_relationStorageName);
+        }
+
+        public static string GetRelationStoragePath(string profileDataDirectory, string customPrefix)
+        {
+            return Path.Combine(profileDataDirectory, $"{customPrefix}_{s_relationStorageName}");
+        }
     }
 
-    public static string GetRelationStoragePath(string profileDataDirectory, string customPrefix)
+    /// <summary>
+    /// Defaultimplementation for IEntityRelationDataAccess, which uses  an XML-file as underlying storage
+    /// </summary>
+    public class EntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TEntityRelationData, TBtypeEntityId, TBtypeEntityVersion> :
+        XmlFileDataAccess<List<TEntityRelationData>>,
+        IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
+        where TEntityRelationData : IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
     {
-      return Path.Combine(profileDataDirectory, $"{customPrefix}_{s_relationStorageName}");
+        private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public EntityRelationDataAccess(string dataDirectory) :
+            base(EntityRelationDataAccess.GetRelationStoragePath(dataDirectory))
+        {
+        }
+
+        public EntityRelationDataAccess(string dataDirectory, string customPrefix) :
+            base(EntityRelationDataAccess.GetRelationStoragePath(dataDirectory, customPrefix))
+
+        {
+        }
+
+        public IReadOnlyCollection<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> LoadEntityRelationData()
+        {
+            return LoadDataOrNull()
+                ?.Select(d => (IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>) d)
+                .ToList();
+        }
+
+        public void SaveEntityRelationData(List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> data)
+        {
+            SaveData(data.Cast<TEntityRelationData>().ToList());
+        }
     }
-  }
-
-  /// <summary>
-  /// Defaultimplementation for IEntityRelationDataAccess, which uses  an XML-file as underlying storage
-  /// </summary>
-  public class EntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TEntityRelationData, TBtypeEntityId, TBtypeEntityVersion> :
-    XmlFileDataAccess<List<TEntityRelationData>>,
-    IEntityRelationDataAccess<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
-      where TEntityRelationData : IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
-
-    public EntityRelationDataAccess (string dataDirectory) : 
-      base(EntityRelationDataAccess.GetRelationStoragePath(dataDirectory))
-    {
-    }
-
-    public EntityRelationDataAccess(string dataDirectory, string customPrefix) :
-      base(EntityRelationDataAccess.GetRelationStoragePath(dataDirectory, customPrefix))
-
-    {
-    }
-
-    public IReadOnlyCollection<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> LoadEntityRelationData ()
-    {
-      return  LoadDataOrNull()
-        ?.Select (d => (IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>) d)
-        .ToList();
-    }
-
-    public void SaveEntityRelationData (List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> data)
-    {
-      SaveData(data.Cast<TEntityRelationData>().ToList());
-    }
-  }
 }

@@ -22,9 +22,9 @@ using Google.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  public interface IGoogleContactCache
-  {
-    bool TryGetValue(string key, out Contact value);
-    Task<IEnumerable<EntityVersion<string, GoogleContactVersion>>> GetAllVersions();
-  }
+    public interface IGoogleContactCache
+    {
+        bool TryGetValue(string key, out Contact value);
+        Task<IEnumerable<EntityVersion<string, GoogleContactVersion>>> GetAllVersions();
+    }
 }

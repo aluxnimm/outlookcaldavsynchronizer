@@ -29,118 +29,117 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  internal class GoogleServerSettingsViewModel : ModelBase, IOptionsSection
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
-    private readonly DelegateCommandWithoutCanExecuteDelegation _doAutoDiscoveryCommand;
-    private readonly DelegateCommandWithoutCanExecuteDelegation _testConnectionCommand;
-
-    private readonly OptionsModel _model;
-    private readonly IOptionTasks _optionTasks;
-
-    public GoogleServerSettingsViewModel (OptionsModel model, IOptionTasks optionTasks, IViewOptions viewOptions)
+    internal class GoogleServerSettingsViewModel : ModelBase, IOptionsSection
     {
-      if (model == null) throw new ArgumentNullException(nameof(model));
-      if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
-      if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly DelegateCommandWithoutCanExecuteDelegation _doAutoDiscoveryCommand;
+        private readonly DelegateCommandWithoutCanExecuteDelegation _testConnectionCommand;
 
-      _model = model;
-      _optionTasks = optionTasks;
-      ViewOptions = viewOptions;
-      _doAutoDiscoveryCommand = new DelegateCommandWithoutCanExecuteDelegation (_ => DoAutoDiscovery());
-      _testConnectionCommand = new DelegateCommandWithoutCanExecuteDelegation (_ =>
-      {
-        ComponentContainer.EnsureSynchronizationContext();
-        TestConnectionAsync (CalenderUrl);
-      });
+        private readonly OptionsModel _model;
+        private readonly IOptionTasks _optionTasks;
+
+        public GoogleServerSettingsViewModel(OptionsModel model, IOptionTasks optionTasks, IViewOptions viewOptions)
+        {
+            if (model == null) throw new ArgumentNullException(nameof(model));
+            if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
+            if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
+
+            _model = model;
+            _optionTasks = optionTasks;
+            ViewOptions = viewOptions;
+            _doAutoDiscoveryCommand = new DelegateCommandWithoutCanExecuteDelegation(_ => DoAutoDiscovery());
+            _testConnectionCommand = new DelegateCommandWithoutCanExecuteDelegation(_ =>
+            {
+                ComponentContainer.EnsureSynchronizationContext();
+                TestConnectionAsync(CalenderUrl);
+            });
 
 
-      RegisterPropertyChangePropagation(_model, nameof(_model.CalenderUrl), nameof(CalenderUrl));
-      RegisterPropertyChangePropagation(_model, nameof(_model.EmailAddress), nameof(EmailAddress));
-      RegisterPropertyChangePropagation(_model, nameof(_model.UseGoogleNativeApi), nameof(UseGoogleNativeApi));
-      RegisterPropertyChangePropagation(_model, nameof(_model.UseGoogleNativeApiAvailable), nameof(UseGoogleNativeApiAvailable));
-      RegisterPropertyChangePropagation(_model, nameof(_model.UseWebDavCollectionSync), nameof(UseWebDavCollectionSync));
+            RegisterPropertyChangePropagation(_model, nameof(_model.CalenderUrl), nameof(CalenderUrl));
+            RegisterPropertyChangePropagation(_model, nameof(_model.EmailAddress), nameof(EmailAddress));
+            RegisterPropertyChangePropagation(_model, nameof(_model.UseGoogleNativeApi), nameof(UseGoogleNativeApi));
+            RegisterPropertyChangePropagation(_model, nameof(_model.UseGoogleNativeApiAvailable), nameof(UseGoogleNativeApiAvailable));
+            RegisterPropertyChangePropagation(_model, nameof(_model.UseWebDavCollectionSync), nameof(UseWebDavCollectionSync));
+        }
 
+        public ICommand DoAutoDiscoveryCommand => _doAutoDiscoveryCommand;
+        public ICommand TestConnectionCommand => _testConnectionCommand;
+
+        public string CalenderUrl
+        {
+            get { return _model.CalenderUrl; }
+            set { _model.CalenderUrl = value; }
+        }
+
+        public string EmailAddress
+        {
+            get { return _model.EmailAddress; }
+            set
+            {
+                _model.EmailAddress = value;
+                _model.UserName = value;
+            }
+        }
+
+        public bool UseGoogleNativeApi
+        {
+            get { return _model.UseGoogleNativeApi; }
+            set { _model.UseGoogleNativeApi = value; }
+        }
+
+        public bool UseWebDavCollectionSync
+        {
+            get { return _model.UseWebDavCollectionSync; }
+            set { _model.UseWebDavCollectionSync = value; }
+        }
+
+        public bool UseGoogleNativeApiAvailable => _model.UseGoogleNativeApiAvailable;
+
+        private async void TestConnectionAsync(string testUrl)
+        {
+            _testConnectionCommand.SetCanExecute(false);
+            _doAutoDiscoveryCommand.SetCanExecute(false);
+            try
+            {
+                var newUrl = await _optionTasks.TestGoogleConnection(_model, testUrl);
+                if (newUrl != testUrl)
+                    CalenderUrl = newUrl;
+            }
+            catch (Exception x)
+            {
+                s_logger.Error("Exception while testing the connection.", x);
+                string message = null;
+                for (var ex = x; ex != null; ex = ex.InnerException)
+                    message += ex.Message + Environment.NewLine;
+                MessageBox.Show(message, OptionTasks.ConnectionTestCaption);
+            }
+            finally
+            {
+                _testConnectionCommand.SetCanExecute(true);
+                _doAutoDiscoveryCommand.SetCanExecute(true);
+            }
+        }
+
+        private void DoAutoDiscovery()
+        {
+            string testUrl;
+            if (_model.SelectedFolderOrNull?.DefaultItemType == OlItemType.olTaskItem)
+                testUrl = string.Empty;
+            else
+                testUrl = OptionTasks.GoogleDavBaseUrl;
+
+            ComponentContainer.EnsureSynchronizationContext();
+            TestConnectionAsync(testUrl);
+        }
+
+        public static GoogleServerSettingsViewModel DesignInstance => new GoogleServerSettingsViewModel(OptionsModel.DesignInstance, NullOptionTasks.Instance, OptionsCollectionViewModel.DesignViewOptions)
+        {
+            CalenderUrl = "http://calendar.url",
+            EmailAddress = "bla@dot.com",
+            UseGoogleNativeApi = true,
+            UseWebDavCollectionSync = false
+        };
+
+        public IViewOptions ViewOptions { get; }
     }
-
-    public ICommand DoAutoDiscoveryCommand => _doAutoDiscoveryCommand;
-    public ICommand TestConnectionCommand => _testConnectionCommand;
-
-    public string CalenderUrl
-    {
-      get { return _model.CalenderUrl; }
-      set { _model.CalenderUrl = value; }
-    }
-
-    public string EmailAddress
-    {
-      get { return _model.EmailAddress; }
-      set
-      {
-        _model.EmailAddress = value;
-        _model.UserName = value;
-      }
-    }
-
-    public bool UseGoogleNativeApi
-    {
-      get { return _model.UseGoogleNativeApi; }
-      set { _model.UseGoogleNativeApi = value; }
-    }
-
-    public bool UseWebDavCollectionSync
-    {
-      get { return _model.UseWebDavCollectionSync; }
-      set { _model.UseWebDavCollectionSync = value; }
-    }
-
-    public bool UseGoogleNativeApiAvailable => _model.UseGoogleNativeApiAvailable;
-    
-    private async void TestConnectionAsync (string testUrl)
-    {
-      _testConnectionCommand.SetCanExecute (false);
-      _doAutoDiscoveryCommand.SetCanExecute (false);
-      try
-      {
-        var newUrl = await _optionTasks.TestGoogleConnection (_model, testUrl);
-        if (newUrl != testUrl)
-          CalenderUrl = newUrl;
-      }
-      catch (Exception x)
-      {
-        s_logger.Error ("Exception while testing the connection.", x);
-        string message = null;
-        for (var ex = x; ex != null; ex = ex.InnerException)
-          message += ex.Message + Environment.NewLine;
-        MessageBox.Show (message, OptionTasks.ConnectionTestCaption);
-      }
-      finally
-      {
-        _testConnectionCommand.SetCanExecute (true);
-        _doAutoDiscoveryCommand.SetCanExecute (true);
-      }
-    }
-
-    private void DoAutoDiscovery ()
-    {
-      string testUrl;
-      if (_model.SelectedFolderOrNull?.DefaultItemType == OlItemType.olTaskItem)
-        testUrl = string.Empty;
-      else
-        testUrl = OptionTasks.GoogleDavBaseUrl;
-
-      ComponentContainer.EnsureSynchronizationContext();
-      TestConnectionAsync (testUrl);
-    }
-
-    public static GoogleServerSettingsViewModel DesignInstance => new GoogleServerSettingsViewModel(OptionsModel.DesignInstance, NullOptionTasks.Instance, OptionsCollectionViewModel.DesignViewOptions)
-    {
-      CalenderUrl = "http://calendar.url",
-      EmailAddress = "bla@dot.com",
-      UseGoogleNativeApi = true,
-      UseWebDavCollectionSync = false
-    };
-
-    public IViewOptions ViewOptions { get; }
-  }
 }

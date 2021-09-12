@@ -20,11 +20,11 @@ using GenSync;
 
 namespace CalDavSynchronizer.ChangeWatching
 {
-  public interface IOutlookId 
-  {
-    string EntryId { get; }
-    DateTime Version { get; }
-    
-    void Accept(IOutlookIdVisitor visitor);
-  }
+    public interface IOutlookId
+    {
+        string EntryId { get; }
+        DateTime Version { get; }
+
+        void Accept(IOutlookIdVisitor visitor);
+    }
 }

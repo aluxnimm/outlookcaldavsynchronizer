@@ -19,9 +19,9 @@ using CalDavSynchronizer.Implementation;
 
 namespace CalDavSynchronizer.Ui.Options
 {
-  public interface IEnumDisplayNameProvider
-  {
-    string Get(ConflictResolution value);
-    string Get(SynchronizationMode value);
-  }
+    public interface IEnumDisplayNameProvider
+    {
+        string Get(ConflictResolution value);
+        string Get(SynchronizationMode value);
+    }
 }

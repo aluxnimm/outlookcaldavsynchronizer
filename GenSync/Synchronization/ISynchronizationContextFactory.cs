@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,24 +23,24 @@ using System.Threading.Tasks;
 
 namespace GenSync.Synchronization
 {
-  /// <summary>
-  /// Creates the synchronization context. 
-  /// The Synchronization context respresents user defined data and is passed through all components (e.g. repositories, entitymappers, etc...)
-  /// </summary>
-  /// <typeparam name="TContext"></typeparam>
-  public interface ISynchronizationContextFactory<TContext>
-  {
     /// <summary>
-    /// Is called at the beginning of every sync run, to create an context for the ongoing sync run
+    /// Creates the synchronization context. 
+    /// The Synchronization context respresents user defined data and is passed through all components (e.g. repositories, entitymappers, etc...)
     /// </summary>
-    /// <returns></returns>
-    Task<TContext> Create();
+    /// <typeparam name="TContext"></typeparam>
+    public interface ISynchronizationContextFactory<TContext>
+    {
+        /// <summary>
+        /// Is called at the beginning of every sync run, to create an context for the ongoing sync run
+        /// </summary>
+        /// <returns></returns>
+        Task<TContext> Create();
 
-    /// <summary>
-    /// Is called at the end of every sync run with the previously created context
-    /// </summary>
-    /// <param name="context"></param>
-    /// <returns></returns>
-    Task SynchronizationFinished(TContext context);
-  }
+        /// <summary>
+        /// Is called at the end of every sync run with the previously created context
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        Task SynchronizationFinished(TContext context);
+    }
 }

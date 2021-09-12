@@ -14,14 +14,15 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using CalDavSynchronizer.DataAccess;
 
 namespace CalDavSynchronizer.Scheduling.ComponentCollectors
 {
-  public class DataAccessComponents
-  {
-    public ICalDavDataAccess CalDavDataAccess { get; set; }
-    public ICardDavDataAccess CardDavDataAccess { get; set; }
-    public ICardDavDataAccess DistListDataAccess { get; set; }
-  }
+    public class DataAccessComponents
+    {
+        public ICalDavDataAccess CalDavDataAccess { get; set; }
+        public ICardDavDataAccess CardDavDataAccess { get; set; }
+        public ICardDavDataAccess DistListDataAccess { get; set; }
+    }
 }

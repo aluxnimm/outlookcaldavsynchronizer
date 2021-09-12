@@ -79,8 +79,8 @@ namespace CalDavSynchronizer.OAuth.Swisscom
         private async Task<AddressbookInfo[]> QueryAddressbookInfosAsync()
         {
             String response = await GetResponseAsync(
-                    API_HOST + "/layer/addressbook-ng/nextgenerationaddressbook/plugin-conf/addressbooks"
-                );
+                API_HOST + "/layer/addressbook-ng/nextgenerationaddressbook/plugin-conf/addressbooks"
+            );
 
             AddressbookInfo[] listOfAddressbookInfo = null;
             if (response != null)
@@ -94,13 +94,13 @@ namespace CalDavSynchronizer.OAuth.Swisscom
         private async Task<CredentialSet> QueryCredentialSetAsync(string publicId)
         {
             String response = await GetResponseAsync(
-                    API_HOST + "/layer/addressbook-ng/nextgenerationaddressbook/plugin-conf/credentials/" + publicId
-                );
+                API_HOST + "/layer/addressbook-ng/nextgenerationaddressbook/plugin-conf/credentials/" + publicId
+            );
             CredentialSet credentialSet = null;
             if (response != null)
             {
-               credentialSet = JsonConvert.DeserializeObject<CredentialSet>(response);
-               MessageBox.Show(Globalization.Strings.Localize("LABEL_AUTH_OK"), "Swisscom OAuth 2.0", MessageBoxButtons.OK);
+                credentialSet = JsonConvert.DeserializeObject<CredentialSet>(response);
+                MessageBox.Show(Globalization.Strings.Localize("LABEL_AUTH_OK"), "Swisscom OAuth 2.0", MessageBoxButtons.OK);
             }
 
             return credentialSet;
@@ -113,7 +113,7 @@ namespace CalDavSynchronizer.OAuth.Swisscom
                 await AuthenticateAsync();
             }
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
             request.Headers.Add("Authorization", "Bearer " + _accessToken);
             request.Headers.Add("Scs-Correlation-Id", UUID);
             request.Headers.Add("Scs-Version", "1");
@@ -121,11 +121,12 @@ namespace CalDavSynchronizer.OAuth.Swisscom
 
             try
             {
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                HttpWebResponse response = (HttpWebResponse) request.GetResponse();
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     return new StreamReader(response.GetResponseStream()).ReadToEnd();
                 }
+
                 return null;
             }
             catch (WebException ex)
@@ -138,8 +139,10 @@ namespace CalDavSynchronizer.OAuth.Swisscom
                     {
                         return null;
                     }
+
                     throw;
                 }
+
                 throw;
             }
             catch (Exception ex)
@@ -153,7 +156,7 @@ namespace CalDavSynchronizer.OAuth.Swisscom
         {
             var initializer = new Google.Apis.Auth.OAuth2.Flows.AuthorizationCodeFlow.Initializer(AUTH_ENDPOINT, TOKEN_ENDPOINT)
             {
-                ClientSecrets = new Google.Apis.Auth.OAuth2.ClientSecrets { ClientId = CLIENT_ID, ClientSecret = CLIENT_SECRET },
+                ClientSecrets = new Google.Apis.Auth.OAuth2.ClientSecrets {ClientId = CLIENT_ID, ClientSecret = CLIENT_SECRET},
             };
 
             var authorizer = new Google.Apis.Auth.OAuth2.AuthorizationCodeInstalledApp(

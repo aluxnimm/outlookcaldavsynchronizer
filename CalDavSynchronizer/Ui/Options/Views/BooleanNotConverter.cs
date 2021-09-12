@@ -14,27 +14,28 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Globalization;
 using System.Windows.Data;
 
 namespace CalDavSynchronizer.Ui.Options.Views
 {
-  public class BooleanNotConverter : IValueConverter
-  {
-    public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
+    public class BooleanNotConverter : IValueConverter
     {
-      if (targetType != typeof (bool))
-        throw new ArgumentException();
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (targetType != typeof(bool))
+                throw new ArgumentException();
 
-      if (value is bool)
-        return !(bool) value;
-      return Binding.DoNothing;
-    }
+            if (value is bool)
+                return !(bool) value;
+            return Binding.DoNothing;
+        }
 
-    public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
-    {
-      return Convert (value, targetType, parameter, culture);
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return Convert(value, targetType, parameter, culture);
+        }
     }
-  }
 }

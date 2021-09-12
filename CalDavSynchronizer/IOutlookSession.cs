@@ -23,33 +23,33 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer
 {
-  public interface IOutlookSession
-  {
-    string ApplicationVersion { get; }
-    IOutlookTimeZones TimeZones { get; }
-    StringComparer CategoryNameComparer { get; }
+    public interface IOutlookSession
+    {
+        string ApplicationVersion { get; }
+        IOutlookTimeZones TimeZones { get; }
+        StringComparer CategoryNameComparer { get; }
 
-    IReadOnlyCollection<OutlookCategory> GetCategories();
-    string GetCurrentUserEmailAddressOrNull();
+        IReadOnlyCollection<OutlookCategory> GetCategories();
+        string GetCurrentUserEmailAddressOrNull();
 
-    OutlookFolderDescriptor GetFolderDescriptorFromId(string entryId, object storeId);
-    Folder GetFolderFromId (string entryId, object storeId);
+        OutlookFolderDescriptor GetFolderDescriptorFromId(string entryId, object storeId);
+        Folder GetFolderFromId(string entryId, object storeId);
 
-    AppointmentItem GetAppointmentItemOrNull(string entryId, string expectedFolderId, string storeId);
-    TaskItem GetTaskItemOrNull(string entryId, string expectedFolderId, string storeId);
-    ContactItem GetContactItemOrNull (string entryId, string expectedFolderId, string storeId);
-    DistListItem GetDistListItemOrNull (string entryId, string expectedFolderId, string storeId);
+        AppointmentItem GetAppointmentItemOrNull(string entryId, string expectedFolderId, string storeId);
+        TaskItem GetTaskItemOrNull(string entryId, string expectedFolderId, string storeId);
+        ContactItem GetContactItemOrNull(string entryId, string expectedFolderId, string storeId);
+        DistListItem GetDistListItemOrNull(string entryId, string expectedFolderId, string storeId);
 
-    AppointmentItem GetAppointmentItem (string entryId,string storeId);
-    AppointmentItem GetAppointmentItem (string entryId);
-    TaskItem GetTaskItem(string entryId, string storeId);
-    ContactItem GetContactItem(string entryId, string storeId);
-    DistListItem GetDistListItem(string entryId, string storeId);
-    
-    Recipient CreateRecipient (string recipientName);
+        AppointmentItem GetAppointmentItem(string entryId, string storeId);
+        AppointmentItem GetAppointmentItem(string entryId);
+        TaskItem GetTaskItem(string entryId, string storeId);
+        ContactItem GetContactItem(string entryId, string storeId);
+        DistListItem GetDistListItem(string entryId, string storeId);
 
-    (CreateCategoryResult Result, string ExistingColorNameForLoggingOrNull) AddCategoryNoThrow(string name, OlCategoryColor color);
-    void AddOrUpdateCategoryNoThrow(string name, OlCategoryColor color, bool useColor, OlCategoryShortcutKey shortcutKey, bool useShortcutKey);
-    IReadOnlyDictionary<string, IReadOnlyList<OutlookFolderDescriptor>> GetFoldersByName();
-  }
+        Recipient CreateRecipient(string recipientName);
+
+        (CreateCategoryResult Result, string ExistingColorNameForLoggingOrNull) AddCategoryNoThrow(string name, OlCategoryColor color);
+        void AddOrUpdateCategoryNoThrow(string name, OlCategoryColor color, bool useColor, OlCategoryShortcutKey shortcutKey, bool useShortcutKey);
+        IReadOnlyDictionary<string, IReadOnlyList<OutlookFolderDescriptor>> GetFoldersByName();
+    }
 }

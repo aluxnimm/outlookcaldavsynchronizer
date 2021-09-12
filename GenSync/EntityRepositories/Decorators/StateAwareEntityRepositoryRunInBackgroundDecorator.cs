@@ -22,18 +22,18 @@ using GenSync.Logging;
 
 namespace GenSync.EntityRepositories.Decorators
 {
-  public class StateAwareEntityRepositoryRunInBackgroundDecorator<TEntityId, TEntityVersion, TContext, TStateToken> : IStateAwareEntityRepository<TEntityId, TEntityVersion, TContext, TStateToken>
-  {
-    private readonly IStateAwareEntityRepository<TEntityId, TEntityVersion, TContext, TStateToken> _stateAwareEntityRepositoryImplementation;
-
-    public StateAwareEntityRepositoryRunInBackgroundDecorator(IStateAwareEntityRepository<TEntityId, TEntityVersion, TContext, TStateToken> stateAwareEntityRepositoryImplementation)
+    public class StateAwareEntityRepositoryRunInBackgroundDecorator<TEntityId, TEntityVersion, TContext, TStateToken> : IStateAwareEntityRepository<TEntityId, TEntityVersion, TContext, TStateToken>
     {
-      _stateAwareEntityRepositoryImplementation = stateAwareEntityRepositoryImplementation ?? throw new ArgumentNullException(nameof(stateAwareEntityRepositoryImplementation));
-    }
+        private readonly IStateAwareEntityRepository<TEntityId, TEntityVersion, TContext, TStateToken> _stateAwareEntityRepositoryImplementation;
 
-    public async Task<(IEntityStateCollection<TEntityId, TEntityVersion> States, TStateToken NewToken)> GetFullRepositoryState(IEnumerable<TEntityId> idsOfknownEntities, TStateToken stateToken, TContext context, IGetVersionsLogger logger)
-    {
-      return await Task.Run(() => _stateAwareEntityRepositoryImplementation.GetFullRepositoryState(idsOfknownEntities, stateToken, context, logger));
+        public StateAwareEntityRepositoryRunInBackgroundDecorator(IStateAwareEntityRepository<TEntityId, TEntityVersion, TContext, TStateToken> stateAwareEntityRepositoryImplementation)
+        {
+            _stateAwareEntityRepositoryImplementation = stateAwareEntityRepositoryImplementation ?? throw new ArgumentNullException(nameof(stateAwareEntityRepositoryImplementation));
+        }
+
+        public async Task<(IEntityStateCollection<TEntityId, TEntityVersion> States, TStateToken NewToken)> GetFullRepositoryState(IEnumerable<TEntityId> idsOfknownEntities, TStateToken stateToken, TContext context, IGetVersionsLogger logger)
+        {
+            return await Task.Run(() => _stateAwareEntityRepositoryImplementation.GetFullRepositoryState(idsOfknownEntities, stateToken, context, logger));
+        }
     }
-  }
 }

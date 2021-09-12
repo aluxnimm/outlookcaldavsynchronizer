@@ -23,8 +23,8 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Common
 {
-  public interface IQueryOutlookTaskItemFolderStrategy
-  {
-    List<EntityVersion<string, DateTime>> QueryTaskFolder (IOutlookSession session, Folder folder, string filter, IGetVersionsLogger logger);
-  }
+    public interface IQueryOutlookTaskItemFolderStrategy
+    {
+        List<EntityVersion<string, DateTime>> QueryTaskFolder(IOutlookSession session, Folder folder, string filter, IGetVersionsLogger logger);
+    }
 }

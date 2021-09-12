@@ -1,4 +1,3 @@
-
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Thought.vCards;
@@ -9,13 +8,11 @@ namespace Tests
     [TestClass]
     public sealed class vCardDeliveryAddressTests : IDisposable
     {
-
         #region [ Constructor ]
 
         [TestMethod]
         public void Constructor()
         {
-
             // Tests the default values of the address constructor.
 
             vCardDeliveryAddress address = new vCardDeliveryAddress();
@@ -39,7 +36,6 @@ namespace Tests
             Assert.IsEmpty(
                 address.Street,
                 "The Street property should default to String.Empty.");
-
         }
 
         #endregion
@@ -49,7 +45,6 @@ namespace Tests
         [TestMethod]
         public void EmptyString_City()
         {
-
             vCardDeliveryAddress address = new vCardDeliveryAddress();
 
             Assert.IsEmpty(
@@ -61,7 +56,6 @@ namespace Tests
             Assert.IsEmpty(
                 address.City,
                 "The City property should return String.Empty instead of null.");
-
         }
 
         #endregion
@@ -71,7 +65,6 @@ namespace Tests
         [TestMethod]
         public void EmptyString_Country()
         {
-
             vCardDeliveryAddress address = new vCardDeliveryAddress();
 
             Assert.IsEmpty(
@@ -83,7 +76,6 @@ namespace Tests
             Assert.IsEmpty(
                 address.Country,
                 "The Country property should return String.Empty instead of null.");
-
         }
 
         #endregion
@@ -93,7 +85,6 @@ namespace Tests
         [TestMethod]
         public void EmptyString_PostalCode()
         {
-
             vCardDeliveryAddress address = new vCardDeliveryAddress();
 
             Assert.IsEmpty(
@@ -105,7 +96,6 @@ namespace Tests
             Assert.IsEmpty(
                 address.PostalCode,
                 "The PostalCode property should return String.Empty instead of null.");
-
         }
 
         #endregion
@@ -115,7 +105,6 @@ namespace Tests
         [TestMethod]
         public void EmptyString_Region()
         {
-
             vCardDeliveryAddress address = new vCardDeliveryAddress();
 
             Assert.IsEmpty(
@@ -127,7 +116,6 @@ namespace Tests
             Assert.IsEmpty(
                 address.Region,
                 "The Region property should return String.Empty instead of null.");
-
         }
 
         #endregion
@@ -137,7 +125,6 @@ namespace Tests
         [TestMethod]
         public void EmptyString_Street()
         {
-
             vCardDeliveryAddress address = new vCardDeliveryAddress();
 
             Assert.IsEmpty(
@@ -149,7 +136,6 @@ namespace Tests
             Assert.IsEmpty(
                 address.Street,
                 "The Street property should return String.Empty instead of null.");
-
         }
 
         #endregion
@@ -159,14 +145,11 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_AddressType()
         {
-
             vCardDeliveryAddress address = new vCardDeliveryAddress();
 
             address.AddressType.Add(vCardDeliveryAddressTypes.Domestic);
 
             Assert.IsTrue(address.AddressType.Contains(vCardDeliveryAddressTypes.Domestic), "The AddressType property is not working.");
-
- 
         }
 
         #endregion
@@ -176,7 +159,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_City()
         {
-
             vCardDeliveryAddress address = new vCardDeliveryAddress();
 
             address.City = "Warroad";
@@ -193,7 +175,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_Country()
         {
-
             vCardDeliveryAddress address = new vCardDeliveryAddress();
 
             address.Country = "Jordan";
@@ -210,7 +191,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_PostalCode()
         {
-
             vCardDeliveryAddress address = new vCardDeliveryAddress();
 
             address.PostalCode = "55109";
@@ -227,7 +207,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_Region()
         {
-
             vCardDeliveryAddress address = new vCardDeliveryAddress();
 
             address.Region = "North Pole";
@@ -244,7 +223,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_Street()
         {
-
             vCardDeliveryAddress address = new vCardDeliveryAddress();
 
             address.Street = "1490 Lark Avenue";
@@ -256,7 +234,9 @@ namespace Tests
 
         #endregion
 
-        public void Dispose() { //driver.Dispose(); 
+        public void Dispose()
+        {
+            //driver.Dispose(); 
         }
     }
 }

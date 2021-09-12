@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.IO;
 using CalDavSynchronizer.Contracts;
@@ -22,11 +23,11 @@ using Microsoft.Win32;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public class OptionsDataAccess : FileDataAccess<Options[]>, IOptionsDataAccess
-  {
-    public OptionsDataAccess(string filePath) 
-      : base(filePath, () => new Options[0])
+    public class OptionsDataAccess : FileDataAccess<Options[]>, IOptionsDataAccess
     {
+        public OptionsDataAccess(string filePath)
+            : base(filePath, () => new Options[0])
+        {
+        }
     }
-  }
 }

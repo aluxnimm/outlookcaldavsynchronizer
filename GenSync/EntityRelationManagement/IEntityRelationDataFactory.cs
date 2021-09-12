@@ -14,19 +14,20 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync.EntityRelationManagement
 {
-  /// <summary>
-  /// Can create new instances of IEntityRelationData
-  /// </summary>
-  public interface IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
-  {
-    IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> Create (
-        TAtypeEntityId atypeId,
-        TAtypeEntityVersion atypeVersion,
-        TBtypeEntityId btypeId,
-        TBtypeEntityVersion btypeVersion);
-  }
+    /// <summary>
+    /// Can create new instances of IEntityRelationData
+    /// </summary>
+    public interface IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
+    {
+        IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> Create(
+            TAtypeEntityId atypeId,
+            TAtypeEntityVersion atypeVersion,
+            TBtypeEntityId btypeId,
+            TBtypeEntityVersion btypeVersion);
+    }
 }

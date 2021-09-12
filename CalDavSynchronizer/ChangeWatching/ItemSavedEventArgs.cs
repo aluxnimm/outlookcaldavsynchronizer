@@ -14,21 +14,22 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using GenSync;
 
 namespace CalDavSynchronizer.ChangeWatching
 {
-  public class ItemSavedEventArgs : EventArgs
-  {
-    public ItemSavedEventArgs (IOutlookId entryId)
+    public class ItemSavedEventArgs : EventArgs
     {
-      if (entryId == null)
-        throw new ArgumentNullException (nameof (entryId));
+        public ItemSavedEventArgs(IOutlookId entryId)
+        {
+            if (entryId == null)
+                throw new ArgumentNullException(nameof(entryId));
 
-      EntryId = entryId;
+            EntryId = entryId;
+        }
+
+        public IOutlookId EntryId { get; }
     }
-
-    public IOutlookId EntryId { get; }
-  }
 }

@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.DataAccess;
@@ -23,80 +24,79 @@ using GenSync.InitialEntityMatching;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  internal class InitialEventEntityMatcher : InitialEntityMatcherByPropertyGrouping<AppointmentId, DateTime, EventEntityMatchData, string, WebResourceName, string, EventServerEntityMatchData, string>
-  {
-    public InitialEventEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
-        : base (btypeIdEqualityComparer)
+    internal class InitialEventEntityMatcher : InitialEntityMatcherByPropertyGrouping<AppointmentId, DateTime, EventEntityMatchData, string, WebResourceName, string, EventServerEntityMatchData, string>
     {
-    }
-
-    protected override bool AreEqual (EventEntityMatchData atypeEntity, EventServerEntityMatchData evt)
-    {
-    
-
-      if (evt.Summary == atypeEntity.Subject)
-      {
-        if (evt.IsAllDay && atypeEntity.AllDayEvent)
+        public InitialEventEntityMatcher(IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
+            : base(btypeIdEqualityComparer)
         {
-          if (evt.Start == atypeEntity.Start)
-          {
-            if (evt.End == null)
-              return evt.Start.AddDays(1) == atypeEntity.End;
-            else
-              return evt.End.Value.Value == atypeEntity.End;
-          }
-          else return false;
         }
-        else if (!evt.IsAllDay)
+
+        protected override bool AreEqual(EventEntityMatchData atypeEntity, EventServerEntityMatchData evt)
         {
-          if (evt.IsStartUniversalTime)
-          {
-            if (evt.Start == atypeEntity.StartUtc)
+            if (evt.Summary == atypeEntity.Subject)
             {
-              if (evt.DTEnd == null)
-                return evt.Start == atypeEntity.EndUtc;
-              else
-              {
-                if (evt.DTEnd.Value.IsUniversalTime)
-                  return evt.DTEnd.Value.Value == atypeEntity.EndUtc;
-                else
-                  return evt.DTEnd.Value.Value == atypeEntity.EndInEndTimeZone;
-              }
+                if (evt.IsAllDay && atypeEntity.AllDayEvent)
+                {
+                    if (evt.Start == atypeEntity.Start)
+                    {
+                        if (evt.End == null)
+                            return evt.Start.AddDays(1) == atypeEntity.End;
+                        else
+                            return evt.End.Value.Value == atypeEntity.End;
+                    }
+                    else return false;
+                }
+                else if (!evt.IsAllDay)
+                {
+                    if (evt.IsStartUniversalTime)
+                    {
+                        if (evt.Start == atypeEntity.StartUtc)
+                        {
+                            if (evt.DTEnd == null)
+                                return evt.Start == atypeEntity.EndUtc;
+                            else
+                            {
+                                if (evt.DTEnd.Value.IsUniversalTime)
+                                    return evt.DTEnd.Value.Value == atypeEntity.EndUtc;
+                                else
+                                    return evt.DTEnd.Value.Value == atypeEntity.EndInEndTimeZone;
+                            }
+                        }
+                        else return false;
+                    }
+                    else if (evt.Start == atypeEntity.StartInStartTimeZone)
+                    {
+                        if (evt.DTEnd == null)
+                            return evt.Start == atypeEntity.EndInEndTimeZone;
+                        else
+                        {
+                            if (evt.DTEnd.Value.IsUniversalTime)
+                                return evt.DTEnd.Value.Value == atypeEntity.EndUtc;
+                            else
+                                return evt.DTEnd.Value.Value == atypeEntity.EndInEndTimeZone;
+                        }
+                    }
+                    else
+                        return false;
+                }
             }
-            else return false;
-          }
-          else if (evt.Start == atypeEntity.StartInStartTimeZone)
-          {
-            if (evt.DTEnd == null)
-              return evt.Start == atypeEntity.EndInEndTimeZone;
-            else
-            {
-              if (evt.DTEnd.Value.IsUniversalTime)
-                return evt.DTEnd.Value.Value == atypeEntity.EndUtc;
-              else
-                return evt.DTEnd.Value.Value == atypeEntity.EndInEndTimeZone;
-            }
-          }
-          else
+
             return false;
         }
-      }
-      return false;
-    }
 
-    protected override string GetAtypePropertyValue (EventEntityMatchData atypeEntity)
-    {
-      return atypeEntity.Subject?.ToLower() ?? string.Empty;
-    }
+        protected override string GetAtypePropertyValue(EventEntityMatchData atypeEntity)
+        {
+            return atypeEntity.Subject?.ToLower() ?? string.Empty;
+        }
 
-    protected override string GetBtypePropertyValue (EventServerEntityMatchData btypeEntity)
-    {
-      return btypeEntity.Summary?.ToLower() ?? string.Empty;
-    }
+        protected override string GetBtypePropertyValue(EventServerEntityMatchData btypeEntity)
+        {
+            return btypeEntity.Summary?.ToLower() ?? string.Empty;
+        }
 
-    protected override string MapAtypePropertyValue (string value)
-    {
-      return value;
+        protected override string MapAtypePropertyValue(string value)
+        {
+            return value;
+        }
     }
-  }
 }

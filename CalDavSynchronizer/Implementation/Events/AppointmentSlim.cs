@@ -21,31 +21,30 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class AppointmentSlim
-  {
-
-    public static AppointmentSlim FromAppointmentItem(AppointmentItem item)
+    public class AppointmentSlim
     {
-      return new AppointmentSlim(
-        new EntityVersion<AppointmentId, DateTime>(new AppointmentId(item.EntryID, item.GlobalAppointmentID), item.LastModificationTime.ToUniversalTime()),
-        item.Start,
-        item.End,
-        item.Subject);
-    }
+        public static AppointmentSlim FromAppointmentItem(AppointmentItem item)
+        {
+            return new AppointmentSlim(
+                new EntityVersion<AppointmentId, DateTime>(new AppointmentId(item.EntryID, item.GlobalAppointmentID), item.LastModificationTime.ToUniversalTime()),
+                item.Start,
+                item.End,
+                item.Subject);
+        }
 
-    public AppointmentSlim(EntityVersion<AppointmentId, DateTime> version, DateTime? start, DateTime? end, string subject)
-    {
-      if (version == null) throw new ArgumentNullException(nameof(version));
-      
-      Version = version;
-      Start = start;
-      End = end;
-      Subject = subject;
-    }
+        public AppointmentSlim(EntityVersion<AppointmentId, DateTime> version, DateTime? start, DateTime? end, string subject)
+        {
+            if (version == null) throw new ArgumentNullException(nameof(version));
 
-    public EntityVersion<AppointmentId, DateTime> Version { get; }
-    public DateTime? Start { get; }
-    public DateTime? End { get; }
-    public string Subject { get; }
-  }
+            Version = version;
+            Start = start;
+            End = end;
+            Subject = subject;
+        }
+
+        public EntityVersion<AppointmentId, DateTime> Version { get; }
+        public DateTime? Start { get; }
+        public DateTime? End { get; }
+        public string Subject { get; }
+    }
 }

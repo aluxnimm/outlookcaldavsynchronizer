@@ -23,95 +23,95 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
 {
-  class OutlookSessionStub : IOutlookSession
-  {
-    public string ApplicationVersion { get; }
-    public IOutlookTimeZones TimeZones { get; }
-    public StringComparer CategoryNameComparer { get; }
-
-    public IReadOnlyCollection<OutlookCategory> GetCategories()
+    class OutlookSessionStub : IOutlookSession
     {
-      throw new System.NotImplementedException();
-    }
+        public string ApplicationVersion { get; }
+        public IOutlookTimeZones TimeZones { get; }
+        public StringComparer CategoryNameComparer { get; }
 
-    public string GetCurrentUserEmailAddressOrNull()
-    {
-      return "testuser@bla.com";
-    }
+        public IReadOnlyCollection<OutlookCategory> GetCategories()
+        {
+            throw new System.NotImplementedException();
+        }
 
-    public OutlookFolderDescriptor GetFolderDescriptorFromId(string entryId, object storeId)
-    {
-      return new OutlookFolderDescriptor("eid", "sid", OlItemType.olContactItem, "ContactFolder", 0);
-    }
+        public string GetCurrentUserEmailAddressOrNull()
+        {
+            return "testuser@bla.com";
+        }
 
-    public Folder GetFolderFromId(string entryId, object storeId)
-    {
-      throw new System.NotImplementedException();
-    }
+        public OutlookFolderDescriptor GetFolderDescriptorFromId(string entryId, object storeId)
+        {
+            return new OutlookFolderDescriptor("eid", "sid", OlItemType.olContactItem, "ContactFolder", 0);
+        }
 
-    public AppointmentItem GetAppointmentItemOrNull(string entryId, string expectedFolderId, string storeId)
-    {
-      throw new System.NotImplementedException();
-    }
+        public Folder GetFolderFromId(string entryId, object storeId)
+        {
+            throw new System.NotImplementedException();
+        }
 
-    public TaskItem GetTaskItemOrNull(string entryId, string expectedFolderId, string storeId)
-    {
-      throw new System.NotImplementedException();
-    }
+        public AppointmentItem GetAppointmentItemOrNull(string entryId, string expectedFolderId, string storeId)
+        {
+            throw new System.NotImplementedException();
+        }
 
-    public ContactItem GetContactItemOrNull(string entryId, string expectedFolderId, string storeId)
-    {
-      throw new System.NotImplementedException();
-    }
+        public TaskItem GetTaskItemOrNull(string entryId, string expectedFolderId, string storeId)
+        {
+            throw new System.NotImplementedException();
+        }
 
-    public DistListItem GetDistListItemOrNull(string entryId, string expectedFolderId, string storeId)
-    {
-      throw new System.NotImplementedException();
-    }
+        public ContactItem GetContactItemOrNull(string entryId, string expectedFolderId, string storeId)
+        {
+            throw new System.NotImplementedException();
+        }
 
-    public AppointmentItem GetAppointmentItem(string entryId, string storeId)
-    {
-      throw new System.NotImplementedException();
-    }
+        public DistListItem GetDistListItemOrNull(string entryId, string expectedFolderId, string storeId)
+        {
+            throw new System.NotImplementedException();
+        }
 
-    public AppointmentItem GetAppointmentItem(string entryId)
-    {
-      throw new System.NotImplementedException();
-    }
+        public AppointmentItem GetAppointmentItem(string entryId, string storeId)
+        {
+            throw new System.NotImplementedException();
+        }
 
-    public TaskItem GetTaskItem(string entryId, string storeId)
-    {
-      throw new System.NotImplementedException();
-    }
+        public AppointmentItem GetAppointmentItem(string entryId)
+        {
+            throw new System.NotImplementedException();
+        }
 
-    public ContactItem GetContactItem(string entryId, string storeId)
-    {
-      throw new System.NotImplementedException();
-    }
+        public TaskItem GetTaskItem(string entryId, string storeId)
+        {
+            throw new System.NotImplementedException();
+        }
 
-    public DistListItem GetDistListItem(string entryId, string storeId)
-    {
-      throw new System.NotImplementedException();
-    }
+        public ContactItem GetContactItem(string entryId, string storeId)
+        {
+            throw new System.NotImplementedException();
+        }
 
-    public Recipient CreateRecipient(string recipientName)
-    {
-      throw new System.NotImplementedException();
-    }
+        public DistListItem GetDistListItem(string entryId, string storeId)
+        {
+            throw new System.NotImplementedException();
+        }
 
-    public (CreateCategoryResult Result, string ExistingColorNameForLoggingOrNull) AddCategoryNoThrow(string name, OlCategoryColor color)
-    {
-      throw new NotImplementedException();
-    }
+        public Recipient CreateRecipient(string recipientName)
+        {
+            throw new System.NotImplementedException();
+        }
 
-    public void AddOrUpdateCategoryNoThrow(string name, OlCategoryColor color, bool useColor, OlCategoryShortcutKey shortcutKey, bool useShortcutKey)
-    {
-      throw new System.NotImplementedException();
-    }
+        public (CreateCategoryResult Result, string ExistingColorNameForLoggingOrNull) AddCategoryNoThrow(string name, OlCategoryColor color)
+        {
+            throw new NotImplementedException();
+        }
 
-    public IReadOnlyDictionary<string, IReadOnlyList<OutlookFolderDescriptor>> GetFoldersByName()
-    {
-      throw new NotImplementedException();
+        public void AddOrUpdateCategoryNoThrow(string name, OlCategoryColor color, bool useColor, OlCategoryShortcutKey shortcutKey, bool useShortcutKey)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IReadOnlyDictionary<string, IReadOnlyList<OutlookFolderDescriptor>> GetFoldersByName()
+        {
+            throw new NotImplementedException();
+        }
     }
-  }
 }

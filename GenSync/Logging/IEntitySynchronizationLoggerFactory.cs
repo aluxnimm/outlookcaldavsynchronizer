@@ -17,8 +17,8 @@
 
 namespace GenSync.Logging
 {
-  public interface IEntitySynchronizationLoggerFactory<in TAtypeEntityId, in TAtypeEntity, in TBtypeEntityId, in TBtypeEntity>
-  {
-    IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> CreateEntitySynchronizationLogger(SynchronizationOperation operation);
-  }
+    public interface IEntitySynchronizationLoggerFactory<in TAtypeEntityId, in TAtypeEntity, in TBtypeEntityId, in TBtypeEntity>
+    {
+        IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> CreateEntitySynchronizationLogger(SynchronizationOperation operation);
+    }
 }

@@ -20,22 +20,22 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class NullColorCategoryMapper : IColorCategoryMapper
-  {
-    public static readonly IColorCategoryMapper Instance = new NullColorCategoryMapper();
-
-    private NullColorCategoryMapper()
+    public class NullColorCategoryMapper : IColorCategoryMapper
     {
-    }
+        public static readonly IColorCategoryMapper Instance = new NullColorCategoryMapper();
 
-    public string MapHtmlColorToCategoryOrNull(string htmlColor, IEntitySynchronizationLogger logger)
-    {
-      return null;
-    }
+        private NullColorCategoryMapper()
+        {
+        }
 
-    public string MapCategoryToHtmlColorOrNull(string categoryName)
-    {
-      return null;
+        public string MapHtmlColorToCategoryOrNull(string htmlColor, IEntitySynchronizationLogger logger)
+        {
+            return null;
+        }
+
+        public string MapCategoryToHtmlColorOrNull(string categoryName)
+        {
+            return null;
+        }
     }
-  }
 }

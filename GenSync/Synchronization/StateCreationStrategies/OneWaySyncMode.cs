@@ -14,23 +14,24 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync.Synchronization.StateCreationStrategies
 {
-  /// <summary>
-  /// Mode for the OneWay strategies
-  /// </summary>
-  public enum OneWaySyncMode
-  {
     /// <summary>
-    /// Forces the target to be the same as the source
+    /// Mode for the OneWay strategies
     /// </summary>
-    Replicate,
+    public enum OneWaySyncMode
+    {
+        /// <summary>
+        /// Forces the target to be the same as the source
+        /// </summary>
+        Replicate,
 
-    /// <summary>
-    /// Same as Replicate, except added entites in target are ignored 
-    /// </summary>
-    Merge
-  }
+        /// <summary>
+        /// Same as Replicate, except added entites in target are ignored 
+        /// </summary>
+        Merge
+    }
 }

@@ -22,50 +22,51 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.Ui.Options.Views
 {
-  /// <summary>
-  /// Interaction logic for MainWindow.xaml
-  /// </summary>
-  public partial class OptionsWindow : Window
-  {
-    public OptionsWindow()
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class OptionsWindow : Window
     {
-      InitializeComponent();
-      DataContextChanged += OptionsWindow_DataContextChanged;
-      Closing += OnWindowClosing;
-    }
-
-    private void OptionsWindow_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-    {
-      if (e.NewValue is OptionsCollectionViewModel newViewModel)
-      {
-        newViewModel.CloseRequested += ViewModel_CloseRequested;
-      }
-      if (e.OldValue is OptionsCollectionViewModel oldViewModel)
-      {
-        oldViewModel.CloseRequested -= ViewModel_CloseRequested;
-      }
-    }
-
-    private void ViewModel_CloseRequested(object sender, CloseEventArgs e)
-    {
-      DialogResult = e.IsAcceptedByUser;
-    }
-
-    public void OnWindowClosing(object sender, CancelEventArgs e)
-    {
-      if (DataContext is OptionsCollectionViewModel viewModel)
-      {
-        if (!DialogResult.HasValue)
+        public OptionsWindow()
         {
-          var result = MessageBox.Show("Dou you want to save profiles?", ComponentContainer.MessageBoxTitle, MessageBoxButton.YesNo);
-          DialogResult = (result == MessageBoxResult.Yes);
+            InitializeComponent();
+            DataContextChanged += OptionsWindow_DataContextChanged;
+            Closing += OnWindowClosing;
         }
 
-        if (DialogResult.Value)
+        private void OptionsWindow_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-          e.Cancel = !viewModel.Validate();
+            if (e.NewValue is OptionsCollectionViewModel newViewModel)
+            {
+                newViewModel.CloseRequested += ViewModel_CloseRequested;
+            }
+
+            if (e.OldValue is OptionsCollectionViewModel oldViewModel)
+            {
+                oldViewModel.CloseRequested -= ViewModel_CloseRequested;
+            }
         }
-      }
+
+        private void ViewModel_CloseRequested(object sender, CloseEventArgs e)
+        {
+            DialogResult = e.IsAcceptedByUser;
+        }
+
+        public void OnWindowClosing(object sender, CancelEventArgs e)
+        {
+            if (DataContext is OptionsCollectionViewModel viewModel)
+            {
+                if (!DialogResult.HasValue)
+                {
+                    var result = MessageBox.Show("Dou you want to save profiles?", ComponentContainer.MessageBoxTitle, MessageBoxButton.YesNo);
+                    DialogResult = (result == MessageBoxResult.Yes);
+                }
+
+                if (DialogResult.Value)
+                {
+                    e.Cancel = !viewModel.Validate();
+                }
+            }
+        }
     }
-  }
 }

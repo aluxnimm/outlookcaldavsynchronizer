@@ -14,15 +14,16 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.ComponentModel;
 using System.Windows.Input;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public interface IViewOptions : INotifyPropertyChanged
-  {
-    bool IsAdvancedViewEnabled { get;  }
-    ICommand ShowAdvancedSettingsCommand { get; }
-    ICommand HideAdvancedSettingsCommand { get; }
-  }
+    public interface IViewOptions : INotifyPropertyChanged
+    {
+        bool IsAdvancedViewEnabled { get; }
+        ICommand ShowAdvancedSettingsCommand { get; }
+        ICommand HideAdvancedSettingsCommand { get; }
+    }
 }

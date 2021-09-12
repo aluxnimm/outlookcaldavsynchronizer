@@ -24,31 +24,34 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Utilities
 {
-  public static class StringExtensions
-  {
-    // Extension method used from
-    // http://stackoverflow.com/questions/634777/c-sharp-extension-method-string-split-that-also-accepts-an-escape-character
-    public static IEnumerable<string> Split(this string input, string separator, char escapeCharacter)
+    public static class StringExtensions
     {
-      int startOfSegment = 0;
-      int index = 0;
-      while (index < input.Length)
-      {
-        index = input.IndexOf(separator, index);
-        if (index > 0 && input[index - 1] == escapeCharacter)
+        // Extension method used from
+        // http://stackoverflow.com/questions/634777/c-sharp-extension-method-string-split-that-also-accepts-an-escape-character
+        public static IEnumerable<string> Split(this string input, string separator, char escapeCharacter)
         {
-          index += separator.Length;
-          continue;
+            int startOfSegment = 0;
+            int index = 0;
+            while (index < input.Length)
+            {
+                index = input.IndexOf(separator, index);
+                if (index > 0 && input[index - 1] == escapeCharacter)
+                {
+                    index += separator.Length;
+                    continue;
+                }
+
+                if (index == -1)
+                {
+                    break;
+                }
+
+                yield return input.Substring(startOfSegment, index - startOfSegment);
+                index += separator.Length;
+                startOfSegment = index;
+            }
+
+            yield return input.Substring(startOfSegment);
         }
-        if (index == -1)
-        {
-          break;
-        }
-        yield return input.Substring(startOfSegment, index - startOfSegment);
-        index += separator.Length;
-        startOfSegment = index;
-      }
-      yield return input.Substring(startOfSegment);
     }
-  }
 }

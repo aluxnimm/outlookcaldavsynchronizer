@@ -19,9 +19,9 @@ using System.Collections.Generic;
 
 namespace CalDavSynchronizer.ProfileTypes
 {
-  public interface IProfileTypeRegistry
-  {
-    IReadOnlyList<IProfileType> AllTypes { get; }
-    IProfileType DetermineType(Contracts.Options data);
-  }
+    public interface IProfileTypeRegistry
+    {
+        IReadOnlyList<IProfileType> AllTypes { get; }
+        IProfileType DetermineType(Contracts.Options data);
+    }
 }

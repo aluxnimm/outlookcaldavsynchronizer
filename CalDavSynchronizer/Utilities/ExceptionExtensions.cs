@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,18 +24,18 @@ using System.Threading.Tasks;
 
 namespace CalDavSynchronizer.Utilities
 {
-  public static class ExceptionExtensions
-  {
-    public static bool IsTimeoutException(this Exception exception)
+    public static class ExceptionExtensions
     {
-      for (var x = exception; x != null; x = x.InnerException)
-      {
-        var socketException = x as SocketException;
-        if (socketException != null && socketException.SocketErrorCode == SocketError.TimedOut)
-          return true;
-      }
+        public static bool IsTimeoutException(this Exception exception)
+        {
+            for (var x = exception; x != null; x = x.InnerException)
+            {
+                var socketException = x as SocketException;
+                if (socketException != null && socketException.SocketErrorCode == SocketError.TimedOut)
+                    return true;
+            }
 
-      return false;
+            return false;
+        }
     }
-  }
 }

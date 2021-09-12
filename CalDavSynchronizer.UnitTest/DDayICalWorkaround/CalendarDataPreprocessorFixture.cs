@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.IO;
 using CalDavSynchronizer.DDayICalWorkaround;
@@ -23,13 +24,13 @@ using NUnit.Framework;
 
 namespace CalDavSynchronizer.UnitTest.DDayICalWorkaround
 {
-  [TestFixture]
-  public class CalendarDataPreprocessorFixture
-  {
-    [Test]
-    public void FixTimeZoneComponentOrder_TestRealEvent ()
+    [TestFixture]
+    public class CalendarDataPreprocessorFixture
     {
-      string input = @"BEGIN:VCALENDAR
+        [Test]
+        public void FixTimeZoneComponentOrder_TestRealEvent()
+        {
+            string input = @"BEGIN:VCALENDAR
 PRODID:-//bitfire web engineering//DAVdroid 0.8.4.1 (ical4j 2.0-beta1)//EN
 VERSION:2.0
 BEGIN:VTIMEZONE
@@ -134,7 +135,7 @@ END:VEVENT
 END:VCALENDAR
 ";
 
-      string expected = @"BEGIN:VCALENDAR
+            string expected = @"BEGIN:VCALENDAR
 PRODID:-//bitfire web engineering//DAVdroid 0.8.4.1 (ical4j 2.0-beta1)//EN
 VERSION:2.0
 BEGIN:VTIMEZONE
@@ -239,17 +240,17 @@ END:VEVENT
 END:VCALENDAR
 ";
 
-      var processed = CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow (input);
+            var processed = CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow(input);
 
-      Assert.That (processed, Is.EqualTo (expected));
-      AssertCanDeserialize (processed);
-    }
+            Assert.That(processed, Is.EqualTo(expected));
+            AssertCanDeserialize(processed);
+        }
 
 
-    [Test]
-    public void FixTimeZoneComponentOrder_EventHasNoTimeZones_DoesntChangeEvent ()
-    {
-      string input = @"BEGIN:VCALENDAR
+        [Test]
+        public void FixTimeZoneComponentOrder_EventHasNoTimeZones_DoesntChangeEvent()
+        {
+            string input = @"BEGIN:VCALENDAR
 PRODID:-//bitfire web engineering//DAVdroid 0.8.4.1 (ical4j 2.0-beta1)//EN
 VERSION:2.0
 BEGIN:VEVENT
@@ -268,17 +269,17 @@ END:VEVENT
 END:VCALENDAR
 ";
 
-      var processed = CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow (input);
+            var processed = CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow(input);
 
-      Assert.That (processed, Is.EqualTo (input));
-      AssertCanDeserialize (processed);
-    }
+            Assert.That(processed, Is.EqualTo(input));
+            AssertCanDeserialize(processed);
+        }
 
 
-    [Test]
-    public void FixTimeZoneComponentOrder_StartTimeOfOneComponentIsNotParseable_IgnoresComnponentAndAddsItAfterSortedConmponents ()
-    {
-      string input = @"BEGIN:VCALENDAR
+        [Test]
+        public void FixTimeZoneComponentOrder_StartTimeOfOneComponentIsNotParseable_IgnoresComnponentAndAddsItAfterSortedConmponents()
+        {
+            string input = @"BEGIN:VCALENDAR
 BEGIN:VTIMEZONE
 TZID:Europe/Vienna
 X-LIC-LOCATION:Europe/Vienna
@@ -313,7 +314,7 @@ END:VEVENT
 END:VCALENDAR
 ";
 
-      string expected = @"BEGIN:VCALENDAR
+            string expected = @"BEGIN:VCALENDAR
 BEGIN:VTIMEZONE
 TZID:Europe/Vienna
 X-LIC-LOCATION:Europe/Vienna
@@ -348,15 +349,15 @@ END:VEVENT
 END:VCALENDAR
 ";
 
-      var processed = CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow (input);
+            var processed = CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow(input);
 
-      Assert.That (processed, Is.EqualTo (expected));
-    }
+            Assert.That(processed, Is.EqualTo(expected));
+        }
 
-    [Test]
-    public void FixTimeZoneComponentOrder_EventHasMultipleTimeZomes ()
-    {
-      string input = @"BEGIN:VCALENDAR
+        [Test]
+        public void FixTimeZoneComponentOrder_EventHasMultipleTimeZomes()
+        {
+            string input = @"BEGIN:VCALENDAR
 BEGIN:VTIMEZONE
 TZID:Europe/Vienna
 X-LIC-LOCATION:Europe/Vienna
@@ -387,7 +388,7 @@ END:VEVENT
 END:VCALENDAR
 ";
 
-      string expected = @"BEGIN:VCALENDAR
+            string expected = @"BEGIN:VCALENDAR
 BEGIN:VTIMEZONE
 TZID:Europe/Vienna
 X-LIC-LOCATION:Europe/Vienna
@@ -418,33 +419,33 @@ END:VEVENT
 END:VCALENDAR
 ";
 
-      var processed = CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow (input);
+            var processed = CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow(input);
 
-      Assert.That (processed, Is.EqualTo (expected));
+            Assert.That(processed, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void FixTimeZoneComponentOrder_CalenderDataIsNull_ReturnsNull()
+        {
+            Assert.That(CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow(null), Is.Null);
+        }
+
+
+        private static void AssertCanDeserialize(string iCalData)
+        {
+            Assert.That(
+                () => DeserializeICalendar(iCalData),
+                Throws.Nothing);
+        }
+
+
+        private static IICalendar DeserializeICalendar(string iCalData)
+        {
+            using (var reader = new StringReader(iCalData))
+            {
+                var calendarCollection = (iCalendarCollection) new iCalendarSerializer().Deserialize(reader);
+                return calendarCollection[0];
+            }
+        }
     }
-
-    [Test]
-    public void FixTimeZoneComponentOrder_CalenderDataIsNull_ReturnsNull ()
-    {
-      Assert.That (CalendarDataPreprocessor.FixTimeZoneComponentOrderNoThrow (null), Is.Null);
-    }
-
-
-    private static void AssertCanDeserialize (string iCalData)
-    {
-      Assert.That (
-          () => DeserializeICalendar (iCalData),
-          Throws.Nothing);
-    }
-
-
-    private static IICalendar DeserializeICalendar (string iCalData)
-    {
-      using (var reader = new StringReader (iCalData))
-      {
-        var calendarCollection = (iCalendarCollection) new iCalendarSerializer().Deserialize (reader);
-        return calendarCollection[0];
-      }
-    }
-  }
 }

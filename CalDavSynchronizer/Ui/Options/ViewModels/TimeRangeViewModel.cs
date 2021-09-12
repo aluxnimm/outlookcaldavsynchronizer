@@ -14,55 +14,56 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Text;
 using CalDavSynchronizer.Ui.Options.Models;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public class TimeRangeViewModel : ModelBase, IOptionsSection
-  {
-    private readonly OptionsModel _model;
-
-    public TimeRangeViewModel(OptionsModel model, IViewOptions viewOptions)
+    public class TimeRangeViewModel : ModelBase, IOptionsSection
     {
-      if (model == null) throw new ArgumentNullException(nameof(model));
-      if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
+        private readonly OptionsModel _model;
 
-      _model = model;
-      ViewOptions = viewOptions;
+        public TimeRangeViewModel(OptionsModel model, IViewOptions viewOptions)
+        {
+            if (model == null) throw new ArgumentNullException(nameof(model));
+            if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
 
-      RegisterPropertyChangePropagation(_model, nameof(_model.UseSynchronizationTimeRange), nameof(UseSynchronizationTimeRange));
-      RegisterPropertyChangePropagation(_model, nameof(_model.DaysToSynchronizeInThePast), nameof(DaysToSynchronizeInThePast));
-      RegisterPropertyChangePropagation(_model, nameof(_model.DaysToSynchronizeInTheFuture), nameof(DaysToSynchronizeInTheFuture));
+            _model = model;
+            ViewOptions = viewOptions;
+
+            RegisterPropertyChangePropagation(_model, nameof(_model.UseSynchronizationTimeRange), nameof(UseSynchronizationTimeRange));
+            RegisterPropertyChangePropagation(_model, nameof(_model.DaysToSynchronizeInThePast), nameof(DaysToSynchronizeInThePast));
+            RegisterPropertyChangePropagation(_model, nameof(_model.DaysToSynchronizeInTheFuture), nameof(DaysToSynchronizeInTheFuture));
+        }
+
+        public bool UseSynchronizationTimeRange
+        {
+            get { return _model.UseSynchronizationTimeRange; }
+            set { _model.UseSynchronizationTimeRange = value; }
+        }
+
+        public int DaysToSynchronizeInThePast
+        {
+            get { return _model.DaysToSynchronizeInThePast; }
+            set { _model.DaysToSynchronizeInThePast = value; }
+        }
+
+        public int DaysToSynchronizeInTheFuture
+        {
+            get { return _model.DaysToSynchronizeInTheFuture; }
+            set { _model.DaysToSynchronizeInTheFuture = value; }
+        }
+
+        public IViewOptions ViewOptions { get; }
+
+
+        public static TimeRangeViewModel DesignInstance { get; } = new TimeRangeViewModel(OptionsModel.DesignInstance, OptionsCollectionViewModel.DesignViewOptions)
+        {
+            UseSynchronizationTimeRange = true,
+            DaysToSynchronizeInTheFuture = 11,
+            DaysToSynchronizeInThePast = 22
+        };
     }
-
-    public bool UseSynchronizationTimeRange
-    {
-      get { return _model.UseSynchronizationTimeRange; }
-      set { _model.UseSynchronizationTimeRange = value; }
-    }
-
-    public int DaysToSynchronizeInThePast
-    {
-      get { return _model.DaysToSynchronizeInThePast; }
-      set { _model.DaysToSynchronizeInThePast = value; }
-    }
-
-    public int DaysToSynchronizeInTheFuture
-    {
-      get { return _model.DaysToSynchronizeInTheFuture; }
-      set { _model.DaysToSynchronizeInTheFuture = value; }
-    }
-
-    public IViewOptions ViewOptions { get; }
-
-
-    public static TimeRangeViewModel DesignInstance { get; } = new TimeRangeViewModel(OptionsModel.DesignInstance, OptionsCollectionViewModel.DesignViewOptions)
-    {
-      UseSynchronizationTimeRange = true,
-      DaysToSynchronizeInTheFuture = 11,
-      DaysToSynchronizeInThePast = 22
-    };
-  }
 }

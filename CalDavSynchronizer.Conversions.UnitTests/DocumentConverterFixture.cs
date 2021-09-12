@@ -7,13 +7,13 @@ using NUnit.Framework;
 
 namespace CalDavSynchronizer.Conversions.UnitTests
 {
-  [TestFixture]
-  public class DocumentConverterFixture
-  {
-    [Test]
-    public void ConvertRtfToHtml()
+    [TestFixture]
+    public class DocumentConverterFixture
     {
-      var html = new DocumentConverter().ConvertRtfToHtml(@"{\rtf1
+        [Test]
+        public void ConvertRtfToHtml()
+        {
+            var html = new DocumentConverter().ConvertRtfToHtml(@"{\rtf1
  Guten Tag!
  \line
  {\i Dies} ist \b{\i ein 
@@ -22,18 +22,17 @@ namespace CalDavSynchronizer.Conversions.UnitTests
  \i0 Das \b0Ende.
  }");
 
-      var rtf = new DocumentConverter().ConvertHtmlToRtf(html);
+            var rtf = new DocumentConverter().ConvertHtmlToRtf(html);
+        }
 
+
+        [Test]
+        public void TestHtmlLinkRoundTrip()
+        {
+            var html = "<A HREF=\"http://www.orf.at\">Orf</A>";
+            var rtf = new DocumentConverter().ConvertHtmlToRtf(html);
+            var htmlRoundTrip = new DocumentConverter().ConvertRtfToHtml(rtf);
+            Assert.That(htmlRoundTrip.Contains("<A HREF"));
+        }
     }
-
-
-    [Test]
-    public void TestHtmlLinkRoundTrip()
-    {
-      var html = "<A HREF=\"http://www.orf.at\">Orf</A>";
-      var rtf = new DocumentConverter().ConvertHtmlToRtf(html);
-      var htmlRoundTrip = new DocumentConverter().ConvertRtfToHtml(rtf);
-      Assert.That(htmlRoundTrip.Contains("<A HREF"));
-    }
-  }
 }

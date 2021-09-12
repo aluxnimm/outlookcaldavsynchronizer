@@ -21,48 +21,48 @@ using CalDavSynchronizer.Implementation;
 
 namespace CalDavSynchronizer.Ui.Options
 {
-  public class EnumDisplayNameProvider : IEnumDisplayNameProvider
-  {
-    private EnumDisplayNameProvider()
+    public class EnumDisplayNameProvider : IEnumDisplayNameProvider
     {
-    }
+        private EnumDisplayNameProvider()
+        {
+        }
 
-    public static readonly IEnumDisplayNameProvider Instance = new EnumDisplayNameProvider();
+        public static readonly IEnumDisplayNameProvider Instance = new EnumDisplayNameProvider();
 
-    public string Get(ConflictResolution value)
-    {
-      switch (value)
-      {
-        case ConflictResolution.Automatic:
-          return Strings.Get($"Automatic");
-        case ConflictResolution.Manual:
-          return Strings.Get($"Manual");
-        case ConflictResolution.ServerWins:
-          return Strings.Get($"Server wins");
-        case ConflictResolution.OutlookWins:
-          return Strings.Get($"Outlook wins");
-        default:
-          throw new NotImplementedException($"Value '{value}' not implemented.");
-      }
-    }
+        public string Get(ConflictResolution value)
+        {
+            switch (value)
+            {
+                case ConflictResolution.Automatic:
+                    return Strings.Get($"Automatic");
+                case ConflictResolution.Manual:
+                    return Strings.Get($"Manual");
+                case ConflictResolution.ServerWins:
+                    return Strings.Get($"Server wins");
+                case ConflictResolution.OutlookWins:
+                    return Strings.Get($"Outlook wins");
+                default:
+                    throw new NotImplementedException($"Value '{value}' not implemented.");
+            }
+        }
 
-    public string Get(SynchronizationMode value)
-    {
-      switch (value)
-      {
-        case SynchronizationMode.ReplicateOutlookIntoServer:
-          return Strings.Get($"Outlook \u2192 Server (Replicate)");
-        case SynchronizationMode.ReplicateServerIntoOutlook:
-          return Strings.Get($"Outlook \u2190 Server (Replicate)");
-        case SynchronizationMode.MergeOutlookIntoServer:
-          return Strings.Get($"Outlook \u2192 Server (Merge)");
-        case SynchronizationMode.MergeServerIntoOutlook:
-          return Strings.Get($"Outlook \u2190 Server (Merge)");
-        case SynchronizationMode.MergeInBothDirections:
-          return Strings.Get($"Outlook \u2190\u2192 Server (Two-Way)");
-        default:
-          throw new NotImplementedException($"Value '{value}' not implemented.");
-      }
+        public string Get(SynchronizationMode value)
+        {
+            switch (value)
+            {
+                case SynchronizationMode.ReplicateOutlookIntoServer:
+                    return Strings.Get($"Outlook \u2192 Server (Replicate)");
+                case SynchronizationMode.ReplicateServerIntoOutlook:
+                    return Strings.Get($"Outlook \u2190 Server (Replicate)");
+                case SynchronizationMode.MergeOutlookIntoServer:
+                    return Strings.Get($"Outlook \u2192 Server (Merge)");
+                case SynchronizationMode.MergeServerIntoOutlook:
+                    return Strings.Get($"Outlook \u2190 Server (Merge)");
+                case SynchronizationMode.MergeInBothDirections:
+                    return Strings.Get($"Outlook \u2190\u2192 Server (Two-Way)");
+                default:
+                    throw new NotImplementedException($"Value '{value}' not implemented.");
+            }
+        }
     }
-  }
 }

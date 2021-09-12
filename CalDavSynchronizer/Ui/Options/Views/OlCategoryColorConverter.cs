@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Globalization;
 using System.Windows.Data;
@@ -23,30 +24,30 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.Views
 {
-  public class OlCategoryColorConverter : IValueConverter
-  {
-    public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
+    public class OlCategoryColorConverter : IValueConverter
     {
-      if (targetType != typeof (Brush))
-        throw new ArgumentException ();
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (targetType != typeof(Brush))
+                throw new ArgumentException();
 
-      if (value is OlCategoryColor)
-      {
-        var values = BitConverter.GetBytes (ColorHelper.ArgbColorByCategoryColor[(OlCategoryColor) value].ArgbValue);
-        var color = Color.FromArgb (values[3], values[2], values[1], values[0]);
-        var brush = new SolidColorBrush (color);
-        brush.Freeze();
-        return brush;
-      }
-      else
-      {
-        return Binding.DoNothing;
-      }
-    }
+            if (value is OlCategoryColor)
+            {
+                var values = BitConverter.GetBytes(ColorHelper.ArgbColorByCategoryColor[(OlCategoryColor) value].ArgbValue);
+                var color = Color.FromArgb(values[3], values[2], values[1], values[0]);
+                var brush = new SolidColorBrush(color);
+                brush.Freeze();
+                return brush;
+            }
+            else
+            {
+                return Binding.DoNothing;
+            }
+        }
 
-    public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
-    {
-      return Convert (value, targetType, parameter, culture);
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return Convert(value, targetType, parameter, culture);
+        }
     }
-  }
 }

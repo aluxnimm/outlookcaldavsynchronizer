@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -9,14 +8,12 @@ using System;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     Identifies the type of email address in a vCard.
     /// </summary>
     /// <seealso cref="vCardEmailAddress"/>
     public enum vCardEmailAddressType
     {
-
         /// <summary>
         ///     An Internet (SMTP) mail (default) address.
         /// </summary>
@@ -91,7 +88,6 @@ namespace Thought.vCards
         ///     An X.400 service email address.
         /// </summary>
         X400
-
     }
 
     /// <summary>
@@ -102,16 +98,16 @@ namespace Thought.vCards
         /// <summary>
         /// default - unknown
         /// </summary>
-        UNSPECIFIED =0,
+        UNSPECIFIED = 0,
+
         /// <summary>
         /// work
         /// </summary>
         WORK = 1,
+
         /// <summary>
         /// home
         /// </summary>
-        HOME =2,
-
+        HOME = 2,
     }
-
 }

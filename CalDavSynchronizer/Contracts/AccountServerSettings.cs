@@ -17,10 +17,10 @@
 
 namespace CalDavSynchronizer.Contracts
 {
-  public class AccountServerSettings
-  {
-    public string ServerString { get; set; }
-    public string EmailAddress { get; set; }
-    public string UserName { get; set; }
-  }
+    public class AccountServerSettings
+    {
+        public string ServerString { get; set; }
+        public string EmailAddress { get; set; }
+        public string UserName { get; set; }
+    }
 }

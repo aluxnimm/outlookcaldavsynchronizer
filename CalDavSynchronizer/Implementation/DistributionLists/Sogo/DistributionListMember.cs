@@ -17,15 +17,15 @@
 
 namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
 {
-  public class DistributionListMember
-  {
-    public DistributionListMember(string emailAddress, string displayName)
+    public class DistributionListMember
     {
-      EmailAddress = emailAddress;
-      DisplayName = displayName;
-    }
+        public DistributionListMember(string emailAddress, string displayName)
+        {
+            EmailAddress = emailAddress;
+            DisplayName = displayName;
+        }
 
-    public string EmailAddress { get; }
-    public string DisplayName { get;  }
-  }
+        public string EmailAddress { get; }
+        public string DisplayName { get; }
+    }
 }

@@ -14,36 +14,37 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace CalDavSynchronizer.AutomaticUpdates
 {
-  public class NewerVersionFoundEventArgs : EventArgs
-  {
-    private readonly string _whatsNewInformation;
-    private readonly Uri _downloadLink;
-    private readonly Version _newVersion;
-
-    public NewerVersionFoundEventArgs (Version newVersion, string whatsNewInformation, Uri downloadLink)
+    public class NewerVersionFoundEventArgs : EventArgs
     {
-      _newVersion = newVersion;
-      _whatsNewInformation = whatsNewInformation;
-      _downloadLink = downloadLink;
-    }
+        private readonly string _whatsNewInformation;
+        private readonly Uri _downloadLink;
+        private readonly Version _newVersion;
 
-    public string WhatsNewInformation
-    {
-      get { return _whatsNewInformation; }
-    }
+        public NewerVersionFoundEventArgs(Version newVersion, string whatsNewInformation, Uri downloadLink)
+        {
+            _newVersion = newVersion;
+            _whatsNewInformation = whatsNewInformation;
+            _downloadLink = downloadLink;
+        }
 
-    public Uri DownloadLink
-    {
-      get { return _downloadLink; }
-    }
+        public string WhatsNewInformation
+        {
+            get { return _whatsNewInformation; }
+        }
 
-    public Version NewVersion
-    {
-      get { return _newVersion; }
+        public Uri DownloadLink
+        {
+            get { return _downloadLink; }
+        }
+
+        public Version NewVersion
+        {
+            get { return _newVersion; }
+        }
     }
-  }
 }

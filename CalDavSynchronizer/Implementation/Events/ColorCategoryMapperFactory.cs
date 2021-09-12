@@ -20,22 +20,22 @@ using CalDavSynchronizer.DataAccess;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class ColorCategoryMapperFactory : IColorCategoryMapperFactory
-  {
-    private readonly IOutlookSession _outlookSession;
-    private readonly IColorMappingsDataAccess _colorMappingsDataAccess;
-
-    public ColorCategoryMapperFactory(IOutlookSession outlookSession, IColorMappingsDataAccess colorMappingsDataAccess)
+    public class ColorCategoryMapperFactory : IColorCategoryMapperFactory
     {
-      if (outlookSession == null) throw new ArgumentNullException(nameof(outlookSession));
-      if (colorMappingsDataAccess == null) throw new ArgumentNullException(nameof(colorMappingsDataAccess));
-      _outlookSession = outlookSession;
-      _colorMappingsDataAccess = colorMappingsDataAccess;
-    }
+        private readonly IOutlookSession _outlookSession;
+        private readonly IColorMappingsDataAccess _colorMappingsDataAccess;
 
-    public IColorCategoryMapper Create()
-    {
-      return new ColorCategoryMapper(_outlookSession, _colorMappingsDataAccess);
+        public ColorCategoryMapperFactory(IOutlookSession outlookSession, IColorMappingsDataAccess colorMappingsDataAccess)
+        {
+            if (outlookSession == null) throw new ArgumentNullException(nameof(outlookSession));
+            if (colorMappingsDataAccess == null) throw new ArgumentNullException(nameof(colorMappingsDataAccess));
+            _outlookSession = outlookSession;
+            _colorMappingsDataAccess = colorMappingsDataAccess;
+        }
+
+        public IColorCategoryMapper Create()
+        {
+            return new ColorCategoryMapper(_outlookSession, _colorMappingsDataAccess);
+        }
     }
-  }
 }

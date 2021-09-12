@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
@@ -27,21 +28,21 @@ using Google.Apis.Tasks.v1.Data;
 
 namespace CalDavSynchronizer.Implementation.GoogleTasks
 {
-  internal class GoogleTaskConflictInitialSyncStateCreationStrategyAutomatic
-      : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, ITaskItemWrapper, string, string, Task, int>
-  {
-    public GoogleTaskConflictInitialSyncStateCreationStrategyAutomatic (EntitySyncStateEnvironment<string, DateTime, ITaskItemWrapper, string, string, Task, int> environment)
-        : base (environment)
+    internal class GoogleTaskConflictInitialSyncStateCreationStrategyAutomatic
+        : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, ITaskItemWrapper, string, string, Task, int>
     {
-    }
+        public GoogleTaskConflictInitialSyncStateCreationStrategyAutomatic(EntitySyncStateEnvironment<string, DateTime, ITaskItemWrapper, string, string, Task, int> environment)
+            : base(environment)
+        {
+        }
 
-    protected override IEntitySyncState<string, DateTime, ITaskItemWrapper, string, string, Task, int> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, string, string> knownData, DateTime newA, string newB)
-    {
-      return new GoogleTaskUpdateFromNewerToOlder (
-          _environment,
-          knownData,
-          newA,
-          newB);
+        protected override IEntitySyncState<string, DateTime, ITaskItemWrapper, string, string, Task, int> Create_FromNewerToOlder(IEntityRelationData<string, DateTime, string, string> knownData, DateTime newA, string newB)
+        {
+            return new GoogleTaskUpdateFromNewerToOlder(
+                _environment,
+                knownData,
+                newA,
+                newB);
+        }
     }
-  }
 }

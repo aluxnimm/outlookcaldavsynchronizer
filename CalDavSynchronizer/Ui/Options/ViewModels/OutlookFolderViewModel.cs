@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Reflection;
 using System.Windows;
@@ -26,62 +27,62 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public class OutlookFolderViewModel : ModelBase, IOptionsSection
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
-
-    private readonly OptionsModel _model;
-    private readonly IOptionTasks _optionTasks;
-
-    public OutlookFolderViewModel(OptionsModel model, IOptionTasks optionTasks, IViewOptions viewOptions)
+    public class OutlookFolderViewModel : ModelBase, IOptionsSection
     {
-      if (model == null) throw new ArgumentNullException(nameof(model));
-      if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
-      if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
 
-      _model = model;
-      _optionTasks = optionTasks;
-      ViewOptions = viewOptions;
-      ModelOptions = model.ModelFactory.ModelOptions;
+        private readonly OptionsModel _model;
+        private readonly IOptionTasks _optionTasks;
 
-      RegisterPropertyChangePropagation(_model, nameof(_model.EnableChangeTriggeredSynchronization), nameof(EnableChangeTriggeredSynchronization));
-      RegisterPropertyChangePropagation(_model, nameof(_model.SelectedFolderOrNull), nameof(SelectedFolderName));
-      SelectFolderCommand = new DelegateCommand(_ => SelectFolder());
-    }
-
-    public ProfileModelOptions ModelOptions { get; }
-
-    public bool EnableChangeTriggeredSynchronization
-    {
-      get { return _model.EnableChangeTriggeredSynchronization; }
-      set { _model.EnableChangeTriggeredSynchronization = value; }
-    }
-
-    public string SelectedFolderName => _model.SelectedFolderOrNull?.Name ?? Strings.Get($"<MISSING>");
-
-
-    public ICommand SelectFolderCommand { get; }
-
-    public static OutlookFolderViewModel DesignInstance => new OutlookFolderViewModel(OptionsModel.DesignInstance, NullOptionTasks.Instance, OptionsCollectionViewModel.DesignViewOptions)
-    {
-      EnableChangeTriggeredSynchronization = true,
-    };
-
-
-    private void SelectFolder()
-    {
-      var folder = _optionTasks.PickFolderOrNull();
-      if (folder != null)
-      {
-        if (!_model.SetFolder(folder))
+        public OutlookFolderViewModel(OptionsModel model, IOptionTasks optionTasks, IViewOptions viewOptions)
         {
-          string wrongFolderMessage = Strings.Get($"Wrong ItemType in folder '{folder.Name}'. It should be a calendar, task or contact folder.");
-          MessageBox.Show(wrongFolderMessage, Strings.Get($"Configuration Error"));
-          return;
-        }
-      }
-    }
+            if (model == null) throw new ArgumentNullException(nameof(model));
+            if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
+            if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
 
-    public IViewOptions ViewOptions { get; }
-  }
+            _model = model;
+            _optionTasks = optionTasks;
+            ViewOptions = viewOptions;
+            ModelOptions = model.ModelFactory.ModelOptions;
+
+            RegisterPropertyChangePropagation(_model, nameof(_model.EnableChangeTriggeredSynchronization), nameof(EnableChangeTriggeredSynchronization));
+            RegisterPropertyChangePropagation(_model, nameof(_model.SelectedFolderOrNull), nameof(SelectedFolderName));
+            SelectFolderCommand = new DelegateCommand(_ => SelectFolder());
+        }
+
+        public ProfileModelOptions ModelOptions { get; }
+
+        public bool EnableChangeTriggeredSynchronization
+        {
+            get { return _model.EnableChangeTriggeredSynchronization; }
+            set { _model.EnableChangeTriggeredSynchronization = value; }
+        }
+
+        public string SelectedFolderName => _model.SelectedFolderOrNull?.Name ?? Strings.Get($"<MISSING>");
+
+
+        public ICommand SelectFolderCommand { get; }
+
+        public static OutlookFolderViewModel DesignInstance => new OutlookFolderViewModel(OptionsModel.DesignInstance, NullOptionTasks.Instance, OptionsCollectionViewModel.DesignViewOptions)
+        {
+            EnableChangeTriggeredSynchronization = true,
+        };
+
+
+        private void SelectFolder()
+        {
+            var folder = _optionTasks.PickFolderOrNull();
+            if (folder != null)
+            {
+                if (!_model.SetFolder(folder))
+                {
+                    string wrongFolderMessage = Strings.Get($"Wrong ItemType in folder '{folder.Name}'. It should be a calendar, task or contact folder.");
+                    MessageBox.Show(wrongFolderMessage, Strings.Get($"Configuration Error"));
+                    return;
+                }
+            }
+        }
+
+        public IViewOptions ViewOptions { get; }
+    }
 }

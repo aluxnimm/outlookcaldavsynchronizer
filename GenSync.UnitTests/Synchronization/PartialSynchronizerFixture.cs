@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,372 +26,372 @@ using NUnit.Framework;
 
 namespace GenSync.UnitTests.Synchronization
 {
-  [TestFixture]
-  internal class PartialSynchronizerFixture : SynchronizerFixtureBase
-  {
-    [TestCase (GenericConflictResolution.AWins)]
-    [TestCase (GenericConflictResolution.BWins)]
-    public async Task TwoWaySynchronize_ChangedLocal (GenericConflictResolution conflictWinner)
+    [TestFixture]
+    internal class PartialSynchronizerFixture : SynchronizerFixtureBase
     {
-      await InitializeWithTwoEvents();
+        [TestCase(GenericConflictResolution.AWins)]
+        [TestCase(GenericConflictResolution.BWins)]
+        public async Task TwoWaySynchronize_ChangedLocal(GenericConflictResolution conflictWinner)
+        {
+            await InitializeWithTwoEvents();
 
-      _localRepository.UpdateWithoutIdChange ("l1", _ => "Item 1 upd");
-      _localRepository.UpdateWithoutIdChange ("l2", _ => "Item 2 upd");
+            _localRepository.UpdateWithoutIdChange("l1", _ => "Item 1 upd");
+            _localRepository.UpdateWithoutIdChange("l2", _ => "Item 2 upd");
 
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizePartialTwoWay (
-            conflictWinner,
-            CreateIdentifiers ("l1"),
-            CreateIdentifiers());
-
-        AssertLocalCount (2);
-        AssertLocal ("l1", 1, "Item 1 upd");
-        AssertLocal ("l2", 1, "Item 2 upd");
-
-        AssertServerCount (2);
-        AssertServer ("s1u", 1, "Item 1 upd");
-        AssertServer ("s2", 0, "Item 2");
-      });
-
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizeTwoWay (conflictWinner);
-
-        AssertLocalCount (2);
-        AssertLocal ("l1", 1, "Item 1 upd");
-        AssertLocal ("l2", 1, "Item 2 upd");
-
-        AssertServerCount (2);
-        AssertServer ("s1u", 1, "Item 1 upd");
-        AssertServer ("s2u", 1, "Item 2 upd");
-      });
-    }
-
-    [TestCase (GenericConflictResolution.AWins)]
-    [TestCase (GenericConflictResolution.BWins)]
-    public async Task TwoWaySynchronize_ChangedLocal_VersionSpecified (GenericConflictResolution conflictWinner)
-    {
-      await InitializeWithTwoEvents();
-
-      _localRepository.UpdateWithoutIdChange ("l1", _ => "Item 1 upd");
-      _localRepository.UpdateWithoutIdChange ("l2", _ => "Item 2 upd");
-
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizePartialTwoWay (
-            conflictWinner,
-            new[]
+            ExecuteMultipleTimes(() =>
             {
-                IdWithHints.Create (new Identifier ("l1"), (int?) 0, null), // Same version as knyown version specified => isn't synced
-                IdWithHints.Create (new Identifier ("l2"), (int?) 999, null) // Other version as knyown version specified => is synced
-            },
-            CreateIdentifiers());
+                SynchronizePartialTwoWay(
+                    conflictWinner,
+                    CreateIdentifiers("l1"),
+                    CreateIdentifiers());
 
-        AssertLocalCount (2);
-        AssertLocal ("l1", 1, "Item 1 upd");
-        AssertLocal ("l2", 1, "Item 2 upd");
+                AssertLocalCount(2);
+                AssertLocal("l1", 1, "Item 1 upd");
+                AssertLocal("l2", 1, "Item 2 upd");
 
-        AssertServerCount (2);
-        AssertServer ("s1", 0, "Item 1");
-        AssertServer ("s2u", 1, "Item 2 upd");
-      });
+                AssertServerCount(2);
+                AssertServer("s1u", 1, "Item 1 upd");
+                AssertServer("s2", 0, "Item 2");
+            });
 
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizeTwoWay (conflictWinner);
-
-        AssertLocalCount (2);
-        AssertLocal ("l1", 1, "Item 1 upd");
-        AssertLocal ("l2", 1, "Item 2 upd");
-
-        AssertServerCount (2);
-        AssertServer ("s1u", 1, "Item 1 upd");
-        AssertServer ("s2u", 1, "Item 2 upd");
-      });
-    }
-
-    [TestCase (GenericConflictResolution.AWins)]
-    [TestCase (GenericConflictResolution.BWins)]
-    public async Task TwoWaySynchronize_DeletedLocal_WithoutHint (GenericConflictResolution conflictWinner)
-    {
-      await InitializeWithTwoEvents ();
-
-      _localRepository.Delete ("l1");
-      _localRepository.Delete ("l2");
-
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizePartialTwoWay (
-            conflictWinner,
-            new[]
+            ExecuteMultipleTimes(() =>
             {
-                IdWithHints.Create (new Identifier ("l1"), (int?) null, null), 
-            },
-            CreateIdentifiers ());
+                SynchronizeTwoWay(conflictWinner);
 
-        AssertLocalCount (0);
+                AssertLocalCount(2);
+                AssertLocal("l1", 1, "Item 1 upd");
+                AssertLocal("l2", 1, "Item 2 upd");
 
-        AssertServerCount (1);
-        AssertServer ("s2", 0, "Item 2");
-      });
+                AssertServerCount(2);
+                AssertServer("s1u", 1, "Item 1 upd");
+                AssertServer("s2u", 1, "Item 2 upd");
+            });
+        }
 
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizeTwoWay (conflictWinner);
+        [TestCase(GenericConflictResolution.AWins)]
+        [TestCase(GenericConflictResolution.BWins)]
+        public async Task TwoWaySynchronize_ChangedLocal_VersionSpecified(GenericConflictResolution conflictWinner)
+        {
+            await InitializeWithTwoEvents();
 
-        AssertLocalCount (0);
-        AssertServerCount (0);
-      });
-    }
+            _localRepository.UpdateWithoutIdChange("l1", _ => "Item 1 upd");
+            _localRepository.UpdateWithoutIdChange("l2", _ => "Item 2 upd");
 
-    [TestCase (GenericConflictResolution.AWins)]
-    [TestCase (GenericConflictResolution.BWins)]
-    public async Task TwoWaySynchronize_DeletedLocal_WithHint (GenericConflictResolution conflictWinner)
-    {
-      await InitializeWithTwoEvents ();
-
-      _localRepository.Delete ("l1");
-      _localRepository.Delete ("l2");
-
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizePartialTwoWay (
-            conflictWinner,
-            new[]
+            ExecuteMultipleTimes(() =>
             {
-                IdWithHints.Create (new Identifier ("l1"), (int?) null, true), 
-            },
-            CreateIdentifiers ());
+                SynchronizePartialTwoWay(
+                    conflictWinner,
+                    new[]
+                    {
+                        IdWithHints.Create(new Identifier("l1"), (int?) 0, null), // Same version as knyown version specified => isn't synced
+                        IdWithHints.Create(new Identifier("l2"), (int?) 999, null) // Other version as knyown version specified => is synced
+                    },
+                    CreateIdentifiers());
 
-        AssertLocalCount (0);
+                AssertLocalCount(2);
+                AssertLocal("l1", 1, "Item 1 upd");
+                AssertLocal("l2", 1, "Item 2 upd");
 
-        AssertServerCount (1);
-        AssertServer ("s2", 0, "Item 2");
-      });
+                AssertServerCount(2);
+                AssertServer("s1", 0, "Item 1");
+                AssertServer("s2u", 1, "Item 2 upd");
+            });
 
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizeTwoWay (conflictWinner);
-
-        AssertLocalCount (0);
-        AssertServerCount (0);
-      });
-    }
-
-    [TestCase (GenericConflictResolution.AWins)]
-    [TestCase (GenericConflictResolution.BWins)]
-    public async Task TwoWaySynchronize_DeletedLocal_WithWrongHint1 (GenericConflictResolution conflictWinner)
-    {
-      await InitializeWithTwoEvents ();
-
-      _localRepository.Delete ("l1");
-      _localRepository.Delete ("l2");
-
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizePartialTwoWay (
-            conflictWinner,
-            new[]
+            ExecuteMultipleTimes(() =>
             {
-                IdWithHints.Create (new Identifier ("l1"), (int?) null, false), 
-            },
-            CreateIdentifiers ());
+                SynchronizeTwoWay(conflictWinner);
 
-        AssertLocalCount (0);
+                AssertLocalCount(2);
+                AssertLocal("l1", 1, "Item 1 upd");
+                AssertLocal("l2", 1, "Item 2 upd");
 
-        AssertServerCount (1);
-        AssertServer ("s2", 0, "Item 2");
-      });
+                AssertServerCount(2);
+                AssertServer("s1u", 1, "Item 1 upd");
+                AssertServer("s2u", 1, "Item 2 upd");
+            });
+        }
 
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizeTwoWay (conflictWinner);
+        [TestCase(GenericConflictResolution.AWins)]
+        [TestCase(GenericConflictResolution.BWins)]
+        public async Task TwoWaySynchronize_DeletedLocal_WithoutHint(GenericConflictResolution conflictWinner)
+        {
+            await InitializeWithTwoEvents();
 
-        AssertLocalCount (0);
-        AssertServerCount (0);
-      });
-    }
+            _localRepository.Delete("l1");
+            _localRepository.Delete("l2");
 
-    [TestCase (GenericConflictResolution.AWins)]
-    [TestCase (GenericConflictResolution.BWins)]
-    public async Task TwoWaySynchronize_DeletedLocal_WithWrongHint2 (GenericConflictResolution conflictWinner)
-    {
-      await InitializeWithTwoEvents ();
-
-      _localRepository.Delete ("l1");
-      _localRepository.Delete ("l2");
-
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizePartialTwoWay (
-            conflictWinner,
-            new[]
+            ExecuteMultipleTimes(() =>
             {
-                IdWithHints.Create (new Identifier ("l1"), (int?) 666, null),
-            },
-            CreateIdentifiers ());
+                SynchronizePartialTwoWay(
+                    conflictWinner,
+                    new[]
+                    {
+                        IdWithHints.Create(new Identifier("l1"), (int?) null, null),
+                    },
+                    CreateIdentifiers());
 
-        AssertLocalCount (0);
+                AssertLocalCount(0);
 
-        AssertServerCount (1);
-        AssertServer ("s2", 0, "Item 2");
-      });
+                AssertServerCount(1);
+                AssertServer("s2", 0, "Item 2");
+            });
 
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizeTwoWay (conflictWinner);
-
-        AssertLocalCount (0);
-        AssertServerCount (0);
-      });
-    }
-
-    [TestCase (GenericConflictResolution.AWins)]
-    [TestCase (GenericConflictResolution.BWins)]
-    public async Task TwoWaySynchronize_AddedLocal_WithoutHint (GenericConflictResolution conflictWinner)
-    {
-      await _localRepository.Create (v => Task.FromResult("Item 1"), NullSynchronizationContextFactory.Instance.Create ().Result);
-      await _localRepository.Create (v => Task.FromResult("Item 2"), NullSynchronizationContextFactory.Instance.Create ().Result);
-
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizePartialTwoWay (
-            conflictWinner,
-            new[]
+            ExecuteMultipleTimes(() =>
             {
-                IdWithHints.Create (new Identifier ("l1"), (int?) null, null),
-            },
-            CreateIdentifiers ());
+                SynchronizeTwoWay(conflictWinner);
 
-        AssertLocalCount (2);
-        AssertLocal ("l1", 0, "Item 1");
-        AssertLocal ("l2", 0, "Item 2");
+                AssertLocalCount(0);
+                AssertServerCount(0);
+            });
+        }
 
-        AssertServerCount (1);
-        AssertServer ("s1", 0, "Item 1");
-      });
+        [TestCase(GenericConflictResolution.AWins)]
+        [TestCase(GenericConflictResolution.BWins)]
+        public async Task TwoWaySynchronize_DeletedLocal_WithHint(GenericConflictResolution conflictWinner)
+        {
+            await InitializeWithTwoEvents();
 
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizeTwoWay (conflictWinner);
+            _localRepository.Delete("l1");
+            _localRepository.Delete("l2");
 
-        AssertLocalCount (2);
-        AssertLocal ("l1", 0, "Item 1");
-        AssertLocal ("l2", 0, "Item 2");
-
-        AssertServerCount (2);
-        AssertServer ("s1", 0, "Item 1");
-        AssertServer ("s2", 0, "Item 2");
-      });
-    }
-
-    [TestCase (GenericConflictResolution.AWins)]
-    [TestCase (GenericConflictResolution.BWins)]
-    public async Task TwoWaySynchronize_AddedLocal_WithHint (GenericConflictResolution conflictWinner)
-    {
-      await _localRepository.Create (v => Task.FromResult("Item 1"), NullSynchronizationContextFactory.Instance.Create ().Result);
-      await _localRepository.Create (v => Task.FromResult ("Item 2"), NullSynchronizationContextFactory.Instance.Create ().Result);
-
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizePartialTwoWay (
-            conflictWinner,
-            new[]
+            ExecuteMultipleTimes(() =>
             {
-                IdWithHints.Create (new Identifier ("l1"), (int?) 0, null),
-            },
-            CreateIdentifiers ());
+                SynchronizePartialTwoWay(
+                    conflictWinner,
+                    new[]
+                    {
+                        IdWithHints.Create(new Identifier("l1"), (int?) null, true),
+                    },
+                    CreateIdentifiers());
 
-        AssertLocalCount (2);
-        AssertLocal ("l1", 0, "Item 1");
-        AssertLocal ("l2", 0, "Item 2");
+                AssertLocalCount(0);
 
-        AssertServerCount (1);
-        AssertServer ("s1", 0, "Item 1");
-      });
+                AssertServerCount(1);
+                AssertServer("s2", 0, "Item 2");
+            });
 
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizeTwoWay (conflictWinner);
-
-        AssertLocalCount (2);
-        AssertLocal ("l1", 0, "Item 1");
-        AssertLocal ("l2", 0, "Item 2");
-
-        AssertServerCount (2);
-        AssertServer ("s1", 0, "Item 1");
-        AssertServer ("s2", 0, "Item 2");
-      });
-    }
-
-    [TestCase (GenericConflictResolution.AWins)]
-    [TestCase (GenericConflictResolution.BWins)]
-    public async Task TwoWaySynchronize_AddedLocal_WithWrongHint (GenericConflictResolution conflictWinner)
-    {
-      await _localRepository.Create (v => Task.FromResult("Item 1"), NullSynchronizationContextFactory.Instance.Create ().Result);
-      await _localRepository.Create (v => Task.FromResult("Item 2"), NullSynchronizationContextFactory.Instance.Create ().Result);
-
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizePartialTwoWay (
-            conflictWinner,
-            new[]
+            ExecuteMultipleTimes(() =>
             {
-                IdWithHints.Create (new Identifier ("l1"), (int?) null, true), // specifying deletion hint true for a new item causes the item not to be synced
-            },
-            CreateIdentifiers ());
+                SynchronizeTwoWay(conflictWinner);
 
-        AssertLocalCount (2);
-        AssertLocal ("l1", 0, "Item 1");
-        AssertLocal ("l2", 0, "Item 2");
+                AssertLocalCount(0);
+                AssertServerCount(0);
+            });
+        }
 
-        AssertServerCount (0);
-      });
+        [TestCase(GenericConflictResolution.AWins)]
+        [TestCase(GenericConflictResolution.BWins)]
+        public async Task TwoWaySynchronize_DeletedLocal_WithWrongHint1(GenericConflictResolution conflictWinner)
+        {
+            await InitializeWithTwoEvents();
 
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizeTwoWay (conflictWinner);
+            _localRepository.Delete("l1");
+            _localRepository.Delete("l2");
 
-        AssertLocalCount (2);
-        AssertLocal ("l1", 0, "Item 1");
-        AssertLocal ("l2", 0, "Item 2");
+            ExecuteMultipleTimes(() =>
+            {
+                SynchronizePartialTwoWay(
+                    conflictWinner,
+                    new[]
+                    {
+                        IdWithHints.Create(new Identifier("l1"), (int?) null, false),
+                    },
+                    CreateIdentifiers());
 
-        AssertServerCount (2);
-        AssertServer ("s1", 0, "Item 1");
-        AssertServer ("s2", 0, "Item 2");
-      });
+                AssertLocalCount(0);
+
+                AssertServerCount(1);
+                AssertServer("s2", 0, "Item 2");
+            });
+
+            ExecuteMultipleTimes(() =>
+            {
+                SynchronizeTwoWay(conflictWinner);
+
+                AssertLocalCount(0);
+                AssertServerCount(0);
+            });
+        }
+
+        [TestCase(GenericConflictResolution.AWins)]
+        [TestCase(GenericConflictResolution.BWins)]
+        public async Task TwoWaySynchronize_DeletedLocal_WithWrongHint2(GenericConflictResolution conflictWinner)
+        {
+            await InitializeWithTwoEvents();
+
+            _localRepository.Delete("l1");
+            _localRepository.Delete("l2");
+
+            ExecuteMultipleTimes(() =>
+            {
+                SynchronizePartialTwoWay(
+                    conflictWinner,
+                    new[]
+                    {
+                        IdWithHints.Create(new Identifier("l1"), (int?) 666, null),
+                    },
+                    CreateIdentifiers());
+
+                AssertLocalCount(0);
+
+                AssertServerCount(1);
+                AssertServer("s2", 0, "Item 2");
+            });
+
+            ExecuteMultipleTimes(() =>
+            {
+                SynchronizeTwoWay(conflictWinner);
+
+                AssertLocalCount(0);
+                AssertServerCount(0);
+            });
+        }
+
+        [TestCase(GenericConflictResolution.AWins)]
+        [TestCase(GenericConflictResolution.BWins)]
+        public async Task TwoWaySynchronize_AddedLocal_WithoutHint(GenericConflictResolution conflictWinner)
+        {
+            await _localRepository.Create(v => Task.FromResult("Item 1"), NullSynchronizationContextFactory.Instance.Create().Result);
+            await _localRepository.Create(v => Task.FromResult("Item 2"), NullSynchronizationContextFactory.Instance.Create().Result);
+
+            ExecuteMultipleTimes(() =>
+            {
+                SynchronizePartialTwoWay(
+                    conflictWinner,
+                    new[]
+                    {
+                        IdWithHints.Create(new Identifier("l1"), (int?) null, null),
+                    },
+                    CreateIdentifiers());
+
+                AssertLocalCount(2);
+                AssertLocal("l1", 0, "Item 1");
+                AssertLocal("l2", 0, "Item 2");
+
+                AssertServerCount(1);
+                AssertServer("s1", 0, "Item 1");
+            });
+
+            ExecuteMultipleTimes(() =>
+            {
+                SynchronizeTwoWay(conflictWinner);
+
+                AssertLocalCount(2);
+                AssertLocal("l1", 0, "Item 1");
+                AssertLocal("l2", 0, "Item 2");
+
+                AssertServerCount(2);
+                AssertServer("s1", 0, "Item 1");
+                AssertServer("s2", 0, "Item 2");
+            });
+        }
+
+        [TestCase(GenericConflictResolution.AWins)]
+        [TestCase(GenericConflictResolution.BWins)]
+        public async Task TwoWaySynchronize_AddedLocal_WithHint(GenericConflictResolution conflictWinner)
+        {
+            await _localRepository.Create(v => Task.FromResult("Item 1"), NullSynchronizationContextFactory.Instance.Create().Result);
+            await _localRepository.Create(v => Task.FromResult("Item 2"), NullSynchronizationContextFactory.Instance.Create().Result);
+
+            ExecuteMultipleTimes(() =>
+            {
+                SynchronizePartialTwoWay(
+                    conflictWinner,
+                    new[]
+                    {
+                        IdWithHints.Create(new Identifier("l1"), (int?) 0, null),
+                    },
+                    CreateIdentifiers());
+
+                AssertLocalCount(2);
+                AssertLocal("l1", 0, "Item 1");
+                AssertLocal("l2", 0, "Item 2");
+
+                AssertServerCount(1);
+                AssertServer("s1", 0, "Item 1");
+            });
+
+            ExecuteMultipleTimes(() =>
+            {
+                SynchronizeTwoWay(conflictWinner);
+
+                AssertLocalCount(2);
+                AssertLocal("l1", 0, "Item 1");
+                AssertLocal("l2", 0, "Item 2");
+
+                AssertServerCount(2);
+                AssertServer("s1", 0, "Item 1");
+                AssertServer("s2", 0, "Item 2");
+            });
+        }
+
+        [TestCase(GenericConflictResolution.AWins)]
+        [TestCase(GenericConflictResolution.BWins)]
+        public async Task TwoWaySynchronize_AddedLocal_WithWrongHint(GenericConflictResolution conflictWinner)
+        {
+            await _localRepository.Create(v => Task.FromResult("Item 1"), NullSynchronizationContextFactory.Instance.Create().Result);
+            await _localRepository.Create(v => Task.FromResult("Item 2"), NullSynchronizationContextFactory.Instance.Create().Result);
+
+            ExecuteMultipleTimes(() =>
+            {
+                SynchronizePartialTwoWay(
+                    conflictWinner,
+                    new[]
+                    {
+                        IdWithHints.Create(new Identifier("l1"), (int?) null, true), // specifying deletion hint true for a new item causes the item not to be synced
+                    },
+                    CreateIdentifiers());
+
+                AssertLocalCount(2);
+                AssertLocal("l1", 0, "Item 1");
+                AssertLocal("l2", 0, "Item 2");
+
+                AssertServerCount(0);
+            });
+
+            ExecuteMultipleTimes(() =>
+            {
+                SynchronizeTwoWay(conflictWinner);
+
+                AssertLocalCount(2);
+                AssertLocal("l1", 0, "Item 1");
+                AssertLocal("l2", 0, "Item 2");
+
+                AssertServerCount(2);
+                AssertServer("s1", 0, "Item 1");
+                AssertServer("s2", 0, "Item 2");
+            });
+        }
+
+        [TestCase(GenericConflictResolution.AWins)]
+        [TestCase(GenericConflictResolution.BWins)]
+        public async Task TwoWaySynchronize_ChangedLocal_SpecifiedTwice(GenericConflictResolution conflictWinner)
+        {
+            await InitializeWithTwoEvents();
+
+            _localRepository.UpdateWithoutIdChange("l1", _ => "Item 1 upd");
+            _localRepository.UpdateWithoutIdChange("l2", _ => "Item 2 upd");
+
+            ExecuteMultipleTimes(() =>
+            {
+                SynchronizePartialTwoWay(
+                    conflictWinner,
+                    CreateIdentifiers("l1"),
+                    CreateIdentifiers("s1"));
+
+                AssertLocalCount(2);
+                AssertLocal("l1", 1, "Item 1 upd");
+                AssertLocal("l2", 1, "Item 2 upd");
+
+                AssertServerCount(2);
+                AssertServer("s1u", 1, "Item 1 upd");
+                AssertServer("s2", 0, "Item 2");
+            });
+        }
+
+        private static IIdWithHints<Identifier, int>[] CreateIdentifiers(params string[] values)
+        {
+            return values.Select(v => IdWithHints.Create(new Identifier(v), (int?) null, null)).ToArray();
+        }
     }
-
-    [TestCase (GenericConflictResolution.AWins)]
-    [TestCase (GenericConflictResolution.BWins)]
-    public async Task TwoWaySynchronize_ChangedLocal_SpecifiedTwice (GenericConflictResolution conflictWinner)
-    {
-      await InitializeWithTwoEvents();
-
-      _localRepository.UpdateWithoutIdChange ("l1", _ => "Item 1 upd");
-      _localRepository.UpdateWithoutIdChange ("l2", _ => "Item 2 upd");
-
-      ExecuteMultipleTimes (() =>
-      {
-        SynchronizePartialTwoWay (
-            conflictWinner,
-            CreateIdentifiers ("l1"),
-            CreateIdentifiers ("s1"));
-
-        AssertLocalCount (2);
-        AssertLocal ("l1", 1, "Item 1 upd");
-        AssertLocal ("l2", 1, "Item 2 upd");
-
-        AssertServerCount (2);
-        AssertServer ("s1u", 1, "Item 1 upd");
-        AssertServer ("s2", 0, "Item 2");
-      });
-    }
-
-    private static IIdWithHints<Identifier, int>[] CreateIdentifiers (params string[] values)
-    {
-      return values.Select (v => IdWithHints.Create (new Identifier (v), (int?) null, null)).ToArray();
-    }
-  }
 }

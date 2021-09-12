@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.Events;
@@ -23,19 +24,19 @@ using GenSync.EntityRepositories;
 
 namespace CalDavSynchronizer.Scheduling.ComponentCollectors
 {
-  public class AvailableEventSynchronizerComponents : AvailableSynchronizerComponents
-  {
-    public ICalDavDataAccess CalDavDataAccess { get; set; }
-    public OutlookEventRepository OutlookEventRepository { get; set; }
-    public IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> CalDavRepository { get; set; }
-    public EntityRelationDataAccess<AppointmentId, DateTime, OutlookEventRelationData, WebResourceName, string> EntityRelationDataAccess { get; set; }
-
-    public override DataAccessComponents GetDataAccessComponents ()
+    public class AvailableEventSynchronizerComponents : AvailableSynchronizerComponents
     {
-      return new DataAccessComponents
-      {
-        CalDavDataAccess = CalDavDataAccess
-      };
+        public ICalDavDataAccess CalDavDataAccess { get; set; }
+        public OutlookEventRepository OutlookEventRepository { get; set; }
+        public IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> CalDavRepository { get; set; }
+        public EntityRelationDataAccess<AppointmentId, DateTime, OutlookEventRelationData, WebResourceName, string> EntityRelationDataAccess { get; set; }
+
+        public override DataAccessComponents GetDataAccessComponents()
+        {
+            return new DataAccessComponents
+            {
+                CalDavDataAccess = CalDavDataAccess
+            };
+        }
     }
-  }
 }

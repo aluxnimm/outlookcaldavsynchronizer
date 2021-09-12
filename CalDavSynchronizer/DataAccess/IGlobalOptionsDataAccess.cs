@@ -19,8 +19,8 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  internal interface IGlobalOptionsDataAccess
-  {
-    GlobalOptions LoadGlobalOptionsNoThrow ();
-  }
+    internal interface IGlobalOptionsDataAccess
+    {
+        GlobalOptions LoadGlobalOptionsNoThrow();
+    }
 }

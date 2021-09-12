@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,78 +27,78 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class LoggingCardDavRepositoryDecorator : IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger>
-  {
-    private readonly IEntityRepository<WebResourceName, string, vCard, int> _inner;
-
-    public LoggingCardDavRepositoryDecorator(IEntityRepository<WebResourceName, string, vCard, int> inner)
+    public class LoggingCardDavRepositoryDecorator : IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger>
     {
-      _inner = inner;
-    }
+        private readonly IEntityRepository<WebResourceName, string, vCard, int> _inner;
 
-    public async Task<bool> TryDelete(WebResourceName entityId, string version, ICardDavRepositoryLogger context, IEntitySynchronizationLogger logger)
-    {
-      var result = await _inner.TryDelete(entityId, version, 0, logger);
-      context.LogEntityDeleted(entityId);
-      return result;
-    }
-
-    public async Task<EntityVersion<WebResourceName, string>> TryUpdate(WebResourceName entityId, string version, vCard entityToUpdate, Func<vCard, Task<vCard>> entityModifier, ICardDavRepositoryLogger context, IEntitySynchronizationLogger logger)
-    {
-      var result = await _inner.TryUpdate(entityId, version, entityToUpdate, entityModifier, 0, logger);
-      context.LogEntityExists(entityId, entityToUpdate);
-      return result;
-    }
-
-    public async Task<EntityVersion<WebResourceName, string>> Create(Func<vCard, Task<vCard>> entityInitializer, ICardDavRepositoryLogger context)
-    {
-      vCard vCard = null;
-      var result = await _inner.Create(
-        async e =>
+        public LoggingCardDavRepositoryDecorator(IEntityRepository<WebResourceName, string, vCard, int> inner)
         {
-          vCard = await entityInitializer(e);
-          return vCard;
-        },
-        0);
-      context.LogEntityExists(result.Id, vCard);
-      return result;
-    }
+            _inner = inner;
+        }
 
-    public async Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetVersions(IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery, ICardDavRepositoryLogger context, IGetVersionsLogger logger)
-    {
-      var result = await _inner.GetVersions(idsOfEntitiesToQuery, 0, logger);
-      context.LogEntitiesExists(result.Select(e => e.Id));
-      return result;
-    }
+        public async Task<bool> TryDelete(WebResourceName entityId, string version, ICardDavRepositoryLogger context, IEntitySynchronizationLogger logger)
+        {
+            var result = await _inner.TryDelete(entityId, version, 0, logger);
+            context.LogEntityDeleted(entityId);
+            return result;
+        }
 
-    public async Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetAllVersions(IEnumerable<WebResourceName> idsOfknownEntities, ICardDavRepositoryLogger context, IGetVersionsLogger logger)
-    {
-      var result = await _inner.GetAllVersions(idsOfknownEntities, 0, logger);
-      context.LogEntitiesExists(result.Select(e => e.Id));
-      return result;
-    }
+        public async Task<EntityVersion<WebResourceName, string>> TryUpdate(WebResourceName entityId, string version, vCard entityToUpdate, Func<vCard, Task<vCard>> entityModifier, ICardDavRepositoryLogger context, IEntitySynchronizationLogger logger)
+        {
+            var result = await _inner.TryUpdate(entityId, version, entityToUpdate, entityModifier, 0, logger);
+            context.LogEntityExists(entityId, entityToUpdate);
+            return result;
+        }
 
-    public async Task<IEnumerable<EntityWithId<WebResourceName, vCard>>> Get(ICollection<WebResourceName> ids, ILoadEntityLogger logger, ICardDavRepositoryLogger context)
-    {
-      var result = await _inner.Get(ids, logger, 0);
-      foreach (var entity in result)
-        context.LogEntityExists(entity.Id, entity.Entity);
-      return result;
-    }
+        public async Task<EntityVersion<WebResourceName, string>> Create(Func<vCard, Task<vCard>> entityInitializer, ICardDavRepositoryLogger context)
+        {
+            vCard vCard = null;
+            var result = await _inner.Create(
+                async e =>
+                {
+                    vCard = await entityInitializer(e);
+                    return vCard;
+                },
+                0);
+            context.LogEntityExists(result.Id, vCard);
+            return result;
+        }
 
-    public Task VerifyUnknownEntities(Dictionary<WebResourceName, string> unknownEntites, ICardDavRepositoryLogger context)
-    {
-      return _inner.VerifyUnknownEntities(unknownEntites, 0);
-    }
+        public async Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetVersions(IEnumerable<IdWithAwarenessLevel<WebResourceName>> idsOfEntitiesToQuery, ICardDavRepositoryLogger context, IGetVersionsLogger logger)
+        {
+            var result = await _inner.GetVersions(idsOfEntitiesToQuery, 0, logger);
+            context.LogEntitiesExists(result.Select(e => e.Id));
+            return result;
+        }
 
-    public void Cleanup(vCard entity)
-    {
-      _inner.Cleanup(entity);
-    }
+        public async Task<IEnumerable<EntityVersion<WebResourceName, string>>> GetAllVersions(IEnumerable<WebResourceName> idsOfknownEntities, ICardDavRepositoryLogger context, IGetVersionsLogger logger)
+        {
+            var result = await _inner.GetAllVersions(idsOfknownEntities, 0, logger);
+            context.LogEntitiesExists(result.Select(e => e.Id));
+            return result;
+        }
 
-    public void Cleanup(IEnumerable<vCard> entities)
-    {
-      _inner.Cleanup(entities);
+        public async Task<IEnumerable<EntityWithId<WebResourceName, vCard>>> Get(ICollection<WebResourceName> ids, ILoadEntityLogger logger, ICardDavRepositoryLogger context)
+        {
+            var result = await _inner.Get(ids, logger, 0);
+            foreach (var entity in result)
+                context.LogEntityExists(entity.Id, entity.Entity);
+            return result;
+        }
+
+        public Task VerifyUnknownEntities(Dictionary<WebResourceName, string> unknownEntites, ICardDavRepositoryLogger context)
+        {
+            return _inner.VerifyUnknownEntities(unknownEntites, 0);
+        }
+
+        public void Cleanup(vCard entity)
+        {
+            _inner.Cleanup(entity);
+        }
+
+        public void Cleanup(IEnumerable<vCard> entities)
+        {
+            _inner.Cleanup(entities);
+        }
     }
-  }
 }

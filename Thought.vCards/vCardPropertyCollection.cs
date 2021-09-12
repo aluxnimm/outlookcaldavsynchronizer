@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -10,7 +9,6 @@ using System.Collections.ObjectModel;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     A generic collection of <see cref="vCardProperty"/> objects.
     /// </summary>
@@ -18,5 +16,4 @@ namespace Thought.vCards
     public class vCardPropertyCollection : Collection<vCardProperty>
     {
     }
-
 }

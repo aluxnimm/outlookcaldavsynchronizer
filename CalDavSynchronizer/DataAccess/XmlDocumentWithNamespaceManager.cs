@@ -14,22 +14,23 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Xml;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public class XmlDocumentWithNamespaceManager
-  {
-    public XmlDocumentWithNamespaceManager (XmlDocument xmlDocument, XmlNamespaceManager xmlNamespaceManager, Uri documentUri)
+    public class XmlDocumentWithNamespaceManager
     {
-      XmlDocument = xmlDocument;
-      XmlNamespaceManager = xmlNamespaceManager;
-      DocumentUri = documentUri;
-    }
+        public XmlDocumentWithNamespaceManager(XmlDocument xmlDocument, XmlNamespaceManager xmlNamespaceManager, Uri documentUri)
+        {
+            XmlDocument = xmlDocument;
+            XmlNamespaceManager = xmlNamespaceManager;
+            DocumentUri = documentUri;
+        }
 
-    public XmlDocument XmlDocument { get;  }
-    public XmlNamespaceManager XmlNamespaceManager { get; }
-    public Uri DocumentUri { get; }
-  }
+        public XmlDocument XmlDocument { get; }
+        public XmlNamespaceManager XmlNamespaceManager { get; }
+        public Uri DocumentUri { get; }
+    }
 }

@@ -20,11 +20,11 @@ using System.ComponentModel;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public interface ITreeNodeViewModel : INotifyPropertyChanged
-  {
-    IEnumerable<ITreeNodeViewModel> Items { get; }
-    string Name { get; }
-    bool IsSelected { get; set; }
-    bool IsExpanded { get; set; }
-  }
+    public interface ITreeNodeViewModel : INotifyPropertyChanged
+    {
+        IEnumerable<ITreeNodeViewModel> Items { get; }
+        string Name { get; }
+        bool IsSelected { get; set; }
+        bool IsExpanded { get; set; }
+    }
 }

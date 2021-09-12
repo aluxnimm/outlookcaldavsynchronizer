@@ -14,38 +14,39 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Reflection;
 using log4net;
 
 namespace GenSync.ProgressReport
 {
-  public class TotalProgressFactory : ITotalProgressFactory
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-    private readonly IProgressUiFactory _progressUiFactory;
-    private readonly IExceptionLogger _exceptionLogger;
-
-
-    public TotalProgressFactory (IProgressUiFactory progressUiFactory, bool showProgress, int loadOperationThresholdForProgressDisplay, IExceptionLogger exceptionLogger)
+    public class TotalProgressFactory : ITotalProgressFactory
     {
-      _progressUiFactory = progressUiFactory;
-      _exceptionLogger = exceptionLogger;
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+        private readonly IProgressUiFactory _progressUiFactory;
+        private readonly IExceptionLogger _exceptionLogger;
 
-      LoadOperationThresholdForProgressDisplay = loadOperationThresholdForProgressDisplay;
-      ShowProgress = showProgress;
+
+        public TotalProgressFactory(IProgressUiFactory progressUiFactory, bool showProgress, int loadOperationThresholdForProgressDisplay, IExceptionLogger exceptionLogger)
+        {
+            _progressUiFactory = progressUiFactory;
+            _exceptionLogger = exceptionLogger;
+
+            LoadOperationThresholdForProgressDisplay = loadOperationThresholdForProgressDisplay;
+            ShowProgress = showProgress;
+        }
+
+        public bool ShowProgress { get; set; }
+        public int LoadOperationThresholdForProgressDisplay { get; set; }
+
+
+        public ITotalProgressLogger Create()
+        {
+            if (ShowProgress)
+                return new TotalProgressContext(_progressUiFactory, LoadOperationThresholdForProgressDisplay, _exceptionLogger);
+            else
+                return NullTotalProgressLogger.Instance;
+        }
     }
-
-    public bool ShowProgress { get; set; }
-    public int LoadOperationThresholdForProgressDisplay { get; set; }
-
-
-    public ITotalProgressLogger Create ()
-    {
-      if (ShowProgress)
-        return new TotalProgressContext(_progressUiFactory, LoadOperationThresholdForProgressDisplay, _exceptionLogger);
-      else
-        return NullTotalProgressLogger.Instance;
-    }
-  }
 }

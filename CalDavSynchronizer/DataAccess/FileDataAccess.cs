@@ -21,43 +21,43 @@ using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public class FileDataAccess<T> 
-  {
-    private readonly string _filePath;
-    private readonly Func<T> _defaultValueFactory;
-
-    public FileDataAccess(string filePath, Func<T> defaultValueFactory)
+    public class FileDataAccess<T>
     {
-      _filePath = filePath;
-      _defaultValueFactory = defaultValueFactory;
-    }
+        private readonly string _filePath;
+        private readonly Func<T> _defaultValueFactory;
 
-    public T Load()
-    {
-      if (!File.Exists(_filePath))
-        return _defaultValueFactory();
-      else
-        return Serializer<T>.Deserialize(File.ReadAllText(_filePath));
-    }
-
-    public void Save(T value)
-    {
-      if (!Directory.Exists(Path.GetDirectoryName(_filePath)))
-        Directory.CreateDirectory(Path.GetDirectoryName(_filePath));
-
-      File.WriteAllText(_filePath, Serializer<T>.Serialize(value));
-    }
-
-    public void EnsureBackupExists(string backupName)
-    {
-      if (File.Exists(_filePath))
-      {
-        var backupFileName = $"{_filePath}.{backupName}.bak";
-        if (!File.Exists(backupFileName))
+        public FileDataAccess(string filePath, Func<T> defaultValueFactory)
         {
-          File.Copy(_filePath, backupFileName, true);
+            _filePath = filePath;
+            _defaultValueFactory = defaultValueFactory;
         }
-      }
+
+        public T Load()
+        {
+            if (!File.Exists(_filePath))
+                return _defaultValueFactory();
+            else
+                return Serializer<T>.Deserialize(File.ReadAllText(_filePath));
+        }
+
+        public void Save(T value)
+        {
+            if (!Directory.Exists(Path.GetDirectoryName(_filePath)))
+                Directory.CreateDirectory(Path.GetDirectoryName(_filePath));
+
+            File.WriteAllText(_filePath, Serializer<T>.Serialize(value));
+        }
+
+        public void EnsureBackupExists(string backupName)
+        {
+            if (File.Exists(_filePath))
+            {
+                var backupFileName = $"{_filePath}.{backupName}.bak";
+                if (!File.Exists(backupFileName))
+                {
+                    File.Copy(_filePath, backupFileName, true);
+                }
+            }
+        }
     }
-  }
 }

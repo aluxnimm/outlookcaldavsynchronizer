@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.DataAccess;
@@ -23,94 +24,97 @@ using GenSync.InitialEntityMatching;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
-  internal class InitialTaskEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, TaskEntityMatchData, string, WebResourceName, string, IICalendar, string>
-  {
-    public InitialTaskEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
-        : base (btypeIdEqualityComparer)
+    internal class InitialTaskEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, TaskEntityMatchData, string, WebResourceName, string, IICalendar, string>
     {
-    }
-
-    protected override bool AreEqual (TaskEntityMatchData atypeEntity, IICalendar btypeEntity)
-    {
-      var task = btypeEntity.Todos[0];
-
-      if (atypeEntity.Subject == task.Summary)
-      {
-        NodaTime.DateTimeZone localZone = NodaTime.DateTimeZoneProviders.Bcl.GetSystemDefault();
-
-        if (task.Start != null)
+        public InitialTaskEntityMatcher(IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
+            : base(btypeIdEqualityComparer)
         {
-          if (task.Start.IsUniversalTime)
-          {
-            if (atypeEntity.StartDate == NodaTime.Instant.FromDateTimeUtc (task.Start.Value).InZone (localZone).ToDateTimeUnspecified().Date)
+        }
+
+        protected override bool AreEqual(TaskEntityMatchData atypeEntity, IICalendar btypeEntity)
+        {
+            var task = btypeEntity.Todos[0];
+
+            if (atypeEntity.Subject == task.Summary)
             {
-              if (task.Due != null)
-              {
-                if (task.Due.IsUniversalTime)
+                NodaTime.DateTimeZone localZone = NodaTime.DateTimeZoneProviders.Bcl.GetSystemDefault();
+
+                if (task.Start != null)
                 {
-                  return atypeEntity.DueDate == NodaTime.Instant.FromDateTimeUtc (task.Due.Value).InZone (localZone).ToDateTimeUnspecified().Date;
+                    if (task.Start.IsUniversalTime)
+                    {
+                        if (atypeEntity.StartDate == NodaTime.Instant.FromDateTimeUtc(task.Start.Value).InZone(localZone).ToDateTimeUnspecified().Date)
+                        {
+                            if (task.Due != null)
+                            {
+                                if (task.Due.IsUniversalTime)
+                                {
+                                    return atypeEntity.DueDate == NodaTime.Instant.FromDateTimeUtc(task.Due.Value).InZone(localZone).ToDateTimeUnspecified().Date;
+                                }
+                                else
+                                {
+                                    return atypeEntity.DueDate == task.Due.Date;
+                                }
+                            }
+
+                            return atypeEntity.DueDate == OutlookUtility.OUTLOOK_DATE_NONE;
+                        }
+                        else
+                            return false;
+                    }
+                    else
+                    {
+                        if (atypeEntity.StartDate == task.Start.Date)
+                        {
+                            if (task.Due != null)
+                            {
+                                if (task.Due.IsUniversalTime)
+                                {
+                                    return atypeEntity.DueDate == NodaTime.Instant.FromDateTimeUtc(task.Due.Value).InZone(localZone).ToDateTimeUnspecified().Date;
+                                }
+                                else
+                                {
+                                    return atypeEntity.DueDate == task.Due.Date;
+                                }
+                            }
+
+                            return atypeEntity.DueDate == OutlookUtility.OUTLOOK_DATE_NONE;
+                        }
+                        else
+                            return false;
+                    }
+                }
+                else if (task.Due != null)
+                {
+                    if (task.Due.IsUniversalTime)
+                    {
+                        return atypeEntity.StartDate == OutlookUtility.OUTLOOK_DATE_NONE && atypeEntity.DueDate == NodaTime.Instant.FromDateTimeUtc(task.Due.Value).InZone(localZone).ToDateTimeUnspecified().Date;
+                    }
+                    else
+                    {
+                        return atypeEntity.StartDate == OutlookUtility.OUTLOOK_DATE_NONE && atypeEntity.DueDate == task.Due.Date;
+                    }
                 }
                 else
-                {
-                  return atypeEntity.DueDate == task.Due.Date;
-                }
-              }
-              return atypeEntity.DueDate == OutlookUtility.OUTLOOK_DATE_NONE;
+                    return atypeEntity.StartDate == OutlookUtility.OUTLOOK_DATE_NONE && atypeEntity.DueDate == OutlookUtility.OUTLOOK_DATE_NONE;
             }
-            else
-              return false;
-          }
-          else
-          {
-            if (atypeEntity.StartDate == task.Start.Date)
-            {
-              if (task.Due != null)
-              {
-                if (task.Due.IsUniversalTime)
-                {
-                  return atypeEntity.DueDate == NodaTime.Instant.FromDateTimeUtc (task.Due.Value).InZone (localZone).ToDateTimeUnspecified().Date;
-                }
-                else
-                {
-                  return atypeEntity.DueDate == task.Due.Date;
-                }
-              }
-              return atypeEntity.DueDate == OutlookUtility.OUTLOOK_DATE_NONE;
-            }
-            else
-              return false;
-          }
+
+            return false;
         }
-        else if (task.Due != null)
+
+        protected override string GetAtypePropertyValue(TaskEntityMatchData atypeEntity)
         {
-          if (task.Due.IsUniversalTime)
-          {
-            return atypeEntity.StartDate == OutlookUtility.OUTLOOK_DATE_NONE && atypeEntity.DueDate == NodaTime.Instant.FromDateTimeUtc (task.Due.Value).InZone (localZone).ToDateTimeUnspecified().Date;
-          }
-          else
-          {
-            return atypeEntity.StartDate == OutlookUtility.OUTLOOK_DATE_NONE && atypeEntity.DueDate == task.Due.Date;
-          }
+            return (atypeEntity.Subject ?? string.Empty).ToLower();
         }
-        else
-          return atypeEntity.StartDate == OutlookUtility.OUTLOOK_DATE_NONE && atypeEntity.DueDate == OutlookUtility.OUTLOOK_DATE_NONE;
-      }
-      return false;
-    }
 
-    protected override string GetAtypePropertyValue (TaskEntityMatchData atypeEntity)
-    {
-      return (atypeEntity.Subject ?? string.Empty).ToLower();
-    }
+        protected override string GetBtypePropertyValue(IICalendar btypeEntity)
+        {
+            return (btypeEntity.Todos[0].Summary ?? string.Empty).ToLower();
+        }
 
-    protected override string GetBtypePropertyValue (IICalendar btypeEntity)
-    {
-      return (btypeEntity.Todos[0].Summary ?? string.Empty).ToLower();
+        protected override string MapAtypePropertyValue(string value)
+        {
+            return value;
+        }
     }
-
-    protected override string MapAtypePropertyValue (string value)
-    {
-      return value;
-    }
-  }
 }

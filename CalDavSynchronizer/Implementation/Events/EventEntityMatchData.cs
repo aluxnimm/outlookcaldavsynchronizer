@@ -14,33 +14,34 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using GenSync.InitialEntityMatching;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class EventEntityMatchData
-  {
-    public string Subject { get; }
-    public bool AllDayEvent { get; }
-    public DateTime Start { get; }
-    public DateTime End { get; }
-    public DateTime StartUtc { get; }
-    public DateTime EndUtc { get; }
-    public DateTime EndInEndTimeZone { get; }
-    public DateTime StartInStartTimeZone { get; }
-
-    public EventEntityMatchData(AppointmentItem appointment)
+    public class EventEntityMatchData
     {
-      Subject = appointment.Subject;
-      AllDayEvent = appointment.AllDayEvent;
-      Start = appointment.Start;
-      End = appointment.End;
-      StartUtc = appointment.StartUTC;
-      EndUtc = appointment.EndUTC;
-      EndInEndTimeZone = appointment.EndInEndTimeZone;
-      StartInStartTimeZone = appointment.StartInStartTimeZone;
+        public string Subject { get; }
+        public bool AllDayEvent { get; }
+        public DateTime Start { get; }
+        public DateTime End { get; }
+        public DateTime StartUtc { get; }
+        public DateTime EndUtc { get; }
+        public DateTime EndInEndTimeZone { get; }
+        public DateTime StartInStartTimeZone { get; }
+
+        public EventEntityMatchData(AppointmentItem appointment)
+        {
+            Subject = appointment.Subject;
+            AllDayEvent = appointment.AllDayEvent;
+            Start = appointment.Start;
+            End = appointment.End;
+            StartUtc = appointment.StartUTC;
+            EndUtc = appointment.EndUTC;
+            EndInEndTimeZone = appointment.EndInEndTimeZone;
+            StartInStartTimeZone = appointment.StartInStartTimeZone;
+        }
     }
-  }
 }

@@ -25,13 +25,13 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 {
-  public interface IServerSettingsTemplateViewModel 
-  {
-    Task<ServerResources> GetServerResources ();
-    void DiscoverAccountServerSettings();
+    public interface IServerSettingsTemplateViewModel
+    {
+        Task<ServerResources> GetServerResources();
+        void DiscoverAccountServerSettings();
 
-    void SetResourceUrl (OptionsModel options, CalendarData resource);
-    void SetResourceUrl (OptionsModel options, AddressBookData resource);
-    void SetResourceUrl (OptionsModel options, TaskListData resource);
-  }
+        void SetResourceUrl(OptionsModel options, CalendarData resource);
+        void SetResourceUrl(OptionsModel options, AddressBookData resource);
+        void SetResourceUrl(OptionsModel options, TaskListData resource);
+    }
 }

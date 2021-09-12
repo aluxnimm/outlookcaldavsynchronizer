@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -24,23 +25,22 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.Synchronization
 {
-  public class NullOutlookSynchronizer : IOutlookSynchronizer
-  {
-    public static readonly IOutlookSynchronizer Instance = new NullOutlookSynchronizer();
-
-    private NullOutlookSynchronizer ()
+    public class NullOutlookSynchronizer : IOutlookSynchronizer
     {
-    }
+        public static readonly IOutlookSynchronizer Instance = new NullOutlookSynchronizer();
 
-    public Task Synchronize (ISynchronizationLogger logger)
-    {
-      return Task.FromResult (0);
-    }
+        private NullOutlookSynchronizer()
+        {
+        }
 
-    public Task SynchronizePartial (IEnumerable<IOutlookId> outlookIds, ISynchronizationLogger logger)
-    {
-      return Task.FromResult (0);
-    }
+        public Task Synchronize(ISynchronizationLogger logger)
+        {
+            return Task.FromResult(0);
+        }
 
-  }
+        public Task SynchronizePartial(IEnumerable<IOutlookId> outlookIds, ISynchronizationLogger logger)
+        {
+            return Task.FromResult(0);
+        }
+    }
 }

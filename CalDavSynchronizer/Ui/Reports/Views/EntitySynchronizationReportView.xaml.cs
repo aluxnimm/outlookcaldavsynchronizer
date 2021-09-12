@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,14 +32,14 @@ using System.Windows.Shapes;
 
 namespace CalDavSynchronizer.Ui.Reports.Views
 {
-  /// <summary>
-  /// Interaction logic for SynchronizationReportView.xaml
-  /// </summary>
-  public partial class EntitySynchronizationReportView : UserControl
-  {
-    public EntitySynchronizationReportView ()
+    /// <summary>
+    /// Interaction logic for SynchronizationReportView.xaml
+    /// </summary>
+    public partial class EntitySynchronizationReportView : UserControl
     {
-      InitializeComponent ();
+        public EntitySynchronizationReportView()
+        {
+            InitializeComponent();
+        }
     }
-  }
 }

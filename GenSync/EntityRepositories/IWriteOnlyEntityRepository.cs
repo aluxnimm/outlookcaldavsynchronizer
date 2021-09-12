@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -21,22 +22,24 @@ using GenSync.Logging;
 
 namespace GenSync.EntityRepositories
 {
-  /// <summary>
-  /// All writeoperations that a repository has to support
-  /// </summary>
-  public interface IWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
-  {
-    /// <returns>
-    /// true: Entity was found an deleted.
-    /// false: Entity was not found
-    /// </returns>
-    Task<bool> TryDelete (TEntityId entityId, TEntityVersion version, TContext context, IEntitySynchronizationLogger logger);
-    /// <returns>
-    /// Id and Version of the updated entity
-    /// or
-    /// Null if entity was not found
-    /// </returns>
-    Task<EntityVersion<TEntityId, TEntityVersion>> TryUpdate (TEntityId entityId, TEntityVersion version, TEntity entityToUpdate, Func<TEntity, Task<TEntity>> entityModifier, TContext context, IEntitySynchronizationLogger logger);
-    Task<EntityVersion<TEntityId, TEntityVersion>> Create (Func<TEntity, Task<TEntity>> entityInitializer, TContext context);
-  }
+    /// <summary>
+    /// All writeoperations that a repository has to support
+    /// </summary>
+    public interface IWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
+    {
+        /// <returns>
+        /// true: Entity was found an deleted.
+        /// false: Entity was not found
+        /// </returns>
+        Task<bool> TryDelete(TEntityId entityId, TEntityVersion version, TContext context, IEntitySynchronizationLogger logger);
+
+        /// <returns>
+        /// Id and Version of the updated entity
+        /// or
+        /// Null if entity was not found
+        /// </returns>
+        Task<EntityVersion<TEntityId, TEntityVersion>> TryUpdate(TEntityId entityId, TEntityVersion version, TEntity entityToUpdate, Func<TEntity, Task<TEntity>> entityModifier, TContext context, IEntitySynchronizationLogger logger);
+
+        Task<EntityVersion<TEntityId, TEntityVersion>> Create(Func<TEntity, Task<TEntity>> entityInitializer, TContext context);
+    }
 }

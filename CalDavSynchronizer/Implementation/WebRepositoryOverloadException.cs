@@ -7,14 +7,14 @@ using GenSync.EntityRepositories;
 
 namespace CalDavSynchronizer.Implementation
 {
-  public class WebRepositoryOverloadException : Exception
-  {
-    public WebRepositoryOverloadException(DateTime? retryAfter, Exception innerException)
-      : base($"The respository is overloaded.{(retryAfter != null ? $" Reftry after '{retryAfter}'." : string.Empty)}", innerException)
+    public class WebRepositoryOverloadException : Exception
     {
-      RetryAfter = retryAfter;
-    }
+        public WebRepositoryOverloadException(DateTime? retryAfter, Exception innerException)
+            : base($"The respository is overloaded.{(retryAfter != null ? $" Reftry after '{retryAfter}'." : string.Empty)}", innerException)
+        {
+            RetryAfter = retryAfter;
+        }
 
-    public DateTime? RetryAfter { get; }
-  }
+        public DateTime? RetryAfter { get; }
+    }
 }

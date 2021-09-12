@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,29 +25,29 @@ using System.Threading.Tasks;
 
 namespace CalDavSynchronizer.Utilities
 {
-  public static class SecureStringUtility
-  {
-    public static string ToUnsecureString (SecureString secureString)
+    public static class SecureStringUtility
     {
-      IntPtr unmanagedString = IntPtr.Zero;
-      try
-      {
-        unmanagedString = Marshal.SecureStringToGlobalAllocUnicode (secureString);
-        return Marshal.PtrToStringUni (unmanagedString);
-      }
-      finally
-      {
-        Marshal.ZeroFreeGlobalAllocUnicode (unmanagedString);
-      }
-    }
+        public static string ToUnsecureString(SecureString secureString)
+        {
+            IntPtr unmanagedString = IntPtr.Zero;
+            try
+            {
+                unmanagedString = Marshal.SecureStringToGlobalAllocUnicode(secureString);
+                return Marshal.PtrToStringUni(unmanagedString);
+            }
+            finally
+            {
+                Marshal.ZeroFreeGlobalAllocUnicode(unmanagedString);
+            }
+        }
 
-    public static SecureString ToSecureString (string value)
-    {
-      var result = new SecureString ();
-      foreach (var c in value)
-        result.AppendChar (c);
-      result.MakeReadOnly ();
-      return result;
+        public static SecureString ToSecureString(string value)
+        {
+            var result = new SecureString();
+            foreach (var c in value)
+                result.AppendChar(c);
+            result.MakeReadOnly();
+            return result;
+        }
     }
-  }
 }

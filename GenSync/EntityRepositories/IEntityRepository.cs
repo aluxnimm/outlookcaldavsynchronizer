@@ -14,16 +14,17 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync.EntityRepositories
 {
-  /// <summary>
-  /// Represents an Repository, which contains entites that have to be synced
-  /// </summary>
-  public interface IEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> : 
-    IWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>, 
-    IVersionAwareReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
-  {
-  }
+    /// <summary>
+    /// Represents an Repository, which contains entites that have to be synced
+    /// </summary>
+    public interface IEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> :
+        IWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>,
+        IVersionAwareReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
+    {
+    }
 }

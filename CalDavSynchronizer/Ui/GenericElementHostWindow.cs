@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,17 +28,17 @@ using System.Windows.Forms;
 
 namespace CalDavSynchronizer.Ui
 {
-  public partial class GenericElementHostWindow : Form
-  {
-    public GenericElementHostWindow ()
+    public partial class GenericElementHostWindow : Form
     {
-      InitializeComponent();
-    }
+        public GenericElementHostWindow()
+        {
+            InitializeComponent();
+        }
 
-    public UIElement Child
-    {
-      get { return _elementHost.Child; }
-      set { _elementHost.Child = value; }
+        public UIElement Child
+        {
+            get { return _elementHost.Child; }
+            set { _elementHost.Child = value; }
+        }
     }
-  }
 }

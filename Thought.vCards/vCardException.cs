@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -9,15 +8,12 @@ using System;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     Base class for <see cref="vCard"/>-specific exceptions.
     /// </summary>
     [Serializable]
     public class vCardException : Exception
     {
-
-
         /// <summary>
         ///     Initializes a new instance of the vCardException class.
         /// </summary>
@@ -58,9 +54,5 @@ namespace Thought.vCards
             : base(message, innerException)
         {
         }
-
-
-
     }
-
 }

@@ -20,20 +20,19 @@ using CalDavSynchronizer.ProfileTypes;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  class ProfileViewModel
-  {
-
-    public ProfileViewModel(IProfileType profileType)
+    class ProfileViewModel
     {
-      if (profileType == null) throw new ArgumentNullException(nameof(profileType));
-      ProfileType = profileType;
-      Name = profileType.Name;
-      ImageUrl = profileType.ImageUrl;
-    }
+        public ProfileViewModel(IProfileType profileType)
+        {
+            if (profileType == null) throw new ArgumentNullException(nameof(profileType));
+            ProfileType = profileType;
+            Name = profileType.Name;
+            ImageUrl = profileType.ImageUrl;
+        }
 
-    public IProfileType ProfileType { get; }
-    public string Name { get; }
-    public string ImageUrl { get; }
-    public bool IsSelected { get; set; }
-  }
+        public IProfileType ProfileType { get; }
+        public string Name { get; }
+        public string ImageUrl { get; }
+        public bool IsSelected { get; set; }
+    }
 }

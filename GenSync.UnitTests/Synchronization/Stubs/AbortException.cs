@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace GenSync.UnitTests.Synchronization.Stubs
 {
-  class TestAbortException : Exception
-  {
-  }
+    class TestAbortException : Exception
+    {
+    }
 }

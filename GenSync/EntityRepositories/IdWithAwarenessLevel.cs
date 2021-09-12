@@ -14,28 +14,29 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace GenSync.EntityRepositories
 {
-  public struct IdWithAwarenessLevel<TEntityId>
-  {
-    private readonly TEntityId _id;
-    private readonly bool _isKnown;
-
-    public IdWithAwarenessLevel (TEntityId id, bool isKnown)
-        : this()
+    public struct IdWithAwarenessLevel<TEntityId>
     {
-      _id = id;
-      _isKnown = isKnown;
-    }
+        private readonly TEntityId _id;
+        private readonly bool _isKnown;
 
-    public TEntityId Id
-    {
-      get { return _id; }
-    }
+        public IdWithAwarenessLevel(TEntityId id, bool isKnown)
+            : this()
+        {
+            _id = id;
+            _isKnown = isKnown;
+        }
 
-    public bool IsKnown
-    {
-      get { return _isKnown; }
+        public TEntityId Id
+        {
+            get { return _id; }
+        }
+
+        public bool IsKnown
+        {
+            get { return _isKnown; }
+        }
     }
-  }
 }

@@ -14,40 +14,41 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Net;
 using CalDavSynchronizer.Contracts;
 using CalDavSynchronizer.Scheduling;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  internal class HttpUtility
-  {
-    public static WebClient CreateWebClient()
+    internal class HttpUtility
     {
-      var client = new WebClient();
-      var proxy = WebRequest.DefaultWebProxy;
-      proxy.Credentials = CredentialCache.DefaultCredentials;
-      client.Proxy = proxy;
-      return client;
-    }
+        public static WebClient CreateWebClient()
+        {
+            var client = new WebClient();
+            var proxy = WebRequest.DefaultWebProxy;
+            proxy.Credentials = CredentialCache.DefaultCredentials;
+            client.Proxy = proxy;
+            return client;
+        }
 
-    public static WebClient CreateWebClientWithCredentialsAndProxy(NetworkCredential credentials, ProxyOptions proxyOptions)
-    {
-      var proxy = proxyOptions != null ? SynchronizerFactory.CreateProxy(proxyOptions) : null;
-      var client = new WebClient
-      {
-        Credentials = credentials,
-        Proxy = proxy
-      };
-      return client;
-    }
+        public static WebClient CreateWebClientWithCredentialsAndProxy(NetworkCredential credentials, ProxyOptions proxyOptions)
+        {
+            var proxy = proxyOptions != null ? SynchronizerFactory.CreateProxy(proxyOptions) : null;
+            var client = new WebClient
+            {
+                Credentials = credentials,
+                Proxy = proxy
+            };
+            return client;
+        }
 
-    public static string GetQuotedEtag (string etag)
-    {
-      if (string.IsNullOrEmpty (etag))
-        return etag;
+        public static string GetQuotedEtag(string etag)
+        {
+            if (string.IsNullOrEmpty(etag))
+                return etag;
 
-      return etag.StartsWith ("\"") ? etag : "\"" + etag + "\"";
+            return etag.StartsWith("\"") ? etag : "\"" + etag + "\"";
+        }
     }
-  }
 }

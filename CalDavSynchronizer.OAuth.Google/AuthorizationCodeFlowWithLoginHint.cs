@@ -21,24 +21,24 @@ using Google.Apis.Auth.OAuth2.Requests;
 
 namespace CalDavSynchronizer.OAuth.Google
 {
-  public class AuthorizationCodeFlowWithLoginHint : GoogleAuthorizationCodeFlow
-  {
-    private readonly string _loginHint;
-
-    public AuthorizationCodeFlowWithLoginHint(Initializer initializer, string loginHint) : base(initializer)
+    public class AuthorizationCodeFlowWithLoginHint : GoogleAuthorizationCodeFlow
     {
-      _loginHint = loginHint;
-    }
+        private readonly string _loginHint;
 
-    public override AuthorizationCodeRequestUrl CreateAuthorizationCodeRequest(string redirectUri)
-    {
-      return new GoogleAuthorizationCodeRequestUrl(new Uri(AuthorizationServerUrl))
-      {
-        ClientId = ClientSecrets.ClientId,
-        Scope = string.Join(" ", Scopes),
-        RedirectUri = redirectUri,
-        LoginHint = _loginHint
-      };
+        public AuthorizationCodeFlowWithLoginHint(Initializer initializer, string loginHint) : base(initializer)
+        {
+            _loginHint = loginHint;
+        }
+
+        public override AuthorizationCodeRequestUrl CreateAuthorizationCodeRequest(string redirectUri)
+        {
+            return new GoogleAuthorizationCodeRequestUrl(new Uri(AuthorizationServerUrl))
+            {
+                ClientId = ClientSecrets.ClientId,
+                Scope = string.Join(" ", Scopes),
+                RedirectUri = redirectUri,
+                LoginHint = _loginHint
+            };
+        }
     }
-  }
 }

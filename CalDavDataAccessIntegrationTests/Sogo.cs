@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
@@ -21,27 +22,27 @@ using NUnit.Framework;
 
 namespace CalDavDataAccessIntegrationTests
 {
-  public class Sogo : FixtureBase
-  {
-    protected override string ProfileName
+    public class Sogo : FixtureBase
     {
-      get { return "IntegrationTest/DataAccess/Sogo"; }
-    }
+        protected override string ProfileName
+        {
+            get { return "IntegrationTest/DataAccess/Sogo"; }
+        }
 
-    protected override ServerAdapterType? ServerAdapterTypeOverride
-    {
-      get { return ServerAdapterType.WebDavHttpClientBased; }
-    }
- 
-    public async override Task TryDeleteEntityWithWrongVersion ()
-    {
-      await base.TryDeleteEntityWithWrongVersion ();
-    }
+        protected override ServerAdapterType? ServerAdapterTypeOverride
+        {
+            get { return ServerAdapterType.WebDavHttpClientBased; }
+        }
 
-    [Ignore ("Sogo creates a new entity, when updating a non existing one")]
-    public override Task UpdateNonExistingEntity ()
-    {
-      return base.UpdateNonExistingEntity ();
+        public async override Task TryDeleteEntityWithWrongVersion()
+        {
+            await base.TryDeleteEntityWithWrongVersion();
+        }
+
+        [Ignore("Sogo creates a new entity, when updating a non existing one")]
+        public override Task UpdateNonExistingEntity()
+        {
+            return base.UpdateNonExistingEntity();
+        }
     }
-  }
 }

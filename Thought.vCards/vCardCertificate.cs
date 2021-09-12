@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -10,7 +9,6 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     A certificate attached to a vCard.
     /// </summary>
@@ -25,7 +23,6 @@ namespace Thought.vCards
     [Serializable]
     public class vCardCertificate
     {
-
         private string keyType;
         private byte[] data;
 
@@ -76,7 +73,6 @@ namespace Thought.vCards
 
             this.data = x509.RawData;
             this.keyType = "X509";
-
         }
 
 
@@ -91,14 +87,8 @@ namespace Thought.vCards
         /// </remarks>
         public byte[] Data
         {
-            get
-            {
-                return this.data;
-            }
-            set
-            {
-                this.data = value;
-            }
+            get { return this.data; }
+            set { this.data = value; }
         }
 
 
@@ -110,16 +100,8 @@ namespace Thought.vCards
         /// </remarks>
         public string KeyType
         {
-            get
-            {
-                return this.keyType ?? string.Empty;
-            }
-            set
-            {
-                this.keyType = value;
-            }
+            get { return this.keyType ?? string.Empty; }
+            set { this.keyType = value; }
         }
-
     }
-
 }

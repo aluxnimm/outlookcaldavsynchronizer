@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,55 +24,55 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class EmailAddressCache : ICardDavRepositoryLogger
-  {
-    private Dictionary<WebResourceName, CacheItem> _cacheItems = new Dictionary<WebResourceName, CacheItem>(WebResourceName.Comparer);
-
-    public void LogEntitiesExists(IEnumerable<WebResourceName> allEntities)
+    public class EmailAddressCache : ICardDavRepositoryLogger
     {
-      foreach (var id in allEntities)
-      {
-        if (!_cacheItems.ContainsKey(id))
-          _cacheItems.Add(id, CreateEmptyCacheItem(id) );
-      }
-    }
-    
-    public void LogEntityExists(WebResourceName id)
-    {
-      if (!_cacheItems.ContainsKey(id))
-        _cacheItems.Add(id, CreateEmptyCacheItem(id));
-    }
+        private Dictionary<WebResourceName, CacheItem> _cacheItems = new Dictionary<WebResourceName, CacheItem>(WebResourceName.Comparer);
 
-    public void LogEntityExists(WebResourceName entityId, vCard vCard)
-    {
-      if (!_cacheItems.TryGetValue(entityId, out var cacheItem))
-        _cacheItems.Add(entityId, cacheItem = new CacheItem {Id = entityId});
+        public void LogEntitiesExists(IEnumerable<WebResourceName> allEntities)
+        {
+            foreach (var id in allEntities)
+            {
+                if (!_cacheItems.ContainsKey(id))
+                    _cacheItems.Add(id, CreateEmptyCacheItem(id));
+            }
+        }
 
-      cacheItem.EmailAddresses = vCard.EmailAddresses.Select(a => a.Address).ToArray();
-      cacheItem.Uid = vCard.UniqueId;
+        public void LogEntityExists(WebResourceName id)
+        {
+            if (!_cacheItems.ContainsKey(id))
+                _cacheItems.Add(id, CreateEmptyCacheItem(id));
+        }
+
+        public void LogEntityExists(WebResourceName entityId, vCard vCard)
+        {
+            if (!_cacheItems.TryGetValue(entityId, out var cacheItem))
+                _cacheItems.Add(entityId, cacheItem = new CacheItem {Id = entityId});
+
+            cacheItem.EmailAddresses = vCard.EmailAddresses.Select(a => a.Address).ToArray();
+            cacheItem.Uid = vCard.UniqueId;
+        }
+
+        public void LogEntityDeleted(WebResourceName entityId)
+        {
+            _cacheItems.Remove(entityId);
+        }
+
+        public void SetCacheItems(CacheItem[] items) => _cacheItems = items.ToDictionary(e => e.Id);
+        public CacheItem[] GetNonEmptyCacheItems() => _cacheItems.Values.Where(i => !IsEmpty(i)).ToArray();
+
+        public WebResourceName[] GetEmptyCacheItems()
+        {
+            return _cacheItems.Where(e => IsEmpty(e.Value)).Select(e => e.Key).ToArray();
+        }
+
+        private static CacheItem CreateEmptyCacheItem(WebResourceName id)
+        {
+            return new CacheItem {Id = id};
+        }
+
+        private static bool IsEmpty(CacheItem cacheItem)
+        {
+            return cacheItem.EmailAddresses == null || cacheItem.Uid == null;
+        }
     }
-
-    public void LogEntityDeleted(WebResourceName entityId)
-    {
-      _cacheItems.Remove(entityId);
-    }
-
-    public void SetCacheItems(CacheItem[] items) => _cacheItems = items.ToDictionary(e => e.Id);
-    public CacheItem[] GetNonEmptyCacheItems() => _cacheItems.Values.Where(i => !IsEmpty(i)).ToArray();
-
-    public WebResourceName[] GetEmptyCacheItems()
-    {
-      return _cacheItems.Where(e => IsEmpty(e.Value)).Select(e => e.Key).ToArray();
-    }
-
-    private static CacheItem CreateEmptyCacheItem(WebResourceName id)
-    {
-      return new CacheItem { Id = id };
-    }
-
-    private static bool IsEmpty(CacheItem cacheItem)
-    {
-      return cacheItem.EmailAddresses == null || cacheItem.Uid == null;
-    }
-  }
 }

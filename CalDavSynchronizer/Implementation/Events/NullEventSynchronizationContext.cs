@@ -20,24 +20,24 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class NullEventSynchronizationContext : IEventSynchronizationContext
-  {
-    public static readonly IEventSynchronizationContext Instance = new NullEventSynchronizationContext();
-
-    private NullEventSynchronizationContext()
+    public class NullEventSynchronizationContext : IEventSynchronizationContext
     {
-    }
+        public static readonly IEventSynchronizationContext Instance = new NullEventSynchronizationContext();
 
-    public IDuplicateEventCleaner DuplicateEventCleaner => NullDuplicateEventCleaner.Instance;
+        private NullEventSynchronizationContext()
+        {
+        }
 
-    public string MapHtmlColorToCategoryOrNull(string htmlColor, IEntitySynchronizationLogger logger)
-    {
-      return NullColorCategoryMapper.Instance.MapHtmlColorToCategoryOrNull(htmlColor, logger);
-    }
+        public IDuplicateEventCleaner DuplicateEventCleaner => NullDuplicateEventCleaner.Instance;
 
-    public string MapCategoryToHtmlColorOrNull(string categoryName)
-    {
-      return NullColorCategoryMapper.Instance.MapCategoryToHtmlColorOrNull(categoryName);
+        public string MapHtmlColorToCategoryOrNull(string htmlColor, IEntitySynchronizationLogger logger)
+        {
+            return NullColorCategoryMapper.Instance.MapHtmlColorToCategoryOrNull(htmlColor, logger);
+        }
+
+        public string MapCategoryToHtmlColorOrNull(string categoryName)
+        {
+            return NullColorCategoryMapper.Instance.MapCategoryToHtmlColorOrNull(categoryName);
+        }
     }
-  }
 }

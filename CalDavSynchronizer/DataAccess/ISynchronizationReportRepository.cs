@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,13 +22,13 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public interface ISynchronizationReportRepository
-  {
-    event EventHandler<ReportAddedEventArgs> ReportAdded;
-    SynchronizationReportName AddReport (SynchronizationReport report);
-    IReadOnlyList<SynchronizationReportName> GetAvailableReports ();
-    SynchronizationReport GetReport (SynchronizationReportName name);
-    void DeleteReport (SynchronizationReportName name);
-    Stream GetReportStream (SynchronizationReportName name);
-  }
+    public interface ISynchronizationReportRepository
+    {
+        event EventHandler<ReportAddedEventArgs> ReportAdded;
+        SynchronizationReportName AddReport(SynchronizationReport report);
+        IReadOnlyList<SynchronizationReportName> GetAvailableReports();
+        SynchronizationReport GetReport(SynchronizationReportName name);
+        void DeleteReport(SynchronizationReportName name);
+        Stream GetReportStream(SynchronizationReportName name);
+    }
 }

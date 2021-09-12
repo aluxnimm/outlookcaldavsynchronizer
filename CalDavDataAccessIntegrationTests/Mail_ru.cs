@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
@@ -21,41 +22,41 @@ using NUnit.Framework;
 
 namespace CalDavDataAccessIntegrationTests
 {
-  [Ignore("Currently no account available for testing")]
-  public class Mail_ru : FixtureBase
-  {
-    protected override string ProfileName
+    [Ignore("Currently no account available for testing")]
+    public class Mail_ru : FixtureBase
     {
-      get { return "Mail.ru - TestCal"; }
-    }
+        protected override string ProfileName
+        {
+            get { return "Mail.ru - TestCal"; }
+        }
 
-    protected override ServerAdapterType? ServerAdapterTypeOverride
-    {
-      get { return ServerAdapterType.WebDavHttpClientBased; }
-    }
+        protected override ServerAdapterType? ServerAdapterTypeOverride
+        {
+            get { return ServerAdapterType.WebDavHttpClientBased; }
+        }
 
-    [Ignore ("Mail.ru returns false.")]
-    public override Task IsResourceCalender ()
-    {
-      return base.IsResourceCalender ();
-    }
+        [Ignore("Mail.ru returns false.")]
+        public override Task IsResourceCalender()
+        {
+            return base.IsResourceCalender();
+        }
 
-    [Ignore ("Mail.ru returns false.")]
-    public override Task DoesSupportCalendarQuery ()
-    {
-      return base.DoesSupportCalendarQuery ();
-    }
+        [Ignore("Mail.ru returns false.")]
+        public override Task DoesSupportCalendarQuery()
+        {
+            return base.DoesSupportCalendarQuery();
+        }
 
-    [Ignore ("Mail.ru ignores time range filter.")]
-    public override Task Test_CRUD ()
-    {
-      return base.Test_CRUD ();
-    }
+        [Ignore("Mail.ru ignores time range filter.")]
+        public override Task Test_CRUD()
+        {
+            return base.Test_CRUD();
+        }
 
-    [Test]
-    public override async Task Test_CRUD_WithoutTimeRangeFilter ()
-    {
-      await base.Test_CRUD_WithoutTimeRangeFilter ();
+        [Test]
+        public override async Task Test_CRUD_WithoutTimeRangeFilter()
+        {
+            await base.Test_CRUD_WithoutTimeRangeFilter();
+        }
     }
-  }
 }

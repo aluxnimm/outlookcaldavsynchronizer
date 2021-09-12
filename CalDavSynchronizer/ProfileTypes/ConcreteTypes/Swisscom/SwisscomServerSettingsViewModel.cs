@@ -21,10 +21,10 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes.Swisscom
 {
-  class SwisscomServerSettingsViewModel : ServerSettingsViewModel
-  {
-    public SwisscomServerSettingsViewModel(OptionsModel model, IOptionTasks optionTasks, IViewOptions viewOptions) : base(model, optionTasks, viewOptions)
+    class SwisscomServerSettingsViewModel : ServerSettingsViewModel
     {
+        public SwisscomServerSettingsViewModel(OptionsModel model, IOptionTasks optionTasks, IViewOptions viewOptions) : base(model, optionTasks, viewOptions)
+        {
+        }
     }
-  }
 }

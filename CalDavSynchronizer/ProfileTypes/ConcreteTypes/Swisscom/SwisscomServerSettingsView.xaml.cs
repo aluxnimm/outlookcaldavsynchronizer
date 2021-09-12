@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Windows.Controls;
 using CalDavSynchronizer.Ui.Options.ViewModels;
@@ -21,12 +22,11 @@ using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.Ui.Options.Views
 {
-  public partial class SwisscomServerSettingsView : UserControl
-  {
-    public SwisscomServerSettingsView()
+    public partial class SwisscomServerSettingsView : UserControl
     {
-      InitializeComponent();
-   
+        public SwisscomServerSettingsView()
+        {
+            InitializeComponent();
+        }
     }
-  }
 }

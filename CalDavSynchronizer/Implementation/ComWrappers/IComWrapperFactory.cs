@@ -14,23 +14,26 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.ComWrappers
 {
-  // Use explicit delegates, since Func<,> cannot be used, because that would mean that IComWrapperFactory 
-  // would use a generic with an Com-Class ( Func<string,AppointmentItem> ). But classes containing a generic with an Com-Class
-  // cannot be used over assembly boundaries
-  public delegate AppointmentItem LoadAppointmentItemDelegate(string id);
-  public delegate ContactItem LoadContactItemDelegate(string id);
-  public delegate TaskItem LoadTaskItemDelegate(string id);
+    // Use explicit delegates, since Func<,> cannot be used, because that would mean that IComWrapperFactory 
+    // would use a generic with an Com-Class ( Func<string,AppointmentItem> ). But classes containing a generic with an Com-Class
+    // cannot be used over assembly boundaries
+    public delegate AppointmentItem LoadAppointmentItemDelegate(string id);
 
-  public interface IComWrapperFactory
-  {
-    IAppointmentItemWrapper Create(AppointmentItem inner, LoadAppointmentItemDelegate load);
-    IContactItemWrapper Create(ContactItem inner, LoadContactItemDelegate load);
-    ITaskItemWrapper Create(TaskItem inner, LoadTaskItemDelegate load);
-    IDistListItemWrapper Create(DistListItem inner);
-  }
+    public delegate ContactItem LoadContactItemDelegate(string id);
+
+    public delegate TaskItem LoadTaskItemDelegate(string id);
+
+    public interface IComWrapperFactory
+    {
+        IAppointmentItemWrapper Create(AppointmentItem inner, LoadAppointmentItemDelegate load);
+        IContactItemWrapper Create(ContactItem inner, LoadContactItemDelegate load);
+        ITaskItemWrapper Create(TaskItem inner, LoadTaskItemDelegate load);
+        IDistListItemWrapper Create(DistListItem inner);
+    }
 }

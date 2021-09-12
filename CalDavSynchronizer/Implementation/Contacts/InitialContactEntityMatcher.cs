@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.DataAccess;
@@ -23,31 +24,31 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  internal class InitialContactEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, ContactMatchData, string, WebResourceName, string, vCard, string>
-  {
-    public InitialContactEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
-        : base (btypeIdEqualityComparer)
+    internal class InitialContactEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, ContactMatchData, string, WebResourceName, string, vCard, string>
     {
-    }
+        public InitialContactEntityMatcher(IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
+            : base(btypeIdEqualityComparer)
+        {
+        }
 
-    protected override bool AreEqual (ContactMatchData atypeEntity, vCard btypeEntity)
-    {
-      return true;
-    }
+        protected override bool AreEqual(ContactMatchData atypeEntity, vCard btypeEntity)
+        {
+            return true;
+        }
 
-    protected override string GetAtypePropertyValue (ContactMatchData atypeEntity)
-    {
-      return atypeEntity.FirstName + "|" + atypeEntity.LastName;
-    }
+        protected override string GetAtypePropertyValue(ContactMatchData atypeEntity)
+        {
+            return atypeEntity.FirstName + "|" + atypeEntity.LastName;
+        }
 
-    protected override string GetBtypePropertyValue (vCard btypeEntity)
-    {
-      return btypeEntity.GivenName + "|" + btypeEntity.FamilyName;
-    }
+        protected override string GetBtypePropertyValue(vCard btypeEntity)
+        {
+            return btypeEntity.GivenName + "|" + btypeEntity.FamilyName;
+        }
 
-    protected override string MapAtypePropertyValue (string value)
-    {
-      return value;
+        protected override string MapAtypePropertyValue(string value)
+        {
+            return value;
+        }
     }
-  }
 }

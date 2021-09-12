@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -23,67 +24,67 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
 {
-  public class PermanentStatusesViewModel : IPermanentStatusesViewModel
-  {
-    private readonly IUiService _uiService;
-    private readonly ICalDavSynchronizerCommands _commands;
-    private readonly SynchronizationRunSummaryCache _summaryChache = new SynchronizationRunSummaryCache();
-    private ITransientProfileStatusesViewModel _viewModelOrNull;
-
-    public PermanentStatusesViewModel(IUiService uiService, ICalDavSynchronizerCommands commands, Contracts.Options[] options)
+    public class PermanentStatusesViewModel : IPermanentStatusesViewModel
     {
-      _commands = commands ?? throw new ArgumentNullException(nameof(commands));
-      _uiService = uiService ?? throw new ArgumentNullException(nameof(uiService));
-      _summaryChache.NotifyProfilesChanged(options);
-    }
+        private readonly IUiService _uiService;
+        private readonly ICalDavSynchronizerCommands _commands;
+        private readonly SynchronizationRunSummaryCache _summaryChache = new SynchronizationRunSummaryCache();
+        private ITransientProfileStatusesViewModel _viewModelOrNull;
 
-    public event EventHandler<OptionsEventArgs> OptionsRequesting;
-
-    Contracts.Options[] OnOptionsRequesting()
-    {
-      var args = new OptionsEventArgs();
-      OptionsRequesting?.Invoke(this, args);
-      return args.Options ?? new Contracts.Options[0];
-    }
-
-    public void SetVisible()
-    {
-      if (_viewModelOrNull == null)
-      {
-
-        var viewModel = new TransientProfileStatusesViewModel(_commands, OnOptionsRequesting());
-        foreach (var kv in _summaryChache.SummaryByProfileId)
+        public PermanentStatusesViewModel(IUiService uiService, ICalDavSynchronizerCommands commands, Contracts.Options[] options)
         {
-          if(kv.Value.HasValue)
-            viewModel.Update(kv.Key, kv.Value.Value);
+            _commands = commands ?? throw new ArgumentNullException(nameof(commands));
+            _uiService = uiService ?? throw new ArgumentNullException(nameof(uiService));
+            _summaryChache.NotifyProfilesChanged(options);
         }
-        _viewModelOrNull = viewModel;
-        _viewModelOrNull.Closing += _viewModelOrNull_Closing;
-        _uiService.Show(viewModel);
-      }
-      else
-      {
-        _viewModelOrNull.BringToFront();
-      }
-    }
 
-    private void _viewModelOrNull_Closing(object sender, EventArgs e)
-    {
-      _viewModelOrNull.Closing -= _viewModelOrNull_Closing;
-      _viewModelOrNull.Dispose();
-      _viewModelOrNull = null;
-    }
-    
-    public void Update(Guid profileId, SynchronizationRunSummary summary)
-    {
-      _summaryChache.Update(profileId, summary);
-      _viewModelOrNull?.Update(profileId, summary);
-    }
+        public event EventHandler<OptionsEventArgs> OptionsRequesting;
 
-    public void NotifyProfilesChanged(Contracts.Options[] profiles)
-    {
-      _summaryChache.NotifyProfilesChanged(profiles);
-      _viewModelOrNull?.NotifyProfilesChanged(profiles);
+        Contracts.Options[] OnOptionsRequesting()
+        {
+            var args = new OptionsEventArgs();
+            OptionsRequesting?.Invoke(this, args);
+            return args.Options ?? new Contracts.Options[0];
+        }
+
+        public void SetVisible()
+        {
+            if (_viewModelOrNull == null)
+            {
+                var viewModel = new TransientProfileStatusesViewModel(_commands, OnOptionsRequesting());
+                foreach (var kv in _summaryChache.SummaryByProfileId)
+                {
+                    if (kv.Value.HasValue)
+                        viewModel.Update(kv.Key, kv.Value.Value);
+                }
+
+                _viewModelOrNull = viewModel;
+                _viewModelOrNull.Closing += _viewModelOrNull_Closing;
+                _uiService.Show(viewModel);
+            }
+            else
+            {
+                _viewModelOrNull.BringToFront();
+            }
+        }
+
+        private void _viewModelOrNull_Closing(object sender, EventArgs e)
+        {
+            _viewModelOrNull.Closing -= _viewModelOrNull_Closing;
+            _viewModelOrNull.Dispose();
+            _viewModelOrNull = null;
+        }
+
+        public void Update(Guid profileId, SynchronizationRunSummary summary)
+        {
+            _summaryChache.Update(profileId, summary);
+            _viewModelOrNull?.Update(profileId, summary);
+        }
+
+        public void NotifyProfilesChanged(Contracts.Options[] profiles)
+        {
+            _summaryChache.NotifyProfilesChanged(profiles);
+            _viewModelOrNull?.NotifyProfilesChanged(profiles);
+        }
     }
-  }
 }

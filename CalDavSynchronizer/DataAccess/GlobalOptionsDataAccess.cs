@@ -23,25 +23,25 @@ using log4net;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  internal class GlobalOptionsDataAccess : IGlobalOptionsDataAccess
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
-
-
-    public GlobalOptions LoadGlobalOptionsNoThrow ()
+    internal class GlobalOptionsDataAccess : IGlobalOptionsDataAccess
     {
-      try
-      {
-        using (var client = HttpUtility.CreateWebClient())
+        private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
+
+
+        public GlobalOptions LoadGlobalOptionsNoThrow()
         {
-          return Serializer<GlobalOptions>.Deserialize (client.DownloadString (WebResourceUrls.GlobalOptionsFile));
+            try
+            {
+                using (var client = HttpUtility.CreateWebClient())
+                {
+                    return Serializer<GlobalOptions>.Deserialize(client.DownloadString(WebResourceUrls.GlobalOptionsFile));
+                }
+            }
+            catch (Exception x)
+            {
+                s_logger.Error(null, x);
+                return new GlobalOptions();
+            }
         }
-      }
-      catch (Exception x)
-      {
-        s_logger.Error (null, x);
-        return new GlobalOptions();
-      }
     }
-  }
 }

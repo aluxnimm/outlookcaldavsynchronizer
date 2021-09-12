@@ -14,17 +14,18 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace CalDavSynchronizer.Contracts
-{ 
-  public class GlobalOptions
-  {
-    public bool IsInstallNewVersionEnabled { get; set; }
-
-    public GlobalOptions ()
+{
+    public class GlobalOptions
     {
-      IsInstallNewVersionEnabled = true;
+        public bool IsInstallNewVersionEnabled { get; set; }
+
+        public GlobalOptions()
+        {
+            IsInstallNewVersionEnabled = true;
+        }
     }
-  }
 }

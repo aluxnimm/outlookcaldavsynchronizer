@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -11,7 +10,6 @@ using System.Collections.ObjectModel;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     A collection of <see cref="vCardSubproperty"/> objects.
     /// </summary>
@@ -32,7 +30,6 @@ namespace Thought.vCards
     /// <seealso cref="vCardSubproperty"/>
     public class vCardSubpropertyCollection : Collection<vCardSubproperty>
     {
-
         /// <summary>
         ///     Adds a subproperty without a value.
         /// </summary>
@@ -78,7 +75,6 @@ namespace Thought.vCards
         /// </param>
         public void AddOrUpdate(string name, string value)
         {
-
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name");
 
@@ -92,7 +88,6 @@ namespace Thought.vCards
             {
                 this[index].Value = value;
             }
-
         }
 
 
@@ -109,16 +104,13 @@ namespace Thought.vCards
         /// </returns>
         public bool Contains(string name)
         {
-
             foreach (vCardSubproperty sub in this)
             {
-
                 if (string.Compare(name, sub.Name, StringComparison.OrdinalIgnoreCase) == 0)
                     return true;
             }
 
             return false;
-
         }
 
 
@@ -131,7 +123,6 @@ namespace Thought.vCards
         /// </returns>
         public string[] GetNames()
         {
-
             ArrayList names = new ArrayList(this.Count);
 
             foreach (vCardSubproperty sub in this)
@@ -139,8 +130,7 @@ namespace Thought.vCards
                 names.Add(sub.Name);
             }
 
-            return (string[])names.ToArray(typeof(string));
-
+            return (string[]) names.ToArray(typeof(string));
         }
 
 
@@ -157,7 +147,6 @@ namespace Thought.vCards
         /// </returns>
         public string[] GetNames(string[] filteredNames)
         {
-
             if (filteredNames == null)
                 throw new ArgumentNullException("filteredNames");
 
@@ -169,7 +158,7 @@ namespace Thought.vCards
             // the filtered list will be constructed.
 
             string[] processedNames =
-                (string[])filteredNames.Clone();
+                (string[]) filteredNames.Clone();
 
             for (int index = 0; index < processedNames.Length; index++)
             {
@@ -187,7 +176,6 @@ namespace Thought.vCards
 
             foreach (vCardSubproperty sub in this)
             {
-
                 // Convert this subproperty name to upper case.
                 // The names in the processed array are already
                 // in upper case.
@@ -203,11 +191,9 @@ namespace Thought.vCards
 
                 if (matchIndex != -1)
                     matchingNames.Add(processedNames[matchIndex]);
-
             }
 
-            return (string[])matchingNames.ToArray(typeof(string));
-
+            return (string[]) matchingNames.ToArray(typeof(string));
         }
 
 
@@ -224,7 +210,6 @@ namespace Thought.vCards
         /// </returns>
         public string GetValue(string name)
         {
-
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name");
 
@@ -240,7 +225,6 @@ namespace Thought.vCards
             {
                 return this[index].Value;
             }
-
         }
 
 
@@ -261,7 +245,6 @@ namespace Thought.vCards
             string name,
             string[] namelessValues)
         {
-
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name");
 
@@ -296,7 +279,6 @@ namespace Thought.vCards
             {
                 return this[nameIndex].Name;
             }
-
         }
 
 
@@ -313,7 +295,6 @@ namespace Thought.vCards
         /// </returns>
         public int IndexOf(string name)
         {
-
             for (int index = 0; index < this.Count; index++)
             {
                 if (string.Compare(name, this[index].Name, StringComparison.OrdinalIgnoreCase) == 0)
@@ -323,7 +304,6 @@ namespace Thought.vCards
             }
 
             return -1;
-
         }
 
 
@@ -340,29 +320,21 @@ namespace Thought.vCards
         /// </returns>
         public int IndexOfAny(string[] names)
         {
-
             if (names == null)
                 throw new ArgumentNullException("names");
 
             for (int index = 0; index < this.Count; index++)
             {
-
                 foreach (string name in names)
                 {
-
                     if (string.Compare(this[index].Name, name, StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         return index;
                     }
                 }
-
             }
 
             return -1;
-
         }
-
-
     }
-
 }

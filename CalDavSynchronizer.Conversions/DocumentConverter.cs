@@ -14,20 +14,21 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace CalDavSynchronizer.Conversions
 {
-  public class DocumentConverter : IDocumentConverter
-  {
-    public string ConvertHtmlToRtf(string html)
+    public class DocumentConverter : IDocumentConverter
     {
-      var xaml = Msft.HtmlToXamlConverter.ConvertHtmlToXaml(html, true);
-      return RtfXamlConverter.ConvertXamlToRtf(xaml);
-    }
+        public string ConvertHtmlToRtf(string html)
+        {
+            var xaml = Msft.HtmlToXamlConverter.ConvertHtmlToXaml(html, true);
+            return RtfXamlConverter.ConvertXamlToRtf(xaml);
+        }
 
-    public string ConvertRtfToHtml(string rtf)
-    {
-      var xaml = RtfXamlConverter.ConvertRtfToXaml(rtf);
-      return Msft.HtmlFromXamlConverter.ConvertXamlToHtml(xaml, true);
+        public string ConvertRtfToHtml(string rtf)
+        {
+            var xaml = RtfXamlConverter.ConvertRtfToXaml(rtf);
+            return Msft.HtmlFromXamlConverter.ConvertXamlToHtml(xaml, true);
+        }
     }
-  }
 }

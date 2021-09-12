@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -9,7 +8,6 @@ using System;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     A web site defined in a vCard.
     /// </summary>
@@ -17,7 +15,6 @@ namespace Thought.vCards
     /// <seealso cref="vCardWebsiteTypes"/>
     public class vCardWebsite
     {
-
         private string url;
         private vCardWebsiteTypes websiteType;
 
@@ -68,11 +65,10 @@ namespace Thought.vCards
             get
             {
                 return (this.websiteType & vCardWebsiteTypes.Personal) ==
-                    vCardWebsiteTypes.Personal;
+                       vCardWebsiteTypes.Personal;
             }
             set
             {
-
                 if (value)
                 {
                     this.websiteType |= vCardWebsiteTypes.Personal;
@@ -81,7 +77,6 @@ namespace Thought.vCards
                 {
                     this.websiteType &= ~vCardWebsiteTypes.Personal;
                 }
-
             }
         }
 
@@ -94,11 +89,10 @@ namespace Thought.vCards
             get
             {
                 return (this.websiteType & vCardWebsiteTypes.Work) ==
-                    vCardWebsiteTypes.Work;
+                       vCardWebsiteTypes.Work;
             }
             set
             {
-
                 if (value)
                 {
                     this.websiteType |= vCardWebsiteTypes.Work;
@@ -107,9 +101,7 @@ namespace Thought.vCards
                 {
                     this.websiteType &= ~vCardWebsiteTypes.Work;
                 }
-
             }
-
         }
 
 
@@ -121,10 +113,7 @@ namespace Thought.vCards
         /// </remarks>
         public string Url
         {
-            get
-            {
-                return this.url;
-            }
+            get { return this.url; }
             set
             {
                 if (value == null)
@@ -144,14 +133,8 @@ namespace Thought.vCards
         /// </summary>
         public vCardWebsiteTypes WebsiteType
         {
-            get
-            {
-                return this.websiteType;
-            }
-            set
-            {
-                this.websiteType = value;
-            }
+            get { return this.websiteType; }
+            set { this.websiteType = value; }
         }
 
 
@@ -166,5 +149,4 @@ namespace Thought.vCards
             return this.url;
         }
     }
-
 }

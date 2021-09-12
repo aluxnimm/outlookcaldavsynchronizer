@@ -14,17 +14,18 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using GenSync.EntityRelationManagement;
 
 namespace CalDavSynchronizer.Implementation.GoogleTasks
 {
-  public class GoogleTaskRelationData : IEntityRelationData<string, DateTime, string, string>
-  {
-    public string AtypeId { get; set; }
-    public DateTime AtypeVersion { get; set; }
-    
-    public string BtypeId { get; set; }
-    public string BtypeVersion { get; set; }
-  }
+    public class GoogleTaskRelationData : IEntityRelationData<string, DateTime, string, string>
+    {
+        public string AtypeId { get; set; }
+        public DateTime AtypeVersion { get; set; }
+
+        public string BtypeId { get; set; }
+        public string BtypeVersion { get; set; }
+    }
 }

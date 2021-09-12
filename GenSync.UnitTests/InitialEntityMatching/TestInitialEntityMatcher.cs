@@ -14,38 +14,39 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using GenSync.InitialEntityMatching;
 
 namespace GenSync.UnitTests.InitialEntityMatching
 {
-  internal class TestInitialEntityMatcher : InitialEntityMatcherByPropertyGrouping<Identifier<int>, int, PersonA, int, Identifier<string>, string, PersonB, string>
-  {
-    public TestInitialEntityMatcher (IEqualityComparer<Identifier<string>> btypeIdEqualityComparer)
-        : base (btypeIdEqualityComparer)
+    internal class TestInitialEntityMatcher : InitialEntityMatcherByPropertyGrouping<Identifier<int>, int, PersonA, int, Identifier<string>, string, PersonB, string>
     {
-    }
+        public TestInitialEntityMatcher(IEqualityComparer<Identifier<string>> btypeIdEqualityComparer)
+            : base(btypeIdEqualityComparer)
+        {
+        }
 
-    protected override bool AreEqual (PersonA atypeEntity, PersonB btypeEntity)
-    {
-      return atypeEntity.Name == btypeEntity.Name &&
-             atypeEntity.Age.ToString() == btypeEntity.Age;
-    }
+        protected override bool AreEqual(PersonA atypeEntity, PersonB btypeEntity)
+        {
+            return atypeEntity.Name == btypeEntity.Name &&
+                   atypeEntity.Age.ToString() == btypeEntity.Age;
+        }
 
-    protected override int GetAtypePropertyValue (PersonA atypeEntity)
-    {
-      return atypeEntity.Age;
-    }
+        protected override int GetAtypePropertyValue(PersonA atypeEntity)
+        {
+            return atypeEntity.Age;
+        }
 
-    protected override string GetBtypePropertyValue (PersonB btypeEntity)
-    {
-      return btypeEntity.Age;
-    }
+        protected override string GetBtypePropertyValue(PersonB btypeEntity)
+        {
+            return btypeEntity.Age;
+        }
 
-    protected override string MapAtypePropertyValue (int value)
-    {
-      return value.ToString();
+        protected override string MapAtypePropertyValue(int value)
+        {
+            return value.ToString();
+        }
     }
-  }
 }

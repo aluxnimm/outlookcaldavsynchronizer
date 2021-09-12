@@ -28,87 +28,86 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
 {
-  public class VCardTypeDetector : IVCardTypeDetector
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
-
-    private readonly IReadOnlyEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> _cardDavRepository;
-    private readonly IVCardTypeCache _vcardTypeCache;
-
-
-    public VCardTypeDetector (IReadOnlyEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> cardDavRepository, IVCardTypeCache vcardTypeCache)
+    public class VCardTypeDetector : IVCardTypeDetector
     {
-      if (cardDavRepository == null)
-        throw new ArgumentNullException (nameof (cardDavRepository));
-      if (vcardTypeCache == null)
-        throw new ArgumentNullException (nameof (vcardTypeCache));
+        private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-      _cardDavRepository = cardDavRepository;
-      _vcardTypeCache = vcardTypeCache;
-    }
-
-    public async Task<IEnumerable<IdWithType<TId>>> GetVCardTypesAndCleanupCache<TId> (IEnumerable<TId> allIdsInRepository) 
-      where TId : IEntity<WebResourceName>
-    {
-      var cachedTypesById = _vcardTypeCache.GetEntries ();
-      Dictionary<WebResourceName, VCardEntry> touchedTypesById = new Dictionary<WebResourceName, VCardEntry>();
-
-      var result = new List<IdWithType<TId>> ();
-
-      var unknownIds = Resolve (allIdsInRepository, result, cachedTypesById, touchedTypesById);
-
-      if (!unknownIds.Any())
-      {
-        _vcardTypeCache.SetEntries(touchedTypesById);
-        return result;
-      }
-
-      s_logger.Info($"Loading {unknownIds.Count} unknown ids, to determine VCard type");
-
-      foreach (var entity in await _cardDavRepository.Get (unknownIds.Select(i => i.Id).ToArray(), NullLoadEntityLogger.Instance, NullCardDavRepositoryLogger.Instance))
-      {
-        var newEntry = new VCardEntry {Id = entity.Id, Type = GetVCardType(entity.Entity)};
-        cachedTypesById.Add (entity.Id, newEntry);
-      }
-      var stillUnknownIds = Resolve (unknownIds, result, cachedTypesById, touchedTypesById);
-
-      _vcardTypeCache.SetEntries (touchedTypesById);
-        
-      if (stillUnknownIds.Any ())
-        throw new Exception ("VCard does not exist on server anymore."); // TODO: throw specialized type that causes just a warning
-
-      return result;
-    }
-
-    public VCardType GetVCardType(vCard vcard)
-    {
-      // TODO: probably a good idea to add it to the cache
-      return vcard.Kind == vCardKindType.Group ? VCardType.Group : VCardType.Contact;
-    }
+        private readonly IReadOnlyEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> _cardDavRepository;
+        private readonly IVCardTypeCache _vcardTypeCache;
 
 
-    static List<TId> Resolve<TId> (IEnumerable<TId> ids, List<IdWithType<TId>> resultCollector, Dictionary<WebResourceName, VCardEntry> typesById, Dictionary<WebResourceName, VCardEntry> usedTypesById) 
-      where TId : IEntity<WebResourceName>
-    {
-      var unknownIds = new List<TId> ();
-
-      foreach (var id in ids)
-      {
-        VCardEntry entry;
-        if (typesById.TryGetValue(id.Id, out entry))
+        public VCardTypeDetector(IReadOnlyEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> cardDavRepository, IVCardTypeCache vcardTypeCache)
         {
-          resultCollector.Add(new IdWithType<TId>(id, entry.Type));
-          usedTypesById.Add(id.Id, entry);
+            if (cardDavRepository == null)
+                throw new ArgumentNullException(nameof(cardDavRepository));
+            if (vcardTypeCache == null)
+                throw new ArgumentNullException(nameof(vcardTypeCache));
+
+            _cardDavRepository = cardDavRepository;
+            _vcardTypeCache = vcardTypeCache;
         }
-        else
+
+        public async Task<IEnumerable<IdWithType<TId>>> GetVCardTypesAndCleanupCache<TId>(IEnumerable<TId> allIdsInRepository)
+            where TId : IEntity<WebResourceName>
         {
-          unknownIds.Add(id);
+            var cachedTypesById = _vcardTypeCache.GetEntries();
+            Dictionary<WebResourceName, VCardEntry> touchedTypesById = new Dictionary<WebResourceName, VCardEntry>();
+
+            var result = new List<IdWithType<TId>>();
+
+            var unknownIds = Resolve(allIdsInRepository, result, cachedTypesById, touchedTypesById);
+
+            if (!unknownIds.Any())
+            {
+                _vcardTypeCache.SetEntries(touchedTypesById);
+                return result;
+            }
+
+            s_logger.Info($"Loading {unknownIds.Count} unknown ids, to determine VCard type");
+
+            foreach (var entity in await _cardDavRepository.Get(unknownIds.Select(i => i.Id).ToArray(), NullLoadEntityLogger.Instance, NullCardDavRepositoryLogger.Instance))
+            {
+                var newEntry = new VCardEntry {Id = entity.Id, Type = GetVCardType(entity.Entity)};
+                cachedTypesById.Add(entity.Id, newEntry);
+            }
+
+            var stillUnknownIds = Resolve(unknownIds, result, cachedTypesById, touchedTypesById);
+
+            _vcardTypeCache.SetEntries(touchedTypesById);
+
+            if (stillUnknownIds.Any())
+                throw new Exception("VCard does not exist on server anymore."); // TODO: throw specialized type that causes just a warning
+
+            return result;
         }
-      }
 
-      return unknownIds;
+        public VCardType GetVCardType(vCard vcard)
+        {
+            // TODO: probably a good idea to add it to the cache
+            return vcard.Kind == vCardKindType.Group ? VCardType.Group : VCardType.Contact;
+        }
+
+
+        static List<TId> Resolve<TId>(IEnumerable<TId> ids, List<IdWithType<TId>> resultCollector, Dictionary<WebResourceName, VCardEntry> typesById, Dictionary<WebResourceName, VCardEntry> usedTypesById)
+            where TId : IEntity<WebResourceName>
+        {
+            var unknownIds = new List<TId>();
+
+            foreach (var id in ids)
+            {
+                VCardEntry entry;
+                if (typesById.TryGetValue(id.Id, out entry))
+                {
+                    resultCollector.Add(new IdWithType<TId>(id, entry.Type));
+                    usedTypesById.Add(id.Id, entry);
+                }
+                else
+                {
+                    unknownIds.Add(id);
+                }
+            }
+
+            return unknownIds;
+        }
     }
-
-
-  }
 }

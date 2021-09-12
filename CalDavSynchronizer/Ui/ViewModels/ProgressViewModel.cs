@@ -24,64 +24,64 @@ using GenSync.ProgressReport;
 
 namespace CalDavSynchronizer.Ui.ViewModels
 {
-  public class ProgressViewModel : ModelBase, IProgressUi
-  {
-    private int _value;
-    private int _maximum;
-    private string _message;
-    private string _subMessage;
-
-    public static ProgressViewModel DesingInstance => new ProgressViewModel() { Maximum = 300, Value = 100, Message = "One third", SubMessage ="Submessage" };
-
-    public event EventHandler CloseRequested;
-
-    public int Value
+    public class ProgressViewModel : ModelBase, IProgressUi
     {
-      get => _value;
-      set => CheckedPropertyChange(ref _value, value);
-    }
+        private int _value;
+        private int _maximum;
+        private string _message;
+        private string _subMessage;
 
-    public int Maximum
-    {
-      get => _maximum;
-      set => CheckedPropertyChange(ref _maximum, value);
-    }
+        public static ProgressViewModel DesingInstance => new ProgressViewModel() {Maximum = 300, Value = 100, Message = "One third", SubMessage = "Submessage"};
 
-    public string Message
-    {
-      get => _message;
-      set => CheckedPropertyChange(ref _message, value);
-    }
+        public event EventHandler CloseRequested;
 
-    public void IncrementValue()
-    {
-      Value += 1;
-    }
+        public int Value
+        {
+            get => _value;
+            set => CheckedPropertyChange(ref _value, value);
+        }
 
-    public string SubMessage
-    {
-      get => _subMessage;
-      set => CheckedPropertyChange(ref _subMessage, value);
-    }
+        public int Maximum
+        {
+            get => _maximum;
+            set => CheckedPropertyChange(ref _maximum, value);
+        }
 
-    public void SetMessage(string message)
-    {
-      Message = message;
-    }
+        public string Message
+        {
+            get => _message;
+            set => CheckedPropertyChange(ref _message, value);
+        }
 
-    public void SetSubMessage(string message)
-    {
-      SubMessage = message;
-    }
+        public void IncrementValue()
+        {
+            Value += 1;
+        }
 
-    public void SetMaximun(int value)
-    {
-      Maximum = value;
-    }
+        public string SubMessage
+        {
+            get => _subMessage;
+            set => CheckedPropertyChange(ref _subMessage, value);
+        }
 
-    void IDisposable.Dispose()
-    {
-      CloseRequested?.Invoke(this, EventArgs.Empty);
+        public void SetMessage(string message)
+        {
+            Message = message;
+        }
+
+        public void SetSubMessage(string message)
+        {
+            SubMessage = message;
+        }
+
+        public void SetMaximun(int value)
+        {
+            Maximum = value;
+        }
+
+        void IDisposable.Dispose()
+        {
+            CloseRequested?.Invoke(this, EventArgs.Empty);
+        }
     }
-  }
 }

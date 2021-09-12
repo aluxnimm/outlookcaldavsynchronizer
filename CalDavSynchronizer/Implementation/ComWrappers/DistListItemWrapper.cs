@@ -21,24 +21,24 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.ComWrappers
 {
-  public class DistListItemWrapper : IDistListItemWrapper
-  {
-    public DistListItem Inner => _inner ?? throw new InvalidOperationException("Cannot access a disposed object!");
-
-    private DistListItem _inner;
-
-    public DistListItemWrapper (DistListItem inner)
+    public class DistListItemWrapper : IDistListItemWrapper
     {
-      _inner = inner;
-    }
+        public DistListItem Inner => _inner ?? throw new InvalidOperationException("Cannot access a disposed object!");
 
-    public void Dispose ()
-    {
-      if (_inner != null)
-      {
-        Marshal.FinalReleaseComObject (_inner);
-        _inner = null;
-      }
+        private DistListItem _inner;
+
+        public DistListItemWrapper(DistListItem inner)
+        {
+            _inner = inner;
+        }
+
+        public void Dispose()
+        {
+            if (_inner != null)
+            {
+                Marshal.FinalReleaseComObject(_inner);
+                _inner = null;
+            }
+        }
     }
-  }
 }

@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Globalization;
 using System.Windows;
@@ -22,33 +23,35 @@ using System.Windows.Data;
 
 namespace CalDavSynchronizer.Ui.Options.Views
 {
-  /// <summary>
-  /// Based on disassembly from <see cref="BooleanToVisibilityConverter"/>
-  /// </summary>
-  public sealed class BooleanToVisibilityConverterInverted : IValueConverter
-  {
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    /// <summary>
+    /// Based on disassembly from <see cref="BooleanToVisibilityConverter"/>
+    /// </summary>
+    public sealed class BooleanToVisibilityConverterInverted : IValueConverter
     {
-      bool flag = false;
-      if (value is bool)
-      {
-        flag = (bool)value;
-      }
-      else if (value is bool?)
-      {
-        bool? flag2 = (bool?)value;
-        flag = (flag2.HasValue && flag2.Value);
-      }
-      return flag ? Visibility.Collapsed : Visibility.Visible;
-    }
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool flag = false;
+            if (value is bool)
+            {
+                flag = (bool) value;
+            }
+            else if (value is bool?)
+            {
+                bool? flag2 = (bool?) value;
+                flag = (flag2.HasValue && flag2.Value);
+            }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-      if (value is Visibility)
-      {
-        return (Visibility)value != Visibility.Visible;
-      }
-      return false;
+            return flag ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Visibility)
+            {
+                return (Visibility) value != Visibility.Visible;
+            }
+
+            return false;
+        }
     }
-  }
 }

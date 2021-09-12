@@ -17,9 +17,9 @@
 
 namespace CalDavSynchronizer.Contracts
 {
-  interface IPropertyMappingConfiguration
-  {
-    bool MapCustomProperties { get; set; }
-    PropertyMapping[] UserDefinedCustomPropertyMappings { get; set; }
-  }
+    interface IPropertyMappingConfiguration
+    {
+        bool MapCustomProperties { get; set; }
+        PropertyMapping[] UserDefinedCustomPropertyMappings { get; set; }
+    }
 }

@@ -86,7 +86,6 @@ namespace CalDavSynchronizer.Implementation.TimeZones
 
         private async Task<IICalendarCollection> LoadFromUriOrNull(HttpClient httpClient, Uri uri)
         {
-
             using (var response = await httpClient.GetAsync(uri))
             {
                 try

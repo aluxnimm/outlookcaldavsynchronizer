@@ -20,9 +20,9 @@ using CalDavSynchronizer.DataAccess;
 
 namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
 {
-  public interface IVCardTypeCache
-  {
-    Dictionary<WebResourceName, VCardEntry> GetEntries ();
-    void SetEntries (Dictionary<WebResourceName, VCardEntry> entries);
-  }
+    public interface IVCardTypeCache
+    {
+        Dictionary<WebResourceName, VCardEntry> GetEntries();
+        void SetEntries(Dictionary<WebResourceName, VCardEntry> entries);
+    }
 }

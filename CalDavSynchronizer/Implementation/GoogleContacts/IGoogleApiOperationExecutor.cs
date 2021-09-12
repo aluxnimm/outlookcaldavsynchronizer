@@ -20,9 +20,9 @@ using Google.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  public interface IGoogleApiOperationExecutor
-  {
-    T Execute<T> (Func<ContactsRequest, T> operation);
-    void Execute (Action<ContactsRequest> operation);
-  }
+    public interface IGoogleApiOperationExecutor
+    {
+        T Execute<T>(Func<ContactsRequest, T> operation);
+        void Execute(Action<ContactsRequest> operation);
+    }
 }

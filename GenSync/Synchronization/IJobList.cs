@@ -14,15 +14,16 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using GenSync.EntityRepositories;
 
 namespace GenSync.Synchronization
 {
-  public interface IJobList<TEntityId, TEntityVersion, TEntity>
-  {
-    void AddCreateJob (ICreateJob<TEntityId, TEntityVersion, TEntity> job);
-    void AddUpdateJob (IUpdateJob<TEntityId, TEntityVersion, TEntity> job);
-    void AddDeleteJob (IDeleteJob<TEntityId, TEntityVersion> job);
-  }
+    public interface IJobList<TEntityId, TEntityVersion, TEntity>
+    {
+        void AddCreateJob(ICreateJob<TEntityId, TEntityVersion, TEntity> job);
+        void AddUpdateJob(IUpdateJob<TEntityId, TEntityVersion, TEntity> job);
+        void AddDeleteJob(IDeleteJob<TEntityId, TEntityVersion> job);
+    }
 }

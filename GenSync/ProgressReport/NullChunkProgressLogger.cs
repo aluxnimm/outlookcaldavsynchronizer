@@ -14,31 +14,32 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync.ProgressReport
 {
-  public class NullChunkProgressLogger : IChunkProgressLogger
-  {
-    public static readonly IChunkProgressLogger Instance = new NullChunkProgressLogger();
-
-    private NullChunkProgressLogger()
+    public class NullChunkProgressLogger : IChunkProgressLogger
     {
-    }
+        public static readonly IChunkProgressLogger Instance = new NullChunkProgressLogger();
 
-    public IDisposable StartARepositoryLoad(int entityCount)
-    {
-      return NullProgressLogger.Instance;
-    }
+        private NullChunkProgressLogger()
+        {
+        }
 
-    public IDisposable StartBRepositoryLoad(int entityCount)
-    {
-      return NullProgressLogger.Instance;
-    }
+        public IDisposable StartARepositoryLoad(int entityCount)
+        {
+            return NullProgressLogger.Instance;
+        }
 
-    public IProgressLogger StartProcessing(int jobCount)
-    {
-      return NullProgressLogger.Instance;
+        public IDisposable StartBRepositoryLoad(int entityCount)
+        {
+            return NullProgressLogger.Instance;
+        }
+
+        public IProgressLogger StartProcessing(int jobCount)
+        {
+            return NullProgressLogger.Instance;
+        }
     }
-  }
 }

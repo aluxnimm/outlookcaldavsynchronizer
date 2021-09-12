@@ -22,18 +22,17 @@ using GenSync.EntityRelationManagement;
 
 namespace CalDavSynchronizer.Scheduling.ComponentCollectors
 {
-  public class AvailableGoogleTaskApiSynchronizerComponents : AvailableSynchronizerComponents
-  {
-    public override DataAccessComponents GetDataAccessComponents ()
+    public class AvailableGoogleTaskApiSynchronizerComponents : AvailableSynchronizerComponents
     {
-      return new DataAccessComponents
-      {
-        
-      };
-    }
+        public override DataAccessComponents GetDataAccessComponents()
+        {
+            return new DataAccessComponents
+            {
+            };
+        }
 
-    public OutlookTaskRepository OutlookRepository { get; set; }
-    public GoogleTaskRepository ServerRepository { get; set; }
-    public EntityRelationDataAccess<string, DateTime, GoogleTaskRelationData, string, string> EntityRelationDataAccess { get; set; }
-  }
+        public OutlookTaskRepository OutlookRepository { get; set; }
+        public GoogleTaskRepository ServerRepository { get; set; }
+        public EntityRelationDataAccess<string, DateTime, GoogleTaskRelationData, string, string> EntityRelationDataAccess { get; set; }
+    }
 }

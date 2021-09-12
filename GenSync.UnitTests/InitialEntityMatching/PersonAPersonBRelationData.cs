@@ -14,27 +14,28 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using GenSync.EntityRelationManagement;
 
 namespace GenSync.UnitTests.InitialEntityMatching
 {
-  public class PersonAPersonBRelationData : IEntityRelationData<Identifier<int>, int, Identifier<string>, string>
-  {
-    public PersonAPersonBRelationData (Identifier<int> atypeId, int atypeVersion, Identifier<string> btypeId, string btypeVersion)
+    public class PersonAPersonBRelationData : IEntityRelationData<Identifier<int>, int, Identifier<string>, string>
     {
-      AtypeId = atypeId;
-      AtypeVersion = atypeVersion;
-      BtypeId = btypeId;
-      BtypeVersion = btypeVersion;
+        public PersonAPersonBRelationData(Identifier<int> atypeId, int atypeVersion, Identifier<string> btypeId, string btypeVersion)
+        {
+            AtypeId = atypeId;
+            AtypeVersion = atypeVersion;
+            BtypeId = btypeId;
+            BtypeVersion = btypeVersion;
+        }
+
+        public Identifier<int> AtypeId { get; set; }
+
+        public int AtypeVersion { get; set; }
+
+        public Identifier<string> BtypeId { get; set; }
+
+        public string BtypeVersion { get; set; }
     }
-
-    public Identifier<int> AtypeId { get; set; }
-
-    public int AtypeVersion { get; set; }
-
-    public Identifier<string> BtypeId { get; set; }
-
-    public string BtypeVersion { get; set; }
-  }
 }

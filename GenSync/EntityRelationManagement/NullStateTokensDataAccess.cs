@@ -14,24 +14,24 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace GenSync.EntityRelationManagement
 {
-  public class NullStateTokensDataAccess<TAtypeStateToken, TBtypeStateToken> : IStateTokenDataAccess<TAtypeStateToken, TBtypeStateToken>
-  {
-    public static readonly IStateTokenDataAccess<TAtypeStateToken, TBtypeStateToken> Instance = new NullStateTokensDataAccess<TAtypeStateToken, TBtypeStateToken>();
-
-    private NullStateTokensDataAccess()
+    public class NullStateTokensDataAccess<TAtypeStateToken, TBtypeStateToken> : IStateTokenDataAccess<TAtypeStateToken, TBtypeStateToken>
     {
-    }
+        public static readonly IStateTokenDataAccess<TAtypeStateToken, TBtypeStateToken> Instance = new NullStateTokensDataAccess<TAtypeStateToken, TBtypeStateToken>();
 
-    public (TAtypeStateToken AToken, TBtypeStateToken BToken) LoadKnownStateTokens()
-    {
-      return (default(TAtypeStateToken), default(TBtypeStateToken));
-    }
+        private NullStateTokensDataAccess()
+        {
+        }
 
-    public void SaveKnownStateTokens(TAtypeStateToken aToken, TBtypeStateToken bToken)
-    {
-     
+        public (TAtypeStateToken AToken, TBtypeStateToken BToken) LoadKnownStateTokens()
+        {
+            return (default(TAtypeStateToken), default(TBtypeStateToken));
+        }
+
+        public void SaveKnownStateTokens(TAtypeStateToken aToken, TBtypeStateToken bToken)
+        {
+        }
     }
-  }
 }

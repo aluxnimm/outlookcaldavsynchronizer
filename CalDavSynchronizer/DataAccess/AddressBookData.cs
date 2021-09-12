@@ -21,17 +21,17 @@ using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public class AddressBookData
-  {
-    public Uri Uri { get; }
-    public string Name { get; }
-    public AccessPrivileges Privileges { get; }
-
-    public AddressBookData (Uri uri, string name, AccessPrivileges privileges)
+    public class AddressBookData
     {
-      Uri = uri;
-      Name = name;
-      Privileges = privileges;
+        public Uri Uri { get; }
+        public string Name { get; }
+        public AccessPrivileges Privileges { get; }
+
+        public AddressBookData(Uri uri, string name, AccessPrivileges privileges)
+        {
+            Uri = uri;
+            Name = name;
+            Privileges = privileges;
+        }
     }
-  }
 }

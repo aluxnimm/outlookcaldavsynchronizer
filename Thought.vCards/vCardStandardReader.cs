@@ -34,7 +34,7 @@ namespace Thought.vCards
             "HOME", // Home address
             "WORK", // Work address
             "PREF" // Preferred address
-        }; 
+        };
 
 
         /// <summary>

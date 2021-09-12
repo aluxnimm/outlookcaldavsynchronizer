@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Xml;
 using CalDavSynchronizer.DataAccess;
@@ -26,15 +27,15 @@ using Google.Apis.Tasks.v1.Data;
 
 namespace CalDavSynchronizer.Implementation.GoogleTasks
 {
-  internal class GoogleTaskUpdateFromNewerToOlder
-      : UpdateFromNewerToOlder<string, DateTime, ITaskItemWrapper, string, string, Task, int>
-  {
-    public GoogleTaskUpdateFromNewerToOlder (EntitySyncStateEnvironment<string, DateTime, ITaskItemWrapper, string, string, Task, int> environment, IEntityRelationData<string, DateTime, string, string> knownData, DateTime newA, string newB)
-        : base (environment, knownData, newA, newB)
+    internal class GoogleTaskUpdateFromNewerToOlder
+        : UpdateFromNewerToOlder<string, DateTime, ITaskItemWrapper, string, string, Task, int>
     {
-    }
+        public GoogleTaskUpdateFromNewerToOlder(EntitySyncStateEnvironment<string, DateTime, ITaskItemWrapper, string, string, Task, int> environment, IEntityRelationData<string, DateTime, string, string> knownData, DateTime newA, string newB)
+            : base(environment, knownData, newA, newB)
+        {
+        }
 
-    protected override DateTime ModificationTimeA => _aEntity.Inner.LastModificationTime.ToUniversalTime();
-    protected override DateTime? ModificationTimeB => XmlConvert.ToDateTime(_bEntity.Updated, XmlDateTimeSerializationMode.Utc);
-  }
+        protected override DateTime ModificationTimeA => _aEntity.Inner.LastModificationTime.ToUniversalTime();
+        protected override DateTime? ModificationTimeB => XmlConvert.ToDateTime(_bEntity.Updated, XmlDateTimeSerializationMode.Utc);
+    }
 }

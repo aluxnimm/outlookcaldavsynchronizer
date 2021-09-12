@@ -23,30 +23,29 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
 {
-  class SarenetProfile : ProfileTypeBase
-  {
-    public override string Name => "Sarenet";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_sarenet.png";
-
-    public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+    class SarenetProfile : ProfileTypeBase
     {
-      return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData);
-    }
+        public override string Name => "Sarenet";
+        public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_sarenet.png";
 
-    public override Contracts.Options CreateOptions()
-    {
-      var data = base.CreateOptions();
-      data.CalenderUrl = "https://configurator.organizer.sarenet.es/androidconfigurator.php";
-      return data;
-    }
+        public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+        {
+            return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData);
+        }
 
-    class ProfileModelFactory : ProfileModelFactoryBase
-    {
-      public ProfileModelFactory(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
-        : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData)
-      {
-      }
+        public override Contracts.Options CreateOptions()
+        {
+            var data = base.CreateOptions();
+            data.CalenderUrl = "https://configurator.organizer.sarenet.es/androidconfigurator.php";
+            return data;
+        }
 
+        class ProfileModelFactory : ProfileModelFactoryBase
+        {
+            public ProfileModelFactory(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+                : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData)
+            {
+            }
+        }
     }
-  }
 }

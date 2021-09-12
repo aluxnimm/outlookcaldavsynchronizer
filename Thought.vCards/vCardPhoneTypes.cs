@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -9,7 +8,6 @@ using System;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     Identifies different phone types (e.g. Fax, BBS, etc).
     /// </summary>
@@ -18,7 +16,6 @@ namespace Thought.vCards
     [Flags]
     public enum vCardPhoneTypes
     {
-
         /// <summary>
         ///     Indicates default properties.
         /// </summary>
@@ -118,7 +115,5 @@ namespace Thought.vCards
         /// to handle Main type for NAB
         /// </summary>
         Main = 16384
-
     }
-
 }

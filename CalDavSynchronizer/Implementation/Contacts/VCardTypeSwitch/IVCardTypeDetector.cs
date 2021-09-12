@@ -23,9 +23,9 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
 {
-  internal interface IVCardTypeDetector
-  {
-    Task<IEnumerable<IdWithType<TId>>> GetVCardTypesAndCleanupCache<TId> (IEnumerable<TId> allIdsInRepository) where TId : IEntity<WebResourceName>;
-    VCardType GetVCardType(vCard vcard);
-  }
+    internal interface IVCardTypeDetector
+    {
+        Task<IEnumerable<IdWithType<TId>>> GetVCardTypesAndCleanupCache<TId>(IEnumerable<TId> allIdsInRepository) where TId : IEntity<WebResourceName>;
+        VCardType GetVCardType(vCard vcard);
+    }
 }

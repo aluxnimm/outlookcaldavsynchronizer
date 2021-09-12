@@ -14,17 +14,18 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public class CloseEventArgs : EventArgs
-  {
-    public CloseEventArgs (bool isAcceptedByUser)
+    public class CloseEventArgs : EventArgs
     {
-      IsAcceptedByUser = isAcceptedByUser;
-    }
+        public CloseEventArgs(bool isAcceptedByUser)
+        {
+            IsAcceptedByUser = isAcceptedByUser;
+        }
 
-    public bool IsAcceptedByUser { get; }
-  }
+        public bool IsAcceptedByUser { get; }
+    }
 }

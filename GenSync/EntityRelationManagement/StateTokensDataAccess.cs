@@ -19,29 +19,27 @@ using System.IO;
 
 namespace GenSync.EntityRelationManagement
 {
-  public class StateTokensDataAccess<TAtypeStateToken, TBtypeStateToken> : 
-    XmlFileDataAccess<StateTokens<TAtypeStateToken, TBtypeStateToken>>,
-    IStateTokenDataAccess<TAtypeStateToken, TBtypeStateToken> 
-   
-  {
-    public StateTokensDataAccess(string dataDirectory) :
-      base(Path.Combine(dataDirectory, "stateTokens.xml"))
-    {
-      
-    }
-    
-    public (TAtypeStateToken AToken, TBtypeStateToken BToken) LoadKnownStateTokens()
-    {
-      var stateTokens = LoadDataOrNull();
-      if(stateTokens == null)
-        return (default(TAtypeStateToken), default(TBtypeStateToken));
-      return (stateTokens.AToken, stateTokens.BToken);
-    }
+    public class StateTokensDataAccess<TAtypeStateToken, TBtypeStateToken> :
+        XmlFileDataAccess<StateTokens<TAtypeStateToken, TBtypeStateToken>>,
+        IStateTokenDataAccess<TAtypeStateToken, TBtypeStateToken>
 
-    public void SaveKnownStateTokens(TAtypeStateToken aToken, TBtypeStateToken bToken)
     {
-      SaveData(new StateTokens<TAtypeStateToken, TBtypeStateToken> {AToken = aToken, BToken = bToken});
+        public StateTokensDataAccess(string dataDirectory) :
+            base(Path.Combine(dataDirectory, "stateTokens.xml"))
+        {
+        }
+
+        public (TAtypeStateToken AToken, TBtypeStateToken BToken) LoadKnownStateTokens()
+        {
+            var stateTokens = LoadDataOrNull();
+            if (stateTokens == null)
+                return (default(TAtypeStateToken), default(TBtypeStateToken));
+            return (stateTokens.AToken, stateTokens.BToken);
+        }
+
+        public void SaveKnownStateTokens(TAtypeStateToken aToken, TBtypeStateToken bToken)
+        {
+            SaveData(new StateTokens<TAtypeStateToken, TBtypeStateToken> {AToken = aToken, BToken = bToken});
+        }
     }
-  }
-  
 }

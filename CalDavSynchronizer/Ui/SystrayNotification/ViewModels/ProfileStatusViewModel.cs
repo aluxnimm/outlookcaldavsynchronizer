@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,102 +27,84 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
 {
-  public class ProfileStatusViewModel : ModelBase
-  {
-    private string _profileName;
-    private bool _isActive;
-
-    DateTime? _lastSyncronizationRun;
-    SyncronizationRunResult? _lastResult;
-
-    private TimeSpan? _lastRunAgo;
-    private readonly ICalDavSynchronizerCommands _calDavSynchronizerCommands;
-
-    public ProfileStatusViewModel (Guid profileId, ICalDavSynchronizerCommands calDavSynchronizerCommands)
+    public class ProfileStatusViewModel : ModelBase
     {
-      if (calDavSynchronizerCommands == null)
-        throw new ArgumentNullException (nameof (calDavSynchronizerCommands));
+        private string _profileName;
+        private bool _isActive;
 
-      ProfileId = profileId;
-      _calDavSynchronizerCommands = calDavSynchronizerCommands;
+        DateTime? _lastSyncronizationRun;
+        SyncronizationRunResult? _lastResult;
 
-      ShowOptionsCommand = new DelegateCommand (_ =>
-      {
-        _calDavSynchronizerCommands.ShowOptionsAsync (ProfileId);
-      });
-      ShowLatestSynchronizationReportCommand = new DelegateCommand (_ =>
-      {
-        _calDavSynchronizerCommands.ShowLatestSynchronizationReport (ProfileId);
-      });
-    }
-    
-    public Guid ProfileId { get; }
-    public ICommand ShowOptionsCommand { get; }
-    public ICommand ShowLatestSynchronizationReportCommand { get; }
-    
-    public TimeSpan? LastRunAgo
-    {
-      get { return _lastRunAgo; }
-      private set
-      {
-        CheckedPropertyChange (ref _lastRunAgo, value);
-      }
-    }
+        private TimeSpan? _lastRunAgo;
+        private readonly ICalDavSynchronizerCommands _calDavSynchronizerCommands;
 
-    public SyncronizationRunResult? LastResult
-    {
-      get { return _lastResult; }
-      private set
-      {
-        CheckedPropertyChange (ref _lastResult, value);
-      }
-    }
+        public ProfileStatusViewModel(Guid profileId, ICalDavSynchronizerCommands calDavSynchronizerCommands)
+        {
+            if (calDavSynchronizerCommands == null)
+                throw new ArgumentNullException(nameof(calDavSynchronizerCommands));
 
-    public string ProfileName
-    {
-      get { return _profileName; }
-      private set
-      {
-        CheckedPropertyChange (ref _profileName, value);
-      }
-    }
+            ProfileId = profileId;
+            _calDavSynchronizerCommands = calDavSynchronizerCommands;
 
-    public bool IsActive
-    {
-      get { return _isActive; }
-      private set
-      {
-        CheckedPropertyChange (ref _isActive, value);
-      }
-    }
+            ShowOptionsCommand = new DelegateCommand(_ => { _calDavSynchronizerCommands.ShowOptionsAsync(ProfileId); });
+            ShowLatestSynchronizationReportCommand = new DelegateCommand(_ => { _calDavSynchronizerCommands.ShowLatestSynchronizationReport(ProfileId); });
+        }
 
-    public void Update (Contracts.Options profile)
-    {
-      ProfileName = profile.Name;
-      IsActive = !profile.Inactive;
-    }
+        public Guid ProfileId { get; }
+        public ICommand ShowOptionsCommand { get; }
+        public ICommand ShowLatestSynchronizationReportCommand { get; }
 
-    public void Update (SynchronizationRunSummary summary)
-    {
-      _lastSyncronizationRun = summary.StartTimeUtc;
-      LastResult = summary.Result;
-      RecalculateLastRunAgo();
-    }
+        public TimeSpan? LastRunAgo
+        {
+            get { return _lastRunAgo; }
+            private set { CheckedPropertyChange(ref _lastRunAgo, value); }
+        }
 
-    public void RecalculateLastRunAgo()
-    {
-      var lastRunAgoSeconds = (int?) (DateTime.UtcNow - _lastSyncronizationRun)?.TotalSeconds;
-      LastRunAgo = lastRunAgoSeconds.HasValue ? TimeSpan.FromSeconds(lastRunAgoSeconds.Value) : (TimeSpan?) null;
-    }
+        public SyncronizationRunResult? LastResult
+        {
+            get { return _lastResult; }
+            private set { CheckedPropertyChange(ref _lastResult, value); }
+        }
 
-    public static ProfileStatusViewModel CreateDesignInstance (string profileName, SyncronizationRunResult? status, TimeSpan? lastRunAgo)
-    {
-      var viewModel = new ProfileStatusViewModel (Guid.NewGuid(), NullCalDavSynchronizerCommands.Instance);
-      viewModel._profileName = profileName;
-      viewModel._lastResult = status;
-      viewModel._lastRunAgo = lastRunAgo;
-      viewModel.IsActive = true;
-      return viewModel;
+        public string ProfileName
+        {
+            get { return _profileName; }
+            private set { CheckedPropertyChange(ref _profileName, value); }
+        }
+
+        public bool IsActive
+        {
+            get { return _isActive; }
+            private set { CheckedPropertyChange(ref _isActive, value); }
+        }
+
+        public void Update(Contracts.Options profile)
+        {
+            ProfileName = profile.Name;
+            IsActive = !profile.Inactive;
+        }
+
+        public void Update(SynchronizationRunSummary summary)
+        {
+            _lastSyncronizationRun = summary.StartTimeUtc;
+            LastResult = summary.Result;
+            RecalculateLastRunAgo();
+        }
+
+        public void RecalculateLastRunAgo()
+        {
+            var lastRunAgoSeconds = (int?) (DateTime.UtcNow - _lastSyncronizationRun)?.TotalSeconds;
+            LastRunAgo = lastRunAgoSeconds.HasValue ? TimeSpan.FromSeconds(lastRunAgoSeconds.Value) : (TimeSpan?) null;
+        }
+
+        public static ProfileStatusViewModel CreateDesignInstance(string profileName, SyncronizationRunResult? status, TimeSpan? lastRunAgo)
+        {
+            var viewModel = new ProfileStatusViewModel(Guid.NewGuid(), NullCalDavSynchronizerCommands.Instance);
+            viewModel._profileName = profileName;
+            viewModel._lastResult = status;
+            viewModel._lastRunAgo = lastRunAgo;
+            viewModel.IsActive = true;
+            return viewModel;
+        }
     }
-  }
 }

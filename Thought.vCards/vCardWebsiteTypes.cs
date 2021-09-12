@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -9,7 +8,6 @@ using System;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     The type or classification of a web site.
     /// </summary>
@@ -24,7 +22,6 @@ namespace Thought.vCards
     [Flags]
     public enum vCardWebsiteTypes
     {
-
         /// <summary>
         ///     No web site designation.
         /// </summary>
@@ -39,7 +36,5 @@ namespace Thought.vCards
         ///     A work-related web site.
         /// </summary>
         Work = 2
-
     }
-
 }

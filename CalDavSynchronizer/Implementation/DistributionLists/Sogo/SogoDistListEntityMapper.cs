@@ -30,97 +30,97 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
 {
-  public class SogoDistListEntityMapper : IEntityMapper<IDistListItemWrapper, DistributionList, DistributionListSychronizationContext>
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
-
-    public Task<DistributionList> Map1To2(IDistListItemWrapper source, DistributionList target, IEntitySynchronizationLogger logger, DistributionListSychronizationContext context)
+    public class SogoDistListEntityMapper : IEntityMapper<IDistListItemWrapper, DistributionList, DistributionListSychronizationContext>
     {
-      target.Members.Clear();
-      target.NonAddressBookMembers.Clear();
-      target.Name = source.Inner.DLName;
-      target.Description = source.Inner.Body;
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
 
-      try
-      {
-        using (var userPropertiesWrapper = GenericComObjectWrapper.Create(source.Inner.UserProperties))
+        public Task<DistributionList> Map1To2(IDistListItemWrapper source, DistributionList target, IEntitySynchronizationLogger logger, DistributionListSychronizationContext context)
         {
-          using (var userProperty = GenericComObjectWrapper.Create(userPropertiesWrapper.Inner.Find("NICKNAME")))
-          {
-            target.Nickname = userProperty.Inner?.Value.ToString();
-          }
-        }
-      }
-      catch (COMException ex)
-      {
-        s_logger.Warn ("Can't access UserProperty of Distribution List!", ex);
-        logger.LogWarning ("Can't access UserProperty of Distribution List!", ex);
-      }
+            target.Members.Clear();
+            target.NonAddressBookMembers.Clear();
+            target.Name = source.Inner.DLName;
+            target.Description = source.Inner.Body;
 
-      for (int i = 1; i <= source.Inner.MemberCount; i++)
-      {
-        try
-        {
-          using (var recipientWrapper = GenericComObjectWrapper.Create(source.Inner.GetMember(i)))
-          {
-            var serverFileName = context.GetServerFileNameByEmailAddress(recipientWrapper.Inner.Address);
-            if (serverFileName != null)
+            try
             {
-              var nameWithoutEmail = OutlookUtility.RemoveEmailFromName(recipientWrapper.Inner);
-              var distributionListMember = new KnownDistributionListMember(recipientWrapper.Inner.Address, nameWithoutEmail, serverFileName);
-              target.Members.Add(distributionListMember);
+                using (var userPropertiesWrapper = GenericComObjectWrapper.Create(source.Inner.UserProperties))
+                {
+                    using (var userProperty = GenericComObjectWrapper.Create(userPropertiesWrapper.Inner.Find("NICKNAME")))
+                    {
+                        target.Nickname = userProperty.Inner?.Value.ToString();
+                    }
+                }
             }
-            else
+            catch (COMException ex)
             {
-              var distributionListMember = new DistributionListMember(recipientWrapper.Inner.Address, recipientWrapper.Inner.Name);
-              target.NonAddressBookMembers.Add(distributionListMember);
+                s_logger.Warn("Can't access UserProperty of Distribution List!", ex);
+                logger.LogWarning("Can't access UserProperty of Distribution List!", ex);
             }
-          }
-        }
-        catch (COMException ex)
-        {
-          s_logger.Warn("Can't access member of Distribution List!", ex);
-          logger.LogWarning("Can't access member of Distribution List!", ex);
-        }
-      }
 
-      return Task.FromResult(target);
+            for (int i = 1; i <= source.Inner.MemberCount; i++)
+            {
+                try
+                {
+                    using (var recipientWrapper = GenericComObjectWrapper.Create(source.Inner.GetMember(i)))
+                    {
+                        var serverFileName = context.GetServerFileNameByEmailAddress(recipientWrapper.Inner.Address);
+                        if (serverFileName != null)
+                        {
+                            var nameWithoutEmail = OutlookUtility.RemoveEmailFromName(recipientWrapper.Inner);
+                            var distributionListMember = new KnownDistributionListMember(recipientWrapper.Inner.Address, nameWithoutEmail, serverFileName);
+                            target.Members.Add(distributionListMember);
+                        }
+                        else
+                        {
+                            var distributionListMember = new DistributionListMember(recipientWrapper.Inner.Address, recipientWrapper.Inner.Name);
+                            target.NonAddressBookMembers.Add(distributionListMember);
+                        }
+                    }
+                }
+                catch (COMException ex)
+                {
+                    s_logger.Warn("Can't access member of Distribution List!", ex);
+                    logger.LogWarning("Can't access member of Distribution List!", ex);
+                }
+            }
+
+            return Task.FromResult(target);
+        }
+
+        public Task<IDistListItemWrapper> Map2To1(DistributionList source, IDistListItemWrapper target, IEntitySynchronizationLogger logger, DistributionListSychronizationContext context)
+        {
+            target.Inner.DLName = source.Name;
+            if (!string.IsNullOrEmpty(source.Description))
+                target.Inner.Body = source.Description;
+
+            try
+            {
+                using (var userPropertiesWrapper = GenericComObjectWrapper.Create(target.Inner.UserProperties))
+                {
+                    using (var userProperty = GenericComObjectWrapper.Create(userPropertiesWrapper.Inner.Find("NICKNAME")))
+                    {
+                        if (userProperty.Inner != null)
+                        {
+                            userProperty.Inner.Value = source.Nickname;
+                        }
+                        else if (!string.IsNullOrEmpty(source.Nickname))
+                        {
+                            using (var newUserProperty = GenericComObjectWrapper.Create(userPropertiesWrapper.Inner.Add("NICKNAME", OlUserPropertyType.olText, true)))
+                            {
+                                newUserProperty.Inner.Value = source.Nickname;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (COMException ex)
+            {
+                s_logger.Warn("Can't access UserProperty of Distribution List!", ex);
+                logger.LogWarning("Can't access UserProperty of Distribution List!", ex);
+            }
+
+            CommonEntityMapper.MapDistListMembers2To1(source.Members.Concat(source.NonAddressBookMembers), target, logger, context);
+            return Task.FromResult(target);
+        }
     }
-
-    public Task<IDistListItemWrapper> Map2To1(DistributionList source, IDistListItemWrapper target, IEntitySynchronizationLogger logger, DistributionListSychronizationContext context)
-    {
-      target.Inner.DLName = source.Name;
-      if (!string.IsNullOrEmpty(source.Description))
-        target.Inner.Body = source.Description;
-
-      try
-      {
-        using (var userPropertiesWrapper = GenericComObjectWrapper.Create(target.Inner.UserProperties))
-        {
-          using (var userProperty = GenericComObjectWrapper.Create(userPropertiesWrapper.Inner.Find("NICKNAME")))
-          {
-            if (userProperty.Inner != null)
-            {
-              userProperty.Inner.Value = source.Nickname;
-            }
-            else if (!string.IsNullOrEmpty(source.Nickname))
-            {
-              using (var newUserProperty = GenericComObjectWrapper.Create(userPropertiesWrapper.Inner.Add("NICKNAME", OlUserPropertyType.olText, true)))
-              {
-                newUserProperty.Inner.Value = source.Nickname;
-              }
-            }
-          }
-        }
-      }
-      catch (COMException ex)
-      {
-        s_logger.Warn("Can't access UserProperty of Distribution List!", ex);
-        logger.LogWarning("Can't access UserProperty of Distribution List!", ex);
-      }
-
-      CommonEntityMapper.MapDistListMembers2To1 (source.Members.Concat (source.NonAddressBookMembers), target, logger, context);
-      return Task.FromResult(target);
-    }
-  }
 }

@@ -17,10 +17,10 @@
 
 namespace CalDavSynchronizer.Ui.Options
 {
-  public enum AutoDiscoverResultStatus
-  {
-    ResourceSelected,
-    UserCancelled,
-    NoResourcesFound
-  }
+    public enum AutoDiscoverResultStatus
+    {
+        ResourceSelected,
+        UserCancelled,
+        NoResourcesFound
+    }
 }

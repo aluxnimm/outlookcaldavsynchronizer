@@ -29,116 +29,116 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
 {
-  public class TypeWithDependecies
-  {
-    public Type Type { get; }
-    public IReadOnlyList<TypeWithDependecies> Dependencies { get; }
-    public int InstanceId { get; }
-
-    public TypeWithDependecies (Type type, IReadOnlyList<TypeWithDependecies> dependencies, int instanceId)
+    public class TypeWithDependecies
     {
-      if (type == null)
-        throw new ArgumentNullException (nameof (type));
-      if (dependencies == null)
-        throw new ArgumentNullException (nameof (dependencies));
+        public Type Type { get; }
+        public IReadOnlyList<TypeWithDependecies> Dependencies { get; }
+        public int InstanceId { get; }
 
-      Type = type;
-      Dependencies = dependencies;
-      InstanceId = instanceId;
-    }
-
-    public void ToString (StringBuilder stringBuilder, int level = 0)
-    {
-      stringBuilder.Append(string.Join(string.Empty, Enumerable.Range(1, level).Select(_ => "|   ")));
-      stringBuilder.Append (Type.GetPrettyName ());
-      if (InstanceId > 1)
-      {
-        stringBuilder.Append(" (");
-        stringBuilder.Append(InstanceId);
-        stringBuilder.Append(")");
-      }
-      stringBuilder.AppendLine();
-
-      foreach (var dependency in Dependencies.OrderBy (d => d.Type.Name))
-      {
-        dependency.ToString (stringBuilder, level + 1);
-      }
-    }
-
-    public static TypeWithDependecies GetTypeWithDependecies(object o)
-    {
-      return GetTypeWithDependecies(o, new ObjectIdProvider());
-    }
-
-    public static TypeWithDependecies GetTypeWithDependecies (object o, ObjectIdProvider objectIdProvider)
-    {
-      var type = o.GetType ();
-      var dependecies = new List<TypeWithDependecies> ();
-
-      foreach (var field in type.GetFields (BindingFlags.FlattenHierarchy | BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
-      {
-        var value = field.GetValue (o);
-        if (value != null)
+        public TypeWithDependecies(Type type, IReadOnlyList<TypeWithDependecies> dependencies, int instanceId)
         {
-          var valueType = value.GetType ();
-          if (!IsIgnoredType (valueType))
-          {
-            if (IsStopType (valueType))
-              dependecies.Add (new TypeWithDependecies (valueType, new TypeWithDependecies[0], objectIdProvider.GetId(value)));
-            else
-              dependecies.Add (GetTypeWithDependecies (value, objectIdProvider));
-          }
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+            if (dependencies == null)
+                throw new ArgumentNullException(nameof(dependencies));
+
+            Type = type;
+            Dependencies = dependencies;
+            InstanceId = instanceId;
         }
-      }
 
-      return new TypeWithDependecies (type, dependecies, objectIdProvider.GetId(o));
+        public void ToString(StringBuilder stringBuilder, int level = 0)
+        {
+            stringBuilder.Append(string.Join(string.Empty, Enumerable.Range(1, level).Select(_ => "|   ")));
+            stringBuilder.Append(Type.GetPrettyName());
+            if (InstanceId > 1)
+            {
+                stringBuilder.Append(" (");
+                stringBuilder.Append(InstanceId);
+                stringBuilder.Append(")");
+            }
+
+            stringBuilder.AppendLine();
+
+            foreach (var dependency in Dependencies.OrderBy(d => d.Type.Name))
+            {
+                dependency.ToString(stringBuilder, level + 1);
+            }
+        }
+
+        public static TypeWithDependecies GetTypeWithDependecies(object o)
+        {
+            return GetTypeWithDependecies(o, new ObjectIdProvider());
+        }
+
+        public static TypeWithDependecies GetTypeWithDependecies(object o, ObjectIdProvider objectIdProvider)
+        {
+            var type = o.GetType();
+            var dependecies = new List<TypeWithDependecies>();
+
+            foreach (var field in type.GetFields(BindingFlags.FlattenHierarchy | BindingFlags.GetField | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
+            {
+                var value = field.GetValue(o);
+                if (value != null)
+                {
+                    var valueType = value.GetType();
+                    if (!IsIgnoredType(valueType))
+                    {
+                        if (IsStopType(valueType))
+                            dependecies.Add(new TypeWithDependecies(valueType, new TypeWithDependecies[0], objectIdProvider.GetId(value)));
+                        else
+                            dependecies.Add(GetTypeWithDependecies(value, objectIdProvider));
+                    }
+                }
+            }
+
+            return new TypeWithDependecies(type, dependecies, objectIdProvider.GetId(o));
+        }
+
+        private static bool IsStopType(Type type)
+        {
+            if (type == typeof(XmlSerializer))
+                return true;
+
+            if (type.Namespace + "." + type.Name == "System.Collections.Generic.GenericEqualityComparer`1")
+                return true;
+
+            if (type == WebResourceNameEqualityComparer)
+                return true;
+
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(EntityRelationDataAccess<,,,,>))
+                return true;
+
+            if (type.FullName.StartsWith("Castle.Proxies"))
+                return true;
+
+            if (type == typeof(vCardStandardWriter))
+                return true;
+
+            if (type == typeof(ContactEntityMapper))
+                return true;
+
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(EntitySyncStateEnvironment<,,,,,,>))
+                return true;
+
+            return false;
+        }
+
+        private static bool IsIgnoredType(Type type)
+        {
+            if (type.Namespace + "." + type.Name == "System.Collections.Generic.GenericEqualityComparer`1")
+                return false;
+
+            if (type.FullName.StartsWith("System.ValueTuple`2"))
+                return false;
+
+            if (type.Assembly == Mscorlib)
+                return true;
+
+            return false;
+        }
+
+        private static readonly Type WebResourceNameEqualityComparer = WebResourceName.Comparer.GetType();
+        private static readonly Assembly Mscorlib = typeof(int).Assembly;
     }
-
-    private static bool IsStopType (Type type)
-    {
-      if (type == typeof (XmlSerializer))
-        return true;
-
-      if (type.Namespace + "." + type.Name == "System.Collections.Generic.GenericEqualityComparer`1")
-        return true;
-
-      if (type == WebResourceNameEqualityComparer)
-        return true;
-
-      if (type.IsGenericType && type.GetGenericTypeDefinition () == typeof (EntityRelationDataAccess<,,,,>))
-        return true;
-
-      if (type.FullName.StartsWith ("Castle.Proxies"))
-        return true;
-
-      if (type == typeof (vCardStandardWriter))
-        return true;
-
-      if (type == typeof (ContactEntityMapper))
-        return true;
-
-      if (type.IsGenericType && type.GetGenericTypeDefinition () == typeof (EntitySyncStateEnvironment<,,,,,,>))
-        return true;
-
-      return false;
-    }
-
-    private static bool IsIgnoredType (Type type)
-    {
-      if (type.Namespace + "." + type.Name == "System.Collections.Generic.GenericEqualityComparer`1")
-        return false;
-
-      if (type.FullName.StartsWith("System.ValueTuple`2"))
-        return false;
-
-      if (type.Assembly == Mscorlib)
-        return true;
-
-      return false;
-    }
-
-    private static readonly Type WebResourceNameEqualityComparer = WebResourceName.Comparer.GetType ();
-    private static readonly Assembly Mscorlib = typeof(int).Assembly;
-
-  }
 }

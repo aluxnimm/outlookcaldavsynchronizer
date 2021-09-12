@@ -1,4 +1,3 @@
-
 using System;
 using System.IO;
 using NUnit.Framework;
@@ -6,7 +5,6 @@ using Thought.vCards;
 
 namespace Tests.Samples
 {
-
     /* ===================================================================
      * PalmAgent hCard Sampe Output Tests
      * -------------------------------------------------------------------
@@ -54,13 +52,11 @@ namespace Tests.Samples
     [TestFixture]
     public class PalmAgentSampleTests
     {
-
         #region [ CycleCards ]
 
         [Test]
         public void CycleCards()
         {
-
             MemoryStream stream =
                 new MemoryStream(SampleCards.PalmAgentSamples);
 
@@ -87,7 +83,6 @@ namespace Tests.Samples
             Helper.CycleStandard(new vCard(reader));
             Helper.CycleStandard(new vCard(reader));
             Helper.CycleStandard(new vCard(reader));
-
         }
 
         #endregion
@@ -97,7 +92,6 @@ namespace Tests.Samples
         [Test]
         public void ParseCards()
         {
-
             // This example loads each card in hCardSamples.txt
             // and performs a detailed test of each one.  For this
             // reason the file should never be modified because it
@@ -129,7 +123,6 @@ namespace Tests.Samples
             _checkCard18(new vCard(reader));
             _checkCard19(new vCard(reader));
             _checkCard20(new vCard(reader));
-
         }
 
         #endregion
@@ -140,7 +133,6 @@ namespace Tests.Samples
 
         private void _checkCard01(vCard card)
         {
-
             // Lines 1 through 9
             //
             // 001 BEGIN:VCARD
@@ -191,7 +183,6 @@ namespace Tests.Samples
                 "normal card",
                 card.Notes[0].Text,
                 "NOTE on line 8 failed.");
-
         }
 
         #endregion
@@ -200,7 +191,6 @@ namespace Tests.Samples
 
         private void _checkCard02(vCard card)
         {
-
             // 010 BEGIN:VCARD
             // 011 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 012 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -257,8 +247,6 @@ namespace Tests.Samples
                 "john.doe@example",
                 card.EmailAddresses[1].Address,
                 "EMAIL (address) on line 18 failed.");
-
-
         }
 
         #endregion
@@ -267,7 +255,6 @@ namespace Tests.Samples
 
         private void _checkCard03(vCard card)
         {
-
             // 021 BEGIN:VCARD
             // 022 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 023 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -312,7 +299,6 @@ namespace Tests.Samples
                 "normal card, with implied N",
                 card.Notes[0].Text,
                 "NOTE on line 28 failed; comma should be unescaped.");
-
         }
 
         #endregion
@@ -321,7 +307,6 @@ namespace Tests.Samples
 
         private void _checkCard04(vCard card)
         {
-            
             // 030 BEGIN:VCARD
             // 031 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 032 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -366,7 +351,6 @@ namespace Tests.Samples
                 "card with an ID",
                 card.Notes[0].Text,
                 "NOTE on line 37 failed.");
-
         }
 
         #endregion
@@ -375,7 +359,6 @@ namespace Tests.Samples
 
         private void _checkCard05(vCard card)
         {
-            
             // 039 BEGIN:VCARD
             // 040 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 041 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -431,8 +414,6 @@ namespace Tests.Samples
                 "http://dev.w3.org/cvsweb/2001/palmagent/doe-pg",
                 card.Websites[0].Url,
                 "URL on line 47 failed.");
-
-
         }
 
         #endregion
@@ -441,7 +422,6 @@ namespace Tests.Samples
 
         private void _checkCard06(vCard card)
         {
-            
             // 049 BEGIN:VCARD
             // 050 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 051 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -501,7 +481,6 @@ namespace Tests.Samples
                 "card with nickname.",
                 card.Notes[0].Text,
                 "NOTE on line 57 failed.");
-
         }
 
         #endregion
@@ -510,7 +489,6 @@ namespace Tests.Samples
 
         private void _checkCard07(vCard card)
         {
-            
             // 059 BEGIN:VCARD
             // 060 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 061 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -555,7 +533,6 @@ namespace Tests.Samples
                 "tabs in class fields",
                 card.Notes[0].Text,
                 "NOTE on line 66 failed.");
-
         }
 
         #endregion
@@ -564,7 +541,6 @@ namespace Tests.Samples
 
         private void _checkCard08(vCard card)
         {
-
             // 068 BEGIN:VCARD
             // 069 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 070 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -609,7 +585,6 @@ namespace Tests.Samples
                 "LFs in class fields",
                 card.Notes[0].Text,
                 "NOTE on line 76 failed.");
-
         }
 
         #endregion
@@ -618,7 +593,6 @@ namespace Tests.Samples
 
         private void _checkCard09(vCard card)
         {
-
             // 077 BEGIN:VCARD
             // 078 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 079 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -663,7 +637,6 @@ namespace Tests.Samples
                 "CRs in class fields",
                 card.Notes[0].Text,
                 "NOTE on line 84 failed.");
-
         }
 
         #endregion
@@ -672,7 +645,6 @@ namespace Tests.Samples
 
         private void _checkCard10(vCard card)
         {
-            
             // 086 BEGIN:VCARD
             // 087 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 088 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -728,8 +700,6 @@ namespace Tests.Samples
                 "http://example/pg",
                 card.Websites[0].Url,
                 "URL failed on line 94.");
-
-
         }
 
         #endregion
@@ -738,7 +708,6 @@ namespace Tests.Samples
 
         private void _checkCard11(vCard card)
         {
-
             // 096 BEGIN:VCARD
             // 097 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 098 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -797,7 +766,6 @@ namespace Tests.Samples
 
         private void _checkCard12(vCard card)
         {
-
             // 105 BEGIN:VCARD
             // 106 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 107 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -847,7 +815,6 @@ namespace Tests.Samples
                 "es",
                 card.Notes[0].Language,
                 "NOTE;language=es failed on line 112.");
-
         }
 
         #endregion
@@ -856,7 +823,6 @@ namespace Tests.Samples
 
         private void _checkCard13(vCard card)
         {
-            
             // 114 BEGIN:VCARD
             // 115 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 116 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -901,7 +867,6 @@ namespace Tests.Samples
                 "xml:lang on name elt",
                 card.Notes[0].Text,
                 "NOTE on line 121 failed.");
-
         }
 
         #endregion
@@ -910,7 +875,6 @@ namespace Tests.Samples
 
         private void _checkCard14(vCard card)
         {
-
             // 123 BEGIN:VCARD
             // 124 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 125 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -963,7 +927,6 @@ namespace Tests.Samples
                 "comma in photo URI",
                 card.Notes[0].Text,
                 "NOTE on line 131 failed.");
-
         }
 
         #endregion
@@ -972,7 +935,6 @@ namespace Tests.Samples
 
         private void _checkCard15(vCard card)
         {
-            
             // 133 BEGIN:VCARD
             // 134 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 135 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -1068,7 +1030,6 @@ namespace Tests.Samples
                 "http://www.w3.org/",
                 card.Websites[0].Url,
                 "URL on line 144 failed.");
-
         }
 
         #endregion
@@ -1077,7 +1038,6 @@ namespace Tests.Samples
 
         private void _checkCard16(vCard card)
         {
-            
             // 146 BEGIN:VCARD
             // 147 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 148 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -1122,7 +1082,6 @@ namespace Tests.Samples
                 "http://suda.co.uk",
                 card.Websites[0].Url,
                 "URL on line 153 failed.");
-
         }
 
         #endregion
@@ -1131,7 +1090,6 @@ namespace Tests.Samples
 
         private void _checkCard17(vCard card)
         {
-            
             // 155 BEGIN:VCARD
             // 156 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 157 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -1232,7 +1190,6 @@ namespace Tests.Samples
                 "http://greenbytes.de/tech/webdav/",
                 card.Websites[0].Url,
                 "URL at line 167 failed.");
-
         }
 
         #endregion
@@ -1241,7 +1198,6 @@ namespace Tests.Samples
 
         private void _checkCard18(vCard card)
         {
-            
             // 169 BEGIN:VCARD
             // 170 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 171 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -1372,7 +1328,6 @@ namespace Tests.Samples
                 "http://greenbytes.de/tech/webdav/",
                 card.Websites[0].Url,
                 "URL on line 181 failed.");
-
         }
 
         #endregion
@@ -1381,7 +1336,6 @@ namespace Tests.Samples
 
         private void _checkCard19(vCard card)
         {
-
             // 183 BEGIN:VCARD
             // 184 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 185 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -1560,7 +1514,6 @@ namespace Tests.Samples
                 "http://www.swbyps.restaurant.french/~chezchic.html",
                 card.Websites[0].Url,
                 "URL on line 197 failed.");
-
         }
 
         #endregion
@@ -1569,7 +1522,6 @@ namespace Tests.Samples
 
         private void _checkCard20(vCard card)
         {
-
             // 199 BEGIN:VCARD
             // 200 PRODID:-//connolly.w3.org//palmagent 0.6 (BETA)//EN
             // 201 SOURCE: http://dev.w3.org/cvsweb/2001/palmagent/hcardTest.html
@@ -1771,10 +1723,8 @@ namespace Tests.Samples
                 "http://www.swbyps.restaurant.french/~chezchic.html",
                 card.Websites[0].Url,
                 "URL on line 214 failed.");
-
         }
 
         #endregion
-
     }
 }

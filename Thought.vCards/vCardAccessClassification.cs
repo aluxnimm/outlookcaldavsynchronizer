@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -9,7 +8,6 @@ using System;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     The access classification of a vCard.
     /// </summary>
@@ -18,7 +16,6 @@ namespace Thought.vCards
     /// </remarks>
     public enum vCardAccessClassification
     {
-
         /// <summary>
         ///     The vCard classification is unknown.
         /// </summary>
@@ -38,7 +35,5 @@ namespace Thought.vCards
         ///     The vCard is classified as confidential.
         /// </summary>
         Confidential
-
     }
-
 }

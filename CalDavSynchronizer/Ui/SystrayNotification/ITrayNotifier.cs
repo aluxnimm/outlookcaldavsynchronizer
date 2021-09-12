@@ -14,13 +14,14 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using GenSync.Logging;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification
 {
-  public interface ITrayNotifier : IDisposable
-  {
-    void NotifyUser (SynchronizationReport report, bool notifyWarnings, bool notifyErrors);
-  }
+    public interface ITrayNotifier : IDisposable
+    {
+        void NotifyUser(SynchronizationReport report, bool notifyWarnings, bool notifyErrors);
+    }
 }

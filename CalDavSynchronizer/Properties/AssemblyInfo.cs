@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -23,17 +24,17 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 
 
-[assembly: AssemblyCulture ("")]
+[assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
 
-[assembly: ComVisible (false)]
+[assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
-[assembly: Guid ("6a2f2c95-05bd-4de2-a8ae-2bf75e9c092e")]
+[assembly: Guid("6a2f2c95-05bd-4de2-a8ae-2bf75e9c092e")]
 
 // Version information for an assembly consists of the following four values:
 //

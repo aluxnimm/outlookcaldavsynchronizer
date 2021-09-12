@@ -14,20 +14,21 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 
 namespace CalDavSynchronizer.DataAccess.HttpClientBasedClient
 {
-  internal class NullHeaders : IHttpHeaders
-  {
-    public bool TryGetValues(string name, out IEnumerable<string> values)
+    internal class NullHeaders : IHttpHeaders
     {
-      values = null;
-      return false;
-    }
+        public bool TryGetValues(string name, out IEnumerable<string> values)
+        {
+            values = null;
+            return false;
+        }
 
-    public Uri LocationOrNull => null;
-    public string ETagOrNull => null;
-  }
+        public Uri LocationOrNull => null;
+        public string ETagOrNull => null;
+    }
 }

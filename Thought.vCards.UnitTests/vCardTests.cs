@@ -1,4 +1,3 @@
-
 using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -7,11 +6,9 @@ using Assert = NUnit.Framework.Assert;
 
 namespace Tests
 {
-
     [TestClass]
     public sealed class vCardTests : IDisposable
     {
-
         // The next set of tests valid each simple property
         // of the vCard class.  Each test writes a value to
         // the property, then confirms the same value is
@@ -25,7 +22,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_AdditionalNames()
         {
-
             // Make sure .AdditionalNames reads/writes
 
             vCard card = new vCard();
@@ -35,7 +31,6 @@ namespace Tests
                 "John",
                 card.AdditionalNames,
                 "The AdditionalNames property is not working.");
-
         }
 
         #endregion
@@ -45,7 +40,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_BirthDate()
         {
-
             vCard card = new vCard();
             card.BirthDate = DateTime.Parse("04/04/04");
 
@@ -59,7 +53,6 @@ namespace Tests
             Assert.IsNull(
                 card.BirthDate,
                 "The BirthDate property was not set to null.");
-
         }
 
         #endregion
@@ -69,7 +62,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_Department()
         {
-
             vCard card = new vCard();
             card.Department = "DOD";
 
@@ -77,7 +69,6 @@ namespace Tests
                 "DOD",
                 card.Department,
                 "The Department property is not working.");
-
         }
 
         #endregion
@@ -87,7 +78,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_FamilyName()
         {
-            
             // Make sure .FamilyName reads/writes
 
             vCard card = new vCard();
@@ -97,7 +87,6 @@ namespace Tests
                 "Tchaikovsky",
                 card.FamilyName,
                 "The FamilyName property does not return the same value written to it.");
-
         }
 
         #endregion
@@ -116,7 +105,6 @@ namespace Tests
                 "Sir Isaac Newton",
                 card.FormattedName,
                 "The FormattedName property is not working.");
-
         }
 
         #endregion
@@ -126,7 +114,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_Gender()
         {
-
             vCard card = new vCard();
             card.Gender = vCardGender.Male;
 
@@ -134,7 +121,6 @@ namespace Tests
                 vCardGender.Male,
                 card.Gender,
                 "The Gender property is not working.");
-
         }
 
         #endregion
@@ -144,7 +130,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_GivenName()
         {
-
             // Make sure .GivenName reads/writes
 
             vCard card = new vCard();
@@ -163,7 +148,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_Mailer()
         {
-
             vCard card = new vCard();
             card.Mailer = "RemoteAccess BBS";
 
@@ -180,7 +164,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_NamePrefix()
         {
-
             vCard card = new vCard();
             card.NamePrefix = "Dr.";
 
@@ -188,7 +171,6 @@ namespace Tests
                 "Dr.",
                 card.NamePrefix,
                 "The NamePrefix property is not working.");
-
         }
 
         #endregion
@@ -198,7 +180,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_Office()
         {
-
             vCard card = new vCard();
             card.Office = "Vice President's Office";
 
@@ -206,7 +187,6 @@ namespace Tests
                 "Vice President's Office",
                 card.Office,
                 "The Office property is not working.");
-
         }
 
         #endregion
@@ -216,7 +196,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_Organzation()
         {
-
             // Make sure .Organization reads/writes
 
             vCard card = new vCard();
@@ -226,7 +205,6 @@ namespace Tests
                 "BBC",
                 card.Organization,
                 "The Organization property is not working.");
-
         }
 
         #endregion
@@ -236,7 +214,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_ProductId()
         {
-
             vCard card = new vCard();
             card.ProductId = "vCard Library";
 
@@ -244,7 +221,6 @@ namespace Tests
                 "vCard Library",
                 card.ProductId,
                 "The ProductId property is not working.");
-
         }
 
         #endregion
@@ -254,7 +230,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_RevisionDate()
         {
-
             vCard card = new vCard();
             card.RevisionDate = DateTime.Parse("01/01/2001 01:01 AM");
 
@@ -263,16 +238,15 @@ namespace Tests
                 card.RevisionDate,
                 "The RevisionDate property is not working.");
 
-        // format not working right when it comes to write out the REV property
-        // REV:2013-09-18T15:39:21Z
-        // REV:20130918T153921Z
+            // format not working right when it comes to write out the REV property
+            // REV:2013-09-18T15:39:21Z
+            // REV:20130918T153921Z
 
             DateTime date = DateTime.Parse("11/25/2012 01:01 AM");
 
-            string revDate =  date.ToString("s") + "Z";
+            string revDate = date.ToString("s") + "Z";
 
             Assert.AreEqual("2012-11-25T01:01:00Z", revDate);
-
         }
 
         #endregion
@@ -282,7 +256,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_Role()
         {
-
             vCard card = new vCard();
             card.Role = "Candy Bar Tester";
 
@@ -290,7 +263,6 @@ namespace Tests
                 "Candy Bar Tester",
                 card.Role,
                 "The Role property is not working.");
-
         }
 
         #endregion
@@ -315,7 +287,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_Title()
         {
-
             // The sure .Title reads/writes
 
             vCard card = new vCard();
@@ -325,7 +296,6 @@ namespace Tests
                 "VP of Slapping People in the Face",
                 card.Title,
                 "The Title property is not working.");
-
         }
 
         #endregion
@@ -335,7 +305,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_UniqueId()
         {
-
             vCard card = new vCard();
             card.UniqueId = "I am unique, just like everyone else.";
 
@@ -343,7 +312,6 @@ namespace Tests
                 "I am unique, just like everyone else.",
                 card.UniqueId,
                 "The UniqueId property is not working.");
-
         }
 
         #endregion
@@ -358,7 +326,6 @@ namespace Tests
         [TestMethod]
         public void StringEmpty_AdditionalNames()
         {
-
             vCard card = new vCard();
 
             Assert.IsEmpty(
@@ -370,7 +337,6 @@ namespace Tests
             Assert.IsEmpty(
                 card.AdditionalNames,
                 "AdditionalNames is not string.Empty after being assigned null.");
-
         }
 
         #endregion
@@ -380,7 +346,6 @@ namespace Tests
         [TestMethod]
         public void StringEmpty_Department()
         {
-
             vCard card = new vCard();
 
             Assert.IsEmpty(
@@ -392,7 +357,6 @@ namespace Tests
             Assert.IsEmpty(
                 card.Department,
                 "Department is not string.Empty after being assigned null.");
-
         }
 
         #endregion
@@ -402,7 +366,6 @@ namespace Tests
         [TestMethod]
         public void StringEmpty_DisplayName()
         {
-
             vCard card = new vCard();
 
             Assert.IsEmpty(
@@ -414,7 +377,6 @@ namespace Tests
             Assert.IsEmpty(
                 card.DisplayName,
                 "DisplayName is not string.Empty after being assigned null.");
-
         }
 
         #endregion
@@ -424,7 +386,6 @@ namespace Tests
         [TestMethod]
         public void StringEmpty_FamilyName()
         {
-
             vCard card = new vCard();
 
             Assert.IsEmpty(
@@ -436,7 +397,6 @@ namespace Tests
             Assert.IsEmpty(
                 card.FamilyName,
                 "FamilyName is not string.Empty after being assigned null.");
-
         }
 
         #endregion
@@ -446,7 +406,6 @@ namespace Tests
         [TestMethod]
         public void StringEmpty_FormattedName()
         {
-
             vCard card = new vCard();
 
             Assert.IsEmpty(
@@ -458,7 +417,6 @@ namespace Tests
             Assert.IsEmpty(
                 card.FormattedName,
                 "FormattedName is not string.Empty after being assigned null.");
-
         }
 
         #endregion
@@ -468,7 +426,6 @@ namespace Tests
         [TestMethod]
         public void StringEmpty_GivenName()
         {
-
             vCard card = new vCard();
 
             Assert.IsEmpty(
@@ -480,7 +437,6 @@ namespace Tests
             Assert.IsEmpty(
                 card.GivenName,
                 "GivenName is not string.Empty after being assigned null.");
-
         }
 
         #endregion
@@ -490,7 +446,6 @@ namespace Tests
         [TestMethod]
         public void StringEmpty_Mailer()
         {
-
             vCard card = new vCard();
 
             Assert.IsEmpty(
@@ -502,7 +457,6 @@ namespace Tests
             Assert.IsEmpty(
                 card.Mailer,
                 "Mailer is not string.Empty after being assigned null.");
-
         }
 
         #endregion
@@ -512,7 +466,6 @@ namespace Tests
         [TestMethod]
         public void StringEmpty_NamePrefix()
         {
-
             vCard card = new vCard();
 
             Assert.IsEmpty(
@@ -524,8 +477,6 @@ namespace Tests
             Assert.IsEmpty(
                 card.NamePrefix,
                 "NamePrefix is not string.Empty after being assigned null.");
-
-
         }
 
         #endregion
@@ -535,7 +486,6 @@ namespace Tests
         [TestMethod]
         public void StringEmpty_NameSuffix()
         {
-
             vCard card = new vCard();
 
             Assert.IsEmpty(
@@ -547,7 +497,6 @@ namespace Tests
             Assert.IsEmpty(
                 card.NameSuffix,
                 "NameSuffix is not string.Empty after being assigned null.");
-
         }
 
         #endregion
@@ -557,7 +506,6 @@ namespace Tests
         [TestMethod]
         public void StringEmpty_Office()
         {
-
             vCard card = new vCard();
 
             Assert.IsEmpty(
@@ -569,7 +517,6 @@ namespace Tests
             Assert.IsEmpty(
                 card.Office,
                 "Office is not string.Empty after being assigned null.");
-
         }
 
         #endregion
@@ -579,7 +526,6 @@ namespace Tests
         [TestMethod]
         public void StringEmpty_Organization()
         {
-
             vCard card = new vCard();
 
             Assert.IsEmpty(
@@ -591,7 +537,6 @@ namespace Tests
             Assert.IsEmpty(
                 card.Organization,
                 "Organization is not string.Empty after being assigned null.");
-
         }
 
         #endregion
@@ -601,7 +546,6 @@ namespace Tests
         [TestMethod]
         public void StringEmpty_ProductId()
         {
-
             vCard card = new vCard();
 
             Assert.IsEmpty(
@@ -613,7 +557,6 @@ namespace Tests
             Assert.IsEmpty(
                 card.ProductId,
                 "ProductId is not string.Empty after being assigned null.");
-
         }
 
         #endregion
@@ -623,7 +566,6 @@ namespace Tests
         [TestMethod]
         public void StringEmpty_Role()
         {
-
             vCard card = new vCard();
 
             Assert.IsEmpty(
@@ -635,7 +577,6 @@ namespace Tests
             Assert.IsEmpty(
                 card.Role,
                 "Role is not string.Empty after being assigned null.");
-
         }
 
         #endregion
@@ -645,7 +586,6 @@ namespace Tests
         [TestMethod]
         public void StringEmpty_TimeZone()
         {
-
             vCard card = new vCard();
 
             Assert.IsEmpty(
@@ -657,7 +597,6 @@ namespace Tests
             Assert.IsEmpty(
                 card.TimeZone,
                 "TimeZone is not string.Empty after being assigned null.");
-
         }
 
         #endregion
@@ -667,7 +606,6 @@ namespace Tests
         [TestMethod]
         public void StringEmpty_Title()
         {
-
             vCard card = new vCard();
 
             Assert.IsEmpty(
@@ -679,7 +617,6 @@ namespace Tests
             Assert.IsEmpty(
                 card.Title,
                 "Title is not string.Empty after being assigned null.");
-
         }
 
         #endregion
@@ -689,7 +626,6 @@ namespace Tests
         [TestMethod]
         public void StringEmpty_UniqueId()
         {
-
             vCard card = new vCard();
 
             Assert.IsEmpty(
@@ -701,12 +637,13 @@ namespace Tests
             Assert.IsEmpty(
                 card.UniqueId,
                 "UniqueId is not string.Empty after being assigned null.");
-
         }
 
         #endregion
 
-        public void Dispose() { //driver.Dispose();  
+        public void Dispose()
+        {
+            //driver.Dispose();  
         }
     }
 }

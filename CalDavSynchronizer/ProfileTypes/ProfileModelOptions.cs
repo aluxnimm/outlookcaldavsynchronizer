@@ -19,27 +19,27 @@ using System;
 
 namespace CalDavSynchronizer.ProfileTypes
 {
-  public class ProfileModelOptions
-  {
-    public ProfileModelOptions(bool areAdvancedNetWorkSettingsEnabled, bool isEnableChangeTriggeredSynchronizationEnabled, bool isTaskMappingConfigurationEnabled, bool isContactMappingConfigurationEnabled, string davUrlLabelText, bool areSyncSettingsEnabled, bool areSyncSettingsVisible, bool isEnableChangeTriggeredSynchronizationVisible)
+    public class ProfileModelOptions
     {
-      AreAdvancedNetWorkSettingsEnabled = areAdvancedNetWorkSettingsEnabled;
-      IsEnableChangeTriggeredSynchronizationEnabled = isEnableChangeTriggeredSynchronizationEnabled;
-      IsTaskMappingConfigurationEnabled = isTaskMappingConfigurationEnabled;
-      IsContactMappingConfigurationEnabled = isContactMappingConfigurationEnabled;
-      DavUrlLabelText = davUrlLabelText;
-      AreSyncSettingsEnabled = areSyncSettingsEnabled;
-      AreSyncSettingsVisible = areSyncSettingsVisible;
-      IsEnableChangeTriggeredSynchronizationVisible = isEnableChangeTriggeredSynchronizationVisible;
-    }
+        public ProfileModelOptions(bool areAdvancedNetWorkSettingsEnabled, bool isEnableChangeTriggeredSynchronizationEnabled, bool isTaskMappingConfigurationEnabled, bool isContactMappingConfigurationEnabled, string davUrlLabelText, bool areSyncSettingsEnabled, bool areSyncSettingsVisible, bool isEnableChangeTriggeredSynchronizationVisible)
+        {
+            AreAdvancedNetWorkSettingsEnabled = areAdvancedNetWorkSettingsEnabled;
+            IsEnableChangeTriggeredSynchronizationEnabled = isEnableChangeTriggeredSynchronizationEnabled;
+            IsTaskMappingConfigurationEnabled = isTaskMappingConfigurationEnabled;
+            IsContactMappingConfigurationEnabled = isContactMappingConfigurationEnabled;
+            DavUrlLabelText = davUrlLabelText;
+            AreSyncSettingsEnabled = areSyncSettingsEnabled;
+            AreSyncSettingsVisible = areSyncSettingsVisible;
+            IsEnableChangeTriggeredSynchronizationVisible = isEnableChangeTriggeredSynchronizationVisible;
+        }
 
-    public bool AreSyncSettingsVisible { get; }
-    public bool AreSyncSettingsEnabled { get; }
-    public bool AreAdvancedNetWorkSettingsEnabled { get; }
-    public bool IsEnableChangeTriggeredSynchronizationVisible { get; }
-    public bool IsEnableChangeTriggeredSynchronizationEnabled { get; }
-    public bool IsContactMappingConfigurationEnabled { get; }
-    public bool IsTaskMappingConfigurationEnabled { get; }
-    public String DavUrlLabelText { get; }
-  }
+        public bool AreSyncSettingsVisible { get; }
+        public bool AreSyncSettingsEnabled { get; }
+        public bool AreAdvancedNetWorkSettingsEnabled { get; }
+        public bool IsEnableChangeTriggeredSynchronizationVisible { get; }
+        public bool IsEnableChangeTriggeredSynchronizationEnabled { get; }
+        public bool IsContactMappingConfigurationEnabled { get; }
+        public bool IsTaskMappingConfigurationEnabled { get; }
+        public String DavUrlLabelText { get; }
+    }
 }

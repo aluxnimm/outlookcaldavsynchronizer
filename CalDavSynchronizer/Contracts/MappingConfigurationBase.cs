@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Xml.Serialization;
 using CalDavSynchronizer.Ui.Options.ViewModels;
@@ -21,11 +22,11 @@ using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
 
 namespace CalDavSynchronizer.Contracts
 {
-  [XmlInclude (typeof (ContactMappingConfiguration))]
-  [XmlInclude (typeof (EventMappingConfiguration))]
-  [XmlInclude (typeof (TaskMappingConfiguration))]
-  public abstract class MappingConfigurationBase 
-  {
-    public abstract TResult Accept<TResult>(IMappingConfigurationBaseVisitor<TResult> visitor);
-  }
+    [XmlInclude(typeof(ContactMappingConfiguration))]
+    [XmlInclude(typeof(EventMappingConfiguration))]
+    [XmlInclude(typeof(TaskMappingConfiguration))]
+    public abstract class MappingConfigurationBase
+    {
+        public abstract TResult Accept<TResult>(IMappingConfigurationBaseVisitor<TResult> visitor);
+    }
 }

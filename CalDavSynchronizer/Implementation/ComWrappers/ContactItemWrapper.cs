@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -21,50 +22,50 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.ComWrappers
 {
-  public class ContactItemWrapper : IContactItemWrapper
-  {
-    public ContactItem Inner => _inner ?? throw new InvalidOperationException("Cannot access a disposed object!");
-
-    private ContactItem _inner;
-    private LoadContactItemDelegate _load;
-
-    public ContactItemWrapper (ContactItem inner, LoadContactItemDelegate load)
+    public class ContactItemWrapper : IContactItemWrapper
     {
-      _load = load;
-      _inner = inner;
-    }
+        public ContactItem Inner => _inner ?? throw new InvalidOperationException("Cannot access a disposed object!");
 
-    public void SaveAndReload()
-    {
-      Inner.Save();
-      var entryId = Inner.EntryID;
-      DisposeInner();
-      Thread.MemoryBarrier();
-      _inner = _load (entryId);
-    }
+        private ContactItem _inner;
+        private LoadContactItemDelegate _load;
 
-    private void DisposeInner()
-    {
-      Marshal.FinalReleaseComObject (Inner);
-      _inner = null;
-    }
+        public ContactItemWrapper(ContactItem inner, LoadContactItemDelegate load)
+        {
+            _load = load;
+            _inner = inner;
+        }
 
-    public void Dispose()
-    {
-      if (_inner != null)
-      {
-        DisposeInner();
-        _load = null;
-      }
-    }
+        public void SaveAndReload()
+        {
+            Inner.Save();
+            var entryId = Inner.EntryID;
+            DisposeInner();
+            Thread.MemoryBarrier();
+            _inner = _load(entryId);
+        }
 
-    public void Replace (ContactItem inner)
-    {
-      if (inner != Inner)
-      {
-        DisposeInner();
-        _inner = inner;
-      }
+        private void DisposeInner()
+        {
+            Marshal.FinalReleaseComObject(Inner);
+            _inner = null;
+        }
+
+        public void Dispose()
+        {
+            if (_inner != null)
+            {
+                DisposeInner();
+                _load = null;
+            }
+        }
+
+        public void Replace(ContactItem inner)
+        {
+            if (inner != Inner)
+            {
+                DisposeInner();
+                _inner = inner;
+            }
+        }
     }
-  }
 }

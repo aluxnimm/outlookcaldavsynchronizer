@@ -19,20 +19,20 @@ using CalDavSynchronizer.DataAccess;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class CacheItem
-  {
-    public CacheItem(WebResourceName id, string[] emailAddresses)
+    public class CacheItem
     {
-      Id = id;
-      EmailAddresses = emailAddresses;
-    }
+        public CacheItem(WebResourceName id, string[] emailAddresses)
+        {
+            Id = id;
+            EmailAddresses = emailAddresses;
+        }
 
-    public CacheItem()
-    {
-    }
+        public CacheItem()
+        {
+        }
 
-    public WebResourceName Id { get; set; }
-    public string[] EmailAddresses { get; set; }
-    public string Uid { get; set; }
-  }
+        public WebResourceName Id { get; set; }
+        public string[] EmailAddresses { get; set; }
+        public string Uid { get; set; }
+    }
 }

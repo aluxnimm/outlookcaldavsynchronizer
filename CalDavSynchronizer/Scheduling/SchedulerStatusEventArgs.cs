@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace CalDavSynchronizer.Scheduling
 {
-  public class SchedulerStatusEventArgs : EventArgs
-  {
-    public SchedulerStatusEventArgs (bool isRunning)
+    public class SchedulerStatusEventArgs : EventArgs
     {
-      IsRunning = isRunning;
-    }
+        public SchedulerStatusEventArgs(bool isRunning)
+        {
+            IsRunning = isRunning;
+        }
 
-    public bool IsRunning { get; }
-  }
+        public bool IsRunning { get; }
+    }
 }

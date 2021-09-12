@@ -23,38 +23,37 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
 {
-  class WebDeProfile : ProfileTypeBase
-  {
-    public override string Name { get; } = "Web.de";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_webde.png";
-
-    public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+    class WebDeProfile : ProfileTypeBase
     {
-      return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData);
-    }
+        public override string Name { get; } = "Web.de";
+        public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_webde.png";
 
-    public override Contracts.Options CreateOptions()
-    {
-      var data = base.CreateOptions();
-      data.CalenderUrl = "https://caldav.web.de";
-      data.MappingConfiguration = CreateEventMappingConfiguration();
-      return data;
-    }
+        public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+        {
+            return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData);
+        }
 
-    public override EventMappingConfiguration CreateEventMappingConfiguration()
-    {
-      var data = base.CreateEventMappingConfiguration();
-      data.UseIanaTz = true;
-      return data;
-    }
+        public override Contracts.Options CreateOptions()
+        {
+            var data = base.CreateOptions();
+            data.CalenderUrl = "https://caldav.web.de";
+            data.MappingConfiguration = CreateEventMappingConfiguration();
+            return data;
+        }
 
-    class ProfileModelFactory : ProfileModelFactoryBase
-    {
-      public ProfileModelFactory(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
-        : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData)
-      {
-      }
+        public override EventMappingConfiguration CreateEventMappingConfiguration()
+        {
+            var data = base.CreateEventMappingConfiguration();
+            data.UseIanaTz = true;
+            return data;
+        }
 
+        class ProfileModelFactory : ProfileModelFactoryBase
+        {
+            public ProfileModelFactory(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+                : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData)
+            {
+            }
+        }
     }
-  }
 }

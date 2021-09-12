@@ -19,26 +19,26 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer
 {
-  public struct ChangedOptions
-  {
-    private readonly Options _old;
-    private readonly Options _new;
-
-    public ChangedOptions (Options old, Options @new)
-      : this ()
+    public struct ChangedOptions
     {
-      _old = old;
-      _new = @new;
-    }
+        private readonly Options _old;
+        private readonly Options _new;
 
-    public Options Old
-    {
-      get { return _old; }
-    }
+        public ChangedOptions(Options old, Options @new)
+            : this()
+        {
+            _old = old;
+            _new = @new;
+        }
 
-    public Options New
-    {
-      get { return _new; }
+        public Options Old
+        {
+            get { return _old; }
+        }
+
+        public Options New
+        {
+            get { return _new; }
+        }
     }
-  }
 }

@@ -14,19 +14,19 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace CalDavSynchronizer
 {
-  class DateTimeProvider : IDateTimeProvider
-  {
-    public static readonly IDateTimeProvider Instance = new DateTimeProvider();
-
-    private DateTimeProvider()
+    class DateTimeProvider : IDateTimeProvider
     {
-      
-    }
+        public static readonly IDateTimeProvider Instance = new DateTimeProvider();
 
-    public DateTime Now => DateTime.UtcNow;
-  }
+        private DateTimeProvider()
+        {
+        }
+
+        public DateTime Now => DateTime.UtcNow;
+    }
 }

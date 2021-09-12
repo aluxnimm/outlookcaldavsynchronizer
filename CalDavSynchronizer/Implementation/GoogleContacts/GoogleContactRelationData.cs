@@ -20,12 +20,12 @@ using GenSync.EntityRelationManagement;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  public class GoogleContactRelationData : IEntityRelationData<string, DateTime, string, GoogleContactVersion>
-  {
-    public string AtypeId { get; set; }
-    public DateTime AtypeVersion { get; set; }
+    public class GoogleContactRelationData : IEntityRelationData<string, DateTime, string, GoogleContactVersion>
+    {
+        public string AtypeId { get; set; }
+        public DateTime AtypeVersion { get; set; }
 
-    public string BtypeId { get; set; }
-    public GoogleContactVersion BtypeVersion { get; set; }
-  }
+        public string BtypeId { get; set; }
+        public GoogleContactVersion BtypeVersion { get; set; }
+    }
 }

@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
@@ -29,45 +30,45 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Scheduling
 {
-  public class ContactSynchronizerComponents
-  {
-    public ContactSynchronizerComponents(Options options, OutlookContactRepository<ICardDavRepositoryLogger> atypeRepository, IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> btypeRepository, EntitySyncStateFactory<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> syncStateFactory, EntityRelationDataAccess<string, DateTime, OutlookContactRelationData, WebResourceName, string> storageDataAccess, OutlookContactRelationDataFactory entityRelationDataFactory, IEqualityComparer<WebResourceName> btypeIdEqualityComparer, EqualityComparer<string> atypeIdEqulityComparer, IWebDavClient webDavClientOrNullIfFileAccess, LoggingCardDavRepositoryDecorator repository, ContactMappingConfiguration mappingParameters, string storageDataDirectory, Uri serverUrl, ICardDavDataAccess cardDavDataAccess, IStateAwareEntityRepository<WebResourceName, string, ICardDavRepositoryLogger, string> btypeStateAwareEntityRepository, IStateTokenDataAccess<int, string> stateTokenDataAccess, EqualityComparer<string> btypeVersionComparer)
+    public class ContactSynchronizerComponents
     {
-      Options = options;
-      AtypeRepository = atypeRepository;
-      BtypeRepository = btypeRepository;
-      SyncStateFactory = syncStateFactory;
-      StorageDataAccess = storageDataAccess;
-      EntityRelationDataFactory = entityRelationDataFactory;
-      BtypeIdEqualityComparer = btypeIdEqualityComparer;
-      AtypeIdEqulityComparer = atypeIdEqulityComparer;
-      WebDavClientOrNullIfFileAccess = webDavClientOrNullIfFileAccess;
-      Repository = repository;
-      MappingParameters = mappingParameters;
-      StorageDataDirectory = storageDataDirectory;
-      ServerUrl = serverUrl;
-      CardDavDataAccess = cardDavDataAccess;
-      BtypeStateAwareEntityRepository = btypeStateAwareEntityRepository;
-      StateTokenDataAccess = stateTokenDataAccess;
-      BtypeVersionComparer = btypeVersionComparer;
-    }
+        public ContactSynchronizerComponents(Options options, OutlookContactRepository<ICardDavRepositoryLogger> atypeRepository, IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> btypeRepository, EntitySyncStateFactory<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> syncStateFactory, EntityRelationDataAccess<string, DateTime, OutlookContactRelationData, WebResourceName, string> storageDataAccess, OutlookContactRelationDataFactory entityRelationDataFactory, IEqualityComparer<WebResourceName> btypeIdEqualityComparer, EqualityComparer<string> atypeIdEqulityComparer, IWebDavClient webDavClientOrNullIfFileAccess, LoggingCardDavRepositoryDecorator repository, ContactMappingConfiguration mappingParameters, string storageDataDirectory, Uri serverUrl, ICardDavDataAccess cardDavDataAccess, IStateAwareEntityRepository<WebResourceName, string, ICardDavRepositoryLogger, string> btypeStateAwareEntityRepository, IStateTokenDataAccess<int, string> stateTokenDataAccess, EqualityComparer<string> btypeVersionComparer)
+        {
+            Options = options;
+            AtypeRepository = atypeRepository;
+            BtypeRepository = btypeRepository;
+            SyncStateFactory = syncStateFactory;
+            StorageDataAccess = storageDataAccess;
+            EntityRelationDataFactory = entityRelationDataFactory;
+            BtypeIdEqualityComparer = btypeIdEqualityComparer;
+            AtypeIdEqulityComparer = atypeIdEqulityComparer;
+            WebDavClientOrNullIfFileAccess = webDavClientOrNullIfFileAccess;
+            Repository = repository;
+            MappingParameters = mappingParameters;
+            StorageDataDirectory = storageDataDirectory;
+            ServerUrl = serverUrl;
+            CardDavDataAccess = cardDavDataAccess;
+            BtypeStateAwareEntityRepository = btypeStateAwareEntityRepository;
+            StateTokenDataAccess = stateTokenDataAccess;
+            BtypeVersionComparer = btypeVersionComparer;
+        }
 
-    public Options Options { get; private set; }
-    public OutlookContactRepository<ICardDavRepositoryLogger> AtypeRepository { get; private set; }
-    public IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> BtypeRepository { get; set; }
-    public EntitySyncStateFactory<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> SyncStateFactory { get; private set; }
-    public EntityRelationDataAccess<string, DateTime, OutlookContactRelationData, WebResourceName, string> StorageDataAccess { get; private set; }
-    public OutlookContactRelationDataFactory EntityRelationDataFactory { get; private set; }
-    public IEqualityComparer<WebResourceName> BtypeIdEqualityComparer { get; private set; }
-    public EqualityComparer<string> AtypeIdEqulityComparer { get; private set; }
-    public IWebDavClient WebDavClientOrNullIfFileAccess { get; }
-    public LoggingCardDavRepositoryDecorator Repository { get; }
-    public ContactMappingConfiguration MappingParameters { get; }
-    public string StorageDataDirectory { get; }
-    public Uri ServerUrl { get; }
-    public ICardDavDataAccess CardDavDataAccess { get; }
-    public IStateAwareEntityRepository<WebResourceName, string, ICardDavRepositoryLogger, string> BtypeStateAwareEntityRepository { get; }
-    public IStateTokenDataAccess<int, string> StateTokenDataAccess { get; }
-    public EqualityComparer<string> BtypeVersionComparer { get; }
-  }
+        public Options Options { get; private set; }
+        public OutlookContactRepository<ICardDavRepositoryLogger> AtypeRepository { get; private set; }
+        public IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> BtypeRepository { get; set; }
+        public EntitySyncStateFactory<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> SyncStateFactory { get; private set; }
+        public EntityRelationDataAccess<string, DateTime, OutlookContactRelationData, WebResourceName, string> StorageDataAccess { get; private set; }
+        public OutlookContactRelationDataFactory EntityRelationDataFactory { get; private set; }
+        public IEqualityComparer<WebResourceName> BtypeIdEqualityComparer { get; private set; }
+        public EqualityComparer<string> AtypeIdEqulityComparer { get; private set; }
+        public IWebDavClient WebDavClientOrNullIfFileAccess { get; }
+        public LoggingCardDavRepositoryDecorator Repository { get; }
+        public ContactMappingConfiguration MappingParameters { get; }
+        public string StorageDataDirectory { get; }
+        public Uri ServerUrl { get; }
+        public ICardDavDataAccess CardDavDataAccess { get; }
+        public IStateAwareEntityRepository<WebResourceName, string, ICardDavRepositoryLogger, string> BtypeStateAwareEntityRepository { get; }
+        public IStateTokenDataAccess<int, string> StateTokenDataAccess { get; }
+        public EqualityComparer<string> BtypeVersionComparer { get; }
+    }
 }

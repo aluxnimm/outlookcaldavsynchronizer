@@ -14,15 +14,16 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync.ProgressReport
 {
-  /// <summary>
-  /// Creates a ITotalProgress
-  /// </summary>
-  public interface ITotalProgressFactory
-  {
-    ITotalProgressLogger Create ();
-  }
+    /// <summary>
+    /// Creates a ITotalProgress
+    /// </summary>
+    public interface ITotalProgressFactory
+    {
+        ITotalProgressLogger Create();
+    }
 }

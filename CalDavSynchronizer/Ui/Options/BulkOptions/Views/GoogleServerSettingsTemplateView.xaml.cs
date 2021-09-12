@@ -20,14 +20,14 @@ using System.Windows.Controls;
 
 namespace CalDavSynchronizer.Ui.Options.BulkOptions.Views
 {
-  /// <summary>
-  ///   Interaction logic for ReportView.xaml
-  /// </summary>
-  public partial class GoogleServerSettingsTemplateView : UserControl
-  {
-    public GoogleServerSettingsTemplateView ()
+    /// <summary>
+    ///   Interaction logic for ReportView.xaml
+    /// </summary>
+    public partial class GoogleServerSettingsTemplateView : UserControl
     {
-      InitializeComponent();
+        public GoogleServerSettingsTemplateView()
+        {
+            InitializeComponent();
+        }
     }
-  }
 }

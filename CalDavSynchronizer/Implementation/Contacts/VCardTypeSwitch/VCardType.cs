@@ -17,9 +17,9 @@
 
 namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
 {
-  public enum VCardType
-  {
-    Contact,
-    Group
-  }
+    public enum VCardType
+    {
+        Contact,
+        Group
+    }
 }

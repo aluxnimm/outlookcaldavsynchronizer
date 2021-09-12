@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.IO;
 using CalDavSynchronizer.Contracts;
@@ -21,12 +22,11 @@ using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public class ProfileListDataAccess : FileDataAccess<ProfileEntry[]>, IProfileListDataAccess
-  {
-    public ProfileListDataAccess(string filePath)
-      : base(filePath, () => new ProfileEntry[0])
+    public class ProfileListDataAccess : FileDataAccess<ProfileEntry[]>, IProfileListDataAccess
     {
+        public ProfileListDataAccess(string filePath)
+            : base(filePath, () => new ProfileEntry[0])
+        {
+        }
     }
-  }
- 
 }

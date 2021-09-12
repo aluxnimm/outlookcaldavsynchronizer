@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,61 +28,61 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.EntityCacheVersionConversion
 {
-  public static class Version1To2
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
-
-    public static void Convert (
-      NameSpace outlookSession, 
-      Options[] options,
-      Func<Options, string> cacheFileGetter,
-      Action<Options> cacheDeleter)
+    public static class Version1To2
     {
-      foreach (var option in options)
-      {
-        try
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+
+        public static void Convert(
+            NameSpace outlookSession,
+            Options[] options,
+            Func<Options, string> cacheFileGetter,
+            Action<Options> cacheDeleter)
         {
-          Convert(outlookSession, option, cacheFileGetter, cacheDeleter);
+            foreach (var option in options)
+            {
+                try
+                {
+                    Convert(outlookSession, option, cacheFileGetter, cacheDeleter);
+                }
+                catch (System.Exception x)
+                {
+                    s_logger.Error($"Error during conversion for profile '{option.Name}'. Deleting caches", x);
+                    cacheDeleter(option);
+                }
+            }
         }
-        catch (System.Exception x)
+
+        private static void Convert(NameSpace outlookSession, Options options, Func<Options, string> cacheFileGetter, Action<Options> cacheDeleter)
         {
-          s_logger.Error ($"Error during conversion for profile '{option.Name}'. Deleting caches", x);
-          cacheDeleter(option);
+            OlItemType defaultItemType;
+
+            using (var outlookFolderWrapper = GenericComObjectWrapper.Create((Folder) outlookSession.GetFolderFromID(options.OutlookFolderEntryId, options.OutlookFolderStoreId)))
+            {
+                defaultItemType = outlookFolderWrapper.Inner.DefaultItemType;
+            }
+
+            if (defaultItemType == OlItemType.olAppointmentItem)
+            {
+                var fileName = cacheFileGetter(options);
+                XDocument document = XDocument.Load(fileName);
+                var aTypeNodes = document.Descendants().Where(n => n.Name == "AtypeId");
+
+                foreach (var atypeNode in aTypeNodes)
+                {
+                    var entryId = atypeNode.Value;
+                    string globalAppointmentId;
+                    using (var appointmentWrapper = GenericComObjectWrapper.Create((AppointmentItem) outlookSession.GetItemFromID(entryId, options.OutlookFolderStoreId)))
+                    {
+                        globalAppointmentId = appointmentWrapper.Inner.GlobalAppointmentID;
+                    }
+
+                    atypeNode.RemoveAll();
+                    atypeNode.Add(new XElement("EntryId", entryId));
+                    atypeNode.Add(new XElement("GlobalAppointmentId", globalAppointmentId));
+                }
+
+                document.Save(fileName);
+            }
         }
-      }
     }
-
-    private static void Convert(NameSpace outlookSession, Options options, Func<Options,string> cacheFileGetter, Action<Options> cacheDeleter)
-    {
-      OlItemType defaultItemType;
-
-      using (var outlookFolderWrapper = GenericComObjectWrapper.Create ((Folder) outlookSession.GetFolderFromID (options.OutlookFolderEntryId, options.OutlookFolderStoreId)))
-      {
-        defaultItemType = outlookFolderWrapper.Inner.DefaultItemType;
-      }
-
-      if (defaultItemType == OlItemType.olAppointmentItem)
-      {
-        var fileName = cacheFileGetter(options);
-        XDocument document = XDocument.Load (fileName);
-        var aTypeNodes = document.Descendants ().Where (n => n.Name == "AtypeId");
-
-        foreach (var atypeNode in aTypeNodes)
-        {
-          var entryId = atypeNode.Value;
-          string globalAppointmentId;
-          using (var appointmentWrapper = GenericComObjectWrapper.Create ((AppointmentItem) outlookSession.GetItemFromID (entryId, options.OutlookFolderStoreId)))
-          {
-            globalAppointmentId = appointmentWrapper.Inner.GlobalAppointmentID;
-          }
-
-          atypeNode.RemoveAll ();
-          atypeNode.Add (new XElement ("EntryId", entryId));
-          atypeNode.Add (new XElement ("GlobalAppointmentId", globalAppointmentId));
-        }
-
-        document.Save (fileName);
-      }
-    }
-  }
 }

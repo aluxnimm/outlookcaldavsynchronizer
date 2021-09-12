@@ -21,10 +21,10 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui.Options.Models
 {
-  public abstract class MappingConfigurationModel : ModelBase
-  {
-    public abstract MappingConfigurationBase GetData();
-    public abstract void AddOneTimeTasks(Action<OneTimeChangeCategoryTask> add);
-    public abstract bool Validate(StringBuilder errorMessageBuilder);
-  }
+    public abstract class MappingConfigurationModel : ModelBase
+    {
+        public abstract MappingConfigurationBase GetData();
+        public abstract void AddOneTimeTasks(Action<OneTimeChangeCategoryTask> add);
+        public abstract bool Validate(StringBuilder errorMessageBuilder);
+    }
 }

@@ -14,28 +14,28 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace CalDavSynchronizer.ChangeWatching
 {
-  class NullItemCollectionChangeWatcher : IItemCollectionChangeWatcher
-  {
-    public static readonly IItemCollectionChangeWatcher Instance = new NullItemCollectionChangeWatcher();
-
-    private NullItemCollectionChangeWatcher ()
+    class NullItemCollectionChangeWatcher : IItemCollectionChangeWatcher
     {
-    }
+        public static readonly IItemCollectionChangeWatcher Instance = new NullItemCollectionChangeWatcher();
 
-    public void Dispose ()
-    {
-      
-    }
+        private NullItemCollectionChangeWatcher()
+        {
+        }
 
-    public event EventHandler<ItemSavedEventArgs> ItemSavedOrDeleted;
+        public void Dispose()
+        {
+        }
 
-    protected virtual void OnItemSavedOrDeleted (ItemSavedEventArgs e)
-    {
-      ItemSavedOrDeleted?.Invoke (this, e);
+        public event EventHandler<ItemSavedEventArgs> ItemSavedOrDeleted;
+
+        protected virtual void OnItemSavedOrDeleted(ItemSavedEventArgs e)
+        {
+            ItemSavedOrDeleted?.Invoke(this, e);
+        }
     }
-  }
 }

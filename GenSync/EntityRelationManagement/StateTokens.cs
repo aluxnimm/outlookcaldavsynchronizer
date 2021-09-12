@@ -14,11 +14,12 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace GenSync.EntityRelationManagement
 {
-  public class StateTokens<TAtypeStateToken, TBtypeStateToken>
-  {
-    public TAtypeStateToken AToken { get; set; }
-    public TBtypeStateToken BToken { get; set; }
-  }
+    public class StateTokens<TAtypeStateToken, TBtypeStateToken>
+    {
+        public TAtypeStateToken AToken { get; set; }
+        public TBtypeStateToken BToken { get; set; }
+    }
 }

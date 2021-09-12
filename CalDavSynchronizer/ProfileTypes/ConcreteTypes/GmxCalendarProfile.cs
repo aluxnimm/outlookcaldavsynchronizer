@@ -23,39 +23,37 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
 {
-  class GmxCalendarProfile : ProfileTypeBase
-  {
-    public override string Name => "GmxCalendar";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_gmx.png";
-
-    public override Contracts.Options CreateOptions()
+    class GmxCalendarProfile : ProfileTypeBase
     {
-      var data = base.CreateOptions();
-      data.CalenderUrl = "https://caldav.gmx.net";
-      data.MappingConfiguration = CreateEventMappingConfiguration();
-      return data;
+        public override string Name => "GmxCalendar";
+        public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_gmx.png";
+
+        public override Contracts.Options CreateOptions()
+        {
+            var data = base.CreateOptions();
+            data.CalenderUrl = "https://caldav.gmx.net";
+            data.MappingConfiguration = CreateEventMappingConfiguration();
+            return data;
+        }
+
+        public override EventMappingConfiguration CreateEventMappingConfiguration()
+        {
+            var data = base.CreateEventMappingConfiguration();
+            data.UseIanaTz = true;
+            return data;
+        }
+
+        public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+        {
+            return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData);
+        }
+
+        class ProfileModelFactory : ProfileModelFactoryBase
+        {
+            public ProfileModelFactory(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+                : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData)
+            {
+            }
+        }
     }
-
-    public override EventMappingConfiguration CreateEventMappingConfiguration()
-    {
-      var data = base.CreateEventMappingConfiguration();
-      data.UseIanaTz = true;
-      return data;
-    }
-
-    public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
-    {
-      return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData);
-    }
-
-    class ProfileModelFactory : ProfileModelFactoryBase
-    {
-      public ProfileModelFactory(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
-        : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData)
-      {
-      }
-
-
-    }
-  }
 }

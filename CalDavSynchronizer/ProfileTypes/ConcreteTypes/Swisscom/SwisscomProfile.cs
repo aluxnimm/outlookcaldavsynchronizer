@@ -24,51 +24,51 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes.Swisscom
 {
-  class SwisscomProfile : ProfileTypeBase
-  {
-    public override string Name => "Swisscom";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_swisscom.png";
-
-    public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+    class SwisscomProfile : ProfileTypeBase
     {
-      return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData);
+        public override string Name => "Swisscom";
+        public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_swisscom.png";
+
+        public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+        {
+            return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData);
+        }
+
+        public override Options CreateOptions()
+        {
+            var data = base.CreateOptions();
+            data.PreemptiveAuthentication = false;
+            data.SynchronizationMode = Implementation.SynchronizationMode.MergeInBothDirections;
+            data.SynchronizationIntervalInMinutes = 30;
+            data.IsChunkedSynchronizationEnabled = true;
+            data.ChunkSize = 100;
+            data.ForceBasicAuthentication = true;
+            data.CloseAfterEachRequest = true;
+            data.PreemptiveAuthentication = true;
+            data.EnableChangeTriggeredSynchronization = true;
+            data.ServerAdapterType = ServerAdapterType.WebDavHttpClientBased;
+
+            return data;
+        }
+
+        class ProfileModelFactory : ProfileModelFactoryBase
+        {
+            public ProfileModelFactory(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+                : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData)
+            {
+            }
+
+            protected override ServerSettingsViewModel CreateServerSettingsViewModel(OptionsModel model)
+            {
+                return new SwisscomServerSettingsViewModel(model, OptionTasks, ViewOptions);
+            }
+
+            protected override IServerSettingsDetector CreateServerSettingsDetector()
+            {
+                return new SwisscomServerSettingsDetector();
+            }
+
+            public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(false, false, false, false, Strings.Get($"Detected URL"), false, false, false);
+        }
     }
-
-    public override Options CreateOptions()
-    {
-      var data = base.CreateOptions();
-      data.PreemptiveAuthentication = false;
-      data.SynchronizationMode = Implementation.SynchronizationMode.MergeInBothDirections;
-      data.SynchronizationIntervalInMinutes = 30;
-      data.IsChunkedSynchronizationEnabled = true;
-      data.ChunkSize = 100;
-      data.ForceBasicAuthentication = true;
-      data.CloseAfterEachRequest = true;
-      data.PreemptiveAuthentication = true;
-      data.EnableChangeTriggeredSynchronization = true;
-      data.ServerAdapterType = ServerAdapterType.WebDavHttpClientBased;
-
-      return data;
-    }
-
-    class ProfileModelFactory : ProfileModelFactoryBase
-    {
-      public ProfileModelFactory(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
-        : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData)
-      {
-      }
-
-      protected override ServerSettingsViewModel CreateServerSettingsViewModel(OptionsModel model)
-      {
-        return new SwisscomServerSettingsViewModel(model, OptionTasks, ViewOptions);
-      }
-
-      protected override IServerSettingsDetector CreateServerSettingsDetector()
-      {
-        return new SwisscomServerSettingsDetector();
-      }
-
-      public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(false, false, false, false, Strings.Get($"Detected URL"), false, false, false);
-    }
-  }
 }

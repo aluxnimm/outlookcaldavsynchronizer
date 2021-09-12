@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -7,13 +6,11 @@
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     A note or comment in a vCard.
     /// </summary>
     public class vCardNote
     {
-
         private string language;
         private string text;
 
@@ -43,14 +40,8 @@ namespace Thought.vCards
         /// </summary>
         public string Language
         {
-            get
-            {
-                return this.language ?? string.Empty;
-            }
-            set
-            {
-                this.language = value;
-            }
+            get { return this.language ?? string.Empty; }
+            set { this.language = value; }
         }
 
         /// <summary>
@@ -58,14 +49,8 @@ namespace Thought.vCards
         /// </summary>
         public string Text
         {
-            get
-            {
-                return this.text ?? string.Empty;
-            }
-            set
-            {
-                this.text = value;
-            }
+            get { return this.text ?? string.Empty; }
+            set { this.text = value; }
         }
 
 
@@ -76,7 +61,5 @@ namespace Thought.vCards
         {
             return this.text ?? string.Empty;
         }
-
     }
-
 }

@@ -22,8 +22,8 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Common
 {
-  public interface IQueryOutlookAppointmentItemFolderStrategy
-  {
-    List<AppointmentSlim> QueryAppointmentFolder(IOutlookSession session, Folder calendarFolder, string filter, IGetVersionsLogger logger);
-  }
+    public interface IQueryOutlookAppointmentItemFolderStrategy
+    {
+        List<AppointmentSlim> QueryAppointmentFolder(IOutlookSession session, Folder calendarFolder, string filter, IGetVersionsLogger logger);
+    }
 }

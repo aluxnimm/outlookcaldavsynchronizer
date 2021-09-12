@@ -21,18 +21,18 @@ using GenSync;
 
 namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
 {
-  public struct IdWithType<TId>
-    where TId : IEntity<WebResourceName>
-  {
-    public readonly TId Id;
-    public readonly VCardType Type;
-
-    public IdWithType (TId id, VCardType type)
+    public struct IdWithType<TId>
+        where TId : IEntity<WebResourceName>
     {
-      if (id == null)
-        throw new ArgumentNullException (nameof (id));
-      Id = id;
-      Type = type;
+        public readonly TId Id;
+        public readonly VCardType Type;
+
+        public IdWithType(TId id, VCardType type)
+        {
+            if (id == null)
+                throw new ArgumentNullException(nameof(id));
+            Id = id;
+            Type = type;
+        }
     }
-  }
 }

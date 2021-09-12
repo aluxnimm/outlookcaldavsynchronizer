@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Globalization;
 using System.Windows.Data;
@@ -27,33 +28,32 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.Ui.Options.Views
 {
-  public class ToProfileImageConverter : IMultiValueConverter
-  {
-    
-    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    public class ToProfileImageConverter : IMultiValueConverter
     {
-      var isMultipleOptionsTemplateViewModel = (bool?)values[1];
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            var isMultipleOptionsTemplateViewModel = (bool?) values[1];
 
-      if (isMultipleOptionsTemplateViewModel.GetValueOrDefault(false))
-        return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/AddMultiple.png"));
+            if (isMultipleOptionsTemplateViewModel.GetValueOrDefault(false))
+                return BitmapFrame.Create(new Uri("pack://application:,,,/CalDavSynchronizer;component/Resources/AddMultiple.png"));
 
-      var itemType = (OlItemType?) values[0];
-      switch (itemType)
-      {
-        case OlItemType.olAppointmentItem:
-          return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/Appointment.png"));
-        case OlItemType.olTaskItem:
-          return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/Task.png"));
-        case OlItemType.olContactItem:
-          return BitmapFrame.Create (new Uri ("pack://application:,,,/CalDavSynchronizer;component/Resources/Contact.png"));
-      }
+            var itemType = (OlItemType?) values[0];
+            switch (itemType)
+            {
+                case OlItemType.olAppointmentItem:
+                    return BitmapFrame.Create(new Uri("pack://application:,,,/CalDavSynchronizer;component/Resources/Appointment.png"));
+                case OlItemType.olTaskItem:
+                    return BitmapFrame.Create(new Uri("pack://application:,,,/CalDavSynchronizer;component/Resources/Task.png"));
+                case OlItemType.olContactItem:
+                    return BitmapFrame.Create(new Uri("pack://application:,,,/CalDavSynchronizer;component/Resources/Contact.png"));
+            }
 
-      return Binding.DoNothing;
+            return Binding.DoNothing;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            return new[] {Binding.DoNothing};
+        }
     }
-
-    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-    {
-      return new [] { Binding.DoNothing };
-    }
-  }
 }

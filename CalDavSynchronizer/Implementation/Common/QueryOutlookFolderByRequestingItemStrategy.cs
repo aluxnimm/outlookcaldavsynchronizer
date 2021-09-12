@@ -30,142 +30,145 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Common
 {
-  public class QueryOutlookFolderByRequestingItemStrategy : IQueryOutlookFolderStrategy
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-    private const string c_entryIdColumnName = "EntryID";
-
-    public static readonly IQueryOutlookFolderStrategy Instance = new QueryOutlookFolderByRequestingItemStrategy ();
-    private QueryOutlookFolderByRequestingItemStrategy ()
+    public class QueryOutlookFolderByRequestingItemStrategy : IQueryOutlookFolderStrategy
     {
-    }
+        private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private const string c_entryIdColumnName = "EntryID";
 
-    List<AppointmentSlim> IQueryOutlookAppointmentItemFolderStrategy.QueryAppointmentFolder(IOutlookSession session, Folder calendarFolder, string filter, IGetVersionsLogger logger)
-    {
-      var events = new List<AppointmentSlim>();
+        public static readonly IQueryOutlookFolderStrategy Instance = new QueryOutlookFolderByRequestingItemStrategy();
 
-      using (var tableWrapper = GenericComObjectWrapper.Create(
-        calendarFolder.GetTable(filter)))
-      {
-        var table = tableWrapper.Inner;
-        table.Columns.RemoveAll();
-        table.Columns.Add(c_entryIdColumnName);
-
-        var storeId = calendarFolder.StoreID;
-
-        while (!table.EndOfTable)
+        private QueryOutlookFolderByRequestingItemStrategy()
         {
-          var row = table.GetNextRow();
-          var entryId = (string) row[c_entryIdColumnName];
-          try
-          {
-            using (var appointmentWrapper = GenericComObjectWrapper.Create(session.GetAppointmentItem(entryId, storeId)))
-            {
-              events.Add(AppointmentSlim.FromAppointmentItem(appointmentWrapper.Inner));
-            }
-          }
-          catch (COMException ex)
-          {
-            s_logger.Error($"Could not fetch AppointmentItem '{entryId}', skipping.", ex);
-          }
         }
-      }
-      return events;
-    }
 
-    List<EntityVersion<string, DateTime>> IQueryOutlookContactItemFolderStrategy.QueryContactItemFolder (IOutlookSession session, Folder folder, string expectedFolderId, string filter, IGetVersionsLogger logger)
-    {
-      var contacts = new List<EntityVersion<string, DateTime>> ();
-
-      using (var tableWrapper = GenericComObjectWrapper.Create (folder.GetTable (filter)))
-      {
-        var table = tableWrapper.Inner;
-        table.Columns.RemoveAll ();
-        table.Columns.Add (c_entryIdColumnName);
-
-        var storeId = folder.StoreID;
-
-        while (!table.EndOfTable)
+        List<AppointmentSlim> IQueryOutlookAppointmentItemFolderStrategy.QueryAppointmentFolder(IOutlookSession session, Folder calendarFolder, string filter, IGetVersionsLogger logger)
         {
-          var row = table.GetNextRow ();
-          var entryId = (string) row[c_entryIdColumnName];
+            var events = new List<AppointmentSlim>();
 
-          var contact = session.GetContactItemOrNull (entryId, expectedFolderId, storeId);
-          if (contact != null)
-          {
-            using (var contactWrapper = GenericComObjectWrapper.Create (contact))
+            using (var tableWrapper = GenericComObjectWrapper.Create(
+                calendarFolder.GetTable(filter)))
             {
-              contacts.Add (new EntityVersion<string, DateTime> (contactWrapper.Inner.EntryID, contactWrapper.Inner.LastModificationTime.ToUniversalTime()));
+                var table = tableWrapper.Inner;
+                table.Columns.RemoveAll();
+                table.Columns.Add(c_entryIdColumnName);
+
+                var storeId = calendarFolder.StoreID;
+
+                while (!table.EndOfTable)
+                {
+                    var row = table.GetNextRow();
+                    var entryId = (string) row[c_entryIdColumnName];
+                    try
+                    {
+                        using (var appointmentWrapper = GenericComObjectWrapper.Create(session.GetAppointmentItem(entryId, storeId)))
+                        {
+                            events.Add(AppointmentSlim.FromAppointmentItem(appointmentWrapper.Inner));
+                        }
+                    }
+                    catch (COMException ex)
+                    {
+                        s_logger.Error($"Could not fetch AppointmentItem '{entryId}', skipping.", ex);
+                    }
+                }
             }
-          }
+
+            return events;
         }
-      }
 
-      return contacts;
-    }
-
-    List<EntityVersion<string, DateTime>> IQueryOutlookTaskItemFolderStrategy.QueryTaskFolder (IOutlookSession session,Folder folder,string filter, IGetVersionsLogger logger)
-    {
-      var tasks = new List<EntityVersion<string, DateTime>> ();
-
-      using (var tableWrapper = GenericComObjectWrapper.Create (
-          folder.GetTable (filter)))
-      {
-        var table = tableWrapper.Inner;
-        table.Columns.RemoveAll ();
-        table.Columns.Add (c_entryIdColumnName);
-
-        var storeId = folder.StoreID;
-
-        while (!table.EndOfTable)
+        List<EntityVersion<string, DateTime>> IQueryOutlookContactItemFolderStrategy.QueryContactItemFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter, IGetVersionsLogger logger)
         {
-          var row = table.GetNextRow ();
-          var entryId = (string) row[c_entryIdColumnName];
-          try
-          {
-            using (var taskWrapper = GenericComObjectWrapper.Create (session.GetTaskItem (entryId, storeId)))
+            var contacts = new List<EntityVersion<string, DateTime>>();
+
+            using (var tableWrapper = GenericComObjectWrapper.Create(folder.GetTable(filter)))
             {
-              tasks.Add (new EntityVersion<string, DateTime> (taskWrapper.Inner.EntryID, taskWrapper.Inner.LastModificationTime.ToUniversalTime()));
+                var table = tableWrapper.Inner;
+                table.Columns.RemoveAll();
+                table.Columns.Add(c_entryIdColumnName);
+
+                var storeId = folder.StoreID;
+
+                while (!table.EndOfTable)
+                {
+                    var row = table.GetNextRow();
+                    var entryId = (string) row[c_entryIdColumnName];
+
+                    var contact = session.GetContactItemOrNull(entryId, expectedFolderId, storeId);
+                    if (contact != null)
+                    {
+                        using (var contactWrapper = GenericComObjectWrapper.Create(contact))
+                        {
+                            contacts.Add(new EntityVersion<string, DateTime>(contactWrapper.Inner.EntryID, contactWrapper.Inner.LastModificationTime.ToUniversalTime()));
+                        }
+                    }
+                }
             }
-          }
-          catch (COMException ex)
-          {
-            s_logger.Error ($"Could not fetch TaskItem '{entryId}', skipping.", ex);
-          }
+
+            return contacts;
         }
-      }
-      return tasks;
-    }
 
-    List<EntityVersion<string, DateTime>> IQueryOutlookDistListItemFolderStrategy.QueryDistListFolder (IOutlookSession session, Folder folder, string expectedFolderId, string filter, IGetVersionsLogger logger)
-    {
-      var contacts = new List<EntityVersion<string, DateTime>> ();
-
-      using (var tableWrapper = GenericComObjectWrapper.Create (folder.GetTable (filter)))
-      {
-        var table = tableWrapper.Inner;
-        table.Columns.RemoveAll ();
-        table.Columns.Add (c_entryIdColumnName);
-
-        var storeId = folder.StoreID;
-
-        while (!table.EndOfTable)
+        List<EntityVersion<string, DateTime>> IQueryOutlookTaskItemFolderStrategy.QueryTaskFolder(IOutlookSession session, Folder folder, string filter, IGetVersionsLogger logger)
         {
-          var row = table.GetNextRow ();
-          var entryId = (string) row[c_entryIdColumnName];
+            var tasks = new List<EntityVersion<string, DateTime>>();
 
-          var contact = session.GetDistListItemOrNull (entryId, expectedFolderId, storeId);
-          if (contact != null)
-          {
-            using (var contactWrapper = GenericComObjectWrapper.Create (contact))
+            using (var tableWrapper = GenericComObjectWrapper.Create(
+                folder.GetTable(filter)))
             {
-              contacts.Add (new EntityVersion<string, DateTime> (contactWrapper.Inner.EntryID, contactWrapper.Inner.LastModificationTime.ToUniversalTime()));
-            }
-          }
-        }
-      }
+                var table = tableWrapper.Inner;
+                table.Columns.RemoveAll();
+                table.Columns.Add(c_entryIdColumnName);
 
-      return contacts;
+                var storeId = folder.StoreID;
+
+                while (!table.EndOfTable)
+                {
+                    var row = table.GetNextRow();
+                    var entryId = (string) row[c_entryIdColumnName];
+                    try
+                    {
+                        using (var taskWrapper = GenericComObjectWrapper.Create(session.GetTaskItem(entryId, storeId)))
+                        {
+                            tasks.Add(new EntityVersion<string, DateTime>(taskWrapper.Inner.EntryID, taskWrapper.Inner.LastModificationTime.ToUniversalTime()));
+                        }
+                    }
+                    catch (COMException ex)
+                    {
+                        s_logger.Error($"Could not fetch TaskItem '{entryId}', skipping.", ex);
+                    }
+                }
+            }
+
+            return tasks;
+        }
+
+        List<EntityVersion<string, DateTime>> IQueryOutlookDistListItemFolderStrategy.QueryDistListFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter, IGetVersionsLogger logger)
+        {
+            var contacts = new List<EntityVersion<string, DateTime>>();
+
+            using (var tableWrapper = GenericComObjectWrapper.Create(folder.GetTable(filter)))
+            {
+                var table = tableWrapper.Inner;
+                table.Columns.RemoveAll();
+                table.Columns.Add(c_entryIdColumnName);
+
+                var storeId = folder.StoreID;
+
+                while (!table.EndOfTable)
+                {
+                    var row = table.GetNextRow();
+                    var entryId = (string) row[c_entryIdColumnName];
+
+                    var contact = session.GetDistListItemOrNull(entryId, expectedFolderId, storeId);
+                    if (contact != null)
+                    {
+                        using (var contactWrapper = GenericComObjectWrapper.Create(contact))
+                        {
+                            contacts.Add(new EntityVersion<string, DateTime>(contactWrapper.Inner.EntryID, contactWrapper.Inner.LastModificationTime.ToUniversalTime()));
+                        }
+                    }
+                }
+            }
+
+            return contacts;
+        }
     }
-  }
 }

@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,69 +27,63 @@ using CalDavSynchronizer.Ui.Options.Models;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels.Mapping
 {
-  class CustomPropertyMappingViewModel : ModelBase, ITreeNodeViewModel
-  {
-    private readonly ICustomPropertiesMappingConfigurationModel _model;
-
-    private bool _isSelected;
-    private bool _isExpanded;
-
-    public CustomPropertyMappingViewModel(ICustomPropertiesMappingConfigurationModel model)
+    class CustomPropertyMappingViewModel : ModelBase, ITreeNodeViewModel
     {
-      if (model == null) throw new ArgumentNullException(nameof(model));
+        private readonly ICustomPropertiesMappingConfigurationModel _model;
 
-      _model = model;
+        private bool _isSelected;
+        private bool _isExpanded;
 
-      RegisterPropertyChangePropagation(model, nameof(model.MapCustomProperties), nameof(MapCustomProperties));
-
-      Mappings = model.Mappings;
-    }
-
-    public string Name { get; } = Strings.Get($"Custom Properties Mapping");
-
-
-    public IEnumerable<ITreeNodeViewModel> Items { get; } = new ITreeNodeViewModel[0];
-    public ObservableCollection<PropertyMappingModel> Mappings { get; }
-
-    public bool IsSelected
-    {
-      get { return _isSelected; }
-      set
-      {
-        CheckedPropertyChange(ref _isSelected, value);
-      }
-    }
-
-    public bool IsExpanded
-    {
-      get { return _isExpanded; }
-      set
-      {
-        CheckedPropertyChange(ref _isExpanded, value);
-      }
-    }
-
-    public bool MapCustomProperties
-    {
-      get { return _model.MapCustomProperties; }
-      set { _model.MapCustomProperties = value; }
-    }
-
-
-    public static CustomPropertyMappingViewModel DesignInstance
-    {
-      get
-      {
-        var customPropertyMappingViewModel = new CustomPropertyMappingViewModel(new TaskMappingConfigurationModel(new TaskMappingConfiguration()))
+        public CustomPropertyMappingViewModel(ICustomPropertiesMappingConfigurationModel model)
         {
-          MapCustomProperties = true,
-        };
+            if (model == null) throw new ArgumentNullException(nameof(model));
 
-        customPropertyMappingViewModel.Mappings.Add(new PropertyMappingModel(new PropertyMapping {OutlookProperty = "OName", DavProperty = "DName"}));
-        customPropertyMappingViewModel.Mappings.Add(new PropertyMappingModel(new PropertyMapping { OutlookProperty = "OSubject", DavProperty = "DSubject" }));
+            _model = model;
 
-        return customPropertyMappingViewModel;
-      }
+            RegisterPropertyChangePropagation(model, nameof(model.MapCustomProperties), nameof(MapCustomProperties));
+
+            Mappings = model.Mappings;
+        }
+
+        public string Name { get; } = Strings.Get($"Custom Properties Mapping");
+
+
+        public IEnumerable<ITreeNodeViewModel> Items { get; } = new ITreeNodeViewModel[0];
+        public ObservableCollection<PropertyMappingModel> Mappings { get; }
+
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set { CheckedPropertyChange(ref _isSelected, value); }
+        }
+
+        public bool IsExpanded
+        {
+            get { return _isExpanded; }
+            set { CheckedPropertyChange(ref _isExpanded, value); }
+        }
+
+        public bool MapCustomProperties
+        {
+            get { return _model.MapCustomProperties; }
+            set { _model.MapCustomProperties = value; }
+        }
+
+
+        public static CustomPropertyMappingViewModel DesignInstance
+        {
+            get
+            {
+                var customPropertyMappingViewModel = new CustomPropertyMappingViewModel(new TaskMappingConfigurationModel(new TaskMappingConfiguration()))
+                {
+                    MapCustomProperties = true,
+                };
+
+                customPropertyMappingViewModel.Mappings.Add(new PropertyMappingModel(new PropertyMapping {OutlookProperty = "OName", DavProperty = "DName"}));
+                customPropertyMappingViewModel.Mappings.Add(new PropertyMappingModel(new PropertyMapping {OutlookProperty = "OSubject", DavProperty = "DSubject"}));
+
+                return customPropertyMappingViewModel;
+            }
+        }
     }
-  }
 }

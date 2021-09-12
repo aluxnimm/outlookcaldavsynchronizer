@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -10,13 +9,11 @@ using System.Collections.ObjectModel;
 
 namespace Thought.vCards
 {
-  
     /// <summary>
     ///     A collection of vcard group members.
     /// </summary>
     public class vCardMemberCollection : Collection<vCardMember>
     {
-
         /// <summary>
         ///    Initializes a new instance of the <see cref="vCardMemberCollection"/>.
         /// </summary>
@@ -39,13 +36,9 @@ namespace Thought.vCards
         /// </returns>
         public vCardMember Add(string emailAddress, string displayName)
         {
-
             vCardMember member = new vCardMember(emailAddress, displayName);
             Add(member);
             return member;
-
         }
-
     }
-
 }

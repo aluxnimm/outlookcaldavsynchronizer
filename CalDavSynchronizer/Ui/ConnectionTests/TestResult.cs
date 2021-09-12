@@ -14,57 +14,58 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace CalDavSynchronizer.Ui.ConnectionTests
 {
-  public class TestResult
-  {
-    private readonly ResourceType _resourceType;
-    private readonly CalendarProperties _calendarProperties;
-    private readonly AddressBookProperties _addressBookProperties;
-    private readonly AccessPrivileges _accessPrivileges;
-    private readonly bool _doesSupportWebDavCollectionSync;
-    private readonly CalendarOwnerProperties _calendarOwnerProperties;
-
-    public TestResult (ResourceType resourceType, CalendarProperties calendarProperties, AddressBookProperties addressBookProperties, AccessPrivileges accessPrivileges, bool doesSupportWebDavCollectionSync, CalendarOwnerProperties calendarOwnerProperties)
+    public class TestResult
     {
-      _resourceType = resourceType;
-      _calendarProperties = calendarProperties;
-      _addressBookProperties = addressBookProperties;
-      _accessPrivileges = accessPrivileges;
-      _doesSupportWebDavCollectionSync = doesSupportWebDavCollectionSync;
-      _calendarOwnerProperties = calendarOwnerProperties;
-    }
+        private readonly ResourceType _resourceType;
+        private readonly CalendarProperties _calendarProperties;
+        private readonly AddressBookProperties _addressBookProperties;
+        private readonly AccessPrivileges _accessPrivileges;
+        private readonly bool _doesSupportWebDavCollectionSync;
+        private readonly CalendarOwnerProperties _calendarOwnerProperties;
 
-    public ResourceType ResourceType
-    {
-      get { return _resourceType; }
-    }
+        public TestResult(ResourceType resourceType, CalendarProperties calendarProperties, AddressBookProperties addressBookProperties, AccessPrivileges accessPrivileges, bool doesSupportWebDavCollectionSync, CalendarOwnerProperties calendarOwnerProperties)
+        {
+            _resourceType = resourceType;
+            _calendarProperties = calendarProperties;
+            _addressBookProperties = addressBookProperties;
+            _accessPrivileges = accessPrivileges;
+            _doesSupportWebDavCollectionSync = doesSupportWebDavCollectionSync;
+            _calendarOwnerProperties = calendarOwnerProperties;
+        }
 
-    public CalendarProperties CalendarProperties
-    {
-      get { return _calendarProperties; }
-    }
+        public ResourceType ResourceType
+        {
+            get { return _resourceType; }
+        }
 
-    public AddressBookProperties AddressBookProperties
-    {
-      get { return _addressBookProperties; }
-    }
+        public CalendarProperties CalendarProperties
+        {
+            get { return _calendarProperties; }
+        }
 
-    public AccessPrivileges AccessPrivileges
-    {
-      get { return _accessPrivileges; }
-    }
+        public AddressBookProperties AddressBookProperties
+        {
+            get { return _addressBookProperties; }
+        }
 
-    public bool DoesSupportWebDavCollectionSync
-    {
-      get { return _doesSupportWebDavCollectionSync; }
-    }
+        public AccessPrivileges AccessPrivileges
+        {
+            get { return _accessPrivileges; }
+        }
 
-    public CalendarOwnerProperties CalendarOwnerProperties
-    {
-      get { return _calendarOwnerProperties; }
+        public bool DoesSupportWebDavCollectionSync
+        {
+            get { return _doesSupportWebDavCollectionSync; }
+        }
+
+        public CalendarOwnerProperties CalendarOwnerProperties
+        {
+            get { return _calendarOwnerProperties; }
+        }
     }
-  }
 }

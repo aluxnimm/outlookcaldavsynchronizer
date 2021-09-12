@@ -25,13 +25,13 @@ using log4net;
 
 namespace CalDavSynchronizer.Implementation.TimeZones
 {
-  public class TimeZoneCache : ITimeZoneCache
-  {
+    public class TimeZoneCache : ITimeZoneCache
+    {
         private readonly bool _includeHistoricalData;
         private readonly HttpClient _httpClient;
         private readonly GlobalTimeZoneCache _globalTimeZoneCache;
 
-        public TimeZoneCache (HttpClient httpClient, bool includeHistoricalData, GlobalTimeZoneCache globalTimeZoneCache)
+        public TimeZoneCache(HttpClient httpClient, bool includeHistoricalData, GlobalTimeZoneCache globalTimeZoneCache)
         {
             _httpClient = httpClient;
             _includeHistoricalData = includeHistoricalData;

@@ -39,87 +39,85 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 {
-  internal class GoogleServerSettingsTemplateViewModel : ModelBase, IServerSettingsTemplateViewModel
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
-
-    private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
-    private readonly OptionsModel _prototypeModel;
-
-    public GoogleServerSettingsTemplateViewModel(IOutlookAccountPasswordProvider outlookAccountPasswordProvider, OptionsModel prototypeModel)
+    internal class GoogleServerSettingsTemplateViewModel : ModelBase, IServerSettingsTemplateViewModel
     {
-      if (outlookAccountPasswordProvider == null) throw new ArgumentNullException(nameof(outlookAccountPasswordProvider));
-      if (prototypeModel == null) throw new ArgumentNullException(nameof(prototypeModel));
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-      _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
-      _prototypeModel = prototypeModel;
+        private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
+        private readonly OptionsModel _prototypeModel;
 
-      RegisterPropertyChangePropagation(_prototypeModel, nameof(_prototypeModel.CalenderUrl), nameof(CalenderUrl));
-      RegisterPropertyChangePropagation(_prototypeModel, nameof(_prototypeModel.EmailAddress), nameof(EmailAddress));
+        public GoogleServerSettingsTemplateViewModel(IOutlookAccountPasswordProvider outlookAccountPasswordProvider, OptionsModel prototypeModel)
+        {
+            if (outlookAccountPasswordProvider == null) throw new ArgumentNullException(nameof(outlookAccountPasswordProvider));
+            if (prototypeModel == null) throw new ArgumentNullException(nameof(prototypeModel));
+
+            _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
+            _prototypeModel = prototypeModel;
+
+            RegisterPropertyChangePropagation(_prototypeModel, nameof(_prototypeModel.CalenderUrl), nameof(CalenderUrl));
+            RegisterPropertyChangePropagation(_prototypeModel, nameof(_prototypeModel.EmailAddress), nameof(EmailAddress));
+        }
+
+        public string CalenderUrl
+        {
+            get { return _prototypeModel.CalenderUrl; }
+            set { _prototypeModel.CalenderUrl = value; }
+        }
+
+        public string EmailAddress
+        {
+            get { return _prototypeModel.EmailAddress; }
+            set
+            {
+                _prototypeModel.EmailAddress = value;
+                _prototypeModel.UserName = value;
+            }
+        }
+
+        public void SetResourceUrl(OptionsModel options, CalendarData resource)
+        {
+            options.CalenderUrl = resource.Uri.ToString();
+        }
+
+        public void SetResourceUrl(OptionsModel options, AddressBookData resource)
+        {
+            options.CalenderUrl = string.Empty;
+            options.UseGoogleNativeApi = true;
+        }
+
+        public void SetResourceUrl(OptionsModel options, TaskListData resource)
+        {
+            options.CalenderUrl = resource.Id;
+        }
+
+        public void DiscoverAccountServerSettings()
+        {
+            var serverAccountSettings = _outlookAccountPasswordProvider.GetAccountServerSettings(null);
+            EmailAddress = serverAccountSettings.EmailAddress;
+        }
+
+        public async Task<ServerResources> GetServerResources()
+        {
+            var trimmedUrl = CalenderUrl.Trim();
+            var url = new Uri(trimmedUrl.EndsWith("/") ? trimmedUrl : trimmedUrl + "/");
+
+            var webDavClient = _prototypeModel.CreateWebDavClient();
+            var calDavDataAccess = new CalDavDataAccess(url, webDavClient);
+            var foundResources = await calDavDataAccess.GetUserResourcesIncludingCalendarProxies(false);
+
+            var foundAddressBooks = new[] {new AddressBookData(new Uri("googleApi://defaultAddressBook"), "Default AddressBook", AccessPrivileges.All)};
+
+            var service = await GoogleHttpClientFactory.LoginToGoogleTasksService(EmailAddress, SynchronizerFactory.CreateProxy(_prototypeModel.CreateProxyOptions()));
+            var taskLists = await service.Tasklists.List().ExecuteAsync();
+            var taskListsData = taskLists?.Items.Select(i => new TaskListData(i.Id, i.Title, AccessPrivileges.All)).ToArray() ?? new TaskListData[] { };
+
+            return new ServerResources(foundResources.CalendarResources, foundAddressBooks, taskListsData);
+        }
+
+        public static GoogleServerSettingsTemplateViewModel DesignInstance => new GoogleServerSettingsTemplateViewModel(NullOutlookAccountPasswordProvider.Instance, OptionsModel.DesignInstance)
+        {
+            CalenderUrl = "http://BulkUrl.com",
+            EmailAddress = "bla@bulk.com",
+        };
     }
-
-    public string CalenderUrl
-    {
-      get { return _prototypeModel.CalenderUrl; }
-      set { _prototypeModel.CalenderUrl = value; }
-    }
-
-    public string EmailAddress
-    {
-      get { return _prototypeModel.EmailAddress; }
-      set
-      {
-        _prototypeModel.EmailAddress = value;
-        _prototypeModel.UserName = value;
-      }
-    }
-    
-    public void SetResourceUrl (OptionsModel options, CalendarData resource)
-    {
-      options.CalenderUrl = resource.Uri.ToString();
-    }
-
-    public void SetResourceUrl (OptionsModel options, AddressBookData resource)
-    {
-      options.CalenderUrl = string.Empty;
-      options.UseGoogleNativeApi = true;
-    }
-
-    public void SetResourceUrl (OptionsModel options, TaskListData resource)
-    {
-      options.CalenderUrl = resource.Id;
-    }
-
-    public void DiscoverAccountServerSettings()
-    {
-      var serverAccountSettings = _outlookAccountPasswordProvider.GetAccountServerSettings (null);
-      EmailAddress = serverAccountSettings.EmailAddress;
-    }
-
-    public async Task<ServerResources> GetServerResources ()
-    {
-      var trimmedUrl = CalenderUrl.Trim();
-      var url = new Uri (trimmedUrl.EndsWith ("/") ? trimmedUrl : trimmedUrl + "/");
-
-      var webDavClient = _prototypeModel.CreateWebDavClient();
-      var calDavDataAccess = new CalDavDataAccess (url, webDavClient);
-      var foundResources = await calDavDataAccess.GetUserResourcesIncludingCalendarProxies (false);
-
-      var foundAddressBooks = new[] { new AddressBookData (new Uri ("googleApi://defaultAddressBook"), "Default AddressBook", AccessPrivileges.All) };
-
-      var service = await GoogleHttpClientFactory.LoginToGoogleTasksService (EmailAddress, SynchronizerFactory.CreateProxy (_prototypeModel.CreateProxyOptions()));
-      var taskLists = await service.Tasklists.List().ExecuteAsync();
-      var taskListsData = taskLists?.Items.Select (i => new TaskListData (i.Id, i.Title, AccessPrivileges.All)).ToArray() ?? new TaskListData[] { };
-
-      return new ServerResources (foundResources.CalendarResources, foundAddressBooks, taskListsData);
-    }
-
-    public static GoogleServerSettingsTemplateViewModel DesignInstance => new GoogleServerSettingsTemplateViewModel(NullOutlookAccountPasswordProvider.Instance, OptionsModel.DesignInstance)
-    {
-      CalenderUrl = "http://BulkUrl.com",
-      EmailAddress = "bla@bulk.com",
-    };
-
-
-  }
 }

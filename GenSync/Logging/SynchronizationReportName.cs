@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Globalization;
 using System.IO;
@@ -22,78 +23,77 @@ using System.Text.RegularExpressions;
 
 namespace GenSync.Logging
 {
-  public class SynchronizationReportName
-  {
-    private readonly Guid _syncronizationProfileId;
-    private readonly DateTime _startTime;
-    private readonly bool _hasErrors;
-    private readonly bool _hasWarnings;
-    private readonly int _sequenceNumber;
-
-  
-    public static SynchronizationReportName Create (Guid syncronizationProfileId, DateTime startTime, bool hasWarnings, bool hasErrors)
+    public class SynchronizationReportName
     {
-      return new SynchronizationReportName (syncronizationProfileId, startTime, hasWarnings, hasErrors, 0);
-    }
+        private readonly Guid _syncronizationProfileId;
+        private readonly DateTime _startTime;
+        private readonly bool _hasErrors;
+        private readonly bool _hasWarnings;
+        private readonly int _sequenceNumber;
 
-    private SynchronizationReportName (Guid syncronizationProfileId, DateTime startTime, bool hasWarnings, bool hasErrors, int sequenceNumber)
-    {
-      _syncronizationProfileId = syncronizationProfileId;
-      _startTime = startTime;
-      _hasWarnings = hasWarnings;
-      _hasErrors = hasErrors;
-      _sequenceNumber = sequenceNumber;
-    }
 
-    public Guid SyncronizationProfileId
-    {
-      get { return _syncronizationProfileId; }
-    }
+        public static SynchronizationReportName Create(Guid syncronizationProfileId, DateTime startTime, bool hasWarnings, bool hasErrors)
+        {
+            return new SynchronizationReportName(syncronizationProfileId, startTime, hasWarnings, hasErrors, 0);
+        }
 
-    public DateTime StartTime
-    {
-      get { return _startTime; }
-    }
+        private SynchronizationReportName(Guid syncronizationProfileId, DateTime startTime, bool hasWarnings, bool hasErrors, int sequenceNumber)
+        {
+            _syncronizationProfileId = syncronizationProfileId;
+            _startTime = startTime;
+            _hasWarnings = hasWarnings;
+            _hasErrors = hasErrors;
+            _sequenceNumber = sequenceNumber;
+        }
 
-    public bool HasErrors
-    {
-      get { return _hasErrors; }
-    }
+        public Guid SyncronizationProfileId
+        {
+            get { return _syncronizationProfileId; }
+        }
 
-    public bool HasWarnings
-    {
-      get { return _hasWarnings; }
-    }
+        public DateTime StartTime
+        {
+            get { return _startTime; }
+        }
 
-    public override string ToString ()
-    {
-      return string.Format ("{0}{1:yyyyMMddHHmmss}{2}{3}{4}.log", _syncronizationProfileId, _startTime, _hasWarnings ? 1 : 0, _hasErrors ? 1 : 0, _sequenceNumber);
-    }
+        public bool HasErrors
+        {
+            get { return _hasErrors; }
+        }
 
-    public static bool TryParse (string value, out SynchronizationReportName name)
-    {
-      var match = Regex.Match (value, @"^(?<id>.{36})(?<start>\d{14})(?<warnings>[01])(?<errors>[01])(?<sequence>\d+).log$");
-      if (match.Success)
-      {
-        name = new SynchronizationReportName (
-            new Guid (match.Groups["id"].Value),
-            DateTime.SpecifyKind (DateTime.ParseExact (match.Groups["start"].Value, "yyyyMMddHHmmss", CultureInfo.InvariantCulture), DateTimeKind.Utc),
-            match.Groups["warnings"].Value == "1",
-            match.Groups["errors"].Value == "1",
-            int.Parse (match.Groups["sequence"].Value));
-        return true;
-      }
-      else
-      {
-        name = null;
-        return false;
-      }
-    }
+        public bool HasWarnings
+        {
+            get { return _hasWarnings; }
+        }
 
-    public SynchronizationReportName IncreaseSequence ()
-    {
-      return new SynchronizationReportName (_syncronizationProfileId, _startTime, _hasWarnings, _hasErrors, _sequenceNumber + 1);
+        public override string ToString()
+        {
+            return string.Format("{0}{1:yyyyMMddHHmmss}{2}{3}{4}.log", _syncronizationProfileId, _startTime, _hasWarnings ? 1 : 0, _hasErrors ? 1 : 0, _sequenceNumber);
+        }
+
+        public static bool TryParse(string value, out SynchronizationReportName name)
+        {
+            var match = Regex.Match(value, @"^(?<id>.{36})(?<start>\d{14})(?<warnings>[01])(?<errors>[01])(?<sequence>\d+).log$");
+            if (match.Success)
+            {
+                name = new SynchronizationReportName(
+                    new Guid(match.Groups["id"].Value),
+                    DateTime.SpecifyKind(DateTime.ParseExact(match.Groups["start"].Value, "yyyyMMddHHmmss", CultureInfo.InvariantCulture), DateTimeKind.Utc),
+                    match.Groups["warnings"].Value == "1",
+                    match.Groups["errors"].Value == "1",
+                    int.Parse(match.Groups["sequence"].Value));
+                return true;
+            }
+            else
+            {
+                name = null;
+                return false;
+            }
+        }
+
+        public SynchronizationReportName IncreaseSequence()
+        {
+            return new SynchronizationReportName(_syncronizationProfileId, _startTime, _hasWarnings, _hasErrors, _sequenceNumber + 1);
+        }
     }
-    
-  }
 }

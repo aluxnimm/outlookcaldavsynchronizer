@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Linq;
 using NodaTime.TimeZones;
@@ -22,9 +23,9 @@ namespace CalDavSynchronizer.Implementation.Events
 {
     public static class TimeZoneMapper
     {
-        public static string IanaToWindowsOrNull (string ianaZoneId)
+        public static string IanaToWindowsOrNull(string ianaZoneId)
         {
-            var utcZones = new[] { "Etc/UTC", "Etc/UCT", "Etc/GMT" };
+            var utcZones = new[] {"Etc/UTC", "Etc/UCT", "Etc/GMT"};
             if (utcZones.Contains(ianaZoneId, StringComparer.Ordinal))
                 return "UTC";
 
@@ -37,7 +38,7 @@ namespace CalDavSynchronizer.Implementation.Events
 
             // resolve canonical zones, and include original zone as well
             var possibleZones = tzdbSource.CanonicalIdMap.ContainsKey(ianaZoneId)
-                ? links.Concat(new[] { tzdbSource.CanonicalIdMap[ianaZoneId], ianaZoneId })
+                ? links.Concat(new[] {tzdbSource.CanonicalIdMap[ianaZoneId], ianaZoneId})
                 : links;
 
             // map the windows zone
@@ -50,25 +51,26 @@ namespace CalDavSynchronizer.Implementation.Events
 
         // This will return the "primary" IANA zone that matches the given windows zone.
         // If the primary zone is a link, it then resolves it to the canonical ID.
-        public static string WindowsToIanaOrNull (string windowsZoneId)
+        public static string WindowsToIanaOrNull(string windowsZoneId)
         {
-          // Avoid UTC being mapped to Etc/GMT, which is the mapping in CLDR
-          if (windowsZoneId == "UTC")
-          {
-            return "Etc/UTC";
-          }
+            // Avoid UTC being mapped to Etc/GMT, which is the mapping in CLDR
+            if (windowsZoneId == "UTC")
+            {
+                return "Etc/UTC";
+            }
 
-          var source = TzdbDateTimeZoneSource.Default;
-          string result;
+            var source = TzdbDateTimeZoneSource.Default;
+            string result;
 
-          // If there's no such mapping, result will be null.
-          source.WindowsMapping.PrimaryMapping.TryGetValue(windowsZoneId, out result);
-          // Canonicalize
-          if (result != null)
-          {
-            result = source.CanonicalIdMap[result];
-          }
-          return result;
+            // If there's no such mapping, result will be null.
+            source.WindowsMapping.PrimaryMapping.TryGetValue(windowsZoneId, out result);
+            // Canonicalize
+            if (result != null)
+            {
+                result = source.CanonicalIdMap[result];
+            }
+
+            return result;
         }
-  }
+    }
 }

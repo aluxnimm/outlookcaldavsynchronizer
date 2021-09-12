@@ -14,48 +14,48 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Threading.Tasks;
 
 namespace GenSync.Synchronization
 {
-  public class NullSynchronizationContextFactory : ISynchronizationContextFactory<int>
-  {
-    public static readonly ISynchronizationContextFactory<int> Instance = new NullSynchronizationContextFactory();
-
-    private NullSynchronizationContextFactory()
+    public class NullSynchronizationContextFactory : ISynchronizationContextFactory<int>
     {
+        public static readonly ISynchronizationContextFactory<int> Instance = new NullSynchronizationContextFactory();
+
+        private NullSynchronizationContextFactory()
+        {
+        }
+
+        public Task<int> Create()
+        {
+            return Task.FromResult(0);
+        }
+
+        public Task SynchronizationFinished(int context)
+        {
+            return Task.FromResult(0);
+        }
     }
 
-    public Task<int> Create()
+    public class SynchronizationContextFactory<T> : ISynchronizationContextFactory<T>
     {
-      return Task.FromResult(0);
+        private readonly Func<T> _contextFactory;
+
+        public SynchronizationContextFactory(Func<T> contextFactory)
+        {
+            _contextFactory = contextFactory;
+        }
+
+        public Task<T> Create()
+        {
+            return Task.FromResult<T>(_contextFactory());
+        }
+
+        public Task SynchronizationFinished(T context)
+        {
+            return Task.FromResult(0);
+        }
     }
-
-    public Task SynchronizationFinished(int context)
-    {
-      return Task.FromResult(0);
-    }
-  }
-
-  public class SynchronizationContextFactory<T> : ISynchronizationContextFactory<T>
-  {
-    private readonly Func<T> _contextFactory;
-
-    public SynchronizationContextFactory(Func<T> contextFactory)
-    {
-      _contextFactory = contextFactory;
-    }
-
-    public Task<T> Create()
-    {
-      return Task.FromResult<T>(_contextFactory());
-    }
-
-    public Task SynchronizationFinished(T context)
-    {
-      return Task.FromResult(0);
-    }
-  }
-
 }

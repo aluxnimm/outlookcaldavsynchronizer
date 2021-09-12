@@ -14,14 +14,15 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync.ProgressReport
 {
-  public interface IChunkProgressLogger
-  {
-    IDisposable StartARepositoryLoad(int entityCount);
-    IDisposable StartBRepositoryLoad(int entityCount);
-    IProgressLogger StartProcessing(int jobCount);
-  }
+    public interface IChunkProgressLogger
+    {
+        IDisposable StartARepositoryLoad(int entityCount);
+        IDisposable StartBRepositoryLoad(int entityCount);
+        IProgressLogger StartProcessing(int jobCount);
+    }
 }

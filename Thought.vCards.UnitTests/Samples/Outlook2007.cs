@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using NUnit.Framework;
@@ -10,7 +9,6 @@ namespace Tests.Samples
     [TestFixture]
     public class Outlook2007
     {
-
         /// <summary>
         ///     The issuing organization of the certificate embedded
         ///     into the Outlook vCard.
@@ -28,7 +26,6 @@ namespace Tests.Samples
         [Test]
         public void ParseOutlook2007()
         {
-
             // 01: BEGIN:VCARD
             // 02: VERSION:2.1
             // 03: N;LANGUAGE=en-us:Pinch;David;John;Mr.
@@ -392,12 +389,9 @@ namespace Tests.Samples
                 "PHOTO on line 37 should be the only photo.");
 
             // This should work without exception
-            using(card.Photos[0].GetBitmap())
+            using (card.Photos[0].GetBitmap())
             {
             }
-
-
         }
-
     }
 }

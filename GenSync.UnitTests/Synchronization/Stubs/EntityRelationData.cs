@@ -14,57 +14,58 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using GenSync.EntityRelationManagement;
 
 namespace GenSync.UnitTests.Synchronization.Stubs
 {
-  internal class EntityRelationData : IEntityRelationData<Identifier, int, Identifier, int>
-  {
-    public EntityRelationData (Identifier atypeId, int atypeVersion, Identifier btypeId, int btypeVersion)
+    internal class EntityRelationData : IEntityRelationData<Identifier, int, Identifier, int>
     {
-      AtypeId = atypeId;
-      AtypeVersion = atypeVersion;
-      BtypeId = btypeId;
-      BtypeVersion = btypeVersion;
+        public EntityRelationData(Identifier atypeId, int atypeVersion, Identifier btypeId, int btypeVersion)
+        {
+            AtypeId = atypeId;
+            AtypeVersion = atypeVersion;
+            BtypeId = btypeId;
+            BtypeVersion = btypeVersion;
+        }
+
+        public Identifier AtypeId { get; set; }
+        public int AtypeVersion { get; set; }
+        public Identifier BtypeId { get; set; }
+        public int BtypeVersion { get; set; }
     }
 
-    public Identifier AtypeId { get; set; }
-    public int AtypeVersion { get; set; }
-    public Identifier BtypeId { get; set; }
-    public int BtypeVersion { get; set; }
-  }
-
-  internal class EntityRelationDataString : IEntityRelationData<Identifier, string, Identifier, string>
-  {
-    public EntityRelationDataString (Identifier atypeId, string atypeVersion, Identifier btypeId, string btypeVersion)
+    internal class EntityRelationDataString : IEntityRelationData<Identifier, string, Identifier, string>
     {
-      AtypeId = atypeId;
-      AtypeVersion = atypeVersion;
-      BtypeId = btypeId;
-      BtypeVersion = btypeVersion;
+        public EntityRelationDataString(Identifier atypeId, string atypeVersion, Identifier btypeId, string btypeVersion)
+        {
+            AtypeId = atypeId;
+            AtypeVersion = atypeVersion;
+            BtypeId = btypeId;
+            BtypeVersion = btypeVersion;
+        }
+
+        public Identifier AtypeId { get; set; }
+        public string AtypeVersion { get; set; }
+        public Identifier BtypeId { get; set; }
+        public string BtypeVersion { get; set; }
     }
 
-    public Identifier AtypeId { get; set; }
-    public string AtypeVersion { get; set; }
-    public Identifier BtypeId { get; set; }
-    public string BtypeVersion { get; set; }
-  }
-
-  internal class EntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
-      : IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
-  {
-    public EntityRelationData (TAtypeEntityId atypeId, TAtypeEntityVersion atypeVersion, TBtypeEntityId btypeId, TBtypeEntityVersion btypeVersion)
+    internal class EntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
+        : IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
     {
-      AtypeId = atypeId;
-      AtypeVersion = atypeVersion;
-      BtypeId = btypeId;
-      BtypeVersion = btypeVersion;
-    }
+        public EntityRelationData(TAtypeEntityId atypeId, TAtypeEntityVersion atypeVersion, TBtypeEntityId btypeId, TBtypeEntityVersion btypeVersion)
+        {
+            AtypeId = atypeId;
+            AtypeVersion = atypeVersion;
+            BtypeId = btypeId;
+            BtypeVersion = btypeVersion;
+        }
 
-    public TAtypeEntityId AtypeId { get; set; }
-    public TAtypeEntityVersion AtypeVersion { get; set; }
-    public TBtypeEntityId BtypeId { get; set; }
-    public TBtypeEntityVersion BtypeVersion { get; set; }
-  }
+        public TAtypeEntityId AtypeId { get; set; }
+        public TAtypeEntityVersion AtypeVersion { get; set; }
+        public TBtypeEntityId BtypeId { get; set; }
+        public TBtypeEntityVersion BtypeVersion { get; set; }
+    }
 }

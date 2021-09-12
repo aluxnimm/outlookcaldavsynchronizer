@@ -25,17 +25,17 @@ using GenSync.ProgressReport;
 
 namespace CalDavSynchronizer.Ui
 {
-  public interface IUiService : IProgressUiFactory
-  {
-    void Show (ReportsViewModel reportsViewModel);
-    void Show(TransientProfileStatusesViewModel viewModel);
-    bool ShowOptions (OptionsCollectionViewModel viewModel);
-    IProfileType QueryProfileType(IReadOnlyCollection<IProfileType> profileTypes);
-    void ShowErrorDialog(string errorMessage, string title);
-    void ShowOXInfoDialog();
-    string ShowSaveDialog(string title);
-    string ShowOpenDialog(string title);
-    void ShowReport(string title, string reportText);
-    bool ShowGeneralOptions(GeneralOptionsViewModel generalOptionsViewModel);
-  }
+    public interface IUiService : IProgressUiFactory
+    {
+        void Show(ReportsViewModel reportsViewModel);
+        void Show(TransientProfileStatusesViewModel viewModel);
+        bool ShowOptions(OptionsCollectionViewModel viewModel);
+        IProfileType QueryProfileType(IReadOnlyCollection<IProfileType> profileTypes);
+        void ShowErrorDialog(string errorMessage, string title);
+        void ShowOXInfoDialog();
+        string ShowSaveDialog(string title);
+        string ShowOpenDialog(string title);
+        void ShowReport(string title, string reportText);
+        bool ShowGeneralOptions(GeneralOptionsViewModel generalOptionsViewModel);
+    }
 }

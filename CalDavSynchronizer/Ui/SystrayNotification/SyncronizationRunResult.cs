@@ -14,14 +14,15 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification
 {
-  public enum SyncronizationRunResult
-  {
-    Ok = 0,
-    Warning = 1,
-    Error = 2
-  }
+    public enum SyncronizationRunResult
+    {
+        Ok = 0,
+        Warning = 1,
+        Error = 2
+    }
 }

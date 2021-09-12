@@ -1,4 +1,3 @@
-
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Thought.vCards;
@@ -6,11 +5,9 @@ using Assert = NUnit.Framework.Assert;
 
 namespace Tests
 {
-
     [TestClass]
     public sealed class vCardStandardReaderTests : IDisposable
     {
-
         private const string TestName = "NAME";
         private const string TestValue = "VALUE";
 
@@ -19,12 +16,10 @@ namespace Tests
         [TestMethod]
         public void DecodeEscaped_Comma()
         {
-
             Assert.AreEqual(
                 ",",
                 vCardStandardReader.DecodeEscaped(","),
                 "A sole comma should be ignored as bad formatting.");
-
         }
 
         #endregion
@@ -34,14 +29,11 @@ namespace Tests
         [TestMethod]
         public void DecodeEscaped_Comma_SlashComma()
         {
-
             // The \, sequence should be collapsed to a single comma.
 
             Assert.AreEqual(
                 ",,",
                 vCardStandardReader.DecodeEscaped(@",\,"));
-
-
         }
 
         #endregion
@@ -51,14 +43,11 @@ namespace Tests
         [TestMethod]
         public void DecodeEscaped_Comma_SlashComma_Comma()
         {
-
             // The \, sequence should be collapsed to a single comma.
 
             Assert.AreEqual(
                 ",,,",
                 vCardStandardReader.DecodeEscaped(@",\,,"));
-
-
         }
 
         #endregion
@@ -92,7 +81,7 @@ namespace Tests
         public void DecodeEscaped_Null()
         {
             Assert.IsNull(
-                vCardStandardReader.DecodeEscaped((string)null));
+                vCardStandardReader.DecodeEscaped((string) null));
         }
 
         #endregion
@@ -100,7 +89,6 @@ namespace Tests
         [TestMethod]
         public void DecodeEscaped_Sample()
         {
-
             // The encoded string below caused an out of memory
             // exception in the code as of 8/26/2007.  The problem
             // was due a failure to increment the index (in DecodeEscaped)
@@ -111,7 +99,6 @@ namespace Tests
                 @"129 15th Street #3\r\nMinneapolis\, MN 55403\r\nUnited States of America";
 
             vCardStandardReader.DecodeEscaped(address);
-
         }
 
         #region [ DecodeHexadecimal ]
@@ -119,7 +106,6 @@ namespace Tests
         [TestMethod]
         public void DecodeHexadecimal()
         {
-
             // This test ensures the DecodeHexadecimal
             // function is properly converting every
             // possible hexadecimal character.
@@ -189,7 +175,6 @@ namespace Tests
 
             Assert.AreEqual(15,
                 vCardStandardReader.DecodeHexadecimal('f'));
-
         }
 
         #endregion
@@ -209,7 +194,6 @@ namespace Tests
         [TestMethod]
         public void DecodeQuotedPrintable_Empty()
         {
-
             // Empty should be returned if Empty is specified.
 
             Assert.IsEmpty(
@@ -223,12 +207,10 @@ namespace Tests
         [TestMethod]
         public void DecodeQuotedPrintable_EqualSign_EqualSign()
         {
-
             Assert.AreEqual(
                 "==",
                 vCardStandardReader.DecodeQuotedPrintable("=="),
                 "The two (invalid) equal signs are treated as raw data.");
-
         }
 
         #endregion
@@ -238,7 +220,6 @@ namespace Tests
         [TestMethod]
         public void DecodeQuotedPrintable_EqualSign_MoreLines()
         {
-
             const string encodedLine =
                 "Line1 Is Data1=0D=0A=\r\nLine2 Is Data2";
 
@@ -248,7 +229,6 @@ namespace Tests
             Assert.AreEqual(
                 decodedLine,
                 vCardStandardReader.DecodeQuotedPrintable(encodedLine));
-
         }
 
         #endregion
@@ -258,7 +238,6 @@ namespace Tests
         [TestMethod]
         public void DecodeQuotedPrintable_EqualSign_NoMoreLines()
         {
-
             // A single equal sign can be written at the end
             // of a line.  This is a hint to the decoder that
             // the data continues on the next line.  However,
@@ -270,7 +249,6 @@ namespace Tests
                 "=",
                 vCardStandardReader.DecodeQuotedPrintable("="),
                 "The invalid equal sign is treated as raw data.");
-
         }
 
         #endregion
@@ -280,7 +258,6 @@ namespace Tests
         [TestMethod]
         public void DecodeQuotedPrintable_EqualSign_ValidEscapeCode()
         {
-
             // An equal sign marks the beginning of a hexadecimal
             // escape sequence.  If an equal sign is followed by
             // another equal sign, then the first one is treated
@@ -290,7 +267,6 @@ namespace Tests
                 "=\r",
                 vCardStandardReader.DecodeQuotedPrintable("==0D"),
                 "The invalid equal sign is treated as raw data.");
-
         }
 
         #endregion
@@ -300,12 +276,10 @@ namespace Tests
         [TestMethod]
         public void DecodeQuotedPrintable_IncompleteEscapeCode()
         {
-
             Assert.AreEqual(
                 "=A",
                 vCardStandardReader.DecodeQuotedPrintable("=A"),
                 "The sequence is incomplete and therefore treated as raw data.");
-
         }
 
         #endregion
@@ -315,12 +289,10 @@ namespace Tests
         [TestMethod]
         public void DecodeQuotedPrintable_InvalidEscapeCode()
         {
-
             Assert.AreEqual(
                 "=AXA\r",
                 vCardStandardReader.DecodeQuotedPrintable("=AXA=0D"),
                 "The bad sequence is invalid and therefore treated as raw data.");
-
         }
 
         #endregion
@@ -330,7 +302,6 @@ namespace Tests
         [TestMethod]
         public void DecodeQuotedPrintable_Null()
         {
-
             // Null should be returned if Null is specified.
 
             Assert.IsNull(
@@ -362,7 +333,6 @@ namespace Tests
                 1,
                 reader.Warnings.Count,
                 "A missing name should have caused a warning.");
-
         }
 
         #endregion
@@ -372,7 +342,6 @@ namespace Tests
         [TestMethod]
         public void ReadProperty_String_MissingColon()
         {
-
             vCardStandardReader reader = new vCardStandardReader();
             reader.ReadProperty("TEL 911");
 
@@ -380,7 +349,6 @@ namespace Tests
                 1,
                 reader.Warnings.Count,
                 "A missing colon should have caused a warning.");
-
         }
 
         #endregion
@@ -391,7 +359,7 @@ namespace Tests
         public void ReadProperty_String_NullParameter()
         {
             vCardStandardReader reader = new vCardStandardReader();
-            reader.ReadProperty((string)null);
+            reader.ReadProperty((string) null);
         }
 
         #endregion
@@ -401,7 +369,6 @@ namespace Tests
         [TestMethod]
         public void ReadProperty_String_QuotedPrintable()
         {
-
             const string encodedValue =
                 "LABEL;" +
                 "HOME;" +
@@ -440,7 +407,6 @@ namespace Tests
             Assert.AreEqual(
                 decodedValue,
                 property.ToString());
-
         }
 
         #endregion
@@ -457,7 +423,6 @@ namespace Tests
                 1,
                 reader.Warnings.Count,
                 "A single colon should have caused a warning.");
-
         }
 
         #endregion
@@ -474,7 +439,6 @@ namespace Tests
                 1,
                 reader.Warnings.Count,
                 "A string with only whitespace should have caused a warning.");
-
         }
 
         #endregion
@@ -484,7 +448,6 @@ namespace Tests
         [TestMethod]
         public void ReadProperty_String_Name_Value()
         {
-
             // This function tests the parsing function
             // against a basic string like NAME:VALUE.
 
@@ -505,7 +468,6 @@ namespace Tests
             Assert.IsEmpty(
                 property.Subproperties,
                 "The Subproperties collection should be empty.");
-
         }
 
         #endregion
@@ -515,7 +477,6 @@ namespace Tests
         [TestMethod]
         public void ReadProperty_String_Name_Subproperties_Value()
         {
-
             // This function tests the parser against a property
             // string with two subproperties.
 
@@ -549,7 +510,6 @@ namespace Tests
                 "VALUE",
                 property.Value,
                 "The parsed value is incorrect.");
-
         }
 
         #endregion
@@ -559,7 +519,6 @@ namespace Tests
         [TestMethod]
         public void ReadProperty_String_Name_Subproperty_Value()
         {
-
             vCardStandardReader reader =
                 new vCardStandardReader();
 
@@ -585,7 +544,6 @@ namespace Tests
                 "VALUE",
                 property.Value,
                 "The parsed value is incorrect.");
-
         }
 
         #endregion
@@ -594,7 +552,6 @@ namespace Tests
 
         public void ReadProperty_String_Name_Subproperty_Subvalue_Value()
         {
-
             vCardStandardReader reader =
                 new vCardStandardReader();
 
@@ -625,12 +582,13 @@ namespace Tests
                 "800-929-5805",
                 property.Value,
                 "The value of the property is not correct.");
-
         }
 
         #endregion
 
-        public void Dispose() {// driver.Dispose(); 
+        public void Dispose()
+        {
+            // driver.Dispose(); 
         }
     }
 }

@@ -21,27 +21,27 @@ using System.Threading.Tasks;
 
 namespace CalDavSynchronizer.Ui.Options.Models
 {
-  public partial class ServerSettingsDetector : IServerSettingsDetector
-  {
-    private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
-
-    public ServerSettingsDetector(IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
+    public partial class ServerSettingsDetector : IServerSettingsDetector
     {
-      if (outlookAccountPasswordProvider == null) throw new ArgumentNullException(nameof(outlookAccountPasswordProvider));
-      _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
-    }
+        private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
 
-    public Task AutoFillServerSettingsAsync(OptionsModel optionsModel)
-    {
-      var serverAccountSettings = _outlookAccountPasswordProvider.GetAccountServerSettings(optionsModel.FolderAccountName);
-      optionsModel.EmailAddress = serverAccountSettings.EmailAddress;
-      string path = !string.IsNullOrEmpty(optionsModel.CalenderUrl) ? new Uri(optionsModel.CalenderUrl).AbsolutePath : string.Empty;
-      bool success;
-      var dnsDiscoveredUrl = OptionTasks.DoSrvLookup(optionsModel.EmailAddress, OlItemType.olAppointmentItem, out success);
-      optionsModel.CalenderUrl = success ? dnsDiscoveredUrl : "https://" + serverAccountSettings.ServerString + path;
-      optionsModel.UserName = serverAccountSettings.UserName;
-      optionsModel.UseAccountPassword = true;
-      return Task.CompletedTask;
+        public ServerSettingsDetector(IOutlookAccountPasswordProvider outlookAccountPasswordProvider)
+        {
+            if (outlookAccountPasswordProvider == null) throw new ArgumentNullException(nameof(outlookAccountPasswordProvider));
+            _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
+        }
+
+        public Task AutoFillServerSettingsAsync(OptionsModel optionsModel)
+        {
+            var serverAccountSettings = _outlookAccountPasswordProvider.GetAccountServerSettings(optionsModel.FolderAccountName);
+            optionsModel.EmailAddress = serverAccountSettings.EmailAddress;
+            string path = !string.IsNullOrEmpty(optionsModel.CalenderUrl) ? new Uri(optionsModel.CalenderUrl).AbsolutePath : string.Empty;
+            bool success;
+            var dnsDiscoveredUrl = OptionTasks.DoSrvLookup(optionsModel.EmailAddress, OlItemType.olAppointmentItem, out success);
+            optionsModel.CalenderUrl = success ? dnsDiscoveredUrl : "https://" + serverAccountSettings.ServerString + path;
+            optionsModel.UserName = serverAccountSettings.UserName;
+            optionsModel.UseAccountPassword = true;
+            return Task.CompletedTask;
+        }
     }
-  }
 }

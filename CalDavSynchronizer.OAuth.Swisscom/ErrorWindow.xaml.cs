@@ -20,7 +20,7 @@ namespace CalDavSynchronizer.OAuth.Swisscom
 
         public ErrorWindow(string errorMessage)
         {
-            customerCenterLink = new Hyperlink() { FontWeight = FontWeights.Bold };
+            customerCenterLink = new Hyperlink() {FontWeight = FontWeights.Bold};
             customerCenterLink.Inlines.Add(Globalization.Strings.Localize("LABEL_HELP_LINK_NAME"));
             customerCenterLink.NavigateUri = new Uri(Globalization.Strings.Localize("LABEL_HELP_LINK_URL"));
             customerCenterLink.Click += new RoutedEventHandler(Action_LinkClicked);

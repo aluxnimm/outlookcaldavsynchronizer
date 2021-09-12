@@ -36,127 +36,128 @@ using log4net;
 
 namespace CalDavSynchronizer.OAuth.Google
 {
-  public static class GoogleHttpClientFactory
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-
-    private static ClientSecrets CreateClientSecrets () => new ClientSecrets
-                                                           {
-                                                               ClientId = "13856942399-rp437ddbn6406hfokpe5rqnosgnejodc.apps.googleusercontent.com",
-                                                               ClientSecret = "WG276vw5WCcc2H4SSaYJ03VO"
-                                                           };
-
-    public static async Task<HttpClient> CreateHttpClient (string user, string userAgentHeader, IWebProxy proxy)
+    public static class GoogleHttpClientFactory
     {
-      var userCredential = await LoginToGoogle (user, proxy);
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
 
-      var client = new ProxySupportedHttpClientFactory (proxy).CreateHttpClient (new CreateHttpClientArgs() { ApplicationName = userAgentHeader });
-      userCredential.Initialize (client);
-
-      return client;
-    }
-
-    private static async Task<UserCredential> LoginToGoogle(string user, IWebProxy proxyOrNull)
-    {
-      GoogleAuthorizationCodeFlow.Initializer initializer = new GoogleAuthorizationCodeFlow.Initializer
-      {
-        ClientSecrets = CreateClientSecrets(),
-        HttpClientFactory = new ProxySupportedHttpClientFactory(proxyOrNull),
-        Scopes = new[]
+        private static ClientSecrets CreateClientSecrets() => new ClientSecrets
         {
-          "https://www.googleapis.com/auth/calendar",
-          "https://www.googleapis.com/auth/carddav",
-          "https://www.googleapis.com/auth/tasks",
-          "https://www.google.com/m8/feeds/" // => contacts
-        },
-        DataStore = new FileDataStore(GoogleWebAuthorizationBroker.Folder)
-      };
+            ClientId = "13856942399-rp437ddbn6406hfokpe5rqnosgnejodc.apps.googleusercontent.com",
+            ClientSecret = "WG276vw5WCcc2H4SSaYJ03VO"
+        };
 
-      var authorizer = new AuthorizationCodeInstalledApp(
-        new AuthorizationCodeFlowWithLoginHint(initializer, user),
-        new LocalServerCodeReceiver());
+        public static async Task<HttpClient> CreateHttpClient(string user, string userAgentHeader, IWebProxy proxy)
+        {
+            var userCredential = await LoginToGoogle(user, proxy);
 
-      return await authorizer.AuthorizeAsync(user, CancellationToken.None);
+            var client = new ProxySupportedHttpClientFactory(proxy).CreateHttpClient(new CreateHttpClientArgs() {ApplicationName = userAgentHeader});
+            userCredential.Initialize(client);
+
+            return client;
+        }
+
+        private static async Task<UserCredential> LoginToGoogle(string user, IWebProxy proxyOrNull)
+        {
+            GoogleAuthorizationCodeFlow.Initializer initializer = new GoogleAuthorizationCodeFlow.Initializer
+            {
+                ClientSecrets = CreateClientSecrets(),
+                HttpClientFactory = new ProxySupportedHttpClientFactory(proxyOrNull),
+                Scopes = new[]
+                {
+                    "https://www.googleapis.com/auth/calendar",
+                    "https://www.googleapis.com/auth/carddav",
+                    "https://www.googleapis.com/auth/tasks",
+                    "https://www.google.com/m8/feeds/" // => contacts
+                },
+                DataStore = new FileDataStore(GoogleWebAuthorizationBroker.Folder)
+            };
+
+            var authorizer = new AuthorizationCodeInstalledApp(
+                new AuthorizationCodeFlowWithLoginHint(initializer, user),
+                new LocalServerCodeReceiver());
+
+            return await authorizer.AuthorizeAsync(user, CancellationToken.None);
+        }
+
+        /// <remarks>
+        /// This has to be done here, since UserCredential cannot be used in CalDavSynchronizer,
+        /// since it leads to a 'The "FindRibbons" task failed unexpectedly' Error
+        /// ( see https://connect.microsoft.com/VisualStudio/feedback/details/651634/the-findribbons-task-failed-unexpectedly)
+        /// </remarks>
+        public static async Task<TasksService> LoginToGoogleTasksService(string user, IWebProxy proxyOrNull)
+        {
+            var credential = await LoginToGoogle(user, proxyOrNull);
+            var service = CreateTaskService(credential, proxyOrNull);
+
+            try
+            {
+                await service.Tasklists.List().ExecuteAsync();
+                return service;
+            }
+            catch (GoogleApiException x)
+            {
+                s_logger.Error("Trying to access google task service failed. Revoking  token and reauthorizing.", x);
+
+                await credential.RevokeTokenAsync(CancellationToken.None);
+                await GoogleWebAuthorizationBroker.ReauthorizeAsync(credential, CancellationToken.None);
+                return CreateTaskService(credential, proxyOrNull);
+            }
+        }
+
+        private static TasksService CreateTaskService(UserCredential credential, IWebProxy proxyOrNull)
+        {
+            return new TasksService(new BaseClientService.Initializer
+            {
+                HttpClientFactory = new ProxySupportedHttpClientFactory(proxyOrNull),
+                HttpClientInitializer = credential,
+                ApplicationName = "Outlook CalDav Synchronizer",
+            });
+        }
+
+        private static OAuth2Parameters CreateOAuth2Parameters(ClientSecrets clientSecrets, UserCredential credential)
+        {
+            return new OAuth2Parameters
+            {
+                ClientId = clientSecrets.ClientId,
+                ClientSecret = clientSecrets.ClientSecret,
+                AccessToken = credential.Token.AccessToken,
+                RefreshToken = credential.Token.RefreshToken
+            };
+        }
+
+        public static async Task<ContactsRequest> LoginToContactsService(string user, IWebProxy proxyOrNull)
+        {
+            var clientSecrets = CreateClientSecrets();
+            var credential = await LoginToGoogle(user, proxyOrNull);
+
+            var parameters = CreateOAuth2Parameters(clientSecrets, credential);
+            var contactsRequest = new ContactsRequest(CreateRequestSettings(parameters));
+
+            ContactsQuery query = new ContactsQuery(ContactsQuery.CreateContactsUri("default"));
+            query.NumberToRetrieve = 1;
+            try
+            {
+                var feed = contactsRequest.Service.Query(query);
+            }
+            catch (GDataRequestException x)
+            {
+                s_logger.Error("Trying to access google contacts API failed. Revoking  token and reauthorizing.", x);
+
+                await credential.RevokeTokenAsync(CancellationToken.None);
+                await GoogleWebAuthorizationBroker.ReauthorizeAsync(credential, CancellationToken.None);
+                parameters = CreateOAuth2Parameters(clientSecrets, credential);
+                contactsRequest = new ContactsRequest(CreateRequestSettings(parameters));
+            }
+
+            if (proxyOrNull != null)
+                contactsRequest.Proxy = proxyOrNull;
+
+            return contactsRequest;
+        }
+
+        private static RequestSettings CreateRequestSettings(OAuth2Parameters parameters)
+        {
+            return new RequestSettings("Outlook CalDav Synchronizer", parameters);
+        }
     }
-
-    /// <remarks>
-    /// This has to be done here, since UserCredential cannot be used in CalDavSynchronizer,
-    /// since it leads to a 'The "FindRibbons" task failed unexpectedly' Error
-    /// ( see https://connect.microsoft.com/VisualStudio/feedback/details/651634/the-findribbons-task-failed-unexpectedly)
-    /// </remarks>
-    public static async Task<TasksService> LoginToGoogleTasksService (string user, IWebProxy proxyOrNull)
-    {
-      var credential = await LoginToGoogle (user, proxyOrNull);
-      var service = CreateTaskService (credential, proxyOrNull);
-
-      try
-      {
-        await service.Tasklists.List().ExecuteAsync();
-        return service;
-      }
-      catch (GoogleApiException x)
-      {
-        s_logger.Error ("Trying to access google task service failed. Revoking  token and reauthorizing.", x);
-
-        await credential.RevokeTokenAsync (CancellationToken.None);
-        await GoogleWebAuthorizationBroker.ReauthorizeAsync (credential, CancellationToken.None);
-        return CreateTaskService (credential, proxyOrNull);
-      }
-    }
-
-    private static TasksService CreateTaskService (UserCredential credential, IWebProxy proxyOrNull)
-    {
-      return new TasksService (new BaseClientService.Initializer
-                               {
-                                   HttpClientFactory = new ProxySupportedHttpClientFactory (proxyOrNull),
-                                   HttpClientInitializer = credential,
-                                   ApplicationName = "Outlook CalDav Synchronizer",
-                               });
-    }
-
-    private static OAuth2Parameters CreateOAuth2Parameters (ClientSecrets clientSecrets, UserCredential credential)
-    {
-      return new OAuth2Parameters
-      {
-        ClientId = clientSecrets.ClientId,
-        ClientSecret = clientSecrets.ClientSecret,
-        AccessToken = credential.Token.AccessToken,
-        RefreshToken = credential.Token.RefreshToken
-      };
-    }
-    public static async Task<ContactsRequest> LoginToContactsService (string user, IWebProxy proxyOrNull)
-    {
-      var clientSecrets = CreateClientSecrets();
-      var credential = await LoginToGoogle (user, proxyOrNull);
-
-      var parameters = CreateOAuth2Parameters (clientSecrets, credential);
-      var contactsRequest = new ContactsRequest (CreateRequestSettings(parameters));
-
-      ContactsQuery query = new ContactsQuery (ContactsQuery.CreateContactsUri ("default"));
-      query.NumberToRetrieve = 1;
-      try
-      {
-        var feed = contactsRequest.Service.Query (query);
-      }
-      catch (GDataRequestException x)
-      {
-        s_logger.Error ("Trying to access google contacts API failed. Revoking  token and reauthorizing.", x);
-
-        await credential.RevokeTokenAsync (CancellationToken.None);
-        await GoogleWebAuthorizationBroker.ReauthorizeAsync (credential, CancellationToken.None);
-        parameters = CreateOAuth2Parameters (clientSecrets, credential);
-        contactsRequest = new ContactsRequest (CreateRequestSettings(parameters) );
-      }
-
-      if (proxyOrNull != null)
-        contactsRequest.Proxy = proxyOrNull;
-
-      return contactsRequest;
-    }
-
-    private static RequestSettings CreateRequestSettings(OAuth2Parameters parameters)
-    {
-      return new RequestSettings ("Outlook CalDav Synchronizer", parameters);
-    }
-  }
 }

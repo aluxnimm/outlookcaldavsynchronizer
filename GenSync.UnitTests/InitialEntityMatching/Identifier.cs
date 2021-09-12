@@ -14,28 +14,29 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync.UnitTests.InitialEntityMatching
 {
-  public struct Identifier<T>
-  {
-    public readonly T Value;
-
-    public Identifier (T value)
+    public struct Identifier<T>
     {
-      Value = value;
-    }
+        public readonly T Value;
 
-    // Override equals and return false, to verify if EqualityComparer is used
-    public override bool Equals (object obj)
-    {
-      return false;
-    }
+        public Identifier(T value)
+        {
+            Value = value;
+        }
 
-    public override int GetHashCode ()
-    {
-      return 0;
+        // Override equals and return false, to verify if EqualityComparer is used
+        public override bool Equals(object obj)
+        {
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return 0;
+        }
     }
-  }
 }

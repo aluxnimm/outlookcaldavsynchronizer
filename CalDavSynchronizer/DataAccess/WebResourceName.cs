@@ -14,84 +14,83 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public class WebResourceName
-  {
-    public string OriginalAbsolutePath {get; set; }
-    public string Id {get; set; }
-
-    public WebResourceName (Uri uri)
-        : this (uri.AbsolutePath)
+    public class WebResourceName
     {
-      
+        public string OriginalAbsolutePath { get; set; }
+        public string Id { get; set; }
+
+        public WebResourceName(Uri uri)
+            : this(uri.AbsolutePath)
+        {
+        }
+
+        public WebResourceName(string absolutePath)
+        {
+            OriginalAbsolutePath = absolutePath;
+            Id = DecodeString(absolutePath);
+        }
+
+        private static string DecodeString(string value)
+        {
+            string newValue;
+            while ((newValue = Uri.UnescapeDataString(value)) != value)
+                value = newValue;
+
+            return newValue;
+        }
+
+        public string GetServerFileName()
+        {
+            return Path.GetFileName(OriginalAbsolutePath);
+        }
+
+        public WebResourceName()
+        {
+        }
+
+        public override string ToString()
+        {
+            return OriginalAbsolutePath;
+        }
+
+        public override int GetHashCode()
+        {
+            return Comparer.GetHashCode(this);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Comparer.Equals(this, obj as WebResourceName);
+        }
+
+        public static readonly IEqualityComparer<WebResourceName> Comparer = new WebResourceNameEqualityComparer();
+
+        private class WebResourceNameEqualityComparer : IEqualityComparer<WebResourceName>
+        {
+            private static readonly IEqualityComparer<string> s_stringComparer = StringComparer.Ordinal;
+
+            public bool Equals(WebResourceName x, WebResourceName y)
+            {
+                if (x == null)
+                    return y == null;
+
+                if (y == null)
+                    return false;
+
+                return s_stringComparer.Equals(x.Id, y.Id);
+            }
+
+            public int GetHashCode(WebResourceName obj)
+            {
+                return s_stringComparer.GetHashCode(obj.Id);
+            }
+        }
     }
-
-    public WebResourceName (string absolutePath)
-    {
-      OriginalAbsolutePath = absolutePath;
-      Id = DecodeString (absolutePath);
-    }
-    
-    private static string DecodeString (string value)
-    {
-      string newValue;
-      while ((newValue = Uri.UnescapeDataString (value)) != value)
-        value = newValue;
-
-      return newValue;
-    }
-
-    public string GetServerFileName()
-    {
-      return Path.GetFileName(OriginalAbsolutePath);
-    }
-
-    public WebResourceName ()
-    {
-      
-    }
-
-    public override string ToString ()
-    {
-      return OriginalAbsolutePath;
-    }
-
-    public override int GetHashCode ()
-    {
-      return Comparer.GetHashCode (this);
-    }
-
-    public override bool Equals (object obj)
-    {
-      return Comparer.Equals (this, obj as WebResourceName);
-    }
-
-    public static readonly IEqualityComparer<WebResourceName> Comparer = new WebResourceNameEqualityComparer();
-
-    private class WebResourceNameEqualityComparer : IEqualityComparer<WebResourceName>
-    {
-      private static readonly IEqualityComparer<string> s_stringComparer = StringComparer.Ordinal;
-
-      public bool Equals (WebResourceName x, WebResourceName y)
-      {
-        if (x == null)
-          return y == null;
-
-        if (y == null)
-          return false;
-
-        return s_stringComparer.Equals (x.Id, y.Id);
-      }
-
-      public int GetHashCode (WebResourceName obj)
-      {
-        return s_stringComparer.GetHashCode (obj.Id);
-      }
-    }
-  }
 }

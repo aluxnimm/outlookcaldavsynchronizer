@@ -28,68 +28,68 @@ using Rhino.Mocks;
 
 namespace GenSync.UnitTests.Synchronization
 {
-  [TestFixture]
-  public class SynchronizerFixture
-  {
-    [Test]
-    public async Task Synchronize_GetVersionsAndGetReturnDuplicateEntries_RemovesDuplicates ()
+    [TestFixture]
+    public class SynchronizerFixture
     {
-      var builder = new SynchronizerBuilder();
+        [Test]
+        public async Task Synchronize_GetVersionsAndGetReturnDuplicateEntries_RemovesDuplicates()
+        {
+            var builder = new SynchronizerBuilder();
 
-      builder.AtypeIdComparer = StringComparer.InvariantCultureIgnoreCase;
-      builder.BtypeIdComparer = StringComparer.InvariantCultureIgnoreCase;
+            builder.AtypeIdComparer = StringComparer.InvariantCultureIgnoreCase;
+            builder.BtypeIdComparer = StringComparer.InvariantCultureIgnoreCase;
 
-      builder.AtypeRepository
-          .Expect (r => r.GetAllVersions (new string[] { },0, NullGetVersionsLogger.Instance))
-          .IgnoreArguments()
-          .Return (
-              Task.FromResult<IEnumerable<EntityVersion<string, string>>> (
-                  new[] { EntityVersion.Create ("A1", "v1"), EntityVersion.Create ("a1", "v3") }));
+            builder.AtypeRepository
+                .Expect(r => r.GetAllVersions(new string[] { }, 0, NullGetVersionsLogger.Instance))
+                .IgnoreArguments()
+                .Return(
+                    Task.FromResult<IEnumerable<EntityVersion<string, string>>>(
+                        new[] {EntityVersion.Create("A1", "v1"), EntityVersion.Create("a1", "v3")}));
 
-      builder.BtypeRepository
-          .Expect (r => r.GetAllVersions (new string[] { }, 0, NullGetVersionsLogger.Instance))
-          .IgnoreArguments()
-          .Return (
-              Task.FromResult<IEnumerable<EntityVersion<string, string>>> (
-                  new[] { EntityVersion.Create ("b1", "v2") }));
+            builder.BtypeRepository
+                .Expect(r => r.GetAllVersions(new string[] { }, 0, NullGetVersionsLogger.Instance))
+                .IgnoreArguments()
+                .Return(
+                    Task.FromResult<IEnumerable<EntityVersion<string, string>>>(
+                        new[] {EntityVersion.Create("b1", "v2")}));
 
 
-      var aTypeLoadTask =  Task.FromResult<IEnumerable<EntityWithId<string, string>>> (
-          new List<EntityWithId<string, string>> { EntityWithId.Create ("A1", "AAAA"), EntityWithId.Create ("a1", "____") });
-      builder.AtypeRepository
-        .Expect(r => r.Get(
-          Arg<ICollection<string>>.Matches(c => c.Count == 1 && c.First() == "A1"),
-          Arg<ILoadEntityLogger>.Is.NotNull,
-          Arg<int>.Is.Anything))
-        .Return(aTypeLoadTask);
+            var aTypeLoadTask = Task.FromResult<IEnumerable<EntityWithId<string, string>>>(
+                new List<EntityWithId<string, string>> {EntityWithId.Create("A1", "AAAA"), EntityWithId.Create("a1", "____")});
+            builder.AtypeRepository
+                .Expect(r => r.Get(
+                    Arg<ICollection<string>>.Matches(c => c.Count == 1 && c.First() == "A1"),
+                    Arg<ILoadEntityLogger>.Is.NotNull,
+                    Arg<int>.Is.Anything))
+                .Return(aTypeLoadTask);
 
-      var bTypeLoadTask = Task.FromResult<IEnumerable<EntityWithId<string, string>>> (
-           new List<EntityWithId<string, string>> { EntityWithId.Create ("b1", "BBBB"), });
-      builder.BtypeRepository
-        .Expect(r => r.Get(
-          Arg<ICollection<string>>.Matches(c => c.Count == 1 && c.First() == "b1"),
-          Arg<ILoadEntityLogger>.Is.NotNull,
-          Arg<int>.Is.Anything))
-        .Return(bTypeLoadTask);
+            var bTypeLoadTask = Task.FromResult<IEnumerable<EntityWithId<string, string>>>(
+                new List<EntityWithId<string, string>> {EntityWithId.Create("b1", "BBBB"),});
+            builder.BtypeRepository
+                .Expect(r => r.Get(
+                    Arg<ICollection<string>>.Matches(c => c.Count == 1 && c.First() == "b1"),
+                    Arg<ILoadEntityLogger>.Is.NotNull,
+                    Arg<int>.Is.Anything))
+                .Return(bTypeLoadTask);
 
-      var knownData = new EntityRelationData<string, string, string, string> ("A1", "v1", "b1", "v2");
-      builder.InitialEntityMatcher
-          .Expect (m => m.FindMatchingEntities (null, null, null, null, null))
-          .IgnoreArguments()
-          .Return (new List<IEntityRelationData<string, string, string, string>> { knownData });
+            var knownData = new EntityRelationData<string, string, string, string>("A1", "v1", "b1", "v2");
+            builder.InitialEntityMatcher
+                .Expect(m => m.FindMatchingEntities(null, null, null, null, null))
+                .IgnoreArguments()
+                .Return(new List<IEntityRelationData<string, string, string, string>> {knownData});
 
-      builder.InitialSyncStateCreationStrategy
-          .Expect (s => s.CreateFor_Unchanged_Unchanged (knownData))
-          .Return (new DoNothing<string, string, string, string, string, string, int> (knownData));
+            builder.InitialSyncStateCreationStrategy
+                .Expect(s => s.CreateFor_Unchanged_Unchanged(knownData))
+                .Return(new DoNothing<string, string, string, string, string, string, int>(knownData));
 
-      builder.AtypeRepository.Stub(_ => _.VerifyUnknownEntities(null,0)).IgnoreArguments().Return(Task.FromResult(0));
-      builder.BtypeRepository.Stub(_ => _.VerifyUnknownEntities(null,0)).IgnoreArguments().Return(Task.FromResult(0));
+            builder.AtypeRepository.Stub(_ => _.VerifyUnknownEntities(null, 0)).IgnoreArguments().Return(Task.FromResult(0));
+            builder.BtypeRepository.Stub(_ => _.VerifyUnknownEntities(null, 0)).IgnoreArguments().Return(Task.FromResult(0));
 
-      var synchronizer = builder.Build();
-      await synchronizer.Synchronize (NullSynchronizationLogger.Instance, 0);
+            var synchronizer = builder.Build();
+            await synchronizer.Synchronize(NullSynchronizationLogger.Instance, 0);
 
-      builder.EntityRelationDataAccess.AssertWasCalled (
-          c => c.SaveEntityRelationData (Arg<List<IEntityRelationData<string, string, string, string>>>.Matches (l => l.Count == 1 && l[0] == knownData)));
+            builder.EntityRelationDataAccess.AssertWasCalled(
+                c => c.SaveEntityRelationData(Arg<List<IEntityRelationData<string, string, string, string>>>.Matches(l => l.Count == 1 && l[0] == knownData)));
+        }
     }
-  }
 }

@@ -17,8 +17,7 @@
 
 namespace CalDavSynchronizer.Implementation.Common
 {
-  public interface IQueryOutlookFolderStrategy : IQueryOutlookAppointmentItemFolderStrategy, IQueryOutlookContactItemFolderStrategy, IQueryOutlookDistListItemFolderStrategy, IQueryOutlookTaskItemFolderStrategy
-  {
-
-  }
+    public interface IQueryOutlookFolderStrategy : IQueryOutlookAppointmentItemFolderStrategy, IQueryOutlookContactItemFolderStrategy, IQueryOutlookDistListItemFolderStrategy, IQueryOutlookTaskItemFolderStrategy
+    {
+    }
 }

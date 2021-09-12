@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,26 +22,26 @@ using System.Runtime.InteropServices;
 
 namespace CalDavSynchronizer.Implementation.ComWrappers
 {
-  public static class ComEnumerableExtensions
-  {
-    public static IEnumerable<T> ToSafeEnumerable<T> (this IEnumerable<T> source)
+    public static class ComEnumerableExtensions
     {
-      return ToSafeEnumerable<T> ((IEnumerable) source);
-    }
+        public static IEnumerable<T> ToSafeEnumerable<T>(this IEnumerable<T> source)
+        {
+            return ToSafeEnumerable<T>((IEnumerable) source);
+        }
 
-    public static IEnumerable<T> ToSafeEnumerable<T> (this IEnumerable source)
-    {
-      foreach (T item in source)
-      {
-        try
+        public static IEnumerable<T> ToSafeEnumerable<T>(this IEnumerable source)
         {
-          yield return item;
+            foreach (T item in source)
+            {
+                try
+                {
+                    yield return item;
+                }
+                finally
+                {
+                    Marshal.FinalReleaseComObject(item);
+                }
+            }
         }
-        finally
-        {
-          Marshal.FinalReleaseComObject (item);
-        }
-      }
     }
-  }
 }

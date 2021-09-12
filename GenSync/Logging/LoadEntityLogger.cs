@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,58 +23,58 @@ using System.Threading.Tasks;
 
 namespace GenSync.Logging
 {
-  class LoadEntityLogger : ILoadEntityLogger, IGetVersionsLogger
-  {
-    private readonly List<LoadError> _loadErrors;
-    private readonly object _loadErrorsLock;
-    private readonly bool _isARepository;
-
-    public LoadEntityLogger (List<LoadError> loadErrors, object loadErrorsLock, bool isARepository)
+    class LoadEntityLogger : ILoadEntityLogger, IGetVersionsLogger
     {
-      _loadErrors = loadErrors;
-      _loadErrorsLock = loadErrorsLock;
-      _isARepository = isARepository;
-    }
+        private readonly List<LoadError> _loadErrors;
+        private readonly object _loadErrorsLock;
+        private readonly bool _isARepository;
 
-    public void LogSkipLoadBecauseOfError (object entityId, Exception exception)
-    {
-      lock (_loadErrorsLock)
-      {
-        _loadErrors.Add (new LoadError
-                         {
-                             EntityId = entityId.ToString(),
-                             Error = exception.ToString(),
-                             IsAEntity = _isARepository
-                         });
-      }
-    }
-
-    public void LogWarning(object entityId, string message)
-    {
-      lock (_loadErrorsLock)
-      {
-        _loadErrors.Add(new LoadError
+        public LoadEntityLogger(List<LoadError> loadErrors, object loadErrorsLock, bool isARepository)
         {
-          EntityId = entityId.ToString(),
-          Error = message,
-          IsAEntity = _isARepository,
-          IsWarning = true
-        });
-      }
-    }
+            _loadErrors = loadErrors;
+            _loadErrorsLock = loadErrorsLock;
+            _isARepository = isARepository;
+        }
 
-    public void LogError(object entityId, string message)
-    {
-      lock (_loadErrorsLock)
-      {
-        _loadErrors.Add(new LoadError
+        public void LogSkipLoadBecauseOfError(object entityId, Exception exception)
         {
-          EntityId = entityId.ToString(),
-          Error = message,
-          IsAEntity = _isARepository,
-          IsWarning = false
-        });
-      }
+            lock (_loadErrorsLock)
+            {
+                _loadErrors.Add(new LoadError
+                {
+                    EntityId = entityId.ToString(),
+                    Error = exception.ToString(),
+                    IsAEntity = _isARepository
+                });
+            }
+        }
+
+        public void LogWarning(object entityId, string message)
+        {
+            lock (_loadErrorsLock)
+            {
+                _loadErrors.Add(new LoadError
+                {
+                    EntityId = entityId.ToString(),
+                    Error = message,
+                    IsAEntity = _isARepository,
+                    IsWarning = true
+                });
+            }
+        }
+
+        public void LogError(object entityId, string message)
+        {
+            lock (_loadErrorsLock)
+            {
+                _loadErrors.Add(new LoadError
+                {
+                    EntityId = entityId.ToString(),
+                    Error = message,
+                    IsAEntity = _isARepository,
+                    IsWarning = false
+                });
+            }
+        }
     }
-  }
 }

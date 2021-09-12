@@ -12,55 +12,55 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.EntityCacheVersionConversion
 {
-  public static class Version2To3
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-
-    public static void Convert (
-      NameSpace outlookSession,
-      Options[] options,
-      Func<Options, string> cacheFileGetter,
-      Action<Options> cacheDeleter)
+    public static class Version2To3
     {
-      foreach (var option in options)
-      {
-        try
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+
+        public static void Convert(
+            NameSpace outlookSession,
+            Options[] options,
+            Func<Options, string> cacheFileGetter,
+            Action<Options> cacheDeleter)
         {
-          Convert (outlookSession, option, cacheFileGetter, cacheDeleter);
+            foreach (var option in options)
+            {
+                try
+                {
+                    Convert(outlookSession, option, cacheFileGetter, cacheDeleter);
+                }
+                catch (System.Exception x)
+                {
+                    s_logger.Error($"Error during conversion for profile '{option.Name}'. Deleting caches", x);
+                    cacheDeleter(option);
+                }
+            }
         }
-        catch (System.Exception x)
+
+        private static void Convert(NameSpace outlookSession, Options options, Func<Options, string> cacheFileGetter, Action<Options> cacheDeleter)
         {
-          s_logger.Error ($"Error during conversion for profile '{option.Name}'. Deleting caches", x);
-          cacheDeleter(option);
+            OlItemType defaultItemType;
+
+            using (var outlookFolderWrapper = GenericComObjectWrapper.Create((Folder) outlookSession.GetFolderFromID(options.OutlookFolderEntryId, options.OutlookFolderStoreId)))
+            {
+                defaultItemType = outlookFolderWrapper.Inner.DefaultItemType;
+            }
+
+            if (defaultItemType == OlItemType.olTaskItem)
+            {
+                var fileName = cacheFileGetter(options);
+                XDocument document = XDocument.Load(fileName);
+
+                if (document.Root?.Name.LocalName == "ArrayOfOutlookEventRelationData")
+                {
+                    document.Root.Name = "ArrayOfTaskRelationData";
+                    foreach (var node in document.Descendants().Where(n => n.Name == "OutlookEventRelationData"))
+                    {
+                        node.Name = "TaskRelationData";
+                    }
+
+                    document.Save(fileName);
+                }
+            }
         }
-      }
     }
-
-    private static void Convert (NameSpace outlookSession, Options options, Func<Options, string> cacheFileGetter, Action<Options> cacheDeleter)
-    {
-      OlItemType defaultItemType;
-
-      using (var outlookFolderWrapper = GenericComObjectWrapper.Create((Folder)outlookSession.GetFolderFromID(options.OutlookFolderEntryId, options.OutlookFolderStoreId)))
-      {
-        defaultItemType = outlookFolderWrapper.Inner.DefaultItemType;
-      }
-
-      if (defaultItemType == OlItemType.olTaskItem)
-      {
-        var fileName = cacheFileGetter(options);
-        XDocument document = XDocument.Load(fileName);
-
-        if (document.Root?.Name.LocalName == "ArrayOfOutlookEventRelationData")
-        {
-          document.Root.Name = "ArrayOfTaskRelationData";
-          foreach (var node in document.Descendants().Where(n => n.Name == "OutlookEventRelationData"))
-          {
-            node.Name = "TaskRelationData";
-          }
-          document.Save(fileName);
-        }
-       
-      }
-    }
-  }
 }

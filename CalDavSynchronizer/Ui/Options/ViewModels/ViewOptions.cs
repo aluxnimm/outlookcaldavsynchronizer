@@ -14,28 +14,29 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Windows.Input;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public class ViewOptions : ModelBase, IViewOptions
-  {
-    private bool _isAdvancedViewEnabled;
-
-    public ViewOptions (bool enableAdvancedView)
+    public class ViewOptions : ModelBase, IViewOptions
     {
-      _isAdvancedViewEnabled = enableAdvancedView;
-      ShowAdvancedSettingsCommand = new DelegateCommand (_ => { IsAdvancedViewEnabled = true; });
-      HideAdvancedSettingsCommand = new DelegateCommand (_ => { IsAdvancedViewEnabled = false; });
-    }
+        private bool _isAdvancedViewEnabled;
 
-    public ICommand ShowAdvancedSettingsCommand { get; }
-    public ICommand HideAdvancedSettingsCommand { get; }
+        public ViewOptions(bool enableAdvancedView)
+        {
+            _isAdvancedViewEnabled = enableAdvancedView;
+            ShowAdvancedSettingsCommand = new DelegateCommand(_ => { IsAdvancedViewEnabled = true; });
+            HideAdvancedSettingsCommand = new DelegateCommand(_ => { IsAdvancedViewEnabled = false; });
+        }
 
-    public bool IsAdvancedViewEnabled
-    {
-      get { return _isAdvancedViewEnabled; }
-      set { CheckedPropertyChange(ref _isAdvancedViewEnabled, value); }
+        public ICommand ShowAdvancedSettingsCommand { get; }
+        public ICommand HideAdvancedSettingsCommand { get; }
+
+        public bool IsAdvancedViewEnabled
+        {
+            get { return _isAdvancedViewEnabled; }
+            set { CheckedPropertyChange(ref _isAdvancedViewEnabled, value); }
+        }
     }
-  }
 }

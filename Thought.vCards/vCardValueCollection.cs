@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -11,13 +10,11 @@ using System.Text;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     A collection of string values.
     /// </summary>
     public class vCardValueCollection : StringCollection
     {
-
         private char separator;
 
         /// <summary>
@@ -56,7 +53,6 @@ namespace Thought.vCards
 
             foreach (string value in values)
                 Add(value);
-
         }
 
 
@@ -65,16 +61,8 @@ namespace Thought.vCards
         /// </summary>
         public char Separator
         {
-            get
-            {
-                return this.separator;
-            }
-            set
-            {
-                this.separator = value;
-            }
+            get { return this.separator; }
+            set { this.separator = value; }
         }
-
     }
-
 }

@@ -21,11 +21,11 @@ using GenSync.InitialEntityMatching;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists
 {
-  class DistListEntityMatchDataFactory : IMatchDataFactory<IDistListItemWrapper, DistListMatchData>
-  {
-    public DistListMatchData CreateMatchData(IDistListItemWrapper entity)
+    class DistListEntityMatchDataFactory : IMatchDataFactory<IDistListItemWrapper, DistListMatchData>
     {
-      return new DistListMatchData(entity.Inner);
+        public DistListMatchData CreateMatchData(IDistListItemWrapper entity)
+        {
+            return new DistListMatchData(entity.Inner);
+        }
     }
-  }
 }

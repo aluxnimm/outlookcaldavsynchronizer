@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using GenSync.EntityMapping;
 using GenSync.EntityRelationManagement;
@@ -22,23 +23,23 @@ using GenSync.Synchronization.StateFactories;
 
 namespace GenSync.Synchronization
 {
-  /// <summary>
-  /// Environment for a SyncState
-  /// NOTE: this is not the Context from the State-Pattern !!!
-  /// </summary>
-  public class EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
-  {
-    public IEntityMapper<TAtypeEntity, TBtypeEntity, TContext> Mapper { get; private set; }
-    public IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> DataFactory { get; private set; }
-    public IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> StateFactory { get; private set; }
-    public IExceptionLogger ExceptionLogger { get; private set; }
-
-    public EntitySyncStateEnvironment (IEntityMapper<TAtypeEntity, TBtypeEntity, TContext> mapper, IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> dataFactory, IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateFactory, IExceptionLogger exceptionLogger)
+    /// <summary>
+    /// Environment for a SyncState
+    /// NOTE: this is not the Context from the State-Pattern !!!
+    /// </summary>
+    public class EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
     {
-      ExceptionLogger = exceptionLogger;
-      Mapper = mapper;
-      DataFactory = dataFactory;
-      StateFactory = stateFactory;
+        public IEntityMapper<TAtypeEntity, TBtypeEntity, TContext> Mapper { get; private set; }
+        public IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> DataFactory { get; private set; }
+        public IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> StateFactory { get; private set; }
+        public IExceptionLogger ExceptionLogger { get; private set; }
+
+        public EntitySyncStateEnvironment(IEntityMapper<TAtypeEntity, TBtypeEntity, TContext> mapper, IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> dataFactory, IEntitySyncStateFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateFactory, IExceptionLogger exceptionLogger)
+        {
+            ExceptionLogger = exceptionLogger;
+            Mapper = mapper;
+            DataFactory = dataFactory;
+            StateFactory = stateFactory;
+        }
     }
-  }
 }

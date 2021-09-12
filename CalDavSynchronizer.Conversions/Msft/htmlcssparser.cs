@@ -18,7 +18,7 @@ using System.Xml;
 namespace CalDavSynchronizer.Conversions.Msft
 { // DependencyProperty
     //using System.Windows.Documents; // TextElement
-  
+
     internal static class HtmlCssParser
     {
         // .................................................................
@@ -306,33 +306,33 @@ namespace CalDavSynchronizer.Conversions.Msft
         }
 
         private static readonly string[] _colors = new string[]
-            {
-                "aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black", "blanchedalmond",
-                "blue", "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate", "coral",
-                "cornflowerblue", "cornsilk", "crimson", "cyan", "darkblue", "darkcyan", "darkgoldenrod", "darkgray",
-                "darkgreen", "darkkhaki", "darkmagenta", "darkolivegreen", "darkorange", "darkorchid", "darkred",
-                "darksalmon", "darkseagreen", "darkslateblue", "darkslategray", "darkturquoise", "darkviolet", "deeppink",
-                "deepskyblue", "dimgray", "dodgerblue", "firebrick", "floralwhite", "forestgreen", "fuchsia", "gainsboro",
-                "ghostwhite", "gold", "goldenrod", "gray", "green", "greenyellow", "honeydew", "hotpink", "indianred",
-                "indigo", "ivory", "khaki", "lavender", "lavenderblush", "lawngreen", "lemonchiffon", "lightblue", "lightcoral",
-                "lightcyan", "lightgoldenrodyellow", "lightgreen", "lightgrey", "lightpink", "lightsalmon", "lightseagreen",
-                "lightskyblue", "lightslategray", "lightsteelblue", "lightyellow", "lime", "limegreen", "linen", "magenta", 
-                "maroon", "mediumaquamarine", "mediumblue", "mediumorchid", "mediumpurple", "mediumseagreen", "mediumslateblue",
-                "mediumspringgreen", "mediumturquoise", "mediumvioletred", "midnightblue", "mintcream", "mistyrose", "moccasin",
-                "navajowhite", "navy", "oldlace", "olive", "olivedrab", "orange", "orangered", "orchid", "palegoldenrod",
-                "palegreen", "paleturquoise", "palevioletred", "papayawhip", "peachpuff", "peru", "pink", "plum", "powderblue",
-                "purple", "red", "rosybrown", "royalblue", "saddlebrown", "salmon", "sandybrown", "seagreen", "seashell",
-                "sienna", "silver", "skyblue", "slateblue", "slategray", "snow", "springgreen", "steelblue", "tan", "teal",
-                "thistle", "tomato", "turquoise", "violet", "wheat", "white", "whitesmoke", "yellow", "yellowgreen",
-            };
+        {
+            "aliceblue", "antiquewhite", "aqua", "aquamarine", "azure", "beige", "bisque", "black", "blanchedalmond",
+            "blue", "blueviolet", "brown", "burlywood", "cadetblue", "chartreuse", "chocolate", "coral",
+            "cornflowerblue", "cornsilk", "crimson", "cyan", "darkblue", "darkcyan", "darkgoldenrod", "darkgray",
+            "darkgreen", "darkkhaki", "darkmagenta", "darkolivegreen", "darkorange", "darkorchid", "darkred",
+            "darksalmon", "darkseagreen", "darkslateblue", "darkslategray", "darkturquoise", "darkviolet", "deeppink",
+            "deepskyblue", "dimgray", "dodgerblue", "firebrick", "floralwhite", "forestgreen", "fuchsia", "gainsboro",
+            "ghostwhite", "gold", "goldenrod", "gray", "green", "greenyellow", "honeydew", "hotpink", "indianred",
+            "indigo", "ivory", "khaki", "lavender", "lavenderblush", "lawngreen", "lemonchiffon", "lightblue", "lightcoral",
+            "lightcyan", "lightgoldenrodyellow", "lightgreen", "lightgrey", "lightpink", "lightsalmon", "lightseagreen",
+            "lightskyblue", "lightslategray", "lightsteelblue", "lightyellow", "lime", "limegreen", "linen", "magenta",
+            "maroon", "mediumaquamarine", "mediumblue", "mediumorchid", "mediumpurple", "mediumseagreen", "mediumslateblue",
+            "mediumspringgreen", "mediumturquoise", "mediumvioletred", "midnightblue", "mintcream", "mistyrose", "moccasin",
+            "navajowhite", "navy", "oldlace", "olive", "olivedrab", "orange", "orangered", "orchid", "palegoldenrod",
+            "palegreen", "paleturquoise", "palevioletred", "papayawhip", "peachpuff", "peru", "pink", "plum", "powderblue",
+            "purple", "red", "rosybrown", "royalblue", "saddlebrown", "salmon", "sandybrown", "seagreen", "seashell",
+            "sienna", "silver", "skyblue", "slateblue", "slategray", "snow", "springgreen", "steelblue", "tan", "teal",
+            "thistle", "tomato", "turquoise", "violet", "wheat", "white", "whitesmoke", "yellow", "yellowgreen",
+        };
 
         private static readonly string[] _systemColors = new string[]
-            {
-                "activeborder", "activecaption", "appworkspace", "background", "buttonface", "buttonhighlight", "buttonshadow",
-                "buttontext", "captiontext", "graytext", "highlight", "highlighttext", "inactiveborder", "inactivecaption",
-                "inactivecaptiontext", "infobackground", "infotext", "menu", "menutext", "scrollbar", "threeddarkshadow",
-                "threedface", "threedhighlight", "threedlightshadow", "threedshadow", "window", "windowframe", "windowtext",
-            };
+        {
+            "activeborder", "activecaption", "appworkspace", "background", "buttonface", "buttonhighlight", "buttonshadow",
+            "buttontext", "captiontext", "graytext", "highlight", "highlighttext", "inactiveborder", "inactivecaption",
+            "inactivecaptiontext", "infobackground", "infotext", "menu", "menutext", "scrollbar", "threeddarkshadow",
+            "threedface", "threedhighlight", "threedlightshadow", "threedshadow", "window", "windowframe", "windowtext",
+        };
 
         private static string ParseCssColor(string styleValue, ref int nextIndex)
         {
@@ -361,8 +361,10 @@ namespace CalDavSynchronizer.Conversions.Msft
                         {
                             break;
                         }
+
                         nextIndex++;
                     }
+
                     if (nextIndex > startIndex + 1)
                     {
                         color = styleValue.Substring(startIndex, nextIndex - startIndex);
@@ -371,11 +373,11 @@ namespace CalDavSynchronizer.Conversions.Msft
                 //Added by Sachin for converting rgb color to hex and return
                 else if (styleValue.Substring(nextIndex, 3).ToLower() == "rgb")
                 {
-                  //  Implement real rgb() color parsing
-                  startIndex = 4;
-                  string temp_color = styleValue.Substring(startIndex, styleValue.Length - 1 - startIndex);
-                  string[] rgb = temp_color.Split(',');
-                  color = "#" + (byte.Parse(rgb[0])).ToString("X2") + (byte.Parse(rgb[1])).ToString("X2") + (byte.Parse(rgb[2])).ToString("X2");
+                    //  Implement real rgb() color parsing
+                    startIndex = 4;
+                    string temp_color = styleValue.Substring(startIndex, styleValue.Length - 1 - startIndex);
+                    string[] rgb = temp_color.Split(',');
+                    color = "#" + (byte.Parse(rgb[0])).ToString("X2") + (byte.Parse(rgb[1])).ToString("X2") + (byte.Parse(rgb[2])).ToString("X2");
                 }
                 else if (Char.IsLetter(character))
                 {
@@ -429,13 +431,13 @@ namespace CalDavSynchronizer.Conversions.Msft
         //    Default: medium
         // font: [ <font-style> || <font-variant> || <font-weight ]? <font-size> [ / <line-height> ]? <font-family>
 
-        private static readonly string[] _fontGenericFamilies = new string[] { "serif", "sans-serif", "monospace", "cursive", "fantasy" };
-        private static readonly string[] _fontStyles = new string[] { "normal", "italic", "oblique" };
-        private static readonly string[] _fontVariants = new string[] { "normal", "small-caps" };
-        private static readonly string[] _fontWeights = new string[] { "normal", "bold", "bolder", "lighter", "100", "200", "300", "400", "500", "600", "700", "800", "900" };
-        private static readonly string[] _fontAbsoluteSizes = new string[] { "xx-small", "x-small", "small", "medium", "large", "x-large", "xx-large" };
-        private static readonly string[] _fontRelativeSizes = new string[] { "larger", "smaller" };
-        private static readonly string[] _fontSizeUnits = new string[] { "px", "mm", "cm", "in", "pt", "pc", "em", "ex", "%" };
+        private static readonly string[] _fontGenericFamilies = new string[] {"serif", "sans-serif", "monospace", "cursive", "fantasy"};
+        private static readonly string[] _fontStyles = new string[] {"normal", "italic", "oblique"};
+        private static readonly string[] _fontVariants = new string[] {"normal", "small-caps"};
+        private static readonly string[] _fontWeights = new string[] {"normal", "bold", "bolder", "lighter", "100", "200", "300", "400", "500", "600", "700", "800", "900"};
+        private static readonly string[] _fontAbsoluteSizes = new string[] {"xx-small", "x-small", "small", "medium", "large", "x-large", "xx-large"};
+        private static readonly string[] _fontRelativeSizes = new string[] {"larger", "smaller"};
+        private static readonly string[] _fontSizeUnits = new string[] {"px", "mm", "cm", "in", "pt", "pc", "em", "ex", "%"};
 
         // Parses CSS string fontStyle representing a value for css font attribute
         private static void ParseCssFont(string styleValue, Hashtable localProperties)
@@ -542,6 +544,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                         {
                             // Convert generic css family name
                         }
+
                         fontFamilyList = fontFamily;
                     }
                 }
@@ -565,8 +568,8 @@ namespace CalDavSynchronizer.Conversions.Msft
 
         // list-style: [ <list-style-type> || <list-style-position> || <list-style-image> ]
 
-        private static readonly string[] _listStyleTypes = new string[] { "disc", "circle", "square", "decimal", "lower-roman", "upper-roman", "lower-alpha", "upper-alpha", "none" };
-        private static readonly string[] _listStylePositions = new string[] { "inside", "outside" };
+        private static readonly string[] _listStyleTypes = new string[] {"disc", "circle", "square", "decimal", "lower-roman", "upper-roman", "lower-alpha", "upper-alpha", "none"};
+        private static readonly string[] _listStylePositions = new string[] {"inside", "outside"};
 
         private static void ParseCssListStyle(string styleValue, Hashtable localProperties)
         {
@@ -625,7 +628,7 @@ namespace CalDavSynchronizer.Conversions.Msft
         //
         // .................................................................
 
-        private static readonly string[] _textDecorations = new string[] { "none", "underline", "overline", "line-through", "blink" };
+        private static readonly string[] _textDecorations = new string[] {"none", "underline", "overline", "line-through", "blink"};
 
         private static void ParseCssTextDecoration(string styleValue, ref int nextIndex, Hashtable localProperties)
         {
@@ -643,6 +646,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                 {
                     break;
                 }
+
                 localProperties["text-decoration-" + decoration] = "true";
             }
         }
@@ -653,7 +657,7 @@ namespace CalDavSynchronizer.Conversions.Msft
         //
         // .................................................................
 
-        private static readonly string[] _textTransforms = new string[] { "none", "capitalize", "uppercase", "lowercase" };
+        private static readonly string[] _textTransforms = new string[] {"none", "capitalize", "uppercase", "lowercase"};
 
         private static void ParseCssTextTransform(string styleValue, ref int nextIndex, Hashtable localProperties)
         {
@@ -666,7 +670,7 @@ namespace CalDavSynchronizer.Conversions.Msft
         //
         // .................................................................
 
-        private static readonly string[] _textAligns = new string[] { "left", "right", "center", "justify" };
+        private static readonly string[] _textAligns = new string[] {"left", "right", "center", "justify"};
 
         private static void ParseCssTextAlign(string styleValue, ref int nextIndex, Hashtable localProperties)
         {
@@ -679,7 +683,7 @@ namespace CalDavSynchronizer.Conversions.Msft
         //
         // .................................................................
 
-        private static readonly string[] _verticalAligns = new string[] { "baseline", "sub", "super", "top", "text-top", "middle", "bottom", "text-bottom" };
+        private static readonly string[] _verticalAligns = new string[] {"baseline", "sub", "super", "top", "text-top", "middle", "bottom", "text-bottom"};
 
         private static void ParseCssVerticalAlign(string styleValue, ref int nextIndex, Hashtable localProperties)
         {
@@ -693,7 +697,7 @@ namespace CalDavSynchronizer.Conversions.Msft
         //
         // .................................................................
 
-        private static readonly string[] _floats = new string[] { "left", "right", "none" };
+        private static readonly string[] _floats = new string[] {"left", "right", "none"};
 
         private static void ParseCssFloat(string styleValue, ref int nextIndex, Hashtable localProperties)
         {
@@ -706,7 +710,7 @@ namespace CalDavSynchronizer.Conversions.Msft
         //
         // .................................................................
 
-        private static readonly string[] _clears = new string[] { "none", "left", "right", "both" };
+        private static readonly string[] _clears = new string[] {"none", "left", "right", "both"};
 
         private static void ParseCssClear(string styleValue, ref int nextIndex, Hashtable localProperties)
         {
@@ -783,7 +787,7 @@ namespace CalDavSynchronizer.Conversions.Msft
         //
         // .................................................................
 
-        private static readonly string[] _borderStyles = new string[] { "none", "dotted", "dashed", "solid", "double", "groove", "ridge", "inset", "outset" };
+        private static readonly string[] _borderStyles = new string[] {"none", "dotted", "dashed", "solid", "double", "groove", "ridge", "inset", "outset"};
 
         private static string ParseCssBorderStyle(string styleValue, ref int nextIndex)
         {
@@ -797,7 +801,7 @@ namespace CalDavSynchronizer.Conversions.Msft
         //
         // .................................................................
 
-        private static string[] _blocks = new string[] { "block", "inline", "list-item", "none" };
+        private static string[] _blocks = new string[] {"block", "inline", "list-item", "none"};
 
         // .................................................................
         //
@@ -841,9 +845,10 @@ namespace CalDavSynchronizer.Conversions.Msft
                 {
                     if (htmlChildNode is XmlElement)
                     {
-                        this.DiscoverStyleDefinitions((XmlElement)htmlChildNode);
+                        this.DiscoverStyleDefinitions((XmlElement) htmlChildNode);
                     }
                 }
+
                 return;
             }
 
@@ -880,8 +885,10 @@ namespace CalDavSynchronizer.Conversions.Msft
                         {
                             nextCharacterIndex++;
                         }
+
                         selectorStart = nextCharacterIndex + 1;
                     }
+
                     nextCharacterIndex++;
                 }
 
@@ -966,7 +973,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             //  Add id processing for style selectors
             if (_styleDefinitions != null)
             {
-                for (int i = _styleDefinitions.Count - 1; i >= 0;  i--)
+                for (int i = _styleDefinitions.Count - 1; i >= 0; i--)
                 {
                     string selector = _styleDefinitions[i].Selector;
 
@@ -1005,6 +1012,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                 {
                     selectorTag = selectorLevel.Substring(0, indexOfDot);
                 }
+
                 selectorClass = selectorLevel.Substring(indexOfDot + 1);
             }
             else if (indexOfPound >= 0)
@@ -1013,6 +1021,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                 {
                     selectorTag = selectorLevel.Substring(0, indexOfPound);
                 }
+
                 selectorId = selectorLevel.Substring(indexOfPound + 1);
             }
             else

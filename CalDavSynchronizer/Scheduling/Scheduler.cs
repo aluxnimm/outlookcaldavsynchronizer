@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -29,126 +30,129 @@ using log4net;
 
 namespace CalDavSynchronizer.Scheduling
 {
-  public class Scheduler
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-
-    private readonly Timer _synchronizationTimer = new Timer();
-
-    private Dictionary<Guid, SynchronizationProfileRunner> _runnersById = new Dictionary<Guid, SynchronizationProfileRunner>();
-    private readonly TimeSpan _timerInterval = TimeSpan.FromSeconds (30);
-    private readonly ISynchronizerFactory _synchronizerFactory;
-    private readonly ISynchronizationReportSink _reportSink;
-    private readonly IFolderChangeWatcherFactory _folderChangeWatcherFactory;
-    private readonly Action _ensureSynchronizationContext;
-    private readonly ISynchronizationRunLogger _runLogger;
-
-    public Scheduler (
-      ISynchronizerFactory synchronizerFactory,
-      ISynchronizationReportSink reportSink,
-      Action ensureSynchronizationContext, 
-      IFolderChangeWatcherFactory folderChangeWatcherFactory,
-      ISynchronizationRunLogger runLogger)
+    public class Scheduler
     {
-      if (synchronizerFactory == null)
-        throw new ArgumentNullException (nameof (synchronizerFactory));
-      if (ensureSynchronizationContext == null)
-        throw new ArgumentNullException (nameof (ensureSynchronizationContext));
-      if (folderChangeWatcherFactory == null)
-        throw new ArgumentNullException (nameof (folderChangeWatcherFactory));
-      if (runLogger == null)
-        throw new ArgumentNullException (nameof (runLogger));
-      if (reportSink == null)
-        throw new ArgumentNullException (nameof (reportSink));
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
 
-      _reportSink = reportSink;
-      _synchronizerFactory = synchronizerFactory;
-      _ensureSynchronizationContext = ensureSynchronizationContext;
-      _folderChangeWatcherFactory = folderChangeWatcherFactory;
-      _runLogger = runLogger;
-      _synchronizationTimer.Tick += SynchronizationTimer_Tick;
-      _synchronizationTimer.Interval = (int) _timerInterval.TotalMilliseconds;
-    }
+        private readonly Timer _synchronizationTimer = new Timer();
 
-    public void Start()
-    {
-      _synchronizationTimer.Start();
-    }
+        private Dictionary<Guid, SynchronizationProfileRunner> _runnersById = new Dictionary<Guid, SynchronizationProfileRunner>();
+        private readonly TimeSpan _timerInterval = TimeSpan.FromSeconds(30);
+        private readonly ISynchronizerFactory _synchronizerFactory;
+        private readonly ISynchronizationReportSink _reportSink;
+        private readonly IFolderChangeWatcherFactory _folderChangeWatcherFactory;
+        private readonly Action _ensureSynchronizationContext;
+        private readonly ISynchronizationRunLogger _runLogger;
 
-
-    private void SynchronizationTimer_Tick (object sender, EventArgs e)
-    {
-      try
-      {
-        _ensureSynchronizationContext();
-        RunTimeTriggeredSynchronization();
-      }
-      catch (Exception x)
-      {
-        s_logger.Error (null, x);
-      }
-    }
-
-    private async void RunTimeTriggeredSynchronization ()
-    {
-      try
-      {
-        _synchronizationTimer.Stop();
-        using (_runLogger.LogStartSynchronizationRun())
+        public Scheduler(
+            ISynchronizerFactory synchronizerFactory,
+            ISynchronizationReportSink reportSink,
+            Action ensureSynchronizationContext,
+            IFolderChangeWatcherFactory folderChangeWatcherFactory,
+            ISynchronizationRunLogger runLogger)
         {
-          foreach (var worker in _runnersById.Values)
-            await worker.RunAndRescheduleNoThrow (false);
+            if (synchronizerFactory == null)
+                throw new ArgumentNullException(nameof(synchronizerFactory));
+            if (ensureSynchronizationContext == null)
+                throw new ArgumentNullException(nameof(ensureSynchronizationContext));
+            if (folderChangeWatcherFactory == null)
+                throw new ArgumentNullException(nameof(folderChangeWatcherFactory));
+            if (runLogger == null)
+                throw new ArgumentNullException(nameof(runLogger));
+            if (reportSink == null)
+                throw new ArgumentNullException(nameof(reportSink));
+
+            _reportSink = reportSink;
+            _synchronizerFactory = synchronizerFactory;
+            _ensureSynchronizationContext = ensureSynchronizationContext;
+            _folderChangeWatcherFactory = folderChangeWatcherFactory;
+            _runLogger = runLogger;
+            _synchronizationTimer.Tick += SynchronizationTimer_Tick;
+            _synchronizationTimer.Interval = (int) _timerInterval.TotalMilliseconds;
         }
-        _synchronizationTimer.Start();
-      }
-      catch (Exception x)
-      {
-        s_logger.Error (null, x);
-      }
-    }
 
-    public async Task SetOptions (Options[] options, GeneralOptions generalOptions)
-    {
-      if (options == null)
-        throw new ArgumentNullException (nameof (options));
-      if (generalOptions == null)
-        throw new ArgumentNullException (nameof (generalOptions));
-
-      Dictionary<Guid, SynchronizationProfileRunner> workersById = new Dictionary<Guid, SynchronizationProfileRunner>();
-      foreach (var option in options)
-      {
-        try
+        public void Start()
         {
-          SynchronizationProfileRunner profileRunner;
-          if (!_runnersById.TryGetValue (option.Id, out profileRunner))
-          {
-            profileRunner = new SynchronizationProfileRunner (
-                _synchronizerFactory,
-                _reportSink,
-                _folderChangeWatcherFactory,
-                _ensureSynchronizationContext,
-                _runLogger,
-                DateTimeProvider.Instance,
-                option.Id);
-          }
-          await profileRunner.UpdateOptions (option, generalOptions);
-          workersById.Add (option.Id, profileRunner);
+            _synchronizationTimer.Start();
         }
-        catch (Exception x)
-        {
-          ExceptionHandler.Instance.LogException (x, s_logger);
-        }
-      }
-      _runnersById = workersById;
-    }
 
-    public async Task RunNow ()
-    {
-      using (_runLogger.LogStartSynchronizationRun())
-      {
-        foreach (var worker in _runnersById.Values)
-          await worker.RunAndRescheduleNoThrow (true);
-      }
+
+        private void SynchronizationTimer_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                _ensureSynchronizationContext();
+                RunTimeTriggeredSynchronization();
+            }
+            catch (Exception x)
+            {
+                s_logger.Error(null, x);
+            }
+        }
+
+        private async void RunTimeTriggeredSynchronization()
+        {
+            try
+            {
+                _synchronizationTimer.Stop();
+                using (_runLogger.LogStartSynchronizationRun())
+                {
+                    foreach (var worker in _runnersById.Values)
+                        await worker.RunAndRescheduleNoThrow(false);
+                }
+
+                _synchronizationTimer.Start();
+            }
+            catch (Exception x)
+            {
+                s_logger.Error(null, x);
+            }
+        }
+
+        public async Task SetOptions(Options[] options, GeneralOptions generalOptions)
+        {
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+            if (generalOptions == null)
+                throw new ArgumentNullException(nameof(generalOptions));
+
+            Dictionary<Guid, SynchronizationProfileRunner> workersById = new Dictionary<Guid, SynchronizationProfileRunner>();
+            foreach (var option in options)
+            {
+                try
+                {
+                    SynchronizationProfileRunner profileRunner;
+                    if (!_runnersById.TryGetValue(option.Id, out profileRunner))
+                    {
+                        profileRunner = new SynchronizationProfileRunner(
+                            _synchronizerFactory,
+                            _reportSink,
+                            _folderChangeWatcherFactory,
+                            _ensureSynchronizationContext,
+                            _runLogger,
+                            DateTimeProvider.Instance,
+                            option.Id);
+                    }
+
+                    await profileRunner.UpdateOptions(option, generalOptions);
+                    workersById.Add(option.Id, profileRunner);
+                }
+                catch (Exception x)
+                {
+                    ExceptionHandler.Instance.LogException(x, s_logger);
+                }
+            }
+
+            _runnersById = workersById;
+        }
+
+        public async Task RunNow()
+        {
+            using (_runLogger.LogStartSynchronizationRun())
+            {
+                foreach (var worker in _runnersById.Values)
+                    await worker.RunAndRescheduleNoThrow(true);
+            }
+        }
     }
-  }
 }

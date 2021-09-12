@@ -14,21 +14,20 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Xml.Serialization;
 
 namespace CalDavSynchronizer.Contracts
 {
-  public enum ServerAdapterType
-  {
-    [XmlEnum ("Default")]
-    WebDavHttpClientBased,
+    public enum ServerAdapterType
+    {
+        [XmlEnum("Default")] WebDavHttpClientBased,
 
-    [XmlEnum ("GoogleOAuth")]
-    WebDavHttpClientBasedWithGoogleOAuth,
+        [XmlEnum("GoogleOAuth")] WebDavHttpClientBasedWithGoogleOAuth,
 
-    GoogleTaskApi,
+        GoogleTaskApi,
 
-    GoogleContactApi
-  }
+        GoogleContactApi
+    }
 }

@@ -14,15 +14,16 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
 {
-  public class KnownDistributionListMember : DistributionListMember
-  {
-    public KnownDistributionListMember(string emailAddress, string displayName, string serverFileName) : base(emailAddress, displayName)
+    public class KnownDistributionListMember : DistributionListMember
     {
-      ServerFileName = serverFileName;
-    }
+        public KnownDistributionListMember(string emailAddress, string displayName, string serverFileName) : base(emailAddress, displayName)
+        {
+            ServerFileName = serverFileName;
+        }
 
-    public string ServerFileName { get; }
-  }
+        public string ServerFileName { get; }
+    }
 }

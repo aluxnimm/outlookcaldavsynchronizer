@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
@@ -21,19 +22,19 @@ using NUnit.Framework;
 
 namespace CalDavDataAccessIntegrationTests
 {
-  public class Google : FixtureBase
-  {
-    protected override string ProfileName
+    public class Google : FixtureBase
     {
-      get { return "IntegrationTest/DataAccess/Google"; }
-    }
+        protected override string ProfileName
+        {
+            get { return "IntegrationTest/DataAccess/Google"; }
+        }
 
-    [Ignore ("Google performs deletion even with wrong etag.")]
-    public async override Task TryDeleteEntityWithWrongVersion ()
-    {
-      await base.TryDeleteEntityWithWrongVersion ();
-    }
+        [Ignore("Google performs deletion even with wrong etag.")]
+        public async override Task TryDeleteEntityWithWrongVersion()
+        {
+            await base.TryDeleteEntityWithWrongVersion();
+        }
 
-    protected override bool ShouldWaitForNewEtag => true;
-  }
+        protected override bool ShouldWaitForNewEtag => true;
+    }
 }

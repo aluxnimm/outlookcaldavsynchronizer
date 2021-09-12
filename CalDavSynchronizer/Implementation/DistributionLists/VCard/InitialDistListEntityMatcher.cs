@@ -23,31 +23,31 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
 {
-  internal class InitialDistListEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, DistListMatchData, string, WebResourceName, string, vCard, string>
-  {
-    public InitialDistListEntityMatcher (IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
-        : base (btypeIdEqualityComparer)
+    internal class InitialDistListEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, DistListMatchData, string, WebResourceName, string, vCard, string>
     {
-    }
+        public InitialDistListEntityMatcher(IEqualityComparer<WebResourceName> btypeIdEqualityComparer)
+            : base(btypeIdEqualityComparer)
+        {
+        }
 
-    protected override bool AreEqual (DistListMatchData atypeEntity, vCard btypeEntity)
-    {
-      return atypeEntity.DlName == btypeEntity.FormattedName;
-    }
+        protected override bool AreEqual(DistListMatchData atypeEntity, vCard btypeEntity)
+        {
+            return atypeEntity.DlName == btypeEntity.FormattedName;
+        }
 
-    protected override string GetAtypePropertyValue (DistListMatchData atypeEntity)
-    {
-      return atypeEntity.DlName;
-    }
+        protected override string GetAtypePropertyValue(DistListMatchData atypeEntity)
+        {
+            return atypeEntity.DlName;
+        }
 
-    protected override string GetBtypePropertyValue (vCard btypeEntity)
-    {
-      return btypeEntity.FormattedName;
-    }
+        protected override string GetBtypePropertyValue(vCard btypeEntity)
+        {
+            return btypeEntity.FormattedName;
+        }
 
-    protected override string MapAtypePropertyValue (string value)
-    {
-      return value;
+        protected override string MapAtypePropertyValue(string value)
+        {
+            return value;
+        }
     }
-  }
 }

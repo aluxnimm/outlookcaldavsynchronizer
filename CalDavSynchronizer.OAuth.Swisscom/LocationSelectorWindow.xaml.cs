@@ -14,6 +14,7 @@ namespace CalDavSynchronizer.OAuth.Swisscom
         private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private AddressbookInfo location;
+
         internal LocationSelectorWindow(AddressbookInfo[] locations)
         {
             InitializeComponent();
@@ -25,17 +26,19 @@ namespace CalDavSynchronizer.OAuth.Swisscom
                 {
                     content = l.LocationInfo.AddressLine1;
                     toolTip = l.LocationInfo.AddressLine1;
-                } else if (String.IsNullOrEmpty(l.LocationInfo.AddressLine1) && !String.IsNullOrEmpty(l.LocationInfo.AddressLine2))
+                }
+                else if (String.IsNullOrEmpty(l.LocationInfo.AddressLine1) && !String.IsNullOrEmpty(l.LocationInfo.AddressLine2))
                 {
                     content = l.LocationInfo.AddressLine2;
                     toolTip = l.LocationInfo.AddressLine2;
-                } else if (!String.IsNullOrEmpty(l.LocationInfo.AddressLine1) && !String.IsNullOrEmpty(l.LocationInfo.AddressLine2))
+                }
+                else if (!String.IsNullOrEmpty(l.LocationInfo.AddressLine1) && !String.IsNullOrEmpty(l.LocationInfo.AddressLine2))
                 {
                     content = l.LocationInfo.AddressLine1 + ", " + l.LocationInfo.AddressLine2;
                     toolTip = l.LocationInfo.AddressLine1 + ", " + l.LocationInfo.AddressLine2;
                 }
 
-               if (l.ListOfMsisdn.Length > 0)
+                if (l.ListOfMsisdn.Length > 0)
                 {
                     if (String.IsNullOrEmpty(content))
                     {
@@ -48,6 +51,7 @@ namespace CalDavSynchronizer.OAuth.Swisscom
                         toolTip = toolTip + "\n(" + String.Join(",", l.ListOfMsisdn) + ")";
                     }
                 }
+
                 RadioButton radioButton = new RadioButton()
                 {
                     GroupName = Globalization.Strings.Localize("Location"),
@@ -68,9 +72,9 @@ namespace CalDavSynchronizer.OAuth.Swisscom
             //MessageBox.Show("RadioButtom_Click: " + sender.ToString());
             //System.Diagnostics.Debug.WriteLine("RadioButton_Click: " + sender.ToString());
             //s_logger.Debug("RadioButton_Click: " + sender.ToString());
-            if ((bool)((RadioButton)sender).IsChecked)
+            if ((bool) ((RadioButton) sender).IsChecked)
             {
-                location = (AddressbookInfo)((RadioButton)sender).DataContext;
+                location = (AddressbookInfo) ((RadioButton) sender).DataContext;
                 Button_Ok.IsEnabled = true;
             }
         }
@@ -89,12 +93,14 @@ namespace CalDavSynchronizer.OAuth.Swisscom
                 Close();
             }
         }
+
         private void Action_LocationSelectorWindow_Button_Cancel(object sender, RoutedEventArgs e)
         {
             //System.Diagnostics.Debug.WriteLine("Action_LocationSelectorWindow_Button_Cancel: " + sender.ToString());
             location = null;
             Close();
         }
+
         public AddressbookInfo GetSelectedLocationInfo()
         {
             return location;

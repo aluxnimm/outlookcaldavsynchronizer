@@ -21,29 +21,29 @@ using CalDavSynchronizer.DataAccess;
 
 namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 {
-  public struct ServerResources
-  {
-    public IReadOnlyList<CalendarData> Calendars { get; }
-    public IReadOnlyList<AddressBookData> AddressBooks { get; }
-    public IReadOnlyList<TaskListData> TaskLists { get; }
-
-    public ServerResources (
-        IReadOnlyList<CalendarData> calendars,
-        IReadOnlyList<AddressBookData> addressBooks,
-        IReadOnlyList<TaskListData> taskLists)
+    public struct ServerResources
     {
-      if (calendars == null)
-        throw new ArgumentNullException (nameof (calendars));
-      if (addressBooks == null)
-        throw new ArgumentNullException (nameof (addressBooks));
-      if (taskLists == null)
-        throw new ArgumentNullException (nameof (taskLists));
+        public IReadOnlyList<CalendarData> Calendars { get; }
+        public IReadOnlyList<AddressBookData> AddressBooks { get; }
+        public IReadOnlyList<TaskListData> TaskLists { get; }
 
-      Calendars = calendars;
-      AddressBooks = addressBooks;
-      TaskLists = taskLists;
+        public ServerResources(
+            IReadOnlyList<CalendarData> calendars,
+            IReadOnlyList<AddressBookData> addressBooks,
+            IReadOnlyList<TaskListData> taskLists)
+        {
+            if (calendars == null)
+                throw new ArgumentNullException(nameof(calendars));
+            if (addressBooks == null)
+                throw new ArgumentNullException(nameof(addressBooks));
+            if (taskLists == null)
+                throw new ArgumentNullException(nameof(taskLists));
+
+            Calendars = calendars;
+            AddressBooks = addressBooks;
+            TaskLists = taskLists;
+        }
+
+        public bool ContainsResources => Calendars.Count > 0 || AddressBooks.Count > 0 || TaskLists.Count > 0;
     }
-
-    public bool ContainsResources => Calendars.Count > 0 || AddressBooks.Count > 0 || TaskLists.Count > 0;
-  }
 }

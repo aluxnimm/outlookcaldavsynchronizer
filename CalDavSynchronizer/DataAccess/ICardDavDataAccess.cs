@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -24,15 +25,14 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public interface ICardDavDataAccess
-  {
-    Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetAllVersions ();
-    Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<WebResourceName> urls);
-    Task<IReadOnlyList<EntityWithId<WebResourceName, string>>> GetEntities (IEnumerable<WebResourceName> eventUrls);
-    Task<EntityVersion<WebResourceName, string>> CreateEntity (string iCalData, string name);
-    Task<bool> TryDeleteEntity (WebResourceName uri, string etag);
-    Task<EntityVersion<WebResourceName, string>> TryUpdateEntity (WebResourceName url, string etag, string iCalData);
-    Task<(string SyncToken, IReadOnlyList<(WebResourceName Id, string Version)> ChangedOrAddedItems, IReadOnlyList<WebResourceName> DeletedItems)> CollectionSync(string syncTokenOrNull, IGetVersionsLogger logger);
-
-  }
+    public interface ICardDavDataAccess
+    {
+        Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetAllVersions();
+        Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions(IEnumerable<WebResourceName> urls);
+        Task<IReadOnlyList<EntityWithId<WebResourceName, string>>> GetEntities(IEnumerable<WebResourceName> eventUrls);
+        Task<EntityVersion<WebResourceName, string>> CreateEntity(string iCalData, string name);
+        Task<bool> TryDeleteEntity(WebResourceName uri, string etag);
+        Task<EntityVersion<WebResourceName, string>> TryUpdateEntity(WebResourceName url, string etag, string iCalData);
+        Task<(string SyncToken, IReadOnlyList<(WebResourceName Id, string Version)> ChangedOrAddedItems, IReadOnlyList<WebResourceName> DeletedItems)> CollectionSync(string syncTokenOrNull, IGetVersionsLogger logger);
+    }
 }

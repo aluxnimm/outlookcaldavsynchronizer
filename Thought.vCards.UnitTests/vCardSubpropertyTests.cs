@@ -1,4 +1,3 @@
-
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Thought.vCards;
@@ -8,13 +7,11 @@ namespace Tests
     [TestClass]
     public sealed class vCardSubpropertyTests : IDisposable
     {
-
         #region [ Constructor_Name ]
 
         [TestMethod]
         public void Constructor_Name()
         {
-
             vCardSubproperty sub = new vCardSubproperty("NAME");
 
             Assert.AreEqual(
@@ -25,7 +22,6 @@ namespace Tests
             Assert.IsNull(
                 sub.Value,
                 "The value should be null.");
-
         }
 
         #endregion
@@ -35,7 +31,6 @@ namespace Tests
         [TestMethod]
         public void Constructor_Name_Value()
         {
-
             vCardSubproperty sub = new vCardSubproperty("NAME", "VALUE");
 
             Assert.AreEqual(
@@ -47,7 +42,6 @@ namespace Tests
                 "VALUE",
                 sub.Value,
                 "The Value property was not initialized.");
-
         }
 
         #endregion
@@ -57,7 +51,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_Name()
         {
-
             vCardSubproperty sub = new vCardSubproperty("NAME");
 
             sub.Name = "SUBNAME";
@@ -65,7 +58,6 @@ namespace Tests
                 "SUBNAME",
                 sub.Name,
                 "The Name property is not working.");
-
         }
 
         #endregion
@@ -75,7 +67,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_Value()
         {
-
             vCardSubproperty sub = new vCardSubproperty("NAME");
 
             sub.Value = "SUBVALUE";
@@ -83,12 +74,13 @@ namespace Tests
                 "SUBVALUE",
                 sub.Value,
                 "The Value property is not working.");
-
         }
 
         #endregion
 
-        public void Dispose() {// driver.Dispose(); 
+        public void Dispose()
+        {
+            // driver.Dispose(); 
         }
     }
 }

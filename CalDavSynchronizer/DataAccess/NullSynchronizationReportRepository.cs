@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,45 +22,45 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  internal class NullSynchronizationReportRepository : ISynchronizationReportRepository
-  {
-    public static readonly ISynchronizationReportRepository Instance = new NullSynchronizationReportRepository();
-
-    private NullSynchronizationReportRepository ()
+    internal class NullSynchronizationReportRepository : ISynchronizationReportRepository
     {
-    }
+        public static readonly ISynchronizationReportRepository Instance = new NullSynchronizationReportRepository();
 
-    public event EventHandler<ReportAddedEventArgs> ReportAdded;
+        private NullSynchronizationReportRepository()
+        {
+        }
 
-    protected virtual void OnReportAdded (ReportAddedEventArgs e)
-    {
-      var handler = ReportAdded;
-      if (handler != null)
-        handler (this, e);
-    }
+        public event EventHandler<ReportAddedEventArgs> ReportAdded;
 
-    public SynchronizationReportName AddReport (SynchronizationReport report)
-    {
-      throw new NotSupportedException();
-    }
+        protected virtual void OnReportAdded(ReportAddedEventArgs e)
+        {
+            var handler = ReportAdded;
+            if (handler != null)
+                handler(this, e);
+        }
 
-    public IReadOnlyList<SynchronizationReportName> GetAvailableReports ()
-    {
-      return new SynchronizationReportName[] { };
-    }
+        public SynchronizationReportName AddReport(SynchronizationReport report)
+        {
+            throw new NotSupportedException();
+        }
 
-    public SynchronizationReport GetReport (SynchronizationReportName name)
-    {
-      return null;
-    }
+        public IReadOnlyList<SynchronizationReportName> GetAvailableReports()
+        {
+            return new SynchronizationReportName[] { };
+        }
 
-    public void DeleteReport (SynchronizationReportName name)
-    {
-    }
+        public SynchronizationReport GetReport(SynchronizationReportName name)
+        {
+            return null;
+        }
 
-    public Stream GetReportStream (SynchronizationReportName name)
-    {
-      return new MemoryStream();
+        public void DeleteReport(SynchronizationReportName name)
+        {
+        }
+
+        public Stream GetReportStream(SynchronizationReportName name)
+        {
+            return new MemoryStream();
+        }
     }
-  }
 }

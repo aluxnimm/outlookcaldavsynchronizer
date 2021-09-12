@@ -14,21 +14,22 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer
 {
-  public struct OutlookCategory
-  {
-    public OutlookCategory(string name, OlCategoryColor color, OlCategoryShortcutKey shortcutKey)
+    public struct OutlookCategory
     {
-      Name = name;
-      Color = color;
-      ShortcutKey = shortcutKey;
-    }
+        public OutlookCategory(string name, OlCategoryColor color, OlCategoryShortcutKey shortcutKey)
+        {
+            Name = name;
+            Color = color;
+            ShortcutKey = shortcutKey;
+        }
 
-    public string Name { get; }
-    public OlCategoryColor Color { get; }
-    public OlCategoryShortcutKey ShortcutKey { get; }
-  }
+        public string Name { get; }
+        public OlCategoryColor Color { get; }
+        public OlCategoryShortcutKey ShortcutKey { get; }
+    }
 }

@@ -32,174 +32,172 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.UnitTest.Implementation.Contacts.VCardTypeSwitch
 {
-  [TestFixture]
-  public class VCardTypeDetectorFixture
-  {
-    private VCardTypeDetector _detector;
-    private IReadOnlyEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> _readOnlyEntityRepository;
-    private DummyDataAccess _dummyDataAccess;
-
-    [SetUp]
-    public void SetUp()
+    [TestFixture]
+    public class VCardTypeDetectorFixture
     {
-      _readOnlyEntityRepository = MockRepository.GenerateStrictMock<IReadOnlyEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger>>();
-      _dummyDataAccess = new DummyDataAccess();
-      _detector = new VCardTypeDetector(_readOnlyEntityRepository, new VCardTypeCache(_dummyDataAccess));
+        private VCardTypeDetector _detector;
+        private IReadOnlyEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> _readOnlyEntityRepository;
+        private DummyDataAccess _dummyDataAccess;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _readOnlyEntityRepository = MockRepository.GenerateStrictMock<IReadOnlyEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger>>();
+            _dummyDataAccess = new DummyDataAccess();
+            _detector = new VCardTypeDetector(_readOnlyEntityRepository, new VCardTypeCache(_dummyDataAccess));
+        }
+
+
+        [Test]
+        public async Task GetVCardTypesAndCleanupCache_AllIdsInCache_DoesntAccessRepository()
+        {
+            await GetVCardTypesAndCleanupCacheTest(
+                initialCacheEntries: new[]
+                {
+                    Tuple.Create("id1", VCardType.Contact),
+                    Tuple.Create("id2", VCardType.Group),
+                    Tuple.Create("id3", VCardType.Contact)
+                },
+                idsToQuery: new[] {"id2", "id3", "id1"},
+                expectedResult: new[]
+                {
+                    Tuple.Create("id1", VCardType.Contact),
+                    Tuple.Create("id2", VCardType.Group),
+                    Tuple.Create("id3", VCardType.Contact)
+                },
+                expectedFinalCacheEntries: new[]
+                {
+                    Tuple.Create("id1", VCardType.Contact),
+                    Tuple.Create("id2", VCardType.Group),
+                    Tuple.Create("id3", VCardType.Contact)
+                });
+        }
+
+        [Test]
+        public async Task GetVCardTypesAndCleanupCache_AllIdsInCache_DoesntAccessRepositoryAndRemovesUnusedEntries()
+        {
+            await GetVCardTypesAndCleanupCacheTest(
+                initialCacheEntries: new[]
+                {
+                    Tuple.Create("id1", VCardType.Contact),
+                    Tuple.Create("id2", VCardType.Group),
+                    Tuple.Create("id66", VCardType.Group),
+                    Tuple.Create("id77", VCardType.Contact),
+                    Tuple.Create("id3", VCardType.Contact)
+                },
+                idsToQuery: new[] {"id2", "id3", "id1"},
+                expectedResult: new[]
+                {
+                    Tuple.Create("id1", VCardType.Contact),
+                    Tuple.Create("id2", VCardType.Group),
+                    Tuple.Create("id3", VCardType.Contact)
+                },
+                expectedFinalCacheEntries: new[]
+                {
+                    Tuple.Create("id1", VCardType.Contact),
+                    Tuple.Create("id2", VCardType.Group),
+                    Tuple.Create("id3", VCardType.Contact)
+                });
+        }
+
+        [Test]
+        public async Task GetVCardTypesAndCleanupCache_AllIdsInCache_LoadsMissingFromRepositoryAndRemovesUnusedEntries()
+        {
+            _readOnlyEntityRepository
+                .Expect(r => r.Get(
+                    new[]
+                    {
+                        new WebResourceName("id5"),
+                        new WebResourceName("id4")
+                    },
+                    NullLoadEntityLogger.Instance,
+                    NullCardDavRepositoryLogger.Instance))
+                .Return(Task.FromResult<IEnumerable<EntityWithId<WebResourceName, vCard>>>(new[]
+                {
+                    EntityWithId.Create(new WebResourceName("id5"), new vCard {Kind = vCardKindType.Group}),
+                    EntityWithId.Create(new WebResourceName("id4"), new vCard {Kind = vCardKindType.Location})
+                }));
+
+            await GetVCardTypesAndCleanupCacheTest(
+                initialCacheEntries: new[]
+                {
+                    Tuple.Create("id1", VCardType.Contact),
+                    Tuple.Create("id2", VCardType.Group),
+                    Tuple.Create("id66", VCardType.Group),
+                    Tuple.Create("id77", VCardType.Contact),
+                    Tuple.Create("id3", VCardType.Contact)
+                },
+                idsToQuery: new[] {"id5", "id2", "id3", "id4", "id1"},
+                expectedResult: new[]
+                {
+                    Tuple.Create("id1", VCardType.Contact),
+                    Tuple.Create("id2", VCardType.Group),
+                    Tuple.Create("id3", VCardType.Contact),
+                    Tuple.Create("id4", VCardType.Contact),
+                    Tuple.Create("id5", VCardType.Group)
+                },
+                expectedFinalCacheEntries: new[]
+                {
+                    Tuple.Create("id1", VCardType.Contact),
+                    Tuple.Create("id2", VCardType.Group),
+                    Tuple.Create("id3", VCardType.Contact),
+                    Tuple.Create("id4", VCardType.Contact),
+                    Tuple.Create("id5", VCardType.Group)
+                });
+
+            _readOnlyEntityRepository.VerifyAllExpectations();
+        }
+
+
+        public async Task GetVCardTypesAndCleanupCacheTest(
+            IReadOnlyCollection<Tuple<string, VCardType>> initialCacheEntries,
+            IReadOnlyCollection<string> idsToQuery,
+            IReadOnlyCollection<Tuple<string, VCardType>> expectedResult,
+            IReadOnlyCollection<Tuple<string, VCardType>> expectedFinalCacheEntries
+        )
+        {
+            _dummyDataAccess.Entries = initialCacheEntries.Select(v => new VCardEntry {Id = new WebResourceName(v.Item1), Type = v.Item2}).ToArray();
+
+            var result = await _detector.GetVCardTypesAndCleanupCache(idsToQuery.Select(i => new Entity(i)));
+
+            Assert.That(result.Count(), Is.EqualTo(expectedResult.Count));
+            foreach (var expectation in expectedResult)
+            {
+                Assert.That(result.Single(r => r.Id.Id.ToString() == expectation.Item1).Type, Is.EqualTo(expectation.Item2));
+            }
+
+            Assert.That(_dummyDataAccess.Entries.Length, Is.EqualTo(expectedFinalCacheEntries.Count));
+            foreach (var expectation in expectedFinalCacheEntries)
+            {
+                Assert.That(_dummyDataAccess.Entries.Single(r => r.Id.Id.ToString() == expectation.Item1).Type, Is.EqualTo(expectation.Item2));
+            }
+        }
+
+
+        class Entity : IEntity<WebResourceName>
+        {
+            public Entity(string id)
+            {
+                if (id == null) throw new ArgumentNullException(nameof(id));
+                Id = new WebResourceName(id);
+            }
+
+            public WebResourceName Id { get; }
+        }
+
+        class DummyDataAccess : IVCardTypeCacheDataAccess
+        {
+            public VCardEntry[] Load()
+            {
+                return Entries;
+            }
+
+            public VCardEntry[] Entries { get; set; }
+
+            public void Save(VCardEntry[] value)
+            {
+                Entries = value;
+            }
+        }
     }
-
-
-    [Test]
-    public async Task GetVCardTypesAndCleanupCache_AllIdsInCache_DoesntAccessRepository()
-    {
-      await GetVCardTypesAndCleanupCacheTest(
-        initialCacheEntries: new[]
-        {
-          Tuple.Create("id1", VCardType.Contact),
-          Tuple.Create("id2", VCardType.Group),
-          Tuple.Create("id3", VCardType.Contact)
-        },
-        idsToQuery: new[] {"id2", "id3", "id1"},
-        expectedResult: new[]
-        {
-          Tuple.Create("id1", VCardType.Contact),
-          Tuple.Create("id2", VCardType.Group),
-          Tuple.Create("id3", VCardType.Contact)
-        },
-        expectedFinalCacheEntries: new[]
-        {
-          Tuple.Create("id1", VCardType.Contact),
-          Tuple.Create("id2", VCardType.Group),
-          Tuple.Create("id3", VCardType.Contact)
-        });
-    }
-
-    [Test]
-    public async Task GetVCardTypesAndCleanupCache_AllIdsInCache_DoesntAccessRepositoryAndRemovesUnusedEntries()
-    {
-      await GetVCardTypesAndCleanupCacheTest(
-        initialCacheEntries: new[]
-        {
-          Tuple.Create("id1", VCardType.Contact),
-          Tuple.Create("id2", VCardType.Group),
-          Tuple.Create("id66", VCardType.Group),
-          Tuple.Create("id77", VCardType.Contact),
-          Tuple.Create("id3", VCardType.Contact)
-        },
-        idsToQuery: new[] {"id2", "id3", "id1"},
-        expectedResult: new[]
-        {
-          Tuple.Create("id1", VCardType.Contact),
-          Tuple.Create("id2", VCardType.Group),
-          Tuple.Create("id3", VCardType.Contact)
-        },
-        expectedFinalCacheEntries: new[]
-        {
-          Tuple.Create("id1", VCardType.Contact),
-          Tuple.Create("id2", VCardType.Group),
-          Tuple.Create("id3", VCardType.Contact)
-        });
-    }
-
-    [Test]
-    public async Task GetVCardTypesAndCleanupCache_AllIdsInCache_LoadsMissingFromRepositoryAndRemovesUnusedEntries()
-    {
-
-      _readOnlyEntityRepository
-        .Expect(r => r.Get(
-          new[]
-          {
-            new WebResourceName("id5"),
-            new WebResourceName("id4")
-          },
-          NullLoadEntityLogger.Instance,
-          NullCardDavRepositoryLogger.Instance))
-        .Return(Task.FromResult<IEnumerable<EntityWithId<WebResourceName, vCard>>>(new[]
-        {
-          EntityWithId.Create(new WebResourceName("id5"), new vCard {Kind = vCardKindType.Group}),
-          EntityWithId.Create(new WebResourceName("id4"), new vCard {Kind = vCardKindType.Location})
-        }));
-
-      await GetVCardTypesAndCleanupCacheTest(
-        initialCacheEntries: new[]
-        {
-          Tuple.Create("id1", VCardType.Contact),
-          Tuple.Create("id2", VCardType.Group),
-          Tuple.Create("id66", VCardType.Group),
-          Tuple.Create("id77", VCardType.Contact),
-          Tuple.Create("id3", VCardType.Contact)
-        },
-        idsToQuery: new[] {"id5", "id2", "id3", "id4", "id1"},
-        expectedResult: new[]
-        {
-          Tuple.Create("id1", VCardType.Contact),
-          Tuple.Create("id2", VCardType.Group),
-          Tuple.Create("id3", VCardType.Contact),
-          Tuple.Create("id4", VCardType.Contact),
-          Tuple.Create("id5", VCardType.Group)
-        },
-        expectedFinalCacheEntries: new[]
-        {
-          Tuple.Create("id1", VCardType.Contact),
-          Tuple.Create("id2", VCardType.Group),
-          Tuple.Create("id3", VCardType.Contact),
-          Tuple.Create("id4", VCardType.Contact),
-          Tuple.Create("id5", VCardType.Group)
-        });
-
-      _readOnlyEntityRepository.VerifyAllExpectations();
-    }
-
-   
-    public async Task GetVCardTypesAndCleanupCacheTest (
-      IReadOnlyCollection<Tuple<string,VCardType>> initialCacheEntries,
-      IReadOnlyCollection<string> idsToQuery,
-      IReadOnlyCollection<Tuple<string,VCardType>> expectedResult,
-      IReadOnlyCollection<Tuple<string,VCardType>> expectedFinalCacheEntries
-      )
-    {
-      _dummyDataAccess.Entries = initialCacheEntries.Select(v => new VCardEntry {Id = new WebResourceName(v.Item1), Type = v.Item2}).ToArray();
-   
-      var result = await _detector.GetVCardTypesAndCleanupCache (idsToQuery.Select(i => new Entity (i)));
-      
-      Assert.That (result.Count() , Is.EqualTo (expectedResult.Count));
-      foreach (var expectation in expectedResult)
-      {
-        Assert.That (result.Single (r => r.Id.Id.ToString () == expectation.Item1).Type, Is.EqualTo (expectation.Item2));
-      }
-
-      Assert.That (_dummyDataAccess.Entries.Length, Is.EqualTo (expectedFinalCacheEntries.Count));
-      foreach (var expectation in expectedFinalCacheEntries)
-      {
-        Assert.That (_dummyDataAccess.Entries.Single (r => r.Id.Id.ToString () == expectation.Item1).Type, Is.EqualTo (expectation.Item2));
-      }
-    }
-
-
-    class Entity : IEntity<WebResourceName>
-    {
-      public Entity (string id)
-      {
-        if (id == null) throw new ArgumentNullException(nameof(id));
-        Id = new WebResourceName(id);
-      }
-
-      public WebResourceName Id { get; }
-    }
-
-    class DummyDataAccess : IVCardTypeCacheDataAccess
-    {
-      public VCardEntry[] Load()
-      {
-        return Entries;
-      }
-
-      public VCardEntry[] Entries { get; set; }
-
-      public void Save(VCardEntry[] value)
-      {
-        Entries = value;
-      }
-    }
-
-  }
 }

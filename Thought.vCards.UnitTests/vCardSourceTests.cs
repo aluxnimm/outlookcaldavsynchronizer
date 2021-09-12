@@ -1,4 +1,3 @@
-
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Thought.vCards;
@@ -6,17 +5,14 @@ using Assert = NUnit.Framework.Assert;
 
 namespace Tests
 {
-
     [TestClass]
     public sealed class vCardSourceTests : IDisposable
     {
-
         #region [ Constructor ]
 
         [TestMethod]
         public void Constructor()
         {
-
             // Tests the default values of the vCardSource
             // class when the parameterless constructor is used.
 
@@ -29,7 +25,6 @@ namespace Tests
             Assert.IsNull(
                 source.Uri,
                 "The Uri property should default to null.");
-
         }
 
         #endregion
@@ -39,7 +34,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_Context()
         {
-
             vCardSource source = new vCardSource();
 
             source.Context = "LDAP";
@@ -47,7 +41,6 @@ namespace Tests
                 "LDAP",
                 source.Context,
                 "The Context property is not working.");
-
         }
 
         #endregion
@@ -57,7 +50,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_Uri()
         {
-
             Uri testUri = new Uri("isdn:123456789");
             vCardSource source = new vCardSource();
 
@@ -65,13 +57,13 @@ namespace Tests
             Assert.AreEqual(
                 testUri,
                 source.Uri);
-
-            
         }
 
         #endregion
 
-        public void Dispose() {// driver.Dispose();
+        public void Dispose()
+        {
+            // driver.Dispose();
         }
     }
 }

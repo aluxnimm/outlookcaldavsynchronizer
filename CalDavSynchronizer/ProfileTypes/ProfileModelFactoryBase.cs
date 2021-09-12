@@ -26,102 +26,102 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.ProfileTypes
 {
-  public abstract class ProfileModelFactoryBase : IProfileModelFactory
-  {
-    protected readonly IOptionsViewModelParent OptionsViewModelParent;
-    protected readonly IOutlookAccountPasswordProvider OutlookAccountPasswordProvider;
-    protected readonly IReadOnlyList<string> AvailableCategories;
-    protected readonly IOptionTasks OptionTasks;
-    protected readonly GeneralOptions GeneralOptions;
-    protected readonly IViewOptions ViewOptions;
-    protected readonly OptionModelSessionData SessionData;
-
-    protected ProfileModelFactoryBase(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+    public abstract class ProfileModelFactoryBase : IProfileModelFactory
     {
-      if (profileType == null) throw new ArgumentNullException(nameof(profileType));
-      if (optionsViewModelParent == null) throw new ArgumentNullException(nameof(optionsViewModelParent));
-      if (outlookAccountPasswordProvider == null) throw new ArgumentNullException(nameof(outlookAccountPasswordProvider));
-      if (availableCategories == null) throw new ArgumentNullException(nameof(availableCategories));
-      if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
-      if (generalOptions == null) throw new ArgumentNullException(nameof(generalOptions));
-      if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
-      if (sessionData == null) throw new ArgumentNullException(nameof(sessionData));
+        protected readonly IOptionsViewModelParent OptionsViewModelParent;
+        protected readonly IOutlookAccountPasswordProvider OutlookAccountPasswordProvider;
+        protected readonly IReadOnlyList<string> AvailableCategories;
+        protected readonly IOptionTasks OptionTasks;
+        protected readonly GeneralOptions GeneralOptions;
+        protected readonly IViewOptions ViewOptions;
+        protected readonly OptionModelSessionData SessionData;
 
-      ProfileType = profileType;
-      OptionsViewModelParent = optionsViewModelParent;
-      OutlookAccountPasswordProvider = outlookAccountPasswordProvider;
-      AvailableCategories = availableCategories;
-      OptionTasks = optionTasks;
-      GeneralOptions = generalOptions;
-      ViewOptions = viewOptions;
-      SessionData = sessionData;
-      ServerSettingsDetector = new Lazy<IServerSettingsDetector>(CreateServerSettingsDetector);
+        protected ProfileModelFactoryBase(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+        {
+            if (profileType == null) throw new ArgumentNullException(nameof(profileType));
+            if (optionsViewModelParent == null) throw new ArgumentNullException(nameof(optionsViewModelParent));
+            if (outlookAccountPasswordProvider == null) throw new ArgumentNullException(nameof(outlookAccountPasswordProvider));
+            if (availableCategories == null) throw new ArgumentNullException(nameof(availableCategories));
+            if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
+            if (generalOptions == null) throw new ArgumentNullException(nameof(generalOptions));
+            if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
+            if (sessionData == null) throw new ArgumentNullException(nameof(sessionData));
+
+            ProfileType = profileType;
+            OptionsViewModelParent = optionsViewModelParent;
+            OutlookAccountPasswordProvider = outlookAccountPasswordProvider;
+            AvailableCategories = availableCategories;
+            OptionTasks = optionTasks;
+            GeneralOptions = generalOptions;
+            ViewOptions = viewOptions;
+            SessionData = sessionData;
+            ServerSettingsDetector = new Lazy<IServerSettingsDetector>(CreateServerSettingsDetector);
+        }
+
+        public IProfileType ProfileType { get; }
+
+        protected Lazy<IServerSettingsDetector> ServerSettingsDetector { get; }
+        protected virtual IServerSettingsDetector CreateServerSettingsDetector() => new ServerSettingsDetector(OutlookAccountPasswordProvider);
+
+        public OptionsModel CreateModelFromData(Contracts.Options data)
+        {
+            return CreateModel(data);
+        }
+
+        protected virtual OptionsModel CreateModel(Contracts.Options data)
+        {
+            return new OptionsModel(OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, false, SessionData, ServerSettingsDetector.Value);
+        }
+
+        protected virtual OptionsModel CreatePrototypeModel(Contracts.Options data)
+        {
+            return new OptionsModel(OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, false, SessionData, ServerSettingsDetector.Value);
+        }
+
+        public virtual IOptionsViewModel CreateViewModel(OptionsModel model)
+        {
+            var optionsViewModel = new GenericOptionsViewModel(
+                OptionsViewModelParent,
+                CreateServerSettingsViewModel(model),
+                OptionTasks,
+                model,
+                AvailableCategories,
+                ViewOptions);
+
+            return optionsViewModel;
+        }
+
+        protected virtual ServerSettingsViewModel CreateServerSettingsViewModel(OptionsModel model)
+        {
+            return new ServerSettingsViewModel(model, OptionTasks, ViewOptions);
+        }
+
+        public IOptionsViewModel CreateTemplateViewModel()
+        {
+            var data = ProfileType.CreateOptions();
+            data.Name = ProfileType.Name;
+            var prototypeModel = CreateModel(data);
+            var optionsViewModel = CreateTemplateViewModel(prototypeModel);
+
+            return optionsViewModel;
+        }
+
+        public virtual ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true, true, Strings.Get($"DAV URL"), true, true, true);
+
+        protected virtual IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
+        {
+            var optionsViewModel = new MultipleOptionsTemplateViewModel(
+                OptionsViewModelParent,
+                CreateServerSettingsTemplateViewModel(prototypeModel),
+                OptionTasks,
+                prototypeModel,
+                ViewOptions);
+            return optionsViewModel;
+        }
+
+        protected virtual IServerSettingsTemplateViewModel CreateServerSettingsTemplateViewModel(OptionsModel prototypeModel)
+        {
+            return new ServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel, ModelOptions);
+        }
     }
-
-    public IProfileType ProfileType { get; }
-
-    protected Lazy<IServerSettingsDetector> ServerSettingsDetector { get; }
-    protected virtual IServerSettingsDetector CreateServerSettingsDetector() => new ServerSettingsDetector(OutlookAccountPasswordProvider);
-
-    public OptionsModel CreateModelFromData(Contracts.Options data)
-    {
-      return CreateModel(data);
-    }
-
-    protected virtual OptionsModel CreateModel(Contracts.Options data)
-    {
-      return new OptionsModel(OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, false, SessionData, ServerSettingsDetector.Value);
-    }
-    
-    protected virtual OptionsModel CreatePrototypeModel(Contracts.Options data)
-    {
-      return new OptionsModel(OptionTasks, OutlookAccountPasswordProvider, data, GeneralOptions, this, false, SessionData, ServerSettingsDetector.Value);
-    }
-
-    public virtual IOptionsViewModel CreateViewModel(OptionsModel model)
-    {
-      var optionsViewModel = new GenericOptionsViewModel(
-        OptionsViewModelParent,
-        CreateServerSettingsViewModel(model),
-        OptionTasks,
-        model,
-        AvailableCategories,
-        ViewOptions);
-
-      return optionsViewModel;
-    }
-
-    protected virtual ServerSettingsViewModel CreateServerSettingsViewModel(OptionsModel model)
-    {
-      return new ServerSettingsViewModel(model, OptionTasks, ViewOptions);
-    }
-
-    public IOptionsViewModel CreateTemplateViewModel()
-    {
-      var data = ProfileType.CreateOptions();
-      data.Name = ProfileType.Name;
-      var prototypeModel = CreateModel(data);
-      var optionsViewModel = CreateTemplateViewModel(prototypeModel);
-
-      return optionsViewModel;
-    }
-
-    public virtual ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true, true, Strings.Get($"DAV URL"), true, true, true);
-
-    protected virtual IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
-    {
-      var optionsViewModel = new MultipleOptionsTemplateViewModel(
-        OptionsViewModelParent,
-        CreateServerSettingsTemplateViewModel(prototypeModel),
-        OptionTasks,
-        prototypeModel,
-        ViewOptions);
-      return optionsViewModel;
-    }
-
-    protected virtual IServerSettingsTemplateViewModel CreateServerSettingsTemplateViewModel(OptionsModel prototypeModel)
-    {
-      return new ServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel, ModelOptions);
-    }
-  }
 }

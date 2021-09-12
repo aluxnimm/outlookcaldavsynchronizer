@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Ui.Options.Models;
@@ -21,28 +22,27 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer
 {
-  public class OneTimeTaskRunner : IOneTimeTaskRunner
-  {
-  
-    private readonly IOutlookSession _session;
-
-    public OneTimeTaskRunner(IOutlookSession session)
+    public class OneTimeTaskRunner : IOneTimeTaskRunner
     {
-      _session = session ?? throw new ArgumentNullException(nameof(session));
-    }
+        private readonly IOutlookSession _session;
 
-    public void RunOneTimeTasks(IEnumerable<OneTimeChangeCategoryTask> oneTimeTasks)
-    {
-      foreach (var task in oneTimeTasks)
-      {
-        if (task.EventCategoryColor != null || task.CategoryShortcutKey != null)
-          _session.AddOrUpdateCategoryNoThrow(
-            task.CategoryName, 
-            task.EventCategoryColor ?? OlCategoryColor.olCategoryColorNone,
-            task.EventCategoryColor.HasValue,
-            task.CategoryShortcutKey ?? OlCategoryShortcutKey.olCategoryShortcutKeyNone,
-            task.CategoryShortcutKey.HasValue);
-      }
+        public OneTimeTaskRunner(IOutlookSession session)
+        {
+            _session = session ?? throw new ArgumentNullException(nameof(session));
+        }
+
+        public void RunOneTimeTasks(IEnumerable<OneTimeChangeCategoryTask> oneTimeTasks)
+        {
+            foreach (var task in oneTimeTasks)
+            {
+                if (task.EventCategoryColor != null || task.CategoryShortcutKey != null)
+                    _session.AddOrUpdateCategoryNoThrow(
+                        task.CategoryName,
+                        task.EventCategoryColor ?? OlCategoryColor.olCategoryColorNone,
+                        task.EventCategoryColor.HasValue,
+                        task.CategoryShortcutKey ?? OlCategoryShortcutKey.olCategoryShortcutKeyNone,
+                        task.CategoryShortcutKey.HasValue);
+            }
+        }
     }
-  }
 }

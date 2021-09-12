@@ -17,8 +17,8 @@
 
 namespace GenSync.Logging
 {
-  public interface ISynchronizationReportSink
-  {
-    void PostReport(SynchronizationReport report);
-  }
+    public interface ISynchronizationReportSink
+    {
+        void PostReport(SynchronizationReport report);
+    }
 }

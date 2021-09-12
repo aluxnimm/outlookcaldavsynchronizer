@@ -27,61 +27,60 @@ using Google.GData.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  public class GoogleContactCache : IGoogleContactCache
-  {
-
-    private readonly Dictionary<string, Contact> _contactsById;
-    private readonly IGoogleApiOperationExecutor _apiOperationExecutor;
-    private readonly string _userName;
-    private readonly int _readChunkSize;
-
-    public GoogleContactCache ( IGoogleApiOperationExecutor apiOperationExecutor, IEqualityComparer<string> contactIdComparer, string userName, int readChunkSize)
+    public class GoogleContactCache : IGoogleContactCache
     {
-      if (apiOperationExecutor == null)
-        throw new ArgumentNullException (nameof (apiOperationExecutor));
-      if (contactIdComparer == null)
-        throw new ArgumentNullException (nameof (contactIdComparer));
-      if (String.IsNullOrEmpty (userName))
-        throw new ArgumentException ("Argument is null or empty", nameof (userName));
+        private readonly Dictionary<string, Contact> _contactsById;
+        private readonly IGoogleApiOperationExecutor _apiOperationExecutor;
+        private readonly string _userName;
+        private readonly int _readChunkSize;
 
-      _apiOperationExecutor = apiOperationExecutor;
-      _userName = userName;
-      _readChunkSize = readChunkSize;
-      _contactsById = new Dictionary<string, Contact> (contactIdComparer);
-    }
-
-    public void Fill(string defaultGroupIdOrNull)
-    {
-      var query = new ContactsQuery(ContactsQuery.CreateContactsUri(_userName, ContactsQuery.fullProjection));
-      query.StartIndex = 0;
-      query.NumberToRetrieve = _readChunkSize;
-
-      if (defaultGroupIdOrNull != null)
-        query.Group = defaultGroupIdOrNull;
-
-      for (
-        var contactsFeed = _apiOperationExecutor.Execute(f => f.Get<Contact>(query));
-        contactsFeed != null;
-        contactsFeed = _apiOperationExecutor.Execute(f => f.Get(contactsFeed, FeedRequestType.Next)))
-      {
-        foreach (Contact contact in contactsFeed.Entries)
+        public GoogleContactCache(IGoogleApiOperationExecutor apiOperationExecutor, IEqualityComparer<string> contactIdComparer, string userName, int readChunkSize)
         {
-          _contactsById[contact.Id] = contact;
+            if (apiOperationExecutor == null)
+                throw new ArgumentNullException(nameof(apiOperationExecutor));
+            if (contactIdComparer == null)
+                throw new ArgumentNullException(nameof(contactIdComparer));
+            if (String.IsNullOrEmpty(userName))
+                throw new ArgumentException("Argument is null or empty", nameof(userName));
+
+            _apiOperationExecutor = apiOperationExecutor;
+            _userName = userName;
+            _readChunkSize = readChunkSize;
+            _contactsById = new Dictionary<string, Contact>(contactIdComparer);
         }
-      }
-    }
 
-    public bool TryGetValue(string key, out Contact value)
-    {
-      return _contactsById.TryGetValue(key, out value);
-    }
+        public void Fill(string defaultGroupIdOrNull)
+        {
+            var query = new ContactsQuery(ContactsQuery.CreateContactsUri(_userName, ContactsQuery.fullProjection));
+            query.StartIndex = 0;
+            query.NumberToRetrieve = _readChunkSize;
 
-    public Task<IEnumerable<EntityVersion<string, GoogleContactVersion>>> GetAllVersions ()
-    {
-      var contacts = _contactsById.Values
-          .Select (c => EntityVersion.Create (c.Id, new GoogleContactVersion { ContactEtag = c.ETag }))
-          .ToArray ();
-      return Task.FromResult<IEnumerable<EntityVersion<string, GoogleContactVersion>>> (contacts);
+            if (defaultGroupIdOrNull != null)
+                query.Group = defaultGroupIdOrNull;
+
+            for (
+                var contactsFeed = _apiOperationExecutor.Execute(f => f.Get<Contact>(query));
+                contactsFeed != null;
+                contactsFeed = _apiOperationExecutor.Execute(f => f.Get(contactsFeed, FeedRequestType.Next)))
+            {
+                foreach (Contact contact in contactsFeed.Entries)
+                {
+                    _contactsById[contact.Id] = contact;
+                }
+            }
+        }
+
+        public bool TryGetValue(string key, out Contact value)
+        {
+            return _contactsById.TryGetValue(key, out value);
+        }
+
+        public Task<IEnumerable<EntityVersion<string, GoogleContactVersion>>> GetAllVersions()
+        {
+            var contacts = _contactsById.Values
+                .Select(c => EntityVersion.Create(c.Id, new GoogleContactVersion {ContactEtag = c.ETag}))
+                .ToArray();
+            return Task.FromResult<IEnumerable<EntityVersion<string, GoogleContactVersion>>>(contacts);
+        }
     }
-  }
 }

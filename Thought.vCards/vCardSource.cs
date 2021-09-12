@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -9,7 +8,6 @@ using System;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     A source of directory information for a vCard.
     /// </summary>
@@ -26,7 +24,6 @@ namespace Thought.vCards
     /// <seealso cref="vCardSourceCollection"/>
     public class vCardSource
     {
-
         private string context;
         private Uri uri;
 
@@ -79,14 +76,8 @@ namespace Thought.vCards
         /// </remarks>
         public string Context
         {
-            get
-            {
-                return this.context ?? string.Empty;
-            }
-            set
-            {
-                this.context = value;
-            }
+            get { return this.context ?? string.Empty; }
+            set { this.context = value; }
         }
 
 
@@ -95,16 +86,8 @@ namespace Thought.vCards
         /// </summary>
         public Uri Uri
         {
-            get
-            {
-                return this.uri;
-            }
-            set
-            {
-                this.uri = value;
-            }
+            get { return this.uri; }
+            set { this.uri = value; }
         }
-
     }
-
 }

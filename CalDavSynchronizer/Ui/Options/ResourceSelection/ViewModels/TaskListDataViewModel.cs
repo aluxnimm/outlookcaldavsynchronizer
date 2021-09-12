@@ -21,19 +21,19 @@ using CalDavSynchronizer.Ui.ConnectionTests;
 
 namespace CalDavSynchronizer.Ui.Options.ResourceSelection.ViewModels
 {
-  public class TaskListDataViewModel : ResourceDataViewModelBase
-  {
-    public TaskListData Model { get; }
-
-    public TaskListDataViewModel (TaskListData model)
+    public class TaskListDataViewModel : ResourceDataViewModelBase
     {
-      if (model == null)
-        throw new ArgumentNullException (nameof (model));
-      Model = model;
-    }
+        public TaskListData Model { get; }
 
-    public string Id => Model.Id;
-    public override string Name => Model.Name;
-    public string Privileges => AccessPrivilegesConverter.ToString(Model.Privileges);
-  }
+        public TaskListDataViewModel(TaskListData model)
+        {
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
+            Model = model;
+        }
+
+        public string Id => Model.Id;
+        public override string Name => Model.Name;
+        public string Privileges => AccessPrivilegesConverter.ToString(Model.Privileges);
+    }
 }

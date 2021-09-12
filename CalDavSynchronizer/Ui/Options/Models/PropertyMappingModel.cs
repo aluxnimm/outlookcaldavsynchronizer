@@ -19,36 +19,36 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.Ui.Options.Models
 {
-  public class PropertyMappingModel : ModelBase
-  {
-    private string _outlookProperty;
-    private string _davProperty;
-
-    public PropertyMappingModel()
+    public class PropertyMappingModel : ModelBase
     {
-    }
+        private string _outlookProperty;
+        private string _davProperty;
 
-    public PropertyMappingModel(PropertyMapping data)
-    {
-      _outlookProperty = data.OutlookProperty;
-      _davProperty = data.DavProperty;
-    }
+        public PropertyMappingModel()
+        {
+        }
 
-    public string OutlookProperty
-    {
-      get { return _outlookProperty; }
-      set { CheckedPropertyChange(ref _outlookProperty, value); }
-    }
+        public PropertyMappingModel(PropertyMapping data)
+        {
+            _outlookProperty = data.OutlookProperty;
+            _davProperty = data.DavProperty;
+        }
 
-    public string DavProperty
-    {
-      get { return _davProperty; }
-      set { CheckedPropertyChange(ref _davProperty, value); }
-    }
+        public string OutlookProperty
+        {
+            get { return _outlookProperty; }
+            set { CheckedPropertyChange(ref _outlookProperty, value); }
+        }
 
-    public PropertyMapping GetData()
-    {
-      return new PropertyMapping {DavProperty = DavProperty, OutlookProperty = OutlookProperty};
+        public string DavProperty
+        {
+            get { return _davProperty; }
+            set { CheckedPropertyChange(ref _davProperty, value); }
+        }
+
+        public PropertyMapping GetData()
+        {
+            return new PropertyMapping {DavProperty = DavProperty, OutlookProperty = OutlookProperty};
+        }
     }
-  }
 }

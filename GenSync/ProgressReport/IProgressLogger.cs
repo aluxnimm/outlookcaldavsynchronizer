@@ -14,16 +14,17 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync.ProgressReport
 {
-  /// <summary>
-  /// A single progress step
-  /// </summary>
-  public interface IProgressLogger : IDisposable
-  {
-    void Increase ();
-    void IncreaseBy (int value);
-  }
+    /// <summary>
+    /// A single progress step
+    /// </summary>
+    public interface IProgressLogger : IDisposable
+    {
+        void Increase();
+        void IncreaseBy(int value);
+    }
 }

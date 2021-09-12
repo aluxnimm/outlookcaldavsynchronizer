@@ -29,90 +29,89 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer
 {
-  class LoadErrorComponentContainer : IComponentContainer
-  {
-    private readonly string _loadExceptionAsString;
-
-    public LoadErrorComponentContainer(string loadExceptionAsString)
+    class LoadErrorComponentContainer : IComponentContainer
     {
-      _loadExceptionAsString = loadExceptionAsString;
-    }
+        private readonly string _loadExceptionAsString;
 
-    public Task ShowOptionsAsync(Guid? initialVisibleProfile = null)
-    {
-      ShowErrorMessage();
-      return Task.FromResult(0);
-    }
+        public LoadErrorComponentContainer(string loadExceptionAsString)
+        {
+            _loadExceptionAsString = loadExceptionAsString;
+        }
 
-    public Task ShowGeneralOptionsAsync()
-    {
-      ShowErrorMessage ();
-      return Task.FromResult (0);
-    }
+        public Task ShowOptionsAsync(Guid? initialVisibleProfile = null)
+        {
+            ShowErrorMessage();
+            return Task.FromResult(0);
+        }
 
-    public void ShowAbout()
-    {
-      ShowErrorMessage ();
-    }
+        public Task ShowGeneralOptionsAsync()
+        {
+            ShowErrorMessage();
+            return Task.FromResult(0);
+        }
 
-    public void ShowLatestSynchronizationReport(Guid profileId)
-    {
-      ShowErrorMessage ();
-    }
+        public void ShowAbout()
+        {
+            ShowErrorMessage();
+        }
 
-    public void ShowProfileStatuses()
-    {
-      ShowErrorMessage ();
-    }
+        public void ShowLatestSynchronizationReport(Guid profileId)
+        {
+            ShowErrorMessage();
+        }
 
-    public void SynchronizeNowAsync()
-    {
-      ShowErrorMessage ();
-    }
+        public void ShowProfileStatuses()
+        {
+            ShowErrorMessage();
+        }
 
-    public void ShowReports()
-    {
-      ShowErrorMessage ();
-    }
+        public void SynchronizeNowAsync()
+        {
+            ShowErrorMessage();
+        }
 
-    public void Dispose()
-    {
-      
-    }
+        public void ShowReports()
+        {
+            ShowErrorMessage();
+        }
 
-    public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
-    public event EventHandler<SchedulerStatusEventArgs> StatusChanged;
-    public Task InitializeSchedulerAndStartAsync()
-    {
-      return Task.FromResult(0);
-    }
+        public void Dispose()
+        {
+        }
 
-    public void SaveToolBarSettings(ToolbarSettings settings)
-    {
-      
-    }
+        public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
+        public event EventHandler<SchedulerStatusEventArgs> StatusChanged;
 
-    public ToolbarSettings LoadToolBarSettings()
-    {
-      return ToolbarSettings.CreateDefault();
-    }
+        public Task InitializeSchedulerAndStartAsync()
+        {
+            return Task.FromResult(0);
+        }
 
-    void ShowErrorMessage()
-    {
-      if (MessageBox.Show(Strings.Get($"CalDav Synchronizer failed to load due to the following exception: {Environment.NewLine}{_loadExceptionAsString}{Environment.NewLine}{Environment.NewLine}Do you want to open the log file ?"), ComponentContainer.MessageBoxTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
-      {
-        GeneralOptionsViewModel.ShowLogFileWithouWarning();
-      }
-    }
+        public void SaveToolBarSettings(ToolbarSettings settings)
+        {
+        }
 
-    void OnSynchronizationFailedWhileReportsFormWasNotVisible()
-    {
-      SynchronizationFailedWhileReportsFormWasNotVisible?.Invoke(this, EventArgs.Empty);
-    }
+        public ToolbarSettings LoadToolBarSettings()
+        {
+            return ToolbarSettings.CreateDefault();
+        }
 
-    void OnStatusChanged(SchedulerStatusEventArgs e)
-    {
-      StatusChanged?.Invoke(this, e);
+        void ShowErrorMessage()
+        {
+            if (MessageBox.Show(Strings.Get($"CalDav Synchronizer failed to load due to the following exception: {Environment.NewLine}{_loadExceptionAsString}{Environment.NewLine}{Environment.NewLine}Do you want to open the log file ?"), ComponentContainer.MessageBoxTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
+            {
+                GeneralOptionsViewModel.ShowLogFileWithouWarning();
+            }
+        }
+
+        void OnSynchronizationFailedWhileReportsFormWasNotVisible()
+        {
+            SynchronizationFailedWhileReportsFormWasNotVisible?.Invoke(this, EventArgs.Empty);
+        }
+
+        void OnStatusChanged(SchedulerStatusEventArgs e)
+        {
+            StatusChanged?.Invoke(this, e);
+        }
     }
-  }
 }

@@ -29,17 +29,12 @@ namespace Tests.Samples
         ///</summary>
         public TestContext TestContext
         {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
+            get { return testContextInstance; }
+            set { testContextInstance = value; }
         }
 
         #region Additional test attributes
+
         //
         // You can use the following additional attributes as you write your tests:
         //
@@ -59,16 +54,15 @@ namespace Tests.Samples
         // [TestCleanup()]
         // public void MyTestCleanup() { }
         //
+
         #endregion
 
         [TestMethod]
         public void SamplevCardReadAndWriteTestWithEmailTypeFormat()
         {
-
             vCard card = new vCard();
 
-            card.EmailAddresses.Add(new vCardEmailAddress() { Address = "john@email.com", EmailType = vCardEmailAddressType.Internet, IsPreferred = true, ItemType = ItemType.WORK });
-
+            card.EmailAddresses.Add(new vCardEmailAddress() {Address = "john@email.com", EmailType = vCardEmailAddressType.Internet, IsPreferred = true, ItemType = ItemType.WORK});
 
 
             card.UniqueId = Guid.NewGuid().ToString("N");
@@ -79,7 +73,6 @@ namespace Tests.Samples
 
             using (StringWriter sw = new StringWriter())
             {
-
                 writer.Write(card, sw);
 
                 sw.Flush();
@@ -95,7 +88,6 @@ namespace Tests.Samples
 
             using (StringReader sr = new StringReader(text))
             {
-
                 vCard cardFromReader = reader.Read(sr);
 
                 Assert.AreEqual(1, cardFromReader.EmailAddresses.Count);
@@ -106,7 +98,6 @@ namespace Tests.Samples
                 Assert.AreEqual(vCardEmailAddressType.Internet, email.EmailType);
                 Assert.AreEqual("john@email.com", email.Address);
             }
-
         }
 
         [TestMethod]
@@ -147,7 +138,7 @@ namespace Tests.Samples
 
             vCard card = new vCard();
 
-            card.EmailAddresses.Add(new vCardEmailAddress() { Address = "john@email.com", EmailType = vCardEmailAddressType.Internet, IsPreferred = true, ItemType = ItemType.WORK });
+            card.EmailAddresses.Add(new vCardEmailAddress() {Address = "john@email.com", EmailType = vCardEmailAddressType.Internet, IsPreferred = true, ItemType = ItemType.WORK});
             card.Photos.Add(new vCardPhoto(base64Photo, true));
             card.UniqueId = Guid.NewGuid().ToString("N");
 
@@ -157,7 +148,6 @@ namespace Tests.Samples
 
             using (StringWriter sw = new StringWriter())
             {
-
                 writer.Write(card, sw);
 
                 sw.Flush();
@@ -167,17 +157,11 @@ namespace Tests.Samples
 
 
             Assert.IsNotNull(text);
-
-
-
-
-
         }
 
         [TestMethod]
         public void SamlevCardReadAndWriteTestWithContentFromWikipedia()
         {
-
             string text = @"BEGIN:VCARD
 VERSION:3.0
 N:Gump;Forrest
@@ -200,7 +184,6 @@ END:VCARD";
 
             using (StringReader sr = new StringReader(text))
             {
-
                 vCard cardFromReader = reader.Read(sr);
 
                 Assert.AreEqual(1, cardFromReader.EmailAddresses.Count);
@@ -245,21 +228,17 @@ END:VCARD";
                     standardWriter.Write(cardFromReader, sw);
 
                     sw.Flush();
-                    var tempStrign =sw.ToString();
+                    var tempStrign = sw.ToString();
 
                     Assert.IsNotNull(tempStrign);
                 }
-
             }
-            
 
 
             //need to add social Profile types as property to the vCard object and reader/writer
             //need to try and add a bunch of properties in my ipad NAB and email me a .vcf file
             //then generate via my parser and try and import the VCF into my ipad
             //look at creating nuGet package for deploying the bin / dll
-
-
         }
 
         [TestMethod]
@@ -301,7 +280,6 @@ END:VCARD";
             vCardStandardReader reader = new vCardStandardReader();
             using (StringReader sr = new StringReader(text))
             {
-
                 vCard c = reader.Read(sr);
 
                 Assert.AreEqual(5, c.EmailAddresses.Count);
@@ -313,14 +291,11 @@ END:VCARD";
                 CheckEmail(c.EmailAddresses, "y@y.com", ItemType.HOME, vCardEmailAddressType.Internet, false);
 
 
-
-
                 Assert.AreEqual("Sales Guy", c.Title);
                 Assert.AreEqual("Ibm", c.Organization);
                 Assert.AreEqual("Nic", c.GivenName);
                 Assert.AreEqual("iOS", c.FamilyName);
 
-    
 
                 Assert.AreEqual(8, c.Phones.Count);
 
@@ -369,11 +344,10 @@ END:VCARD";
 
 
                 //temp quickly
-              vCardStandardWriter writer = new vCardStandardWriter();
+                vCardStandardWriter writer = new vCardStandardWriter();
 
                 using (StringWriter sw = new StringWriter())
                 {
-
                     writer.Write(c, sw);
 
                     sw.Flush();
@@ -383,12 +357,7 @@ END:VCARD";
 
 
                 Assert.IsNotNull(text);
-              
-
             }
-
-
-
         }
 
         [TestMethod]
@@ -413,7 +382,6 @@ END:VCARD";
 
             using (StringReader sr = new StringReader(vCardRequest))
             {
-
                 var card = cardReader.Read(sr);
 
 
@@ -421,7 +389,7 @@ END:VCARD";
 
                 Assert.IsNotNull(im);
 
-                Assert.AreEqual(IMServiceType.GoogleTalk, im.ServiceType , "service type not set to google talk");
+                Assert.AreEqual(IMServiceType.GoogleTalk, im.ServiceType, "service type not set to google talk");
                 Assert.AreEqual("aqibtalib@gtalk.com", im.Handle);
 
                 var yahooIM = card.IMs.FirstOrDefault(m => m.ServiceType == IMServiceType.Yahoo);
@@ -434,10 +402,7 @@ END:VCARD";
                 Assert.IsNotNull(jabberIM);
                 Assert.AreEqual(IMServiceType.Jabber, jabberIM.ServiceType, "serviceType not set for jabber");
                 Assert.AreEqual("talib_jabber", jabberIM.Handle);
-
             }
-
-
         }
 
         private void CheckSocialProfile(vCardSocialProfileCollection sps, string username, string url, SocialProfileServiceType serviceType)
@@ -455,12 +420,10 @@ END:VCARD";
             Assert.AreEqual(url, sp.ProfileUrl);
             Assert.AreEqual(username, sp.Username);
             Assert.AreEqual(serviceType, sp.ServiceType);
-
         }
 
         private void CheckIM(vCardIMPPCollection ims, string handle, IMServiceType serviceType, ItemType itemType, bool isPreferred)
         {
-
             if (ims == null || ims.Count == 0)
             {
                 Assert.Fail("ims null or empty");
@@ -469,10 +432,8 @@ END:VCARD";
             var im = ims.FirstOrDefault(x => x.Handle == handle && x.ServiceType == serviceType);
 
             Assert.IsNotNull(im, "im not matched for handle " + handle + " and servicetype " + serviceType.ToString());
-            Assert.AreEqual(itemType,im.ItemType);
+            Assert.AreEqual(itemType, im.ItemType);
             Assert.AreEqual(isPreferred, im.IsPreferred);
-
-
         }
 
         private void CheckAddress(vCardDeliveryAddressCollection addresses, string street, string city, string state, string zip, string country, vCardDeliveryAddressTypes addressTypes, bool isPreferred)
@@ -493,23 +454,18 @@ END:VCARD";
             Assert.AreEqual(country, a.Country);
 
 
-
-            foreach(var adr in a.AddressType.Where(x => x != vCardDeliveryAddressTypes.Preferred))
+            foreach (var adr in a.AddressType.Where(x => x != vCardDeliveryAddressTypes.Preferred))
             {
-                
                 Assert.IsTrue(adr.HasFlag(addressTypes), "address types are not equal");
             }
-            
-          //  Assert.AreEqual(addressTypes, a.AddressType.);
-            Assert.AreEqual(isPreferred, a.IsPreferred);
-           Assert.AreEqual(a.IsPreferred, a.AddressType.Any(x => x.HasFlag(vCardDeliveryAddressTypes.Preferred)));
-        
 
+            //  Assert.AreEqual(addressTypes, a.AddressType.);
+            Assert.AreEqual(isPreferred, a.IsPreferred);
+            Assert.AreEqual(a.IsPreferred, a.AddressType.Any(x => x.HasFlag(vCardDeliveryAddressTypes.Preferred)));
         }
 
         private void CheckPhone(vCardPhoneCollection phones, string value, vCardPhoneTypes types, bool isPreferred)
         {
-
             if (phones == null || phones.Count == 0)
             {
                 Assert.Fail("phones null or empty");
@@ -528,14 +484,10 @@ END:VCARD";
 
 
             //  types.HasFlag(
-
-
-
         }
 
         private void CheckEmail(vCardEmailAddressCollection emails, string value, ItemType itemType, vCardEmailAddressType type, bool isPreferred)
         {
-
             if (emails == null || emails.Count == 0)
             {
                 Assert.Fail("emails collection is empty or null");
@@ -552,11 +504,6 @@ END:VCARD";
             Assert.AreEqual(itemType, email.ItemType);
             Assert.AreEqual(isPreferred, email.IsPreferred);
             Assert.AreEqual(type, email.EmailType);
-
-
-
         }
-
-
     }
 }

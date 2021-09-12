@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Reflection;
 using System.Windows.Input;
@@ -22,52 +23,53 @@ using log4net;
 
 namespace CalDavSynchronizer.Ui
 {
-  public class DelegateCommand : ICommand
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-
-    private readonly Predicate<object> _canExecute;
-    private readonly Action<object> _execute;
-
-    public event EventHandler CanExecuteChanged;
-
-    public DelegateCommand (Action<object> execute)
-        : this (execute, null)
+    public class DelegateCommand : ICommand
     {
-    }
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public DelegateCommand (Action<object> execute,
-        Predicate<object> canExecute)
-    {
-      _execute = execute;
-      _canExecute = canExecute;
-    }
+        private readonly Predicate<object> _canExecute;
+        private readonly Action<object> _execute;
 
-    public bool CanExecute (object parameter)
-    {
-      if (_canExecute == null)
-      {
-        return true;
-      }
+        public event EventHandler CanExecuteChanged;
 
-      return _canExecute (parameter);
-    }
+        public DelegateCommand(Action<object> execute)
+            : this(execute, null)
+        {
+        }
 
-    public void Execute (object parameter)
-    {
-      try
-      {
-        _execute (parameter);
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.DisplayException (x, s_logger);
-      }
+        public DelegateCommand(
+            Action<object> execute,
+            Predicate<object> canExecute)
+        {
+            _execute = execute;
+            _canExecute = canExecute;
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            if (_canExecute == null)
+            {
+                return true;
+            }
+
+            return _canExecute(parameter);
+        }
+
+        public void Execute(object parameter)
+        {
+            try
+            {
+                _execute(parameter);
+            }
+            catch (Exception x)
+            {
+                ExceptionHandler.Instance.DisplayException(x, s_logger);
+            }
+        }
+
+        public void RaiseCanExecuteChanged()
+        {
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
-    
-    public void RaiseCanExecuteChanged ()
-    {
-      CanExecuteChanged?.Invoke (this, EventArgs.Empty);
-    }
-  }
 }

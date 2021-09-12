@@ -14,16 +14,17 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using CalDavSynchronizer.Implementation.ComWrappers;
 using GenSync.InitialEntityMatching;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  class ContactMatchDataFactory : IMatchDataFactory<IContactItemWrapper, ContactMatchData>
-  {
-    public ContactMatchData CreateMatchData(IContactItemWrapper entity)
+    class ContactMatchDataFactory : IMatchDataFactory<IContactItemWrapper, ContactMatchData>
     {
-      return new ContactMatchData(entity);
+        public ContactMatchData CreateMatchData(IContactItemWrapper entity)
+        {
+            return new ContactMatchData(entity);
+        }
     }
-  }
 }

@@ -14,52 +14,48 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Threading.Tasks;
 
 namespace CalDavSynchronizer
 {
-  public class NullCalDavSynchronizerCommands : ICalDavSynchronizerCommands
-  {
-    public static readonly ICalDavSynchronizerCommands Instance = new NullCalDavSynchronizerCommands();
-
-    private NullCalDavSynchronizerCommands ()
+    public class NullCalDavSynchronizerCommands : ICalDavSynchronizerCommands
     {
-    }
+        public static readonly ICalDavSynchronizerCommands Instance = new NullCalDavSynchronizerCommands();
 
-    public Task ShowOptionsAsync (Guid? initialVisibleProfile = null)
-    {
-      return Task.FromResult(0);
-    }
+        private NullCalDavSynchronizerCommands()
+        {
+        }
 
-    public Task ShowGeneralOptionsAsync ()
-    {
-      return Task.FromResult (0);
-    }
+        public Task ShowOptionsAsync(Guid? initialVisibleProfile = null)
+        {
+            return Task.FromResult(0);
+        }
 
-    public void ShowAbout ()
-    {
-     
-    }
+        public Task ShowGeneralOptionsAsync()
+        {
+            return Task.FromResult(0);
+        }
 
-    public void ShowLatestSynchronizationReport (Guid profileId)
-    {
-      
-    }
+        public void ShowAbout()
+        {
+        }
 
-    public void ShowProfileStatuses ()
-    {
-      
-    }
+        public void ShowLatestSynchronizationReport(Guid profileId)
+        {
+        }
 
-    public void SynchronizeNowAsync ()
-    {
+        public void ShowProfileStatuses()
+        {
+        }
 
-    }
+        public void SynchronizeNowAsync()
+        {
+        }
 
-    public void ShowReports ()
-    {
-     
+        public void ShowReports()
+        {
+        }
     }
-  }
 }

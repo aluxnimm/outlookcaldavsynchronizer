@@ -19,8 +19,8 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public interface IColorCategoryMapperFactory
-  {
-    IColorCategoryMapper Create();
-  }
+    public interface IColorCategoryMapperFactory
+    {
+        IColorCategoryMapper Create();
+    }
 }

@@ -14,15 +14,16 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync.Logging
 {
-  /// <remarks>
-  /// Has to be implemented thread safe
-  /// </remarks>
-  public interface ILoadEntityLogger
-  {
-    void LogSkipLoadBecauseOfError (object entityId, Exception exception);
-  }
+    /// <remarks>
+    /// Has to be implemented thread safe
+    /// </remarks>
+    public interface ILoadEntityLogger
+    {
+        void LogSkipLoadBecauseOfError(object entityId, Exception exception);
+    }
 }

@@ -17,8 +17,8 @@
 
 namespace GenSync
 {
-  public interface IEntity<out TEntityId>
-  {
-    TEntityId Id { get; }
-  }
+    public interface IEntity<out TEntityId>
+    {
+        TEntityId Id { get; }
+    }
 }

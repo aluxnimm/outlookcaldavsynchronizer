@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
@@ -25,22 +26,22 @@ using GenSync.Synchronization.States;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  internal class EventConflictInitialSyncStateCreationStrategyAutomatic
-      : ConflictInitialSyncStateCreationStrategyAutomatic<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext>
-  {
-    public EventConflictInitialSyncStateCreationStrategyAutomatic (EntitySyncStateEnvironment<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> environment)
-        : base (environment)
+    internal class EventConflictInitialSyncStateCreationStrategyAutomatic
+        : ConflictInitialSyncStateCreationStrategyAutomatic<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext>
     {
-    }
+        public EventConflictInitialSyncStateCreationStrategyAutomatic(EntitySyncStateEnvironment<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> environment)
+            : base(environment)
+        {
+        }
 
-    protected override IEntitySyncState<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> Create_FromNewerToOlder (IEntityRelationData<AppointmentId, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
-    {
-      return new OutlookCaldavEventUpdateFromNewerToOlder (
-          _environment,
-          knownData,
-          newA,
-          newB
-          );
+        protected override IEntitySyncState<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> Create_FromNewerToOlder(IEntityRelationData<AppointmentId, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
+        {
+            return new OutlookCaldavEventUpdateFromNewerToOlder(
+                _environment,
+                knownData,
+                newA,
+                newB
+            );
+        }
     }
-  }
 }

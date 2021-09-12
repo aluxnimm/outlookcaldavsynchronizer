@@ -14,26 +14,27 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync.Logging
 {
-  class SynchronizationLoggerBoundEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> : IEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity,TBtypeEntityId, TBtypeEntity>
-  {
-    private readonly IFullEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> _entitySynchronizationLoggerFactory;
-    private readonly ISynchronizationLogger _synchronizationLogger;
-
-    public SynchronizationLoggerBoundEntitySynchronizationLoggerFactory(ISynchronizationLogger synchronizationLogger, IFullEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> entitySynchronizationLoggerFactory)
+    class SynchronizationLoggerBoundEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> : IEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>
     {
-      _entitySynchronizationLoggerFactory = entitySynchronizationLoggerFactory ?? throw new ArgumentNullException(nameof(entitySynchronizationLoggerFactory));
-      _synchronizationLogger = synchronizationLogger ?? throw new ArgumentNullException(nameof(synchronizationLogger));
-    }
+        private readonly IFullEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> _entitySynchronizationLoggerFactory;
+        private readonly ISynchronizationLogger _synchronizationLogger;
 
-    public IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> CreateEntitySynchronizationLogger(SynchronizationOperation operation)
-    {
-      var logger = _entitySynchronizationLoggerFactory.CreateEntitySynchronizationLogger(operation);
-      _synchronizationLogger.AddEntitySynchronizationLog(logger);
-      return logger;
+        public SynchronizationLoggerBoundEntitySynchronizationLoggerFactory(ISynchronizationLogger synchronizationLogger, IFullEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> entitySynchronizationLoggerFactory)
+        {
+            _entitySynchronizationLoggerFactory = entitySynchronizationLoggerFactory ?? throw new ArgumentNullException(nameof(entitySynchronizationLoggerFactory));
+            _synchronizationLogger = synchronizationLogger ?? throw new ArgumentNullException(nameof(synchronizationLogger));
+        }
+
+        public IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> CreateEntitySynchronizationLogger(SynchronizationOperation operation)
+        {
+            var logger = _entitySynchronizationLoggerFactory.CreateEntitySynchronizationLogger(operation);
+            _synchronizationLogger.AddEntitySynchronizationLog(logger);
+            return logger;
+        }
     }
-  }
 }

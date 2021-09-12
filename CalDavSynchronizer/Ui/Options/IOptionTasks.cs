@@ -22,18 +22,18 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options
 {
-  public interface IOptionTasks
-  {
-    string GetFolderAccountNameOrNull (string folderStoreId);
-    OutlookFolderDescriptor GetFolderFromId (string entryId, object storeId);
-    OutlookFolderDescriptor PickFolderOrNull();
-    IProfileExportProcessor ProfileExportProcessor { get; }
-    void SaveOptions(Contracts.Options[] options, string fileName);
-    Contracts.Options[] LoadOptions (string fileName);
-    Task<string> TestGoogleConnection(OptionsModel options, string url);
-    Task<string> TestWebDavConnection(OptionsModel options);
-    void ValidateBulkProfile (OptionsModel options, AccessPrivileges privileges, CalendarOwnerProperties ownerPropertiesOrNull);
+    public interface IOptionTasks
+    {
+        string GetFolderAccountNameOrNull(string folderStoreId);
+        OutlookFolderDescriptor GetFolderFromId(string entryId, object storeId);
+        OutlookFolderDescriptor PickFolderOrNull();
+        IProfileExportProcessor ProfileExportProcessor { get; }
+        void SaveOptions(Contracts.Options[] options, string fileName);
+        Contracts.Options[] LoadOptions(string fileName);
+        Task<string> TestGoogleConnection(OptionsModel options, string url);
+        Task<string> TestWebDavConnection(OptionsModel options);
+        void ValidateBulkProfile(OptionsModel options, AccessPrivileges privileges, CalendarOwnerProperties ownerPropertiesOrNull);
 
-    OutlookFolderDescriptor GetDefaultCalendarFolderOrNull();
-  }
+        OutlookFolderDescriptor GetDefaultCalendarFolderOrNull();
+    }
 }

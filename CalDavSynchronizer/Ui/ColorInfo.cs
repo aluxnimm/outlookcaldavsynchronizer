@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,18 +25,18 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui
 {
-  // Data for each color in the list
-  public class ColorInfo
-  {
-    public string Text { get; set; }
-    public Color Color { get; set; }
-    public OlCategoryColor Key { get; set; }
-
-    public ColorInfo (string text, Color color, OlCategoryColor key)
+    // Data for each color in the list
+    public class ColorInfo
     {
-      Text = text;
-      Color = color;
-      Key = key;
+        public string Text { get; set; }
+        public Color Color { get; set; }
+        public OlCategoryColor Key { get; set; }
+
+        public ColorInfo(string text, Color color, OlCategoryColor key)
+        {
+            Text = text;
+            Color = color;
+            Key = key;
+        }
     }
-  }
 }

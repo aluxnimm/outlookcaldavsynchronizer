@@ -24,85 +24,85 @@ using log4net;
 
 namespace CalDavSynchronizer.ProfileTypes
 {
-  public class ProfileTypeRegistry : IProfileTypeRegistry
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-    public static readonly IProfileTypeRegistry Instance = Create();
-
-    private readonly GenericProfile _genericProfile;
-    private readonly GoogleProfile _googleProfile;
-    private readonly IReadOnlyDictionary<string,IProfileType> _profileTypeByName = new Dictionary<string, IProfileType>();
-
-    private ProfileTypeRegistry(IReadOnlyList<IProfileType> allTypes, GenericProfile genericProfile, GoogleProfile googleProfile)
+    public class ProfileTypeRegistry : IProfileTypeRegistry
     {
-      _genericProfile = genericProfile;
-      _googleProfile = googleProfile;
-      AllTypes = allTypes;
-      _profileTypeByName = allTypes.ToDictionary(GetProfileTypeName);
-    }
+        private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-    private static IProfileTypeRegistry Create()
-    {
-      var generic = new GenericProfile();
-      var google = new GoogleProfile();
-      var all = new List<IProfileType> { generic, google };
-      all.Add(new CalendariCloudProfile());
-      all.Add(new ContactsiCloudProfile());
-      all.Add(new FruuxProfile());
-      all.Add(new PosteoProfile());
-      all.Add(new YandexProfile());
-      all.Add(new GmxCalendarProfile());
-      all.Add(new SarenetProfile());
-      all.Add(new LandmarksProfile());
-      all.Add(new SogoProfile());
-      all.Add(new CozyProfile());
-      all.Add(new NextcloudProfile());
-      all.Add(new MailboxOrgProfile());
-      all.Add(new OpenXchangeProfile());
-      all.Add(new EasyProjectProfile());
-      all.Add(new WebDeProfile());
-      all.Add(new SmarterMailProfile());
-      all.Add(new MailDeProfile());
-      all.Add(new KolabProfile());
-      all.Add(new SwisscomProfile());
-      all.Add(new EGroupwareProfile());
-      all.Add(new FastMailProfile());
+        public static readonly IProfileTypeRegistry Instance = Create();
 
-      return new ProfileTypeRegistry(all, generic, google);
-    }
+        private readonly GenericProfile _genericProfile;
+        private readonly GoogleProfile _googleProfile;
+        private readonly IReadOnlyDictionary<string, IProfileType> _profileTypeByName = new Dictionary<string, IProfileType>();
 
-    public IReadOnlyList<IProfileType> AllTypes { get; }
-
-    public IProfileType DetermineType(Contracts.Options data)
-    {
-      if (data.ProfileTypeOrNull != null)
-      {
-        if (_profileTypeByName.TryGetValue(data.ProfileTypeOrNull, out var profileType))
+        private ProfileTypeRegistry(IReadOnlyList<IProfileType> allTypes, GenericProfile genericProfile, GoogleProfile googleProfile)
         {
-          return profileType;
+            _genericProfile = genericProfile;
+            _googleProfile = googleProfile;
+            AllTypes = allTypes;
+            _profileTypeByName = allTypes.ToDictionary(GetProfileTypeName);
         }
-        else
+
+        private static IProfileTypeRegistry Create()
         {
-          s_logger.Warn($"Profile '{data.Name}' ('{data.Id}'): Unknown profile type name '{data.ProfileTypeOrNull}'");
+            var generic = new GenericProfile();
+            var google = new GoogleProfile();
+            var all = new List<IProfileType> {generic, google};
+            all.Add(new CalendariCloudProfile());
+            all.Add(new ContactsiCloudProfile());
+            all.Add(new FruuxProfile());
+            all.Add(new PosteoProfile());
+            all.Add(new YandexProfile());
+            all.Add(new GmxCalendarProfile());
+            all.Add(new SarenetProfile());
+            all.Add(new LandmarksProfile());
+            all.Add(new SogoProfile());
+            all.Add(new CozyProfile());
+            all.Add(new NextcloudProfile());
+            all.Add(new MailboxOrgProfile());
+            all.Add(new OpenXchangeProfile());
+            all.Add(new EasyProjectProfile());
+            all.Add(new WebDeProfile());
+            all.Add(new SmarterMailProfile());
+            all.Add(new MailDeProfile());
+            all.Add(new KolabProfile());
+            all.Add(new SwisscomProfile());
+            all.Add(new EGroupwareProfile());
+            all.Add(new FastMailProfile());
+
+            return new ProfileTypeRegistry(all, generic, google);
         }
-      }
 
-      if (_googleProfile.IsGoogleProfile(data))
-        return _googleProfile;
-      else
-        return _genericProfile;
+        public IReadOnlyList<IProfileType> AllTypes { get; }
+
+        public IProfileType DetermineType(Contracts.Options data)
+        {
+            if (data.ProfileTypeOrNull != null)
+            {
+                if (_profileTypeByName.TryGetValue(data.ProfileTypeOrNull, out var profileType))
+                {
+                    return profileType;
+                }
+                else
+                {
+                    s_logger.Warn($"Profile '{data.Name}' ('{data.Id}'): Unknown profile type name '{data.ProfileTypeOrNull}'");
+                }
+            }
+
+            if (_googleProfile.IsGoogleProfile(data))
+                return _googleProfile;
+            else
+                return _genericProfile;
+        }
+
+
+        public static string GetProfileTypeName(IProfileType type)
+        {
+            var typeNameWithSuffix = type.GetType().Name;
+            const string profileSuffix = "Profile";
+            if (!typeNameWithSuffix.EndsWith(profileSuffix) || typeNameWithSuffix.Length == profileSuffix.Length)
+                throw new ArgumentException($"Type name has to have at least one character with the suffix '{profileSuffix}'", nameof(type));
+            var typeName = typeNameWithSuffix.Substring(0, typeNameWithSuffix.Length - profileSuffix.Length);
+            return typeName;
+        }
     }
-
-
-    public static string GetProfileTypeName(IProfileType type)
-    {
-      var typeNameWithSuffix = type.GetType().Name;
-      const string profileSuffix = "Profile";
-      if (!typeNameWithSuffix.EndsWith(profileSuffix) || typeNameWithSuffix.Length == profileSuffix.Length)
-        throw new ArgumentException($"Type name has to have at least one character with the suffix '{profileSuffix}'", nameof(type));
-      var typeName = typeNameWithSuffix.Substring(0, typeNameWithSuffix.Length - profileSuffix.Length);
-      return typeName;
-    }
-  }
 }

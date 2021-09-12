@@ -21,19 +21,19 @@ using CalDavSynchronizer.Ui.ConnectionTests;
 
 namespace CalDavSynchronizer.Ui.Options.ResourceSelection.ViewModels
 {
-  public class AddressBookDataViewModel : ResourceDataViewModelBase
-  {
-    public AddressBookData Model { get; }
-
-    public AddressBookDataViewModel (AddressBookData model)
+    public class AddressBookDataViewModel : ResourceDataViewModelBase
     {
-      if (model == null)
-        throw new ArgumentNullException (nameof (model));
-      Model = model;
-    }
+        public AddressBookData Model { get; }
 
-    public Uri Uri => Model.Uri;
-    public override string Name => Model.Name;
-    public string Privileges => AccessPrivilegesConverter.ToString(Model.Privileges);
-  }
+        public AddressBookDataViewModel(AddressBookData model)
+        {
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
+            Model = model;
+        }
+
+        public Uri Uri => Model.Uri;
+        public override string Name => Model.Name;
+        public string Privileges => AccessPrivilegesConverter.ToString(Model.Privileges);
+    }
 }

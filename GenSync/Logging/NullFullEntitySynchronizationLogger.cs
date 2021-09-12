@@ -14,74 +14,68 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync.Logging
 {
-  public class NullFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> : IFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>
-  {
-    public static readonly IFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> Instance = new NullFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>();
-
-    private NullFullEntitySynchronizationLogger()
+    public class NullFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> : IFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>
     {
-    }
+        public static readonly IFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> Instance = new NullFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>();
 
-    public void SetAId (TAtypeEntityId aid)
-    {
-    }
+        private NullFullEntitySynchronizationLogger()
+        {
+        }
 
-    public void SetBId (TBtypeEntityId bid)
-    {
-    }
+        public void SetAId(TAtypeEntityId aid)
+        {
+        }
 
-    public void LogAbortedDueToError (Exception exception)
-    {
-    }
+        public void SetBId(TBtypeEntityId bid)
+        {
+        }
 
-    public void LogAbortedDueToError (string errorMessage)
-    {
-      
-    }
+        public void LogAbortedDueToError(Exception exception)
+        {
+        }
 
-    public void LogError (string message)
-    {
-      
-    }
+        public void LogAbortedDueToError(string errorMessage)
+        {
+        }
 
-    public void LogError (string message, Exception exception)
-    {
-    }
+        public void LogError(string message)
+        {
+        }
 
-    public void LogWarning (string warning)
-    {
-      
-    }
+        public void LogError(string message, Exception exception)
+        {
+        }
 
-    public void LogWarning (string warning, Exception exception)
-    {
-      
-    }
+        public void LogWarning(string warning)
+        {
+        }
 
-    public void Dispose ()
-    {
-      
-    }
+        public void LogWarning(string warning, Exception exception)
+        {
+        }
 
-    public void LogA(TAtypeEntity entity)
-    {
-      
-    }
+        public void Dispose()
+        {
+        }
 
-    public void LogB(TBtypeEntity entity)
-    {
-     
-    }
+        public void LogA(TAtypeEntity entity)
+        {
+        }
 
-    public bool HasErrorsOrWarnings => false;
+        public void LogB(TBtypeEntity entity)
+        {
+        }
 
-    public EntitySynchronizationReport GetReport()
-    {
-      return new EntitySynchronizationReport();
+        public bool HasErrorsOrWarnings => false;
+
+        public EntitySynchronizationReport GetReport()
+        {
+            return new EntitySynchronizationReport();
+        }
     }
-  }
 }

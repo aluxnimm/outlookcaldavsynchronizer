@@ -14,17 +14,18 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync.ProgressReport
 {
-  public class NullTotalProgressFactory : ITotalProgressFactory
-  {
-    public static readonly ITotalProgressFactory Instance = new NullTotalProgressFactory();
-
-    public ITotalProgressLogger Create ()
+    public class NullTotalProgressFactory : ITotalProgressFactory
     {
-      return NullTotalProgressLogger.Instance;
+        public static readonly ITotalProgressFactory Instance = new NullTotalProgressFactory();
+
+        public ITotalProgressLogger Create()
+        {
+            return NullTotalProgressLogger.Instance;
+        }
     }
-  }
 }

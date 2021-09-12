@@ -7,18 +7,18 @@ using Google.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  public class GoogleContactWrapper
-  {
-    public GoogleContactWrapper (Contact contact)
+    public class GoogleContactWrapper
     {
-      if (contact == null)
-        throw new ArgumentNullException (nameof (contact));
+        public GoogleContactWrapper(Contact contact)
+        {
+            if (contact == null)
+                throw new ArgumentNullException(nameof(contact));
 
-      Contact = contact;
+            Contact = contact;
+        }
+
+        public byte[] PhotoOrNull { get; set; }
+        public Contact Contact { get; }
+        public List<string> Groups { get; } = new List<string>();
     }
-
-    public byte[] PhotoOrNull { get; set; }
-    public Contact Contact { get; }
-    public List<string> Groups { get; } = new List<string>();
-  }
 }

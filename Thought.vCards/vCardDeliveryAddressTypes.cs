@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -9,13 +8,11 @@ using System;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     The type of a delivery address.
     /// </summary>
     public enum vCardDeliveryAddressTypes
     {
-
         /// <summary>
         ///     Default address settings.
         /// </summary>
@@ -50,11 +47,10 @@ namespace Thought.vCards
         ///     A work delivery address.
         /// </summary>
         Work,
-        
+
         /// <summary>
         /// you can mark an address as Preferred type="pref" 
         /// </summary>
         Preferred
     }
-
 }

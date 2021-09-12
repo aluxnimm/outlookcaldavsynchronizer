@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -11,14 +10,12 @@ using System.Collections.Specialized;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///    IM info  <see cref="vCard"/>.
     /// </summary>
     [Serializable]
     public class vCardIMPP
     {
-
         private string handle;
         private ItemType itemType;
         private IMServiceType serviceType;
@@ -46,22 +43,13 @@ namespace Thought.vCards
         }
 
 
-
-
-
         /// <summary>
         ///     The full IM handle.
         /// </summary>
         public string Handle
         {
-            get
-            {
-                return this.handle ?? string.Empty;
-            }
-            set
-            {
-                this.handle = value;
-            }
+            get { return this.handle ?? string.Empty; }
+            set { this.handle = value; }
         }
 
         /// <summary>
@@ -79,14 +67,8 @@ namespace Thought.vCards
         /// </summary>
         public ItemType ItemType
         {
-            get
-            {
-                return this.itemType;
-            }
-            set
-            {
-                this.itemType = value;
-            }
+            get { return this.itemType; }
+            set { this.itemType = value; }
         }
 
         /// <summary>
@@ -104,22 +86,27 @@ namespace Thought.vCards
         /// unspecified
         /// </summary>
         Unspecified = 0,
+
         /// <summary>
         /// for Skype
         /// </summary>
         Skype,
+
         /// <summary>
         /// aim
         /// </summary>
         AIM,
+
         /// <summary>
         /// gtalk
         /// </summary>
         GoogleTalk,
+
         /// <summary>
         /// msn
         /// </summary>
         MSN,
+
         /// <summary>
         /// yahoo
         /// </summary>
@@ -129,37 +116,41 @@ namespace Thought.vCards
         /// facebook
         /// </summary>
         Facebook,
+
         /// <summary>
         /// jabber
         /// </summary>
         Jabber,
+
         /// <summary>
         /// icq
         /// </summary>
         ICQ,
+
         /// <summary>
         /// qq
         /// </summary>
         QQ,
+
         /// <summary>
         /// gadu gadu
         /// </summary>
         GaduGadu,
+
         /// <summary>
         /// sip
         /// </summary>
         SIP
-  }
+    }
 
     /// <summary>
     /// simple class to generate the strings for given IMServiceType
     /// </summary>
     public static class IMTypeUtils
     {
-
         private static Dictionary<IMServiceType, string> lookup;
 
-          static IMTypeUtils()
+        static IMTypeUtils()
         {
             lookup = new Dictionary<IMServiceType, string>();
             lookup.Add(IMServiceType.AIM, "AIM:aim");
@@ -173,8 +164,7 @@ namespace Thought.vCards
             lookup.Add(IMServiceType.Yahoo, "Yahoo:ymsgr");
             lookup.Add(IMServiceType.GaduGadu, "GaduGadu:x-apple");
             lookup.Add(IMServiceType.SIP, "SIP:sip");
-
-    }
+        }
 
         /// <summary>
         /// will return the property meta info to be written for a given IM serviceType
@@ -184,14 +174,12 @@ namespace Thought.vCards
         /// <returns>for example GoogleTalk:xmpp, or for yahoo Yahoo:ymsgr</returns>
         public static string GetIMTypePropertyFull(IMServiceType serviceType)
         {
-
             if (lookup.ContainsKey(serviceType))
             {
                 return lookup[serviceType];
             }
 
             return null;
-
         }
 
         /// <summary>
@@ -207,7 +195,6 @@ namespace Thought.vCards
                 string full = lookup[serviceType];
 
                 suffix = full.Substring(full.IndexOf(":") + 1);
-
             }
 
             return suffix;
@@ -225,13 +212,10 @@ namespace Thought.vCards
             {
                 string full = lookup[serviceType];
 
-                  prefix = full.Substring(0, full.IndexOf(":"));
-           
+                prefix = full.Substring(0, full.IndexOf(":"));
             }
 
             return prefix;
-            
-
         }
 
 
@@ -243,7 +227,6 @@ namespace Thought.vCards
         /// <returns></returns>
         public static string StripHandlePrefix(IMServiceType serviceType, string handle)
         {
-
             string property = GetIMTypePropertyFull(serviceType);
 
 
@@ -255,12 +238,9 @@ namespace Thought.vCards
                 {
                     handle = handle.Substring(handle.IndexOf(prefix + ":") + prefixLength);
                 }
-
             }
 
             return handle;
-
-
         }
 
         /// <summary>
@@ -317,10 +297,6 @@ namespace Thought.vCards
 
 
             return serviceType;
-
         }
-
-
     }
-
 }

@@ -22,38 +22,38 @@ using GenSync.Logging;
 
 namespace GenSync.EntityRepositories.Decorators
 {
-  class ReadOnlyEntityRepositoryRunInBackgroundDecorator<TEntityId, TEntityVersion, TEntity, TContext> : IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
-  {
-    private readonly IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> _decorated;
-
-    public ReadOnlyEntityRepositoryRunInBackgroundDecorator(IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> decorated)
+    class ReadOnlyEntityRepositoryRunInBackgroundDecorator<TEntityId, TEntityVersion, TEntity, TContext> : IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
     {
-      _decorated = decorated ?? throw new ArgumentNullException(nameof(decorated));
-    }
+        private readonly IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> _decorated;
 
-    public async Task<IEnumerable<EntityVersion<TEntityId, TEntityVersion>>> GetVersions(IEnumerable<IdWithAwarenessLevel<TEntityId>> idsOfEntitiesToQuery, TContext context, IGetVersionsLogger logger)
-    {
-      return await Task.Run(() => _decorated.GetVersions(idsOfEntitiesToQuery, context, logger));
-    }
+        public ReadOnlyEntityRepositoryRunInBackgroundDecorator(IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> decorated)
+        {
+            _decorated = decorated ?? throw new ArgumentNullException(nameof(decorated));
+        }
 
-    public async Task VerifyUnknownEntities(Dictionary<TEntityId, TEntityVersion> unknownEntites, TContext context)
-    {
-      await Task.Run(() => _decorated.VerifyUnknownEntities(unknownEntites, context));
-    }
+        public async Task<IEnumerable<EntityVersion<TEntityId, TEntityVersion>>> GetVersions(IEnumerable<IdWithAwarenessLevel<TEntityId>> idsOfEntitiesToQuery, TContext context, IGetVersionsLogger logger)
+        {
+            return await Task.Run(() => _decorated.GetVersions(idsOfEntitiesToQuery, context, logger));
+        }
 
-    public async Task<IEnumerable<EntityWithId<TEntityId, TEntity>>> Get(ICollection<TEntityId> ids, ILoadEntityLogger logger, TContext context)
-    {
-      return await Task.Run(() => _decorated.Get(ids, logger, context));
-    }
+        public async Task VerifyUnknownEntities(Dictionary<TEntityId, TEntityVersion> unknownEntites, TContext context)
+        {
+            await Task.Run(() => _decorated.VerifyUnknownEntities(unknownEntites, context));
+        }
 
-    public void Cleanup(TEntity entity)
-    {
-      _decorated.Cleanup(entity);
-    }
+        public async Task<IEnumerable<EntityWithId<TEntityId, TEntity>>> Get(ICollection<TEntityId> ids, ILoadEntityLogger logger, TContext context)
+        {
+            return await Task.Run(() => _decorated.Get(ids, logger, context));
+        }
 
-    public void Cleanup(IEnumerable<TEntity> entities)
-    {
-      _decorated.Cleanup(entities);
+        public void Cleanup(TEntity entity)
+        {
+            _decorated.Cleanup(entity);
+        }
+
+        public void Cleanup(IEnumerable<TEntity> entities)
+        {
+            _decorated.Cleanup(entities);
+        }
     }
-  }
 }

@@ -14,14 +14,15 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using CalDavSynchronizer.DataAccess;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class EmailAddressCacheDataAccess : FileDataAccess<CacheItem[]>, IUidCacheDataAccess
-  {
-    public EmailAddressCacheDataAccess(string filePath) : base(filePath, () => new CacheItem[0])
+    public class EmailAddressCacheDataAccess : FileDataAccess<CacheItem[]>, IUidCacheDataAccess
     {
+        public EmailAddressCacheDataAccess(string filePath) : base(filePath, () => new CacheItem[0])
+        {
+        }
     }
-  }
 }

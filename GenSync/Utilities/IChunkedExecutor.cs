@@ -21,16 +21,16 @@ using System.Threading.Tasks;
 
 namespace GenSync.Utilities
 {
-  public interface IChunkedExecutor
-  {
-    Task<TExecutionContext> ExecuteAsync<TItem, TExecutionContext>(
-      TExecutionContext executionContext,
-      IEnumerable<TItem> items,
-      Func<List<TItem>, TExecutionContext, Task> processChunk);
+    public interface IChunkedExecutor
+    {
+        Task<TExecutionContext> ExecuteAsync<TItem, TExecutionContext>(
+            TExecutionContext executionContext,
+            IEnumerable<TItem> items,
+            Func<List<TItem>, TExecutionContext, Task> processChunk);
 
-    TExecutionContext Execute<TItem, TExecutionContext>(
-      TExecutionContext executionContext,
-      IEnumerable<TItem> items,
-      Action<List<TItem>, TExecutionContext> processChunk);
-  }
+        TExecutionContext Execute<TItem, TExecutionContext>(
+            TExecutionContext executionContext,
+            IEnumerable<TItem> items,
+            Action<List<TItem>, TExecutionContext> processChunk);
+    }
 }

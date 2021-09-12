@@ -14,14 +14,15 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace CalDavSynchronizer.Ui.ConnectionTests
 {
-  [Flags]
-  public enum AddressBookProperties
-  {
-    None = 0,
-    AddressBookAccessSupported = 1
-  }
+    [Flags]
+    public enum AddressBookProperties
+    {
+        None = 0,
+        AddressBookAccessSupported = 1
+    }
 }

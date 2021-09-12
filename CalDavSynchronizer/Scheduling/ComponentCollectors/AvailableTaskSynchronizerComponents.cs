@@ -26,19 +26,19 @@ using GenSync.EntityRepositories;
 
 namespace CalDavSynchronizer.Scheduling.ComponentCollectors
 {
-  public class AvailableTaskSynchronizerComponents : AvailableSynchronizerComponents
-  {
-    public ICalDavDataAccess CalDavDataAccess { get; set; }
-    public IEntityRepository<WebResourceName, string, IICalendar, int> CalDavRepository { get; set; }
-    public IEntityRepository<string, DateTime, ITaskItemWrapper, int> OutlookRepository { get; set; }
-    public IEntityRelationDataAccess<string, DateTime, WebResourceName, string> EntityRelationDataAccess { get; set; }
-
-    public override DataAccessComponents GetDataAccessComponents()
+    public class AvailableTaskSynchronizerComponents : AvailableSynchronizerComponents
     {
-      return new DataAccessComponents
-      {
-        CalDavDataAccess = CalDavDataAccess
-      };
+        public ICalDavDataAccess CalDavDataAccess { get; set; }
+        public IEntityRepository<WebResourceName, string, IICalendar, int> CalDavRepository { get; set; }
+        public IEntityRepository<string, DateTime, ITaskItemWrapper, int> OutlookRepository { get; set; }
+        public IEntityRelationDataAccess<string, DateTime, WebResourceName, string> EntityRelationDataAccess { get; set; }
+
+        public override DataAccessComponents GetDataAccessComponents()
+        {
+            return new DataAccessComponents
+            {
+                CalDavDataAccess = CalDavDataAccess
+            };
+        }
     }
-  }
 }

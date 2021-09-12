@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -11,14 +10,12 @@ using System.Collections.Specialized;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///    IM info  <see cref="vCard"/>.
     /// </summary>
     [Serializable]
     public class vCardSocialProfile
     {
-
         private string username;
         private SocialProfileServiceType serviceType;
         private string fullProfileUrl;
@@ -51,14 +48,8 @@ namespace Thought.vCards
         /// </summary>
         public string ProfileUrl
         {
-            get
-            {
-                return this.fullProfileUrl ?? string.Empty;
-            }
-            set
-            {
-                this.fullProfileUrl = value;
-            }
+            get { return this.fullProfileUrl ?? string.Empty; }
+            set { this.fullProfileUrl = value; }
         }
 
 
@@ -67,14 +58,8 @@ namespace Thought.vCards
         /// </summary>
         public string Username
         {
-            get
-            {
-                return this.username ?? string.Empty;
-            }
-            set
-            {
-                this.username = value;
-            }
+            get { return this.username ?? string.Empty; }
+            set { this.username = value; }
         }
 
         /// <summary>
@@ -85,8 +70,6 @@ namespace Thought.vCards
             get { return serviceType; }
             set { serviceType = value; }
         }
-
- 
     }
 
     /// <summary>
@@ -98,29 +81,31 @@ namespace Thought.vCards
         /// unspecified
         /// </summary>
         Unspecified = 0,
+
         /// <summary>
         /// Facebook
         /// </summary>
         Facebook,
+
         /// <summary>
         /// LinkedIn
         /// </summary>
         LinkedIn,
+
         /// <summary>
         /// Twitter
         /// </summary>
         Twitter,
+
         /// <summary>
         /// Flickr
         /// </summary>
         Flickr,
+
         /// <summary>
         /// Myspace
         /// </summary>
         Myspace
- 
-
-
     }
 
 
@@ -129,9 +114,6 @@ namespace Thought.vCards
     /// </summary>
     public static class SocialProfileTypeUtils
     {
-
-
-
         /// <summary>
         /// for parsing the type string
         /// </summary>
@@ -158,12 +140,10 @@ namespace Thought.vCards
                 case "twitter":
                     serviceType = SocialProfileServiceType.Twitter;
                     break;
- 
             }
 
 
             return serviceType;
-
         }
 
         /// <summary>
@@ -177,7 +157,7 @@ namespace Thought.vCards
 
             switch (serviceType)
             {
-                case SocialProfileServiceType.Facebook :
+                case SocialProfileServiceType.Facebook:
                     profileType = "facebook";
                     break;
                 case SocialProfileServiceType.Flickr:
@@ -192,15 +172,9 @@ namespace Thought.vCards
                 case SocialProfileServiceType.Twitter:
                     profileType = "twitter";
                     break;
-
             }
 
             return profileType;
-
         }
-
     }
-
- 
-
 }

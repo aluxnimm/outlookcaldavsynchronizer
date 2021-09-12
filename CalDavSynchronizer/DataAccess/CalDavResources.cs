@@ -20,19 +20,19 @@ using System.Collections.Generic;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public class CalDavResources
-  {
-    public CalDavResources (IReadOnlyList<CalendarData> calendarResources, IReadOnlyList<TaskListData> taskTaskListResources)
+    public class CalDavResources
     {
-      if (calendarResources == null)
-        throw new ArgumentNullException (nameof (calendarResources));
-      if (taskTaskListResources == null)
-        throw new ArgumentNullException (nameof (taskTaskListResources));
-      CalendarResources = calendarResources;
-      TaskListResources = taskTaskListResources;
-    }
+        public CalDavResources(IReadOnlyList<CalendarData> calendarResources, IReadOnlyList<TaskListData> taskTaskListResources)
+        {
+            if (calendarResources == null)
+                throw new ArgumentNullException(nameof(calendarResources));
+            if (taskTaskListResources == null)
+                throw new ArgumentNullException(nameof(taskTaskListResources));
+            CalendarResources = calendarResources;
+            TaskListResources = taskTaskListResources;
+        }
 
-    public IReadOnlyList<CalendarData> CalendarResources { get; }
-    public IReadOnlyList<TaskListData> TaskListResources { get; }
-  }
+        public IReadOnlyList<CalendarData> CalendarResources { get; }
+        public IReadOnlyList<TaskListData> TaskListResources { get; }
+    }
 }

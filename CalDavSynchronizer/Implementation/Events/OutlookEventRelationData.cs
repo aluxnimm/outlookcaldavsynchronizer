@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Xml.Serialization;
 using CalDavSynchronizer.DataAccess;
@@ -21,12 +22,12 @@ using GenSync.EntityRelationManagement;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class OutlookEventRelationData : IEntityRelationData<AppointmentId, DateTime, WebResourceName, string>
-  {
-    public AppointmentId AtypeId { get; set; }
-    public DateTime AtypeVersion { get; set; }
-  
-    public WebResourceName BtypeId { get; set; }
-    public string BtypeVersion { get; set; }
-  }
+    public class OutlookEventRelationData : IEntityRelationData<AppointmentId, DateTime, WebResourceName, string>
+    {
+        public AppointmentId AtypeId { get; set; }
+        public DateTime AtypeVersion { get; set; }
+
+        public WebResourceName BtypeId { get; set; }
+        public string BtypeVersion { get; set; }
+    }
 }

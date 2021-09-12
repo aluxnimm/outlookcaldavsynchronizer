@@ -14,39 +14,40 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using GenSync.Logging;
 
 namespace CalDavSynchronizer.Ui.Reports.ViewModels
 {
-  public class ReportProxy
-  {
-    private readonly SynchronizationReportName _name;
-    private readonly Func<SynchronizationReport> _getValue;
-    private readonly string _profileName;
-    private SynchronizationReport _report;
-
-    public ReportProxy (SynchronizationReportName name, Func<SynchronizationReport> getValue, string profileName)
+    public class ReportProxy
     {
-      _name = name;
-      _getValue = getValue;
-      _profileName = profileName;
-    }
+        private readonly SynchronizationReportName _name;
+        private readonly Func<SynchronizationReport> _getValue;
+        private readonly string _profileName;
+        private SynchronizationReport _report;
+
+        public ReportProxy(SynchronizationReportName name, Func<SynchronizationReport> getValue, string profileName)
+        {
+            _name = name;
+            _getValue = getValue;
+            _profileName = profileName;
+        }
 
 
-    public SynchronizationReport Value
-    {
-      get { return _report ?? (_report = _getValue()); }
-    }
+        public SynchronizationReport Value
+        {
+            get { return _report ?? (_report = _getValue()); }
+        }
 
-    public SynchronizationReportName Name
-    {
-      get { return _name; }
-    }
+        public SynchronizationReportName Name
+        {
+            get { return _name; }
+        }
 
-    public string ProfileName
-    {
-      get { return _profileName; }
+        public string ProfileName
+        {
+            get { return _profileName; }
+        }
     }
-  }
 }

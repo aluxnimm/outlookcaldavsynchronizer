@@ -14,21 +14,21 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync.Logging
 {
-  public class NullLoadEntityLogger : ILoadEntityLogger
-  {
-    public static readonly ILoadEntityLogger Instance = new NullLoadEntityLogger ();
-
-    private NullLoadEntityLogger ()
+    public class NullLoadEntityLogger : ILoadEntityLogger
     {
-    }
+        public static readonly ILoadEntityLogger Instance = new NullLoadEntityLogger();
 
-    public void LogSkipLoadBecauseOfError (object entityId, Exception exception)
-    {
-      
+        private NullLoadEntityLogger()
+        {
+        }
+
+        public void LogSkipLoadBecauseOfError(object entityId, Exception exception)
+        {
+        }
     }
-  }
 }

@@ -23,50 +23,47 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
 {
-  class SogoProfile : ProfileTypeBase
-  {
-    public override string Name { get; } = "Sogo";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_sogo.png";
-
-    public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+    class SogoProfile : ProfileTypeBase
     {
-      return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData);
+        public override string Name { get; } = "Sogo";
+        public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_sogo.png";
+
+        public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+        {
+            return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData);
+        }
+
+        public override Contracts.Options CreateOptions()
+        {
+            var data = base.CreateOptions();
+            data.MappingConfiguration = CreateEventMappingConfiguration();
+            data.CalenderUrl = "https://sogo.example.com/SOGo/dav/";
+            return data;
+        }
+
+        public override EventMappingConfiguration CreateEventMappingConfiguration()
+        {
+            var data = base.CreateEventMappingConfiguration();
+            data.ScheduleAgentClient = false;
+            data.SendNoAppointmentNotifications = true;
+            data.UseGlobalAppointmentID = true;
+            return data;
+        }
+
+        public override ContactMappingConfiguration CreateContactMappingConfiguration()
+        {
+            var data = base.CreateContactMappingConfiguration();
+            data.MapDistributionLists = true;
+            data.DistributionListType = DistributionListType.Sogo;
+            return data;
+        }
+
+        class ProfileModelFactory : ProfileModelFactoryBase
+        {
+            public ProfileModelFactory(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+                : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData)
+            {
+            }
+        }
     }
-
-    public override Contracts.Options CreateOptions()
-    {
-      var data = base.CreateOptions();
-      data.MappingConfiguration = CreateEventMappingConfiguration();
-      data.CalenderUrl = "https://sogo.example.com/SOGo/dav/";
-      return data;
-    }
-
-    public override EventMappingConfiguration CreateEventMappingConfiguration()
-    {
-      var data = base.CreateEventMappingConfiguration();
-      data.ScheduleAgentClient = false;
-      data.SendNoAppointmentNotifications = true;
-      data.UseGlobalAppointmentID = true;
-      return data;
-    }
-
-    public override ContactMappingConfiguration CreateContactMappingConfiguration()
-    {
-      var data = base.CreateContactMappingConfiguration();
-      data.MapDistributionLists = true;
-      data.DistributionListType = DistributionListType.Sogo;
-      return data;
-    }
-
-    class ProfileModelFactory : ProfileModelFactoryBase
-    {
-      public ProfileModelFactory(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
-        : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData)
-      {
-      }
-
-
-
-    }
-  }
 }

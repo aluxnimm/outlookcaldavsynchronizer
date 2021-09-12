@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -26,48 +27,49 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
 {
-  public class UidDistListEntityMapper : DistListEntityMapperBase
-  {
-    protected override vCardMember CreateVCardMemberOrNull(GenericComObjectWrapper<Recipient> recipientWrapper, string nameWithoutEmail, DistributionListSychronizationContext context, IEntitySynchronizationLogger synchronizationLogger, ILog logger)
+    public class UidDistListEntityMapper : DistListEntityMapperBase
     {
-      var uid = context.GetUidByEmailAddress(recipientWrapper.Inner.Address);
-      var targetMember = new vCardMember();
-
-      if (uid != null)
-      {
-        targetMember.Uid = uid;
-      }
-      else
-      {
-        targetMember.EmailAddress = recipientWrapper.Inner.Address;
-        targetMember.DisplayName = nameWithoutEmail;
-      }
-      return targetMember;
-    }
-
-    protected override IEnumerable<DistributionListMember> GetMembers(vCard source, DistributionListSychronizationContext context, IEntitySynchronizationLogger synchronizationLogger, ILog logger)
-    {
-      foreach(var member in source.Members)
-      {
-        DistributionListMember distributionListMember;
-        if (!string.IsNullOrEmpty(member.Uid))
+        protected override vCardMember CreateVCardMemberOrNull(GenericComObjectWrapper<Recipient> recipientWrapper, string nameWithoutEmail, DistributionListSychronizationContext context, IEntitySynchronizationLogger synchronizationLogger, ILog logger)
         {
-          (var contactWrapper, var emailAddress) = context.GetContactByUidOrNull(member.Uid, synchronizationLogger, logger);
-          if (contactWrapper != null)
-          {
-            using (contactWrapper)
+            var uid = context.GetUidByEmailAddress(recipientWrapper.Inner.Address);
+            var targetMember = new vCardMember();
+
+            if (uid != null)
             {
-              distributionListMember = new DistributionListMember(emailAddress, contactWrapper.Inner.FullName);
-              yield return distributionListMember;
+                targetMember.Uid = uid;
             }
-          }
+            else
+            {
+                targetMember.EmailAddress = recipientWrapper.Inner.Address;
+                targetMember.DisplayName = nameWithoutEmail;
+            }
+
+            return targetMember;
         }
-        else
+
+        protected override IEnumerable<DistributionListMember> GetMembers(vCard source, DistributionListSychronizationContext context, IEntitySynchronizationLogger synchronizationLogger, ILog logger)
         {
-          distributionListMember = new DistributionListMember(member.EmailAddress, member.DisplayName);
-          yield return distributionListMember;
-        } 
-      }
+            foreach (var member in source.Members)
+            {
+                DistributionListMember distributionListMember;
+                if (!string.IsNullOrEmpty(member.Uid))
+                {
+                    (var contactWrapper, var emailAddress) = context.GetContactByUidOrNull(member.Uid, synchronizationLogger, logger);
+                    if (contactWrapper != null)
+                    {
+                        using (contactWrapper)
+                        {
+                            distributionListMember = new DistributionListMember(emailAddress, contactWrapper.Inner.FullName);
+                            yield return distributionListMember;
+                        }
+                    }
+                }
+                else
+                {
+                    distributionListMember = new DistributionListMember(member.EmailAddress, member.DisplayName);
+                    yield return distributionListMember;
+                }
+            }
+        }
     }
-  }
 }

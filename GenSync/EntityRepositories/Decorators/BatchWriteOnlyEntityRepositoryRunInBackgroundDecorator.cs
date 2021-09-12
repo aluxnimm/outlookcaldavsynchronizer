@@ -22,18 +22,18 @@ using GenSync.ProgressReport;
 
 namespace GenSync.EntityRepositories.Decorators
 {
-  public class BatchWriteOnlyEntityRepositoryRunInBackgroundDecorator<TEntityId, TEntityVersion, TEntity, TContext> : IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
-  {
-    private readonly IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> _batchWriteOnlyEntityRepositoryImplementation;
-
-    public BatchWriteOnlyEntityRepositoryRunInBackgroundDecorator(IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> batchWriteOnlyEntityRepositoryImplementation)
+    public class BatchWriteOnlyEntityRepositoryRunInBackgroundDecorator<TEntityId, TEntityVersion, TEntity, TContext> : IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
     {
-      _batchWriteOnlyEntityRepositoryImplementation = batchWriteOnlyEntityRepositoryImplementation ?? throw new ArgumentNullException(nameof(batchWriteOnlyEntityRepositoryImplementation));
-    }
+        private readonly IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> _batchWriteOnlyEntityRepositoryImplementation;
 
-    public async Task PerformOperations(IReadOnlyList<ICreateJob<TEntityId, TEntityVersion, TEntity>> createJobs, IReadOnlyList<IUpdateJob<TEntityId, TEntityVersion, TEntity>> updateJobs, IReadOnlyList<IDeleteJob<TEntityId, TEntityVersion>> deleteJobs, IProgressLogger progressLogger, TContext context)
-    {
-      await Task.Run(() => _batchWriteOnlyEntityRepositoryImplementation.PerformOperations(createJobs, updateJobs, deleteJobs, progressLogger, context));
+        public BatchWriteOnlyEntityRepositoryRunInBackgroundDecorator(IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> batchWriteOnlyEntityRepositoryImplementation)
+        {
+            _batchWriteOnlyEntityRepositoryImplementation = batchWriteOnlyEntityRepositoryImplementation ?? throw new ArgumentNullException(nameof(batchWriteOnlyEntityRepositoryImplementation));
+        }
+
+        public async Task PerformOperations(IReadOnlyList<ICreateJob<TEntityId, TEntityVersion, TEntity>> createJobs, IReadOnlyList<IUpdateJob<TEntityId, TEntityVersion, TEntity>> updateJobs, IReadOnlyList<IDeleteJob<TEntityId, TEntityVersion>> deleteJobs, IProgressLogger progressLogger, TContext context)
+        {
+            await Task.Run(() => _batchWriteOnlyEntityRepositoryImplementation.PerformOperations(createJobs, updateJobs, deleteJobs, progressLogger, context));
+        }
     }
-  }
 }

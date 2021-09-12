@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.IO;
 using System.Xml;
@@ -22,72 +23,72 @@ using log4net;
 
 namespace GenSync.EntityRelationManagement
 {
-  public class XmlFileDataAccess<TData> 
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
-
-    private readonly XmlSerializer _serializer = new XmlSerializer (typeof (TData));
-    private readonly string _storageFile;
-    private bool _ignoreInvalidXml = true;
-
-    public XmlFileDataAccess(string storageFile)
+    public class XmlFileDataAccess<TData>
     {
-      _storageFile = storageFile ?? throw new ArgumentNullException(nameof(storageFile));
-    }
+        private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-    public TData LoadDataOrNull ()
-    {
-      if (!File.Exists (_storageFile))
-        return default(TData);
+        private readonly XmlSerializer _serializer = new XmlSerializer(typeof(TData));
+        private readonly string _storageFile;
+        private bool _ignoreInvalidXml = true;
 
-      using (var stream = CreateInputStream())
-      {
-        try
+        public XmlFileDataAccess(string storageFile)
         {
-          return (TData) _serializer.Deserialize (stream);
+            _storageFile = storageFile ?? throw new ArgumentNullException(nameof(storageFile));
         }
-        catch (Exception x) when (_ignoreInvalidXml && IsXmlException(x))
+
+        public TData LoadDataOrNull()
         {
-          s_logger.Warn ("Error when deserializing EntityRelationData. Ignoring error.", x);
-          return default(TData);
-        }
-      }
-    }
+            if (!File.Exists(_storageFile))
+                return default(TData);
 
-    private static bool IsXmlException (Exception x)
-    {
-      for (var ex = x; ex != null; ex = ex.InnerException)
-      {
-        if (ex is XmlException)
+            using (var stream = CreateInputStream())
+            {
+                try
+                {
+                    return (TData) _serializer.Deserialize(stream);
+                }
+                catch (Exception x) when (_ignoreInvalidXml && IsXmlException(x))
+                {
+                    s_logger.Warn("Error when deserializing EntityRelationData. Ignoring error.", x);
+                    return default(TData);
+                }
+            }
+        }
+
+        private static bool IsXmlException(Exception x)
         {
-          return true;
+            for (var ex = x; ex != null; ex = ex.InnerException)
+            {
+                if (ex is XmlException)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
-      }
 
-      return false;
+        public void SaveData(TData data)
+        {
+            if (!Directory.Exists(Path.GetDirectoryName(_storageFile)))
+                Directory.CreateDirectory(Path.GetDirectoryName(_storageFile));
+
+            using (var stream = CreateOutputStream())
+            {
+                _serializer.Serialize(stream, data);
+            }
+
+            _ignoreInvalidXml = false;
+        }
+
+        private Stream CreateOutputStream()
+        {
+            return new FileStream(_storageFile, FileMode.Create, FileAccess.Write);
+        }
+
+        private Stream CreateInputStream()
+        {
+            return new FileStream(_storageFile, FileMode.Open, FileAccess.Read);
+        }
     }
-
-    public void SaveData (TData data)
-    {
-      if (!Directory.Exists (Path.GetDirectoryName (_storageFile)))
-        Directory.CreateDirectory (Path.GetDirectoryName (_storageFile));
-
-      using (var stream = CreateOutputStream())
-      {
-        _serializer.Serialize (stream, data);
-      }
-
-      _ignoreInvalidXml = false;
-    }
-
-    private Stream CreateOutputStream ()
-    {
-      return new FileStream (_storageFile, FileMode.Create, FileAccess.Write);
-    }
-
-    private Stream CreateInputStream ()
-    {
-      return new FileStream (_storageFile, FileMode.Open, FileAccess.Read);
-    }
-  }
 }

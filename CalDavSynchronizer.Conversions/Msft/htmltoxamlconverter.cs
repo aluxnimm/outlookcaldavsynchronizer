@@ -19,10 +19,10 @@ using System.Xml;
 
 namespace CalDavSynchronizer.Conversions.Msft
 {
-  // DependencyProperty
+    // DependencyProperty
 
-  // TextElement
-  
+    // TextElement
+
     /// <summary>
     /// HtmlToXamlConverter is a static class that takes an HTML string
     /// and converts it into XAML
@@ -125,6 +125,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             {
                 value = value.Substring(1, value.Length - 2).Trim();
             }
+
             return value;
         }
 
@@ -170,7 +171,7 @@ namespace CalDavSynchronizer.Conversions.Msft
         {
             if (htmlNode is XmlComment)
             {
-                DefineInlineFragmentParent((XmlComment)htmlNode, /*xamlParentElement:*/null);
+                DefineInlineFragmentParent((XmlComment) htmlNode, /*xamlParentElement:*/null);
             }
             else if (htmlNode is XmlText)
             {
@@ -179,7 +180,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             else if (htmlNode is XmlElement)
             {
                 // Identify element name
-                XmlElement htmlElement = (XmlElement)htmlNode;
+                XmlElement htmlElement = (XmlElement) htmlNode;
 
                 string htmlElementName = htmlElement.LocalName; // Keep the name case-sensitive to check xml names
                 string htmlElementNamespace = htmlElement.NamespaceURI;
@@ -299,13 +300,13 @@ namespace CalDavSynchronizer.Conversions.Msft
         private static void AddBreak(XmlElement xamlParentElement, string htmlElementName)
         {
             // Create new xaml element corresponding to this html element
-            XmlElement xamlLineBreak = xamlParentElement.OwnerDocument.CreateElement(/*prefix:*/null, /*localName:*/HtmlToXamlConverter.Xaml_LineBreak, _xamlNamespace);
+            XmlElement xamlLineBreak = xamlParentElement.OwnerDocument.CreateElement( /*prefix:*/null, /*localName:*/HtmlToXamlConverter.Xaml_LineBreak, _xamlNamespace);
             xamlParentElement.AppendChild(xamlLineBreak);
             if (htmlElementName == "hr")
             {
                 XmlText xamlHorizontalLine = xamlParentElement.OwnerDocument.CreateTextNode("----------------------");
                 xamlParentElement.AppendChild(xamlHorizontalLine);
-                xamlLineBreak = xamlParentElement.OwnerDocument.CreateElement(/*prefix:*/null, /*localName:*/HtmlToXamlConverter.Xaml_LineBreak, _xamlNamespace);
+                xamlLineBreak = xamlParentElement.OwnerDocument.CreateElement( /*prefix:*/null, /*localName:*/HtmlToXamlConverter.Xaml_LineBreak, _xamlNamespace);
                 xamlParentElement.AppendChild(xamlLineBreak);
             }
         }
@@ -341,7 +342,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             {
                 if (htmlChildNode is XmlElement)
                 {
-                    string htmlChildName = ((XmlElement)htmlChildNode).LocalName.ToLower();
+                    string htmlChildName = ((XmlElement) htmlChildNode).LocalName.ToLower();
                     if (HtmlSchema.IsBlockElement(htmlChildName))
                     {
                         htmlElementContainsBlocks = true;
@@ -364,7 +365,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                 Hashtable currentProperties = GetElementProperties(htmlElement, inheritedProperties, out localProperties, stylesheet, sourceContext);
 
                 // Create a XAML element corresponding to this html element
-                XmlElement xamlElement = xamlParentElement.OwnerDocument.CreateElement(/*prefix:*/null, /*localName:*/HtmlToXamlConverter.Xaml_Section, _xamlNamespace);
+                XmlElement xamlElement = xamlParentElement.OwnerDocument.CreateElement( /*prefix:*/null, /*localName:*/HtmlToXamlConverter.Xaml_Section, _xamlNamespace);
                 ApplyLocalProperties(xamlElement, localProperties, /*isBlock:*/true);
 
                 // Decide whether we can unwrap this element as not having any formatting significance.
@@ -413,7 +414,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             Hashtable currentProperties = GetElementProperties(htmlElement, inheritedProperties, out localProperties, stylesheet, sourceContext);
 
             // Create a XAML element corresponding to this html element
-            XmlElement xamlElement = xamlParentElement.OwnerDocument.CreateElement(/*prefix:*/null, /*localName:*/HtmlToXamlConverter.Xaml_Paragraph, _xamlNamespace);
+            XmlElement xamlElement = xamlParentElement.OwnerDocument.CreateElement( /*prefix:*/null, /*localName:*/HtmlToXamlConverter.Xaml_Paragraph, _xamlNamespace);
             ApplyLocalProperties(xamlElement, localProperties, /*isBlock:*/true);
 
             // Recurse into element subtree
@@ -449,13 +450,13 @@ namespace CalDavSynchronizer.Conversions.Msft
         private static XmlNode AddImplicitParagraph(XmlElement xamlParentElement, XmlNode htmlNode, Hashtable inheritedProperties, CssStylesheet stylesheet, List<XmlElement> sourceContext)
         {
             // Collect all non-block elements and wrap them into implicit Paragraph
-            XmlElement xamlParagraph = xamlParentElement.OwnerDocument.CreateElement(/*prefix:*/null, /*localName:*/HtmlToXamlConverter.Xaml_Paragraph, _xamlNamespace);
+            XmlElement xamlParagraph = xamlParentElement.OwnerDocument.CreateElement( /*prefix:*/null, /*localName:*/HtmlToXamlConverter.Xaml_Paragraph, _xamlNamespace);
             XmlNode lastNodeProcessed = null;
             while (htmlNode != null)
             {
                 if (htmlNode is XmlComment)
                 {
-                    DefineInlineFragmentParent((XmlComment)htmlNode, /*xamlParentElement:*/null);
+                    DefineInlineFragmentParent((XmlComment) htmlNode, /*xamlParentElement:*/null);
                 }
                 else if (htmlNode is XmlText)
                 {
@@ -466,7 +467,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                 }
                 else if (htmlNode is XmlElement)
                 {
-                    string htmlChildName = ((XmlElement)htmlNode).LocalName.ToLower();
+                    string htmlChildName = ((XmlElement) htmlNode).LocalName.ToLower();
                     if (HtmlSchema.IsBlockElement(htmlChildName))
                     {
                         // The sequence of non-blocked inlines ended. Stop implicit loop here.
@@ -474,7 +475,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                     }
                     else
                     {
-                        AddInline(xamlParagraph, (XmlElement)htmlNode, inheritedProperties, stylesheet, sourceContext);
+                        AddInline(xamlParagraph, (XmlElement) htmlNode, inheritedProperties, stylesheet, sourceContext);
                     }
                 }
 
@@ -505,7 +506,7 @@ namespace CalDavSynchronizer.Conversions.Msft
         {
             if (htmlNode is XmlComment)
             {
-                DefineInlineFragmentParent((XmlComment)htmlNode, xamlParentElement);
+                DefineInlineFragmentParent((XmlComment) htmlNode, xamlParentElement);
             }
             else if (htmlNode is XmlText)
             {
@@ -513,7 +514,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             }
             else if (htmlNode is XmlElement)
             {
-                XmlElement htmlElement = (XmlElement)htmlNode;
+                XmlElement htmlElement = (XmlElement) htmlNode;
 
                 // Check whether this is an html element
                 if (htmlElement.NamespaceURI != HtmlParser.XhtmlNamespace)
@@ -547,6 +548,7 @@ namespace CalDavSynchronizer.Conversions.Msft
 
                             AddSpanOrRun(xamlParentElement, htmlElement, inheritedProperties, stylesheet, sourceContext);
                         }
+
                         break;
                 }
                 // Ignore all other elements non-(block/inline/image)
@@ -566,8 +568,8 @@ namespace CalDavSynchronizer.Conversions.Msft
             {
                 if (htmlNode is XmlElement)
                 {
-                    string htmlChildName = ((XmlElement)htmlNode).LocalName.ToLower();
-                    if (HtmlSchema.IsInlineElement(htmlChildName) || HtmlSchema.IsBlockElement(htmlChildName) || 
+                    string htmlChildName = ((XmlElement) htmlNode).LocalName.ToLower();
+                    if (HtmlSchema.IsInlineElement(htmlChildName) || HtmlSchema.IsBlockElement(htmlChildName) ||
                         htmlChildName == "img" || htmlChildName == "br" || htmlChildName == "hr")
                     {
                         elementHasChildren = true;
@@ -583,7 +585,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             Hashtable currentProperties = GetElementProperties(htmlElement, inheritedProperties, out localProperties, stylesheet, sourceContext);
 
             // Create a XAML element corresponding to this html element
-            XmlElement xamlElement = xamlParentElement.OwnerDocument.CreateElement(/*prefix:*/null, /*localName:*/xamlElementName, _xamlNamespace);
+            XmlElement xamlElement = xamlParentElement.OwnerDocument.CreateElement( /*prefix:*/null, /*localName:*/xamlElementName, _xamlNamespace);
             ApplyLocalProperties(xamlElement, localProperties, /*isBlock:*/false);
 
             // Recurse into element subtree
@@ -604,13 +606,13 @@ namespace CalDavSynchronizer.Conversions.Msft
             {
                 if (Char.IsControl(textData[i]))
                 {
-                    textData = textData.Remove(i--, 1);  // decrement i to compensate for character removal
+                    textData = textData.Remove(i--, 1); // decrement i to compensate for character removal
                 }
             }
 
             // Replace No-Breaks by spaces (160 is a code of &nbsp; entity in html)
             //  This is a work around since WPF/XAML does not support &nbsp.
-            textData = textData.Replace((char)160, ' ');
+            textData = textData.Replace((char) 160, ' ');
 
             if (textData.Length > 0)
             {
@@ -634,14 +636,15 @@ namespace CalDavSynchronizer.Conversions.Msft
                 Hashtable currentProperties = GetElementProperties(htmlElement, inheritedProperties, out localProperties, stylesheet, sourceContext);
 
                 // Create a XAML element corresponding to this html element
-                XmlElement xamlElement = xamlParentElement.OwnerDocument.CreateElement(/*prefix:*/null, /*localName:*/HtmlToXamlConverter.Xaml_Hyperlink, _xamlNamespace);
+                XmlElement xamlElement = xamlParentElement.OwnerDocument.CreateElement( /*prefix:*/null, /*localName:*/HtmlToXamlConverter.Xaml_Hyperlink, _xamlNamespace);
                 ApplyLocalProperties(xamlElement, localProperties, /*isBlock:*/false);
 
-                string[] hrefParts = href.Split(new char[] { '#' });
+                string[] hrefParts = href.Split(new char[] {'#'});
                 if (hrefParts.Length > 0 && hrefParts[0].Trim().Length > 0)
                 {
                     xamlElement.SetAttribute(HtmlToXamlConverter.Xaml_Hyperlink_NavigateUri, hrefParts[0].Trim());
                 }
+
                 if (hrefParts.Length == 2 && hrefParts[1].Trim().Length > 0)
                 {
                     xamlElement.SetAttribute(HtmlToXamlConverter.Xaml_Hyperlink_TargetName, hrefParts[1].Trim());
@@ -697,7 +700,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                 }
                 else
                 {
-                    xamlFlowDocumentElement = xamlFlowDocumentElement.OwnerDocument.CreateElement(/*prefix:*/null, /*localName:*/HtmlToXamlConverter.Xaml_Span, _xamlNamespace);
+                    xamlFlowDocumentElement = xamlFlowDocumentElement.OwnerDocument.CreateElement( /*prefix:*/null, /*localName:*/HtmlToXamlConverter.Xaml_Span, _xamlNamespace);
                     while (InlineFragmentParentElement.FirstChild != null)
                     {
                         XmlNode copyNode = InlineFragmentParentElement.FirstChild;
@@ -773,8 +776,8 @@ namespace CalDavSynchronizer.Conversions.Msft
             {
                 if (htmlChildNode is XmlElement && htmlChildNode.LocalName.ToLower() == "li")
                 {
-                    sourceContext.Add((XmlElement)htmlChildNode);
-                    AddListItem(xamlListElement, (XmlElement)htmlChildNode, currentProperties, stylesheet, sourceContext);
+                    sourceContext.Add((XmlElement) htmlChildNode);
+                    AddListItem(xamlListElement, (XmlElement) htmlChildNode, currentProperties, stylesheet, sourceContext);
                     Debug.Assert(sourceContext.Count > 0 && sourceContext[sourceContext.Count - 1] == htmlChildNode);
                     sourceContext.RemoveAt(sourceContext.Count - 1);
                 }
@@ -823,7 +826,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             if (xamlListItemElementPreviousSibling != null && xamlListItemElementPreviousSibling.LocalName == Xaml_List)
             {
                 // Previously added Xaml element was a list. We will add the new li to it
-                xamlListElement = (XmlElement)xamlListItemElementPreviousSibling;
+                xamlListElement = (XmlElement) xamlListItemElementPreviousSibling;
             }
             else
             {
@@ -842,9 +845,9 @@ namespace CalDavSynchronizer.Conversions.Msft
             // Use properties inherited from xamlParentElement for context 
             while (htmlChildNode != null && htmlChildNodeName == "li")
             {
-                AddListItem(xamlListElement, (XmlElement)htmlChildNode, inheritedProperties, stylesheet, sourceContext);
-                lastProcessedListItemElement = (XmlElement)htmlChildNode;
-                htmlChildNode = htmlChildNode.NextSibling;               
+                AddListItem(xamlListElement, (XmlElement) htmlChildNode, inheritedProperties, stylesheet, sourceContext);
+                lastProcessedListItemElement = (XmlElement) htmlChildNode;
+                htmlChildNode = htmlChildNode.NextSibling;
                 htmlChildNodeName = htmlChildNode == null ? null : htmlChildNode.LocalName.ToLower();
             }
 
@@ -878,7 +881,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             XmlElement xamlListItemElement = xamlListElement.OwnerDocument.CreateElement(null, Xaml_ListItem, _xamlNamespace);
 
             // TODO: process local properties for li element
-            ApplyLocalProperties (xamlListItemElement, localProperties, true);
+            ApplyLocalProperties(xamlListItemElement, localProperties, true);
 
             // Process children of the ListItem
             for (XmlNode htmlChildNode = htmlLIElement.FirstChild; htmlChildNode != null; htmlChildNode = htmlChildNode != null ? htmlChildNode.NextSibling : null)
@@ -964,11 +967,11 @@ namespace CalDavSynchronizer.Conversions.Msft
                         XmlElement xamlTableBodyElement = xamlTableElement.OwnerDocument.CreateElement(null, Xaml_TableRowGroup, _xamlNamespace);
                         xamlTableElement.AppendChild(xamlTableBodyElement);
 
-                        sourceContext.Add((XmlElement)htmlChildNode);
+                        sourceContext.Add((XmlElement) htmlChildNode);
 
                         // Get properties of Html tbody element
                         Hashtable tbodyElementLocalProperties;
-                        Hashtable tbodyElementCurrentProperties = GetElementProperties((XmlElement)htmlChildNode, currentProperties, out tbodyElementLocalProperties, stylesheet, sourceContext);
+                        Hashtable tbodyElementCurrentProperties = GetElementProperties((XmlElement) htmlChildNode, currentProperties, out tbodyElementLocalProperties, stylesheet, sourceContext);
                         // TODO: apply local properties for tbody
 
                         // Process children of htmlChildNode, which is tbody, for tr elements
@@ -1026,6 +1029,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                     {
                         return null;
                     }
+
                     for (XmlNode tbodyChild = tableChild.FirstChild; tbodyChild != null; tbodyChild = tbodyChild.NextSibling)
                     {
                         if (tbodyChild.LocalName.ToLower() == "tr")
@@ -1034,6 +1038,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                             {
                                 return null;
                             }
+
                             for (XmlNode trChild = tbodyChild.FirstChild; trChild != null; trChild = trChild.NextSibling)
                             {
                                 string cellName = trChild.LocalName.ToLower();
@@ -1043,7 +1048,8 @@ namespace CalDavSynchronizer.Conversions.Msft
                                     {
                                         return null;
                                     }
-                                    singleCell = (XmlElement)trChild;
+
+                                    singleCell = (XmlElement) trChild;
                                 }
                             }
                         }
@@ -1055,6 +1061,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                     {
                         return null;
                     }
+
                     for (XmlNode trChild = tableChild.FirstChild; trChild != null; trChild = trChild.NextSibling)
                     {
                         string cellName = trChild.LocalName.ToLower();
@@ -1064,7 +1071,8 @@ namespace CalDavSynchronizer.Conversions.Msft
                             {
                                 return null;
                             }
-                            singleCell = (XmlElement)trChild;
+
+                            singleCell = (XmlElement) trChild;
                         }
                     }
                 }
@@ -1095,7 +1103,7 @@ namespace CalDavSynchronizer.Conversions.Msft
         {
             var numberFormatInfo = new NumberFormatInfo();
             numberFormatInfo.NumberDecimalSeparator = ".";
-      
+
             // Add column information
             if (columnStartsAllRows != null)
             {
@@ -1106,7 +1114,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                     XmlElement xamlColumnElement;
 
                     xamlColumnElement = xamlTableElement.OwnerDocument.CreateElement(null, Xaml_TableColumn, _xamlNamespace);
-                    xamlColumnElement.SetAttribute(Xaml_Width, ((double)columnStartsAllRows[columnIndex + 1] - (double)columnStartsAllRows[columnIndex]).ToString(numberFormatInfo));
+                    xamlColumnElement.SetAttribute(Xaml_Width, ((double) columnStartsAllRows[columnIndex + 1] - (double) columnStartsAllRows[columnIndex]).ToString(numberFormatInfo));
                     xamlTableElement.AppendChild(xamlColumnElement);
                 }
             }
@@ -1119,11 +1127,11 @@ namespace CalDavSynchronizer.Conversions.Msft
                     if (htmlChildNode.LocalName.ToLower() == "colgroup")
                     {
                         // TODO: add column width information to this function as a parameter and process it
-                        AddTableColumnGroup(xamlTableElement, (XmlElement)htmlChildNode, currentProperties, stylesheet, sourceContext);
+                        AddTableColumnGroup(xamlTableElement, (XmlElement) htmlChildNode, currentProperties, stylesheet, sourceContext);
                     }
                     else if (htmlChildNode.LocalName.ToLower() == "col")
                     {
-                        AddTableColumn(xamlTableElement, (XmlElement)htmlChildNode, currentProperties, stylesheet, sourceContext);
+                        AddTableColumn(xamlTableElement, (XmlElement) htmlChildNode, currentProperties, stylesheet, sourceContext);
                     }
                     else if (htmlChildNode is XmlElement)
                     {
@@ -1159,9 +1167,10 @@ namespace CalDavSynchronizer.Conversions.Msft
             {
                 if (htmlNode is XmlElement && htmlNode.LocalName.ToLower() == "col")
                 {
-                    AddTableColumn(xamlTableColumnsElement, (XmlElement)htmlNode, currentProperties, stylesheet, sourceContext);
+                    AddTableColumn(xamlTableColumnsElement, (XmlElement) htmlNode, currentProperties, stylesheet, sourceContext);
                 }
             }
+
             xamlTableElement.AppendChild(xamlTableColumnsElement);
         }
 
@@ -1180,22 +1189,23 @@ namespace CalDavSynchronizer.Conversions.Msft
         /// <param name="sourceContext"></param>
         private static void AddTableColumn(XmlElement xamlTableElement, XmlElement htmlColElement, Hashtable inheritedProperties, CssStylesheet stylesheet, List<XmlElement> sourceContext)
         {
-          Hashtable localProperties;
-          Hashtable currentProperties = GetElementProperties(htmlColElement, inheritedProperties, out localProperties, stylesheet, sourceContext);
+            Hashtable localProperties;
+            Hashtable currentProperties = GetElementProperties(htmlColElement, inheritedProperties, out localProperties, stylesheet, sourceContext);
 
-          XmlElement xamlTableColumnElement = xamlTableElement.OwnerDocument.CreateElement(null, Xaml_TableColumn, _xamlNamespace);
+            XmlElement xamlTableColumnElement = xamlTableElement.OwnerDocument.CreateElement(null, Xaml_TableColumn, _xamlNamespace);
 
-          // TODO: process local properties for TableColumn element
+            // TODO: process local properties for TableColumn element
 
-          // set column width if available
-          var columnWidth = GetColumnWidth (htmlColElement);
+            // set column width if available
+            var columnWidth = GetColumnWidth(htmlColElement);
 
-          if (columnWidth != -1)
-          {
-            var numberFormatInfo = new NumberFormatInfo();
-            numberFormatInfo.NumberDecimalSeparator = ".";
-            xamlTableColumnElement.SetAttribute (Xaml_Width, columnWidth.ToString (numberFormatInfo));
-          }
+            if (columnWidth != -1)
+            {
+                var numberFormatInfo = new NumberFormatInfo();
+                numberFormatInfo.NumberDecimalSeparator = ".";
+                xamlTableColumnElement.SetAttribute(Xaml_Width, columnWidth.ToString(numberFormatInfo));
+            }
+
             // Col is an empty element, with no subtree 
             xamlTableElement.AppendChild(xamlTableColumnElement);
         }
@@ -1241,11 +1251,11 @@ namespace CalDavSynchronizer.Conversions.Msft
                 {
                     XmlElement xamlTableRowElement = xamlTableBodyElement.OwnerDocument.CreateElement(null, Xaml_TableRow, _xamlNamespace);
 
-                    sourceContext.Add((XmlElement)htmlChildNode);
+                    sourceContext.Add((XmlElement) htmlChildNode);
 
                     // Get tr element properties
                     Hashtable trElementLocalProperties;
-                    Hashtable trElementCurrentProperties = GetElementProperties((XmlElement)htmlChildNode, currentProperties, out trElementLocalProperties, stylesheet, sourceContext);
+                    Hashtable trElementCurrentProperties = GetElementProperties((XmlElement) htmlChildNode, currentProperties, out trElementLocalProperties, stylesheet, sourceContext);
                     // TODO: apply local properties to tr element
 
                     AddTableCellsToTableRow(xamlTableRowElement, htmlChildNode.FirstChild, trElementCurrentProperties, columnStarts, activeRowSpans, stylesheet, sourceContext);
@@ -1259,13 +1269,12 @@ namespace CalDavSynchronizer.Conversions.Msft
 
                     // Advance
                     htmlChildNode = htmlChildNode.NextSibling;
-                    
                 }
                 else if (htmlChildNode.LocalName.ToLower() == "td")
                 {
                     // Tr element is not present. We create one and add td elements to it
                     XmlElement xamlTableRowElement = xamlTableBodyElement.OwnerDocument.CreateElement(null, Xaml_TableRow, _xamlNamespace);
-                    
+
                     // This is incorrect formatting and the column starts should not be set in this case
                     Debug.Assert(columnStarts == null);
 
@@ -1275,13 +1284,14 @@ namespace CalDavSynchronizer.Conversions.Msft
                         xamlTableBodyElement.AppendChild(xamlTableRowElement);
                     }
                 }
-                else 
+                else
                 {
                     // Not a tr or td  element. Ignore it.
                     // TODO: consider better recovery here
                     htmlChildNode = htmlChildNode.NextSibling;
                 }
             }
+
             return htmlChildNode;
         }
 
@@ -1322,42 +1332,43 @@ namespace CalDavSynchronizer.Conversions.Msft
                 {
                     XmlElement xamlTableCellElement = xamlTableRowElement.OwnerDocument.CreateElement(null, Xaml_TableCell, _xamlNamespace);
 
-                    sourceContext.Add((XmlElement)htmlChildNode);
+                    sourceContext.Add((XmlElement) htmlChildNode);
 
                     Hashtable tdElementLocalProperties;
-                    Hashtable tdElementCurrentProperties = GetElementProperties((XmlElement)htmlChildNode, currentProperties, out tdElementLocalProperties, stylesheet, sourceContext);
+                    Hashtable tdElementCurrentProperties = GetElementProperties((XmlElement) htmlChildNode, currentProperties, out tdElementLocalProperties, stylesheet, sourceContext);
 
                     // TODO: determine if localProperties can be used instead of htmlChildNode in this call, and if they can,
                     // make necessary changes and use them instead.
-                    ApplyPropertiesToTableCellElement((XmlElement)htmlChildNode, xamlTableCellElement, tdElementCurrentProperties);
+                    ApplyPropertiesToTableCellElement((XmlElement) htmlChildNode, xamlTableCellElement, tdElementCurrentProperties);
 
                     if (columnStarts != null)
                     {
                         Debug.Assert(columnIndex < columnStarts.Count - 1);
-                        while (columnIndex < activeRowSpans.Count && (int)activeRowSpans[columnIndex] > 0)
+                        while (columnIndex < activeRowSpans.Count && (int) activeRowSpans[columnIndex] > 0)
                         {
-                            activeRowSpans[columnIndex] = (int)activeRowSpans[columnIndex] - 1;
-                            Debug.Assert((int)activeRowSpans[columnIndex] >= 0);
+                            activeRowSpans[columnIndex] = (int) activeRowSpans[columnIndex] - 1;
+                            Debug.Assert((int) activeRowSpans[columnIndex] >= 0);
                             columnIndex++;
                         }
+
                         Debug.Assert(columnIndex < columnStarts.Count - 1);
-                        columnStart = (double)columnStarts[columnIndex];
-                        columnWidth = GetColumnWidth((XmlElement)htmlChildNode);
+                        columnStart = (double) columnStarts[columnIndex];
+                        columnWidth = GetColumnWidth((XmlElement) htmlChildNode);
                         columnSpan = CalculateColumnSpan(columnIndex, columnWidth, columnStarts);
-                        int rowSpan = GetRowSpan((XmlElement)htmlChildNode);
+                        int rowSpan = GetRowSpan((XmlElement) htmlChildNode);
 
                         // Column cannot have no span
                         Debug.Assert(columnSpan > 0);
                         Debug.Assert(columnIndex + columnSpan < columnStarts.Count);
 
                         xamlTableCellElement.SetAttribute(Xaml_TableCell_ColumnSpan, columnSpan.ToString());
-                        
+
                         // Apply row span
                         for (int spannedColumnIndex = columnIndex; spannedColumnIndex < columnIndex + columnSpan; spannedColumnIndex++)
                         {
                             Debug.Assert(spannedColumnIndex < activeRowSpans.Count);
                             activeRowSpans[spannedColumnIndex] = (rowSpan - 1);
-                            Debug.Assert((int)activeRowSpans[spannedColumnIndex] >= 0);
+                            Debug.Assert((int) activeRowSpans[spannedColumnIndex] >= 0);
                         }
 
                         columnIndex = columnIndex + columnSpan;
@@ -1381,6 +1392,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                     htmlChildNode = htmlChildNode.NextSibling;
                 }
             }
+
             return htmlChildNode;
         }
 
@@ -1437,7 +1449,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             Debug.Assert(columnStarts.Count == activeRowSpans.Count);
 
             XmlNode htmlChildNode = htmlTableElement.FirstChild;
-            double tableWidth = 0;  // Keep track of table width which is the width of its widest row
+            double tableWidth = 0; // Keep track of table width which is the width of its widest row
 
             // Analyze tbody and tr elements
             while (htmlChildNode != null && columnWidthsAvailable)
@@ -1448,7 +1460,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                 {
                     case "tbody":
                         // Tbody element, we should analyze its children for trows
-                        double tbodyWidth = AnalyzeTbodyStructure((XmlElement)htmlChildNode, columnStarts, activeRowSpans, tableWidth, stylesheet);
+                        double tbodyWidth = AnalyzeTbodyStructure((XmlElement) htmlChildNode, columnStarts, activeRowSpans, tableWidth, stylesheet);
                         if (tbodyWidth > tableWidth)
                         {
                             // Table width must be increased to supported newly added wide row
@@ -1460,10 +1472,11 @@ namespace CalDavSynchronizer.Conversions.Msft
                             // We should also fail.
                             columnWidthsAvailable = false; // interrupt the analisys
                         }
+
                         break;
                     case "tr":
                         // Table row. Analyze column structure within row directly
-                        double trWidth = AnalyzeTRStructure((XmlElement)htmlChildNode, columnStarts, activeRowSpans, tableWidth, stylesheet);
+                        double trWidth = AnalyzeTRStructure((XmlElement) htmlChildNode, columnStarts, activeRowSpans, tableWidth, stylesheet);
                         if (trWidth > tableWidth)
                         {
                             tableWidth = trWidth;
@@ -1472,6 +1485,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                         {
                             columnWidthsAvailable = false; // interrupt the analisys
                         }
+
                         break;
                     case "td":
                         // Incorrect formatting, too deep to analyze at this level. Return null.
@@ -1539,18 +1553,19 @@ namespace CalDavSynchronizer.Conversions.Msft
             ClearActiveRowSpans(activeRowSpans);
 
             XmlNode htmlChildNode = htmlTbodyElement.FirstChild;
-          
+
             // Analyze tr elements
             while (htmlChildNode != null && columnWidthsAvailable)
             {
                 switch (htmlChildNode.LocalName.ToLower())
                 {
                     case "tr":
-                        double trWidth = AnalyzeTRStructure((XmlElement)htmlChildNode, columnStarts, activeRowSpans, tbodyWidth, stylesheet);
+                        double trWidth = AnalyzeTRStructure((XmlElement) htmlChildNode, columnStarts, activeRowSpans, tbodyWidth, stylesheet);
                         if (trWidth > tbodyWidth)
                         {
                             tbodyWidth = trWidth;
                         }
+
                         break;
                     case "td":
                         columnWidthsAvailable = false; // interrupt the analisys
@@ -1558,6 +1573,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                     default:
                         break;
                 }
+
                 htmlChildNode = htmlChildNode.NextSibling;
             }
 
@@ -1612,16 +1628,16 @@ namespace CalDavSynchronizer.Conversions.Msft
             // Skip spanned columns to get to real column start
             if (columnIndex < activeRowSpans.Count)
             {
-                Debug.Assert((double)columnStarts[columnIndex] >= columnStart);
-                if ((double)columnStarts[columnIndex] == columnStart)
+                Debug.Assert((double) columnStarts[columnIndex] >= columnStart);
+                if ((double) columnStarts[columnIndex] == columnStart)
                 {
                     // The new column may be in a spanned area
-                    while (columnIndex < activeRowSpans.Count && (int)activeRowSpans[columnIndex] > 0)
+                    while (columnIndex < activeRowSpans.Count && (int) activeRowSpans[columnIndex] > 0)
                     {
-                        activeRowSpans[columnIndex] = (int)activeRowSpans[columnIndex] - 1;
-                        Debug.Assert((int)activeRowSpans[columnIndex] >= 0);
+                        activeRowSpans[columnIndex] = (int) activeRowSpans[columnIndex] - 1;
+                        Debug.Assert((int) activeRowSpans[columnIndex] >= 0);
                         columnIndex++;
-                        columnStart = (double)columnStarts[columnIndex];
+                        columnStart = (double) columnStarts[columnIndex];
                     }
                 }
             }
@@ -1638,8 +1654,8 @@ namespace CalDavSynchronizer.Conversions.Msft
                         Debug.Assert(columnIndex <= columnStarts.Count);
                         if (columnIndex < columnStarts.Count)
                         {
-                            Debug.Assert(columnStart <= (double)columnStarts[columnIndex]);
-                            if (columnStart < (double)columnStarts[columnIndex])
+                            Debug.Assert(columnStart <= (double) columnStarts[columnIndex]);
+                            if (columnStart < (double) columnStarts[columnIndex])
                             {
                                 columnStarts.Insert(columnIndex, columnStart);
                                 // There can be no row spans now - the column data will appear here
@@ -1658,11 +1674,12 @@ namespace CalDavSynchronizer.Conversions.Msft
                             columnStarts.Add(columnStart);
                             activeRowSpans.Add(0);
                         }
-                        columnWidth = GetColumnWidth((XmlElement)htmlChildNode);
+
+                        columnWidth = GetColumnWidth((XmlElement) htmlChildNode);
                         if (columnWidth != -1)
                         {
                             int nextColumnIndex;
-                            int rowSpan = GetRowSpan((XmlElement)htmlChildNode);
+                            int rowSpan = GetRowSpan((XmlElement) htmlChildNode);
 
                             nextColumnIndex = GetNextColumnIndex(columnIndex, columnWidth, columnStarts, activeRowSpans);
                             if (nextColumnIndex != -1)
@@ -1675,7 +1692,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                                 for (int spannedColumnIndex = columnIndex; spannedColumnIndex < nextColumnIndex; spannedColumnIndex++)
                                 {
                                     activeRowSpans[spannedColumnIndex] = rowSpan - 1;
-                                    Debug.Assert((int)activeRowSpans[spannedColumnIndex] >= 0);
+                                    Debug.Assert((int) activeRowSpans[spannedColumnIndex] >= 0);
                                 }
 
                                 columnIndex = nextColumnIndex;
@@ -1685,18 +1702,19 @@ namespace CalDavSynchronizer.Conversions.Msft
 
                                 if (columnIndex < activeRowSpans.Count)
                                 {
-                                    Debug.Assert((double)columnStarts[columnIndex] >= columnStart);
-                                    if ((double)columnStarts[columnIndex] == columnStart)
+                                    Debug.Assert((double) columnStarts[columnIndex] >= columnStart);
+                                    if ((double) columnStarts[columnIndex] == columnStart)
                                     {
                                         // The new column may be in a spanned area
-                                        while (columnIndex < activeRowSpans.Count && (int)activeRowSpans[columnIndex] > 0)
+                                        while (columnIndex < activeRowSpans.Count && (int) activeRowSpans[columnIndex] > 0)
                                         {
-                                            activeRowSpans[columnIndex] = (int)activeRowSpans[columnIndex] - 1;
-                                            Debug.Assert((int)activeRowSpans[columnIndex] >= 0);
+                                            activeRowSpans[columnIndex] = (int) activeRowSpans[columnIndex] - 1;
+                                            Debug.Assert((int) activeRowSpans[columnIndex] >= 0);
                                             columnIndex++;
-                                            columnStart = (double)columnStarts[columnIndex];
+                                            columnStart = (double) columnStarts[columnIndex];
                                         }
                                     }
+
                                     // else: the new column does not start at the same time as a pre existing column
                                     // so we don't have to check it for active row spans, it starts in the middle
                                     // of another column which has been checked already by the GetNextColumnIndex function
@@ -1714,6 +1732,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                             // Incorrect column width, stop processing
                             columnWidthsAvailable = false;
                         }
+
                         break;
                     default:
                         break;
@@ -1748,7 +1767,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             string rowSpanAsString;
             int rowSpan;
 
-            rowSpanAsString = GetAttribute((XmlElement)htmlTDElement, "rowspan");
+            rowSpanAsString = GetAttribute((XmlElement) htmlTDElement, "rowspan");
             if (rowSpanAsString != null)
             {
                 if (!Int32.TryParse(rowSpanAsString, out rowSpan))
@@ -1762,6 +1781,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                 // No row span, default is 1
                 rowSpan = 1;
             }
+
             return rowSpan;
         }
 
@@ -1792,12 +1812,12 @@ namespace CalDavSynchronizer.Conversions.Msft
             Debug.Assert(0 <= columnIndex && columnIndex <= columnStarts.Count);
             Debug.Assert(columnWidth > 0);
 
-            columnStart = (double)columnStarts[columnIndex];
+            columnStart = (double) columnStarts[columnIndex];
             spannedColumnIndex = columnIndex + 1;
 
-            while (spannedColumnIndex < columnStarts.Count && (double)columnStarts[spannedColumnIndex] < columnStart + columnWidth && spannedColumnIndex != -1)
+            while (spannedColumnIndex < columnStarts.Count && (double) columnStarts[spannedColumnIndex] < columnStart + columnWidth && spannedColumnIndex != -1)
             {
-                if ((int)activeRowSpans[spannedColumnIndex] > 0)
+                if ((int) activeRowSpans[spannedColumnIndex] > 0)
                 {
                     // The current column should span this area, but something else is already spanning it
                     // Not analyzable
@@ -1812,7 +1832,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             return spannedColumnIndex;
         }
 
-        
+
         /// <summary>
         /// Used for clearing activeRowSpans array in the beginning/end of each tbody
         /// </summary>
@@ -1859,12 +1879,12 @@ namespace CalDavSynchronizer.Conversions.Msft
         {
             double columnWidth;
             double nextColumnStart;
-            
+
             // Parameter validation
             Debug.Assert(htmlTDElement.LocalName.ToLower() == "td" || htmlTDElement.LocalName.ToLower() == "th");
             Debug.Assert(columnStart >= 0);
 
-            nextColumnStart = -1;  // -1 indicates inability to calculate columnStart width
+            nextColumnStart = -1; // -1 indicates inability to calculate columnStart width
 
             columnWidth = GetColumnWidth(htmlTDElement);
 
@@ -1901,6 +1921,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             {
                 columnWidth = -1;
             }
+
             return columnWidth;
         }
 
@@ -1927,7 +1948,7 @@ namespace CalDavSynchronizer.Conversions.Msft
 
             Debug.Assert(columnStarts != null);
             Debug.Assert(columnIndex < columnStarts.Count - 1);
-            Debug.Assert((double)columnStarts[columnIndex] >= 0);
+            Debug.Assert((double) columnStarts[columnIndex] >= 0);
             Debug.Assert(columnWidth > 0);
 
             columnSpanningIndex = columnIndex;
@@ -1935,9 +1956,9 @@ namespace CalDavSynchronizer.Conversions.Msft
             columnSpan = 0;
             subColumnWidth = 0;
 
-            while (columnSpanningValue <  columnWidth && columnSpanningIndex < columnStarts.Count - 1)
+            while (columnSpanningValue < columnWidth && columnSpanningIndex < columnStarts.Count - 1)
             {
-                subColumnWidth = (double)columnStarts[columnSpanningIndex + 1] - (double)columnStarts[columnSpanningIndex];
+                subColumnWidth = (double) columnStarts[columnSpanningIndex + 1] - (double) columnStarts[columnSpanningIndex];
                 Debug.Assert(subColumnWidth > 0);
                 columnSpanningValue += subColumnWidth;
                 columnSpanningIndex++;
@@ -1968,8 +1989,8 @@ namespace CalDavSynchronizer.Conversions.Msft
 
             for (int columnIndex = 0; columnIndex < columnStarts.Count; columnIndex++)
             {
-                Debug.Assert(columnStart < (double)columnStarts[columnIndex]);
-                columnStart = (double)columnStarts[columnIndex];
+                Debug.Assert(columnStart < (double) columnStarts[columnIndex]);
+                columnStart = (double) columnStarts[columnIndex];
             }
         }
 
@@ -2013,48 +2034,50 @@ namespace CalDavSynchronizer.Conversions.Msft
             IDictionaryEnumerator propertyEnumerator = localProperties.GetEnumerator();
             while (propertyEnumerator.MoveNext())
             {
-                switch ((string)propertyEnumerator.Key)
+                switch ((string) propertyEnumerator.Key)
                 {
                     case "font-family":
                         //  Convert from font-family value list into xaml FontFamily value
-                        xamlElement.SetAttribute(Xaml_FontFamily, (string)propertyEnumerator.Value);
+                        xamlElement.SetAttribute(Xaml_FontFamily, (string) propertyEnumerator.Value);
                         break;
                     case "font-style":
-                        xamlElement.SetAttribute(Xaml_FontStyle, (string)propertyEnumerator.Value);
+                        xamlElement.SetAttribute(Xaml_FontStyle, (string) propertyEnumerator.Value);
                         break;
                     case "font-variant":
                         //  Convert from font-variant into xaml property
                         break;
                     case "font-weight":
-                        xamlElement.SetAttribute(Xaml_FontWeight, (string)propertyEnumerator.Value);
+                        xamlElement.SetAttribute(Xaml_FontWeight, (string) propertyEnumerator.Value);
                         break;
                     case "font-size":
                         //  Convert from css size into FontSize
-                        xamlElement.SetAttribute(Xaml_FontSize, (string)propertyEnumerator.Value);
+                        xamlElement.SetAttribute(Xaml_FontSize, (string) propertyEnumerator.Value);
                         break;
                     case "color":
-                        SetPropertyValue(xamlElement, TextElement.ForegroundProperty, (string)propertyEnumerator.Value);
+                        SetPropertyValue(xamlElement, TextElement.ForegroundProperty, (string) propertyEnumerator.Value);
                         break;
                     case "background-color":
-                        SetPropertyValue(xamlElement, TextElement.BackgroundProperty, (string)propertyEnumerator.Value);
+                        SetPropertyValue(xamlElement, TextElement.BackgroundProperty, (string) propertyEnumerator.Value);
                         break;
                     case "text-decoration-underline":
                         if (!isBlock)
                         {
-                            if ((string)propertyEnumerator.Value == "true")
+                            if ((string) propertyEnumerator.Value == "true")
                             {
                                 xamlElement.SetAttribute(Xaml_TextDecorations, Xaml_TextDecorations_Underline);
                             }
                         }
+
                         break;
                     case "text-decoration-line-through":
                         if (!isBlock)
                         {
-                            if ((string)propertyEnumerator.Value == "true")
+                            if ((string) propertyEnumerator.Value == "true")
                             {
                                 xamlElement.SetAttribute(Xaml_TextDecorations, Xaml_TextDecorations_Strikethrough);
                             }
                         }
+
                         break;
                     case "text-decoration-none":
                     case "text-decoration-overline":
@@ -2063,6 +2086,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                         if (!isBlock)
                         {
                         }
+
                         break;
                     case "text-transform":
                         //  Convert from text-transform into xaml property
@@ -2071,15 +2095,17 @@ namespace CalDavSynchronizer.Conversions.Msft
                     case "text-indent":
                         if (isBlock)
                         {
-                            xamlElement.SetAttribute(Xaml_TextIndent, (string)propertyEnumerator.Value);
+                            xamlElement.SetAttribute(Xaml_TextIndent, (string) propertyEnumerator.Value);
                         }
+
                         break;
 
                     case "text-align":
                         if (isBlock)
                         {
-                            xamlElement.SetAttribute(Xaml_TextAlignment, (string)propertyEnumerator.Value);
+                            xamlElement.SetAttribute(Xaml_TextAlignment, (string) propertyEnumerator.Value);
                         }
+
                         break;
 
                     case "width":
@@ -2089,51 +2115,51 @@ namespace CalDavSynchronizer.Conversions.Msft
 
                     case "margin-top":
                         marginSet = true;
-                        marginTop = (string)propertyEnumerator.Value;
+                        marginTop = (string) propertyEnumerator.Value;
                         break;
                     case "margin-right":
                         marginSet = true;
-                        marginRight = (string)propertyEnumerator.Value;
+                        marginRight = (string) propertyEnumerator.Value;
                         break;
                     case "margin-bottom":
                         marginSet = true;
-                        marginBottom = (string)propertyEnumerator.Value;
+                        marginBottom = (string) propertyEnumerator.Value;
                         break;
                     case "margin-left":
                         marginSet = true;
-                        marginLeft = (string)propertyEnumerator.Value;
+                        marginLeft = (string) propertyEnumerator.Value;
                         break;
 
                     case "padding-top":
                         paddingSet = true;
-                        paddingTop = (string)propertyEnumerator.Value;
+                        paddingTop = (string) propertyEnumerator.Value;
                         break;
                     case "padding-right":
                         paddingSet = true;
-                        paddingRight = (string)propertyEnumerator.Value;
+                        paddingRight = (string) propertyEnumerator.Value;
                         break;
                     case "padding-bottom":
                         paddingSet = true;
-                        paddingBottom = (string)propertyEnumerator.Value;
+                        paddingBottom = (string) propertyEnumerator.Value;
                         break;
                     case "padding-left":
                         paddingSet = true;
-                        paddingLeft = (string)propertyEnumerator.Value;
+                        paddingLeft = (string) propertyEnumerator.Value;
                         break;
 
                     // NOTE: css names for elementary border styles have side indications in the middle (top/bottom/left/right)
                     // In our internal notation we intentionally put them at the end - to unify processing in ParseCssRectangleProperty method
                     case "border-color-top":
-                        borderColor = (string)propertyEnumerator.Value;
+                        borderColor = (string) propertyEnumerator.Value;
                         break;
                     case "border-color-right":
-                        borderColor = (string)propertyEnumerator.Value;
+                        borderColor = (string) propertyEnumerator.Value;
                         break;
                     case "border-color-bottom":
-                        borderColor = (string)propertyEnumerator.Value;
+                        borderColor = (string) propertyEnumerator.Value;
                         break;
                     case "border-color-left":
-                        borderColor = (string)propertyEnumerator.Value;
+                        borderColor = (string) propertyEnumerator.Value;
                         break;
                     case "border-style-top":
                     case "border-style-right":
@@ -2143,26 +2169,26 @@ namespace CalDavSynchronizer.Conversions.Msft
                         break;
                     case "border-width-top":
                         borderThicknessSet = true;
-                        borderThicknessTop = (string)propertyEnumerator.Value;
+                        borderThicknessTop = (string) propertyEnumerator.Value;
                         break;
                     case "border-width-right":
                         borderThicknessSet = true;
-                        borderThicknessRight = (string)propertyEnumerator.Value;
+                        borderThicknessRight = (string) propertyEnumerator.Value;
                         break;
                     case "border-width-bottom":
                         borderThicknessSet = true;
-                        borderThicknessBottom = (string)propertyEnumerator.Value;
+                        borderThicknessBottom = (string) propertyEnumerator.Value;
                         break;
                     case "border-width-left":
                         borderThicknessSet = true;
-                        borderThicknessLeft = (string)propertyEnumerator.Value;
+                        borderThicknessLeft = (string) propertyEnumerator.Value;
                         break;
 
                     case "list-style-type":
                         if (xamlElement.LocalName == Xaml_List)
                         {
                             string markerStyle;
-                            switch (((string)propertyEnumerator.Value).ToLower())
+                            switch (((string) propertyEnumerator.Value).ToLower())
                             {
                                 case "disc":
                                     markerStyle = HtmlToXamlConverter.Xaml_List_MarkerStyle_Disc;
@@ -2198,8 +2224,10 @@ namespace CalDavSynchronizer.Conversions.Msft
                                     markerStyle = HtmlToXamlConverter.Xaml_List_MarkerStyle_Disc;
                                     break;
                             }
+
                             xamlElement.SetAttribute(HtmlToXamlConverter.Xaml_List_MarkerStyle, markerStyle);
                         }
+
                         break;
 
                     case "float":
@@ -2208,6 +2236,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                         {
                             //  Convert float and clear properties
                         }
+
                         break;
 
                     case "display":
@@ -2217,18 +2246,19 @@ namespace CalDavSynchronizer.Conversions.Msft
 
             if (isBlock)
             {
-              if (marginSet)
-              {
-                ComposeThicknessProperty(xamlElement, Xaml_Margin, marginLeft, marginRight, marginTop, marginBottom);
-              }
+                if (marginSet)
+                {
+                    ComposeThicknessProperty(xamlElement, Xaml_Margin, marginLeft, marginRight, marginTop, marginBottom);
+                }
 
-              if (paddingSet)
-              {
-                ComposeThicknessProperty(xamlElement, Xaml_Padding, paddingLeft, paddingRight, paddingTop, paddingBottom);
-              }
+                if (paddingSet)
+                {
+                    ComposeThicknessProperty(xamlElement, Xaml_Padding, paddingLeft, paddingRight, paddingTop, paddingBottom);
+                }
             }
+
             if (isBlock || isTableCell)
-            { 
+            {
                 if (borderColor != null)
                 {
                     //  We currently ignore possible difference in brush colors on different border sides. Use the last colored side mentioned
@@ -2292,7 +2322,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                     xamlElement.SetAttribute(property.Name, stringValue);
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
             }
         }
@@ -2330,7 +2360,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             string elementName = htmlElement.LocalName.ToLower();
             string elementNamespace = htmlElement.NamespaceURI;
 
-      // update current formatting properties depending on element tag
+            // update current formatting properties depending on element tag
 
             var numberFormatInfo = new NumberFormatInfo();
             numberFormatInfo.NumberDecimalSeparator = ".";
@@ -2366,6 +2396,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                     {
                         localProperties["font-family"] = attributeValue;
                     }
+
                     attributeValue = GetAttribute(htmlElement, "size");
                     if (attributeValue != null)
                     {
@@ -2378,13 +2409,16 @@ namespace CalDavSynchronizer.Conversions.Msft
                         {
                             fontSize = 1000.0;
                         }
-                        localProperties["font-size"] = fontSize.ToString (numberFormatInfo);
+
+                        localProperties["font-size"] = fontSize.ToString(numberFormatInfo);
                     }
+
                     attributeValue = GetAttribute(htmlElement, "color");
                     if (attributeValue != null)
                     {
                         localProperties["color"] = attributeValue;
                     }
+
                     break;
                 case "samp":
                     localProperties["font-family"] = "Courier New"; // code sample
@@ -2398,7 +2432,7 @@ namespace CalDavSynchronizer.Conversions.Msft
 
                 // Hyperlinks
                 case "a": // href, hreflang, urn, methods, rel, rev, title
-                          //  Set default hyperlink properties
+                    //  Set default hyperlink properties
                     break;
                 case "acronym":
                     break;
@@ -2464,6 +2498,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                     {
                         localProperties["list-style-type"] = "upper-roman";
                     }
+
                     break;
                 case "table":
                     attributeValue = GetAttribute(htmlElement, "border");
@@ -2474,8 +2509,9 @@ namespace CalDavSynchronizer.Conversions.Msft
                         localProperties["border-width-bottom"] = attributeValue;
                         localProperties["border-width-left"] = attributeValue;
                     }
+
                     break;
-        case "body":
+                case "body":
                 case "html":
                     break;
             }
@@ -2618,11 +2654,12 @@ namespace CalDavSynchronizer.Conversions.Msft
             // set default border thickness for xamlTableCellElement to enable gridlines
             xamlTableCellElement.SetAttribute(Xaml_TableCell_BorderThickness, "1,1,1,1");
             xamlTableCellElement.SetAttribute(Xaml_TableCell_BorderBrush, Xaml_Brushes_Gray);
-            string rowSpanString = GetAttribute((XmlElement)htmlChildNode, "rowspan");
+            string rowSpanString = GetAttribute((XmlElement) htmlChildNode, "rowspan");
             if (rowSpanString != null)
             {
                 xamlTableCellElement.SetAttribute(Xaml_TableCell_RowSpan, rowSpanString);
             }
+
             ApplyLocalProperties(xamlTableCellElement, localProperties, false, true);
         }
 
@@ -2690,11 +2727,11 @@ namespace CalDavSynchronizer.Conversions.Msft
 
         public const string Xaml_FontSize = "FontSize";
         public const string Xaml_FontSize_XXLarge = "22pt"; // "XXLarge";
-        public const string Xaml_FontSize_XLarge  = "20pt"; // "XLarge";
-        public const string Xaml_FontSize_Large   = "18pt"; // "Large";
-        public const string Xaml_FontSize_Medium  = "16pt"; // "Medium";
-        public const string Xaml_FontSize_Small   = "12pt"; // "Small";
-        public const string Xaml_FontSize_XSmall  = "10pt"; // "XSmall";
+        public const string Xaml_FontSize_XLarge = "20pt"; // "XLarge";
+        public const string Xaml_FontSize_Large = "18pt"; // "Large";
+        public const string Xaml_FontSize_Medium = "16pt"; // "Medium";
+        public const string Xaml_FontSize_Small = "12pt"; // "Small";
+        public const string Xaml_FontSize_XSmall = "10pt"; // "XSmall";
         public const string Xaml_FontSize_XXSmall = "8pt"; // "XXSmall";
 
         public const string Xaml_FontWeight = "FontWeight";

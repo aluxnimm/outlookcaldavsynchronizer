@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -21,25 +22,25 @@ using GenSync.Logging;
 
 namespace GenSync.Synchronization
 {
-  /// <summary>
-  /// A Synchronizer :-P
-  /// </summary>
-  public interface IPartialSynchronizer<in TAtypeEntityId, in TAtypeEntityVersion, in TBtypeEntityId, in TBtypeEntityVersion> : ISynchronizer
-  {
-    Task SynchronizePartial(
-        IEnumerable<IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> aIds,
-        IEnumerable<IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> bIds,
-        ISynchronizationLogger logger);
-  }
+    /// <summary>
+    /// A Synchronizer :-P
+    /// </summary>
+    public interface IPartialSynchronizer<in TAtypeEntityId, in TAtypeEntityVersion, in TBtypeEntityId, in TBtypeEntityVersion> : ISynchronizer
+    {
+        Task SynchronizePartial(
+            IEnumerable<IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> aIds,
+            IEnumerable<IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> bIds,
+            ISynchronizationLogger logger);
+    }
 
-  public interface IPartialSynchronizer<in TAtypeEntityId, in TAtypeEntityVersion, in TBtypeEntityId, in TBtypeEntityVersion, TContext> 
-    : ISynchronizer<TContext>
-  {
-    Task<bool> SynchronizePartial(
-        IEnumerable<IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> aIds,
-        IEnumerable<IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> bIds,
-        ISynchronizationLogger logger,
-        Func<Task<TContext>> contextFactoryAsync,
-        Func<TContext,Task> syncronizationFinishedAsync);
-  }
+    public interface IPartialSynchronizer<in TAtypeEntityId, in TAtypeEntityVersion, in TBtypeEntityId, in TBtypeEntityVersion, TContext>
+        : ISynchronizer<TContext>
+    {
+        Task<bool> SynchronizePartial(
+            IEnumerable<IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> aIds,
+            IEnumerable<IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> bIds,
+            ISynchronizationLogger logger,
+            Func<Task<TContext>> contextFactoryAsync,
+            Func<TContext, Task> syncronizationFinishedAsync);
+    }
 }

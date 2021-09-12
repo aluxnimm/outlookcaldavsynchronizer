@@ -14,12 +14,13 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
 {
-  public class OptionsEventArgs : EventArgs
-  {
-    public Contracts.Options[] Options { get; set; }
-  }
+    public class OptionsEventArgs : EventArgs
+    {
+        public Contracts.Options[] Options { get; set; }
+    }
 }

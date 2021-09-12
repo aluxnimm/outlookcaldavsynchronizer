@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,14 +24,14 @@ using System.Windows.Media.Imaging;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification.Views
 {
-  /// <summary>
-  /// Interaction logic for ReportsView.xaml
-  /// </summary>
-  public partial class ProfileStatusesView : UserControl
-  {
-    public ProfileStatusesView ()
+    /// <summary>
+    /// Interaction logic for ReportsView.xaml
+    /// </summary>
+    public partial class ProfileStatusesView : UserControl
     {
-      InitializeComponent();
+        public ProfileStatusesView()
+        {
+            InitializeComponent();
+        }
     }
-  }
 }

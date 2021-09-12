@@ -21,11 +21,11 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  class EventEntityMatchDataFactory : IMatchDataFactory<IAppointmentItemWrapper, EventEntityMatchData>
-  {
-    public EventEntityMatchData CreateMatchData(IAppointmentItemWrapper entity)
+    class EventEntityMatchDataFactory : IMatchDataFactory<IAppointmentItemWrapper, EventEntityMatchData>
     {
-      return new EventEntityMatchData(entity.Inner);
+        public EventEntityMatchData CreateMatchData(IAppointmentItemWrapper entity)
+        {
+            return new EventEntityMatchData(entity.Inner);
+        }
     }
-  }
 }

@@ -14,25 +14,26 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using GenSync.Synchronization;
 
 namespace GenSync.Logging
 {
-  public interface ISynchronizationLogger :  IDisposable
-  {
-    ILoadEntityLogger ALoadEntityLogger { get; }
-    ILoadEntityLogger BLoadEntityLogger { get; }
-    IGetVersionsLogger AGetVersionsEntityLogger { get; }
-    IGetVersionsLogger BGetVersionsEntityLogger { get; }
+    public interface ISynchronizationLogger : IDisposable
+    {
+        ILoadEntityLogger ALoadEntityLogger { get; }
+        ILoadEntityLogger BLoadEntityLogger { get; }
+        IGetVersionsLogger AGetVersionsEntityLogger { get; }
+        IGetVersionsLogger BGetVersionsEntityLogger { get; }
 
-    void LogAbortedDueToError (Exception exception);
-    void LogAbortedDueToWarning(Exception exception);
+        void LogAbortedDueToError(Exception exception);
+        void LogAbortedDueToWarning(Exception exception);
 
-    void LogDeltas (VersionDeltaLoginInformation aDeltaLogInfo, VersionDeltaLoginInformation bDeltaLogInfo);
-    void LogJobs (string aJobsInfo, string bJobsInfo);
+        void LogDeltas(VersionDeltaLoginInformation aDeltaLogInfo, VersionDeltaLoginInformation bDeltaLogInfo);
+        void LogJobs(string aJobsInfo, string bJobsInfo);
 
-    ISynchronizationLogger CreateSubLogger(string subProfileName);
-    void AddEntitySynchronizationLog(IEntitySynchronizationLog log);
-  }
+        ISynchronizationLogger CreateSubLogger(string subProfileName);
+        void AddEntitySynchronizationLog(IEntitySynchronizationLog log);
+    }
 }

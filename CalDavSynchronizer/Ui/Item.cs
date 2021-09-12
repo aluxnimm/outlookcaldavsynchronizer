@@ -14,22 +14,23 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections;
 using System.Windows.Forms;
 
 namespace CalDavSynchronizer.Ui
 {
-  public class Item<TValue>
-  {
-    public TValue Value { get; private set; }
-
-    public string Name { get; private set; }
-
-    public Item (TValue value, string name)
+    public class Item<TValue>
     {
-      Value = value;
-      Name = name;
+        public TValue Value { get; private set; }
+
+        public string Name { get; private set; }
+
+        public Item(TValue value, string name)
+        {
+            Value = value;
+            Name = name;
+        }
     }
-  }
 }

@@ -30,137 +30,137 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 {
-  internal class EasyProjectServerSettingsTemplateViewModel : ModelBase, IServerSettingsTemplateViewModel
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
-
-    private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
-    private readonly OptionsModel _prototypeModel;
-
-
-    public EasyProjectServerSettingsTemplateViewModel (IOutlookAccountPasswordProvider outlookAccountPasswordProvider, OptionsModel prototypeModel)
+    internal class EasyProjectServerSettingsTemplateViewModel : ModelBase, IServerSettingsTemplateViewModel
     {
-      if (prototypeModel == null) throw new ArgumentNullException(nameof(prototypeModel));
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-      _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
-      _prototypeModel = prototypeModel;
+        private readonly IOutlookAccountPasswordProvider _outlookAccountPasswordProvider;
+        private readonly OptionsModel _prototypeModel;
 
-      RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.CalenderUrl), nameof(CalenderUrl));
-      RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.UserName), nameof(UserName));
-      RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.UseAccountPassword), nameof(UseAccountPassword));
-      RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.Password), nameof(Password));
-      RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.EmailAddress), nameof(EmailAddress));
+
+        public EasyProjectServerSettingsTemplateViewModel(IOutlookAccountPasswordProvider outlookAccountPasswordProvider, OptionsModel prototypeModel)
+        {
+            if (prototypeModel == null) throw new ArgumentNullException(nameof(prototypeModel));
+
+            _outlookAccountPasswordProvider = outlookAccountPasswordProvider;
+            _prototypeModel = prototypeModel;
+
+            RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.CalenderUrl), nameof(CalenderUrl));
+            RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.UserName), nameof(UserName));
+            RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.UseAccountPassword), nameof(UseAccountPassword));
+            RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.Password), nameof(Password));
+            RegisterPropertyChangePropagation(prototypeModel, nameof(prototypeModel.EmailAddress), nameof(EmailAddress));
+        }
+
+        public string CalenderUrl
+        {
+            get { return _prototypeModel.CalenderUrl; }
+            set { _prototypeModel.CalenderUrl = value; }
+        }
+
+        public string UserName
+        {
+            get { return _prototypeModel.UserName; }
+            set { _prototypeModel.UserName = value; }
+        }
+
+        public bool UseAccountPassword
+        {
+            get { return _prototypeModel.UseAccountPassword; }
+            set { _prototypeModel.UseAccountPassword = value; }
+        }
+
+        public SecureString Password
+        {
+            get { return _prototypeModel.Password; }
+            set { _prototypeModel.Password = value; }
+        }
+
+        public string EmailAddress
+        {
+            get { return _prototypeModel.EmailAddress; }
+            set { _prototypeModel.EmailAddress = value; }
+        }
+
+        public void SetResourceUrl(OptionsModel options, CalendarData resource)
+        {
+            options.CalenderUrl = resource.Uri.ToString();
+        }
+
+        public void SetResourceUrl(OptionsModel options, AddressBookData resource)
+        {
+            options.CalenderUrl = resource.Uri.ToString();
+        }
+
+        public void SetResourceUrl(OptionsModel options, TaskListData resource)
+        {
+            options.CalenderUrl = resource.Id;
+        }
+
+
+        public async Task<ServerResources> GetServerResources()
+        {
+            string caldavUrlString;
+            string carddavUrlString;
+
+            if (string.IsNullOrEmpty(CalenderUrl) && !string.IsNullOrEmpty(EmailAddress))
+            {
+                bool success;
+                caldavUrlString = OptionTasks.DoSrvLookup(EmailAddress, OlItemType.olAppointmentItem, out success);
+                carddavUrlString = OptionTasks.DoSrvLookup(EmailAddress, OlItemType.olContactItem, out success);
+            }
+            else
+            {
+                caldavUrlString = CalenderUrl;
+                carddavUrlString = CalenderUrl;
+            }
+
+            var trimmedCaldavUrl = caldavUrlString.Trim();
+            var caldavUrl = new Uri(trimmedCaldavUrl.EndsWith("/") ? trimmedCaldavUrl : trimmedCaldavUrl + "/");
+
+            var trimmedCarddavUrl = carddavUrlString.Trim();
+            var carddavUrl = new Uri(trimmedCarddavUrl.EndsWith("/") ? trimmedCarddavUrl : trimmedCarddavUrl + "/");
+
+            var webDavClientCaldav = _prototypeModel.CreateWebDavClient(new Uri(trimmedCaldavUrl));
+            var webDavClientCarddav = _prototypeModel.CreateWebDavClient(new Uri(trimmedCarddavUrl));
+            var calDavDataAccess = new CalDavDataAccess(caldavUrl, webDavClientCaldav);
+            var cardDavDataAccess = new CardDavDataAccess(carddavUrl, webDavClientCarddav, string.Empty, contentType => true);
+
+            return await GetUserResources(calDavDataAccess, cardDavDataAccess);
+        }
+
+        public void DiscoverAccountServerSettings()
+        {
+            var serverAccountSettings = _outlookAccountPasswordProvider.GetAccountServerSettings(null);
+            EmailAddress = serverAccountSettings.EmailAddress;
+            string path = !string.IsNullOrEmpty(CalenderUrl) ? new Uri(CalenderUrl).AbsolutePath : string.Empty;
+
+            bool success;
+            var dnsDiscoveredUrl = OptionTasks.DoSrvLookup(EmailAddress, OlItemType.olAppointmentItem, out success);
+            CalenderUrl = success ? dnsDiscoveredUrl : "https://" + serverAccountSettings.ServerString + path;
+            UserName = serverAccountSettings.UserName;
+            UseAccountPassword = true;
+        }
+
+        private static async Task<ServerResources> GetUserResources(CalDavDataAccess calDavDataAccess, CardDavDataAccess cardDavDataAccess)
+        {
+            var calDavResources = await calDavDataAccess.GetUserResourcesIncludingCalendarProxies(true);
+            if (calDavResources.CalendarResources.Count == 0 && calDavResources.TaskListResources.Count == 0)
+                calDavResources = await calDavDataAccess.GetUserResourcesIncludingCalendarProxies(false);
+            var foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow(true);
+            if (foundAddressBooks.Count == 0)
+                foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow(false);
+            return new ServerResources(calDavResources.CalendarResources, foundAddressBooks, calDavResources.TaskListResources);
+        }
+
+
+        public static EasyProjectServerSettingsTemplateViewModel DesignInstance = new EasyProjectServerSettingsTemplateViewModel(NullOutlookAccountPasswordProvider.Instance, OptionsModel.DesignInstance)
+        {
+            CalenderUrl = "http://bulkurl",
+            EmailAddress = "bulkemail",
+            UseAccountPassword = true,
+            Password = SecureStringUtility.ToSecureString("bulkpwd"),
+            UserName = "username",
+        };
     }
-
-    public string CalenderUrl
-    {
-      get { return _prototypeModel.CalenderUrl; }
-      set { _prototypeModel.CalenderUrl = value; }
-    }
-
-    public string UserName
-    {
-      get { return _prototypeModel.UserName; }
-      set { _prototypeModel.UserName = value; }
-    }
-
-    public bool UseAccountPassword
-    {
-      get { return _prototypeModel.UseAccountPassword; }
-      set { _prototypeModel.UseAccountPassword = value; }
-    }
-
-    public SecureString Password
-    {
-      get { return _prototypeModel.Password; }
-      set { _prototypeModel.Password = value; }
-    }
-
-    public string EmailAddress
-    {
-      get { return _prototypeModel.EmailAddress; }
-      set { _prototypeModel.EmailAddress = value; }
-    }
-
-    public void SetResourceUrl(OptionsModel options, CalendarData resource)
-    {
-      options.CalenderUrl = resource.Uri.ToString();
-    }
-
-    public void SetResourceUrl(OptionsModel options, AddressBookData resource)
-    {
-      options.CalenderUrl = resource.Uri.ToString();
-    }
-
-    public void SetResourceUrl(OptionsModel options, TaskListData resource)
-    {
-      options.CalenderUrl = resource.Id;
-    }
-
-    
-    public async Task<ServerResources> GetServerResources ()
-    {
-      string caldavUrlString ;
-      string carddavUrlString;
-
-      if (string.IsNullOrEmpty (CalenderUrl) && !string.IsNullOrEmpty (EmailAddress))
-      {
-        bool success;
-        caldavUrlString = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olAppointmentItem, out success);
-        carddavUrlString = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olContactItem, out success);
-      }
-      else
-      {
-        caldavUrlString = CalenderUrl;
-        carddavUrlString = CalenderUrl;
-      }
-
-      var trimmedCaldavUrl = caldavUrlString.Trim();
-      var caldavUrl = new Uri (trimmedCaldavUrl.EndsWith ("/") ? trimmedCaldavUrl : trimmedCaldavUrl + "/");
-
-      var trimmedCarddavUrl = carddavUrlString.Trim();
-      var carddavUrl = new Uri (trimmedCarddavUrl.EndsWith("/") ? trimmedCarddavUrl : trimmedCarddavUrl + "/");
-
-      var webDavClientCaldav = _prototypeModel.CreateWebDavClient(new Uri(trimmedCaldavUrl));
-      var webDavClientCarddav = _prototypeModel.CreateWebDavClient (new Uri(trimmedCarddavUrl));
-      var calDavDataAccess = new CalDavDataAccess (caldavUrl, webDavClientCaldav);
-      var cardDavDataAccess = new CardDavDataAccess (carddavUrl, webDavClientCarddav, string.Empty, contentType => true);
-
-      return await GetUserResources (calDavDataAccess, cardDavDataAccess);
-    }
-
-    public void DiscoverAccountServerSettings()
-    {
-      var serverAccountSettings = _outlookAccountPasswordProvider.GetAccountServerSettings (null);
-      EmailAddress = serverAccountSettings.EmailAddress;
-      string path = !string.IsNullOrEmpty (CalenderUrl) ? new Uri (CalenderUrl).AbsolutePath : string.Empty; 
-  
-      bool success;
-      var dnsDiscoveredUrl = OptionTasks.DoSrvLookup (EmailAddress, OlItemType.olAppointmentItem, out success);
-      CalenderUrl = success ? dnsDiscoveredUrl : "https://" + serverAccountSettings.ServerString+path;
-      UserName = serverAccountSettings.UserName;
-      UseAccountPassword = true;
-    }
-
-    private static async Task<ServerResources> GetUserResources (CalDavDataAccess calDavDataAccess, CardDavDataAccess cardDavDataAccess)
-    {
-      var calDavResources = await calDavDataAccess.GetUserResourcesIncludingCalendarProxies (true);
-      if (calDavResources.CalendarResources.Count == 0 && calDavResources.TaskListResources.Count == 0)
-        calDavResources = await calDavDataAccess.GetUserResourcesIncludingCalendarProxies (false);
-      var foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (true);
-      if (foundAddressBooks.Count == 0)
-        foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow (false);
-      return new ServerResources (calDavResources.CalendarResources, foundAddressBooks, calDavResources.TaskListResources);
-    }
-
-
-    public static EasyProjectServerSettingsTemplateViewModel DesignInstance = new EasyProjectServerSettingsTemplateViewModel (NullOutlookAccountPasswordProvider.Instance, OptionsModel.DesignInstance)
-                                                                   {
-                                                                       CalenderUrl = "http://bulkurl",
-                                                                       EmailAddress = "bulkemail",
-                                                                       UseAccountPassword = true,
-                                                                       Password = SecureStringUtility.ToSecureString ("bulkpwd"),
-                                                                       UserName = "username",
-                                                                   };
-  }
 }

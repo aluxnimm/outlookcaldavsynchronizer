@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -26,21 +27,21 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
 {
-  public class DistListEntityMapper : DistListEntityMapperBase
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod ().DeclaringType);
-
-    protected override vCardMember CreateVCardMemberOrNull(GenericComObjectWrapper<Recipient> recipientWrapper, string nameWithoutEmail, DistributionListSychronizationContext context, IEntitySynchronizationLogger synchronizationLogger, ILog logger)
+    public class DistListEntityMapper : DistListEntityMapperBase
     {
-      var targetMember = new vCardMember();
-      targetMember.EmailAddress = recipientWrapper.Inner.Address;
-      targetMember.DisplayName = nameWithoutEmail;
-      return targetMember;
-    }
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
 
-    protected override IEnumerable<DistributionListMember> GetMembers(vCard source, DistributionListSychronizationContext context, IEntitySynchronizationLogger synchronizationLogger, ILog logger)
-    {
-      return source.Members.Select(v => new DistributionListMember(v.EmailAddress, v.DisplayName));
+        protected override vCardMember CreateVCardMemberOrNull(GenericComObjectWrapper<Recipient> recipientWrapper, string nameWithoutEmail, DistributionListSychronizationContext context, IEntitySynchronizationLogger synchronizationLogger, ILog logger)
+        {
+            var targetMember = new vCardMember();
+            targetMember.EmailAddress = recipientWrapper.Inner.Address;
+            targetMember.DisplayName = nameWithoutEmail;
+            return targetMember;
+        }
+
+        protected override IEnumerable<DistributionListMember> GetMembers(vCard source, DistributionListSychronizationContext context, IEntitySynchronizationLogger synchronizationLogger, ILog logger)
+        {
+            return source.Members.Select(v => new DistributionListMember(v.EmailAddress, v.DisplayName));
+        }
     }
-  }
 }

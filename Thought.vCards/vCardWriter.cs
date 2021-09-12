@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -12,7 +11,6 @@ using System.Text;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     Base class for vCard generators.
     /// </summary>
@@ -20,8 +18,6 @@ namespace Thought.vCards
     /// <seealso cref="vCardStandardWriter"/>
     public abstract class vCardWriter
     {
-
-
         /// <summary>
         ///     Holds output warnings.
         /// </summary>
@@ -34,10 +30,7 @@ namespace Thought.vCards
         /// </summary>
         public StringCollection Warnings
         {
-            get
-            {
-                return this.warnings;
-            }
+            get { return this.warnings; }
         }
 
 
@@ -65,7 +58,6 @@ namespace Thought.vCards
         /// </summary>
         public virtual void Write(vCard card, string filename)
         {
-
             if (card == null)
                 throw new ArgumentNullException("card");
 
@@ -73,9 +65,6 @@ namespace Thought.vCards
             {
                 Write(card, output);
             }
-
         }
-
     }
-
 }

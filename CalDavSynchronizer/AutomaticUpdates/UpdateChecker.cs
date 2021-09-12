@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,94 +26,94 @@ using log4net;
 
 namespace CalDavSynchronizer.AutomaticUpdates
 {
-  public class UpdateChecker
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-
-    private readonly IAvailableVersionService _availableVersionService;
-    private readonly Object _timerLock = new object();
-    private readonly Timer _timer;
-    private bool _isEnabled;
-    private readonly Func<Version> _ignoreUpdatesTilVersionProvider;
-
-    public event EventHandler<NewerVersionFoundEventArgs> NewerVersionFound;
-
-    protected virtual void OnNewerVersionFound (NewerVersionFoundEventArgs e)
+    public class UpdateChecker
     {
-      var handler = NewerVersionFound;
-      if (handler != null)
-        handler (this, e);
-    }
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public UpdateChecker (IAvailableVersionService availableVersionService, Func<Version> ignoreUpdatesTilVersionProvider)
-    {
-      if (availableVersionService == null)
-        throw new ArgumentNullException ("availableVersionService");
-      if (ignoreUpdatesTilVersionProvider == null)
-        throw new ArgumentNullException ("ignoreUpdatesTilVersionProvider");
+        private readonly IAvailableVersionService _availableVersionService;
+        private readonly Object _timerLock = new object();
+        private readonly Timer _timer;
+        private bool _isEnabled;
+        private readonly Func<Version> _ignoreUpdatesTilVersionProvider;
 
-      _availableVersionService = availableVersionService;
-      _ignoreUpdatesTilVersionProvider = ignoreUpdatesTilVersionProvider;
+        public event EventHandler<NewerVersionFoundEventArgs> NewerVersionFound;
 
-      _timer = new Timer (Timer_Elapsed);
-    }
-
-    public bool IsEnabled
-    {
-      get { return _isEnabled; }
-      set
-      {
-        if (value != _isEnabled)
+        protected virtual void OnNewerVersionFound(NewerVersionFoundEventArgs e)
         {
-          if (value)
-          {
-            _timer.Change (TimeSpan.FromSeconds (10), TimeSpan.FromDays (1));
-          }
-          else
-          {
-            lock (_timerLock)
+            var handler = NewerVersionFound;
+            if (handler != null)
+                handler(this, e);
+        }
+
+        public UpdateChecker(IAvailableVersionService availableVersionService, Func<Version> ignoreUpdatesTilVersionProvider)
+        {
+            if (availableVersionService == null)
+                throw new ArgumentNullException("availableVersionService");
+            if (ignoreUpdatesTilVersionProvider == null)
+                throw new ArgumentNullException("ignoreUpdatesTilVersionProvider");
+
+            _availableVersionService = availableVersionService;
+            _ignoreUpdatesTilVersionProvider = ignoreUpdatesTilVersionProvider;
+
+            _timer = new Timer(Timer_Elapsed);
+        }
+
+        public bool IsEnabled
+        {
+            get { return _isEnabled; }
+            set
             {
-              _timer.Change (Timeout.Infinite, Timeout.Infinite);
+                if (value != _isEnabled)
+                {
+                    if (value)
+                    {
+                        _timer.Change(TimeSpan.FromSeconds(10), TimeSpan.FromDays(1));
+                    }
+                    else
+                    {
+                        lock (_timerLock)
+                        {
+                            _timer.Change(Timeout.Infinite, Timeout.Infinite);
+                        }
+                    }
+
+                    _isEnabled = value;
+                }
             }
-          }
-
-          _isEnabled = value;
         }
-      }
+
+        private void Timer_Elapsed(object _)
+        {
+            try
+            {
+                var availableVersion = _availableVersionService.GetVersionOfDefaultDownload();
+                if (availableVersion == null)
+                {
+                    s_logger.Error("Did not find any default Version!");
+                    return;
+                }
+
+                var ignoreUpdatesTilVersion = _ignoreUpdatesTilVersionProvider();
+                if (ignoreUpdatesTilVersion != null
+                    && availableVersion <= ignoreUpdatesTilVersion)
+                {
+                    return;
+                }
+
+                var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                if (availableVersion > currentVersion)
+                {
+                    OnNewerVersionFound(
+                        new NewerVersionFoundEventArgs(
+                            availableVersion,
+                            _availableVersionService.GetWhatsNewNoThrow(currentVersion, availableVersion),
+                            _availableVersionService.DownloadLink));
+                }
+            }
+            catch (Exception x)
+            {
+                s_logger.Error(null, x);
+            }
+        }
     }
-
-    private void Timer_Elapsed (object _)
-    {
-      try
-      {
-        var availableVersion = _availableVersionService.GetVersionOfDefaultDownload();
-        if (availableVersion == null)
-        {
-          s_logger.Error ("Did not find any default Version!");
-          return;
-        }
-
-        var ignoreUpdatesTilVersion = _ignoreUpdatesTilVersionProvider();
-        if (ignoreUpdatesTilVersion != null
-            && availableVersion <= ignoreUpdatesTilVersion)
-        {
-          return;
-        }
-
-        var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
-        if (availableVersion > currentVersion)
-        {
-          OnNewerVersionFound (
-              new NewerVersionFoundEventArgs (
-                  availableVersion,
-                  _availableVersionService.GetWhatsNewNoThrow (currentVersion, availableVersion),
-                  _availableVersionService.DownloadLink));
-        }
-      }
-      catch (Exception x)
-      {
-        s_logger.Error (null, x);
-      }
-    }
-  }
 }

@@ -32,56 +32,56 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class EventSynchronizationContextFactory : ISynchronizationContextFactory<IEventSynchronizationContext>
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-    private readonly OutlookEventRepository _outlookRepository;
-    private readonly IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> _btypeRepository;
-    private readonly IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> _entityRelationDataAccess;
-    private readonly bool _cleanupDuplicateEvents;
-    private readonly IEqualityComparer<AppointmentId> _idComparer;
-    private readonly IOutlookSession _outlookSession;
-    private readonly IColorCategoryMapperFactory _colorCategoryMapperFactory;
-
-    public EventSynchronizationContextFactory(OutlookEventRepository outlookRepository, IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> btypeRepository, IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess, bool cleanupDuplicateEvents, IEqualityComparer<AppointmentId> idComparer, IOutlookSession outlookSession, IColorCategoryMapperFactory colorCategoryMapperFactory)
+    public class EventSynchronizationContextFactory : ISynchronizationContextFactory<IEventSynchronizationContext>
     {
-      if (outlookRepository == null)
-        throw new ArgumentNullException (nameof (outlookRepository));
-      if (btypeRepository == null)
-        throw new ArgumentNullException (nameof (btypeRepository));
-      if (entityRelationDataAccess == null)
-        throw new ArgumentNullException (nameof (entityRelationDataAccess));
-      if (idComparer == null) throw new ArgumentNullException(nameof(idComparer));
-      if (outlookSession == null) throw new ArgumentNullException(nameof(outlookSession));
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-      _outlookRepository = outlookRepository;
-      _btypeRepository = btypeRepository;
-      _entityRelationDataAccess = entityRelationDataAccess;
-      _cleanupDuplicateEvents = cleanupDuplicateEvents;
-      _idComparer = idComparer;
-      _outlookSession = outlookSession;
-      _colorCategoryMapperFactory = colorCategoryMapperFactory;
-    }
+        private readonly OutlookEventRepository _outlookRepository;
+        private readonly IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> _btypeRepository;
+        private readonly IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> _entityRelationDataAccess;
+        private readonly bool _cleanupDuplicateEvents;
+        private readonly IEqualityComparer<AppointmentId> _idComparer;
+        private readonly IOutlookSession _outlookSession;
+        private readonly IColorCategoryMapperFactory _colorCategoryMapperFactory;
 
-    public Task<IEventSynchronizationContext> Create()
-    {
-      return Task.FromResult<IEventSynchronizationContext>(
-        new EventSynchronizationContext(
-          _cleanupDuplicateEvents
-            ? new DuplicateEventCleaner(
-              _outlookRepository,
-              _btypeRepository,
-              _entityRelationDataAccess,
-              _idComparer)
-            : NullDuplicateEventCleaner.Instance,
-          _colorCategoryMapperFactory.Create()));
-    }
-    
+        public EventSynchronizationContextFactory(OutlookEventRepository outlookRepository, IEntityRepository<WebResourceName, string, IICalendar, IEventSynchronizationContext> btypeRepository, IEntityRelationDataAccess<AppointmentId, DateTime, WebResourceName, string> entityRelationDataAccess, bool cleanupDuplicateEvents, IEqualityComparer<AppointmentId> idComparer, IOutlookSession outlookSession, IColorCategoryMapperFactory colorCategoryMapperFactory)
+        {
+            if (outlookRepository == null)
+                throw new ArgumentNullException(nameof(outlookRepository));
+            if (btypeRepository == null)
+                throw new ArgumentNullException(nameof(btypeRepository));
+            if (entityRelationDataAccess == null)
+                throw new ArgumentNullException(nameof(entityRelationDataAccess));
+            if (idComparer == null) throw new ArgumentNullException(nameof(idComparer));
+            if (outlookSession == null) throw new ArgumentNullException(nameof(outlookSession));
 
-    public async Task SynchronizationFinished (IEventSynchronizationContext context)
-    {
-      await context.DuplicateEventCleaner.NotifySynchronizationFinished();
+            _outlookRepository = outlookRepository;
+            _btypeRepository = btypeRepository;
+            _entityRelationDataAccess = entityRelationDataAccess;
+            _cleanupDuplicateEvents = cleanupDuplicateEvents;
+            _idComparer = idComparer;
+            _outlookSession = outlookSession;
+            _colorCategoryMapperFactory = colorCategoryMapperFactory;
+        }
+
+        public Task<IEventSynchronizationContext> Create()
+        {
+            return Task.FromResult<IEventSynchronizationContext>(
+                new EventSynchronizationContext(
+                    _cleanupDuplicateEvents
+                        ? new DuplicateEventCleaner(
+                            _outlookRepository,
+                            _btypeRepository,
+                            _entityRelationDataAccess,
+                            _idComparer)
+                        : NullDuplicateEventCleaner.Instance,
+                    _colorCategoryMapperFactory.Create()));
+        }
+
+
+        public async Task SynchronizationFinished(IEventSynchronizationContext context)
+        {
+            await context.DuplicateEventCleaner.NotifySynchronizationFinished();
+        }
     }
-  }
 }

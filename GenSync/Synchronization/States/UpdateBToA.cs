@@ -24,145 +24,145 @@ using log4net;
 
 namespace GenSync.Synchronization.States
 {
-  public class UpdateBToA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
-      : UpdateBase<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
-  {
-    // ReSharper disable once StaticFieldInGenericType
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-    private readonly TBtypeEntityVersion _newBVersion;
-    private readonly TAtypeEntityVersion _currentAVersion;
-    private IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> _loggerOrNull;
-
-    public UpdateBToA (
-        EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> environment,
-        IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData,
-        TBtypeEntityVersion newBVersion,
-        TAtypeEntityVersion currentAVersion)
-        : base (environment, knownData)
+    public class UpdateBToA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
+        : UpdateBase<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
     {
-      _newBVersion = newBVersion;
-      _currentAVersion = currentAVersion;
+        // ReSharper disable once StaticFieldInGenericType
+        private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly TBtypeEntityVersion _newBVersion;
+        private readonly TAtypeEntityVersion _currentAVersion;
+        private IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> _loggerOrNull;
+
+        public UpdateBToA(
+            EntitySyncStateEnvironment<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> environment,
+            IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> knownData,
+            TBtypeEntityVersion newBVersion,
+            TAtypeEntityVersion currentAVersion)
+            : base(environment, knownData)
+        {
+            _newBVersion = newBVersion;
+            _currentAVersion = currentAVersion;
+        }
+
+        public override void AddSyncronizationJob(
+            IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateContext,
+            IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs,
+            IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
+            IEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> loggerFactory,
+            TContext context)
+        {
+            var logger = loggerFactory.CreateEntitySynchronizationLogger(SynchronizationOperation.UpdateInA);
+            _loggerOrNull = logger;
+            logger.SetAId(KnownData.AtypeId);
+            logger.SetBId(KnownData.BtypeId);
+            logger.LogA(_aEntity);
+            logger.LogB(_bEntity);
+
+            aJobs.AddUpdateJob(new JobWrapper(stateContext, this, logger, context));
+        }
+
+        async Task<TAtypeEntity> UpdateEntity(TAtypeEntity entity, IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> logger, TContext context)
+        {
+            return await _environment.Mapper.Map2To1(_bEntity, entity, logger, context);
+        }
+
+        private void NotifyOperationSuceeded(
+            IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateContext,
+            EntityVersion<TAtypeEntityId, TAtypeEntityVersion> result,
+            IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> logger)
+        {
+            logger.SetAId(result.Id);
+            stateContext.SetState(CreateDoNothing(result.Id, result.Version, KnownData.BtypeId, _newBVersion));
+        }
+
+        private void NotifyEntityNotFound(IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateContext)
+        {
+            stateContext.SetState(CreateFailed());
+        }
+
+        private void NotifyOperationFailed(IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateContext, Exception exception, IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> logger)
+        {
+            logger.LogAbortedDueToError(exception);
+            LogException(exception);
+            stateContext.SetState(CreateFailed());
+        }
+
+        private void NotifyOperationFailed(IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateContext, string errorMessage, IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> logger)
+        {
+            logger.LogAbortedDueToError(errorMessage);
+            stateContext.SetState(CreateFailed());
+        }
+
+        public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> NotifyJobExecuted()
+        {
+            _loggerOrNull?.LogWarning($"State '{GetType().Name}' was not left. Defaulting to failed state.");
+            s_logger.Error("State was not left. Defaulting to failed state.");
+            return CreateFailed();
+        }
+
+        public override void Accept(IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> syncStateContext, ISynchronizationStateVisitor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> visitor)
+        {
+            visitor.Visit(syncStateContext, this);
+        }
+
+        private DoNothing<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> CreateFailed()
+        {
+            return CreateDoNothing();
+        }
+
+        struct JobWrapper : IUpdateJob<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity>
+        {
+            private readonly IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _stateContext;
+            private readonly UpdateBToA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _state;
+            readonly IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> _logger;
+            private readonly TContext _context;
+
+            public JobWrapper(
+                IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateContext,
+                UpdateBToA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> state,
+                IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> logger,
+                TContext context)
+            {
+                if (state == null)
+                    throw new ArgumentNullException(nameof(state));
+                if (logger == null)
+                    throw new ArgumentNullException(nameof(logger));
+
+                _stateContext = stateContext;
+                _state = state;
+                _logger = logger;
+                _context = context;
+            }
+
+            public IEntitySynchronizationLogger Logger => _logger;
+            public TAtypeEntityId EntityId => _state.KnownData.AtypeId;
+            public TAtypeEntityVersion Version => _state._currentAVersion;
+            public TAtypeEntity EntityToUpdate => _state._aEntity;
+
+            public async Task<TAtypeEntity> UpdateEntity(TAtypeEntity entity)
+            {
+                return await _state.UpdateEntity(entity, _logger, _context);
+            }
+
+            public void NotifyOperationSuceeded(EntityVersion<TAtypeEntityId, TAtypeEntityVersion> result)
+            {
+                _state.NotifyOperationSuceeded(_stateContext, result, _logger);
+            }
+
+            public void NotifyEntityNotFound()
+            {
+                _state.NotifyEntityNotFound(_stateContext);
+            }
+
+            public void NotifyOperationFailed(Exception exception)
+            {
+                _state.NotifyOperationFailed(_stateContext, exception, _logger);
+            }
+
+            public void NotifyOperationFailed(string errorMessage)
+            {
+                _state.NotifyOperationFailed(_stateContext, errorMessage, _logger);
+            }
+        }
     }
-
-    public override void AddSyncronizationJob (
-        IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateContext,
-        IJobList<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity> aJobs,
-        IJobList<TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity> bJobs,
-        IEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity,TBtypeEntityId, TBtypeEntity> loggerFactory,
-        TContext context)
-    {
-      var logger = loggerFactory.CreateEntitySynchronizationLogger(SynchronizationOperation.UpdateInA);
-      _loggerOrNull = logger;
-      logger.SetAId (KnownData.AtypeId);
-      logger.SetBId (KnownData.BtypeId);
-      logger.LogA(_aEntity);
-      logger.LogB(_bEntity);
-
-      aJobs.AddUpdateJob (new JobWrapper (stateContext, this, logger, context));
-    }
-
-    async Task<TAtypeEntity> UpdateEntity (TAtypeEntity entity, IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> logger, TContext context)
-    {
-      return await _environment.Mapper.Map2To1 (_bEntity, entity, logger, context);
-    }
-
-    private void NotifyOperationSuceeded (
-      IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateContext,
-        EntityVersion<TAtypeEntityId, TAtypeEntityVersion> result,
-      IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> logger)
-    {
-      logger.SetAId (result.Id);
-      stateContext.SetState(CreateDoNothing (result.Id, result.Version, KnownData.BtypeId, _newBVersion));
-    }
-
-    private void NotifyEntityNotFound (IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateContext)
-    {
-      stateContext.SetState (CreateFailed());
-    }
-
-    private void NotifyOperationFailed (IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateContext, Exception exception, IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> logger)
-    {
-      logger.LogAbortedDueToError (exception);
-      LogException (exception);
-      stateContext.SetState (CreateFailed());
-    }
-
-    private void NotifyOperationFailed (IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateContext, string errorMessage, IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> logger)
-    {
-      logger.LogAbortedDueToError (errorMessage);
-      stateContext.SetState (CreateFailed());
-    }
-
-    public override IEntitySyncState<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> NotifyJobExecuted()
-    {
-      _loggerOrNull?.LogWarning($"State '{GetType().Name}' was not left. Defaulting to failed state.");
-      s_logger.Error("State was not left. Defaulting to failed state.");
-      return CreateFailed();
-    }
-
-    public override void Accept(IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> syncStateContext, ISynchronizationStateVisitor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> visitor)
-    {
-      visitor.Visit (syncStateContext, this);
-    }
-
-    private DoNothing<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> CreateFailed()
-    {
-      return CreateDoNothing ();
-    }
-
-    struct JobWrapper : IUpdateJob<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity>
-    {
-      private readonly IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _stateContext;
-      private readonly UpdateBToA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> _state;
-      readonly IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> _logger;
-      private readonly TContext _context;
-
-      public JobWrapper (
-          IEntitySyncStateContext<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> stateContext,
-          UpdateBToA<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> state,
-          IEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> logger, 
-          TContext context)
-      {
-        if (state == null)
-          throw new ArgumentNullException (nameof (state));
-        if (logger == null)
-          throw new ArgumentNullException (nameof (logger));
-
-        _stateContext = stateContext;
-        _state = state;
-        _logger = logger;
-        _context = context;
-      }
-
-      public IEntitySynchronizationLogger Logger => _logger;
-      public TAtypeEntityId EntityId => _state.KnownData.AtypeId;
-      public TAtypeEntityVersion Version => _state._currentAVersion;
-      public TAtypeEntity EntityToUpdate => _state._aEntity;
-
-      public async Task<TAtypeEntity> UpdateEntity (TAtypeEntity entity)
-      {
-        return await _state.UpdateEntity (entity, _logger, _context);
-      }
-
-      public void NotifyOperationSuceeded (EntityVersion<TAtypeEntityId, TAtypeEntityVersion> result)
-      {
-        _state.NotifyOperationSuceeded (_stateContext, result, _logger);
-      }
-
-      public void NotifyEntityNotFound ()
-      {
-        _state.NotifyEntityNotFound (_stateContext);
-      }
-
-      public void NotifyOperationFailed (Exception exception)
-      {
-        _state.NotifyOperationFailed (_stateContext, exception, _logger);
-      }
-
-      public void NotifyOperationFailed (string errorMessage)
-      {
-        _state.NotifyOperationFailed (_stateContext, errorMessage, _logger);
-      }
-    }
-  }
 }

@@ -25,49 +25,49 @@ using Google.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  class GoogleContactContextFactory : ISynchronizationContextFactory<IGoogleContactContext>
-  {
-    private readonly IGoogleApiOperationExecutor _apiOperationExecutor;
-    private readonly IEqualityComparer<string> _contactIdComparer;
-    private readonly string _userName;
-    private readonly int _readChunkSize;
-
-    public GoogleContactContextFactory (IGoogleApiOperationExecutor apiOperationExecutor, IEqualityComparer<string> contactIdComparer, string userName, int readChunkSize)
+    class GoogleContactContextFactory : ISynchronizationContextFactory<IGoogleContactContext>
     {
-      if (apiOperationExecutor == null)
-        throw new ArgumentNullException (nameof (apiOperationExecutor));
-      if (contactIdComparer == null)
-        throw new ArgumentNullException (nameof (contactIdComparer));
-      if (String.IsNullOrEmpty (userName))
-        throw new ArgumentException ("Argument is null or empty", nameof (userName));
+        private readonly IGoogleApiOperationExecutor _apiOperationExecutor;
+        private readonly IEqualityComparer<string> _contactIdComparer;
+        private readonly string _userName;
+        private readonly int _readChunkSize;
 
-      _apiOperationExecutor = apiOperationExecutor;
-      _contactIdComparer = contactIdComparer;
-      _userName = userName;
-      _readChunkSize = readChunkSize;
+        public GoogleContactContextFactory(IGoogleApiOperationExecutor apiOperationExecutor, IEqualityComparer<string> contactIdComparer, string userName, int readChunkSize)
+        {
+            if (apiOperationExecutor == null)
+                throw new ArgumentNullException(nameof(apiOperationExecutor));
+            if (contactIdComparer == null)
+                throw new ArgumentNullException(nameof(contactIdComparer));
+            if (String.IsNullOrEmpty(userName))
+                throw new ArgumentException("Argument is null or empty", nameof(userName));
+
+            _apiOperationExecutor = apiOperationExecutor;
+            _contactIdComparer = contactIdComparer;
+            _userName = userName;
+            _readChunkSize = readChunkSize;
+        }
+
+        public async Task<IGoogleContactContext> Create()
+        {
+            return await Task.Run(() =>
+            {
+                var googleGroupCache = new GoogleGroupCache(_apiOperationExecutor);
+                googleGroupCache.Fill();
+
+                var googleContactCache = new GoogleContactCache(_apiOperationExecutor, _contactIdComparer, _userName, _readChunkSize);
+                googleContactCache.Fill(googleGroupCache.DefaultGroupIdOrNull);
+
+                var context = new GoogleContactContext(
+                    googleGroupCache,
+                    googleContactCache);
+
+                return context;
+            });
+        }
+
+        public Task SynchronizationFinished(IGoogleContactContext context)
+        {
+            return Task.FromResult(0);
+        }
     }
-
-    public async Task<IGoogleContactContext> Create ()
-    {
-      return await Task.Run (() =>
-      {
-        var googleGroupCache = new GoogleGroupCache (_apiOperationExecutor);
-        googleGroupCache.Fill();
-        
-        var googleContactCache = new GoogleContactCache(_apiOperationExecutor, _contactIdComparer, _userName, _readChunkSize);
-        googleContactCache.Fill(googleGroupCache.DefaultGroupIdOrNull);
-
-        var context = new GoogleContactContext (
-          googleGroupCache,
-          googleContactCache);
-       
-        return context;
-      });
-    }
-
-    public Task SynchronizationFinished (IGoogleContactContext context)
-    {
-      return Task.FromResult(0);
-    }
-  }
 }

@@ -21,11 +21,11 @@ using GenSync.InitialEntityMatching;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
-  class TaskEntityMatchDataFactory : IMatchDataFactory<ITaskItemWrapper, TaskEntityMatchData>
-  {
-    public TaskEntityMatchData CreateMatchData(ITaskItemWrapper entity)
+    class TaskEntityMatchDataFactory : IMatchDataFactory<ITaskItemWrapper, TaskEntityMatchData>
     {
-      return new TaskEntityMatchData(entity.Inner);
+        public TaskEntityMatchData CreateMatchData(ITaskItemWrapper entity)
+        {
+            return new TaskEntityMatchData(entity.Inner);
+        }
     }
-  }
 }

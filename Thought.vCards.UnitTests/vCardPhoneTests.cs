@@ -1,21 +1,18 @@
-
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Thought.vCards;
-using Assert =NUnit.Framework.Assert;
+using Assert = NUnit.Framework.Assert;
 
 namespace Tests
 {
     [TestClass]
     public sealed class vCardPhoneTests : IDisposable
     {
-
         #region [ EmptyString_FullNumber ]
 
         [TestMethod]
         public void EmptyString_FullNumber()
         {
-
             vCardPhone phone = new vCardPhone();
 
             Assert.IsEmpty(
@@ -27,7 +24,6 @@ namespace Tests
             Assert.IsEmpty(
                 phone.FullNumber,
                 "The FullNumber property should return String.Empty instead of null.");
-
         }
 
         #endregion
@@ -41,7 +37,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_FullNumber()
         {
-
             // Make sure .FullNumber reads/writes
 
             vCardPhone phone = new vCardPhone();
@@ -50,7 +45,6 @@ namespace Tests
                 "800-929-5805",
                 phone.FullNumber,
                 "The FullNumber property is not working.");
-
         }
 
         #endregion
@@ -60,7 +54,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_IsBBS()
         {
-
             vCardPhone phone = new vCardPhone();
 
             phone.IsBBS = true;
@@ -68,7 +61,6 @@ namespace Tests
 
             phone.IsBBS = false;
             Assert.IsFalse(phone.IsBBS, "IsBBS should have been set to false.");
-
         }
 
         #endregion
@@ -78,7 +70,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_IsCar()
         {
-
             vCardPhone phone = new vCardPhone();
 
             phone.IsCar = true;
@@ -86,7 +77,6 @@ namespace Tests
 
             phone.IsCar = false;
             Assert.IsFalse(phone.IsCar, "IsCar should have been set to false.");
-
         }
 
         #endregion
@@ -96,7 +86,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_IsCellular()
         {
-
             vCardPhone phone = new vCardPhone();
 
             phone.IsCellular = true;
@@ -104,7 +93,6 @@ namespace Tests
 
             phone.IsCellular = false;
             Assert.IsFalse(phone.IsCellular, "IsCellular should have been set to false.");
-
         }
 
         #endregion
@@ -114,7 +102,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_IsFax()
         {
-
             vCardPhone phone = new vCardPhone();
 
             phone.IsFax = true;
@@ -122,7 +109,6 @@ namespace Tests
 
             phone.IsFax = false;
             Assert.IsFalse(phone.IsFax, "IsFax should have been set to false.");
-
         }
 
         #endregion
@@ -132,7 +118,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_IsHome()
         {
-
             vCardPhone phone = new vCardPhone();
 
             phone.IsHome = true;
@@ -140,7 +125,6 @@ namespace Tests
 
             phone.IsHome = false;
             Assert.IsFalse(phone.IsHome, "IsHome should have been set to false.");
-
         }
 
         #endregion
@@ -150,7 +134,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_IsISDN()
         {
-
             vCardPhone phone = new vCardPhone();
 
             phone.IsISDN = true;
@@ -158,7 +141,6 @@ namespace Tests
 
             phone.IsISDN = false;
             Assert.IsFalse(phone.IsISDN, "IsISDN should have been set to false.");
-
         }
 
         #endregion
@@ -168,7 +150,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_IsMessagingService()
         {
-
             vCardPhone phone = new vCardPhone();
 
             phone.IsMessagingService = true;
@@ -176,7 +157,6 @@ namespace Tests
 
             phone.IsMessagingService = false;
             Assert.IsFalse(phone.IsMessagingService, "IsMessagingService should have been set to false.");
-
         }
 
         #endregion
@@ -186,7 +166,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_IsModem()
         {
-
             vCardPhone phone = new vCardPhone();
 
             phone.IsModem = true;
@@ -194,7 +173,6 @@ namespace Tests
 
             phone.IsModem = false;
             Assert.IsFalse(phone.IsModem, "IsModem should have been set to false.");
-
         }
 
         #endregion
@@ -204,7 +182,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_IsPager()
         {
-
             vCardPhone phone = new vCardPhone();
 
             phone.IsPager = true;
@@ -212,7 +189,6 @@ namespace Tests
 
             phone.IsPager = false;
             Assert.IsFalse(phone.IsPager, "IsPager should have been set to false.");
-
         }
 
         #endregion
@@ -222,7 +198,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_IsPreferred()
         {
-
             vCardPhone phone = new vCardPhone();
 
             phone.IsPreferred = true;
@@ -230,7 +205,6 @@ namespace Tests
 
             phone.IsPreferred = false;
             Assert.IsFalse(phone.IsPreferred, "IsPreferred should have been set to false.");
-
         }
 
         #endregion
@@ -240,7 +214,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_IsVideo()
         {
-
             vCardPhone phone = new vCardPhone();
 
             phone.IsVideo = true;
@@ -248,7 +221,6 @@ namespace Tests
 
             phone.IsVideo = false;
             Assert.IsFalse(phone.IsVideo, "IsVideo should have been set to false.");
-
         }
 
         #endregion
@@ -258,7 +230,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_IsVoice()
         {
-
             vCardPhone phone = new vCardPhone();
 
             phone.IsVoice = true;
@@ -266,7 +237,6 @@ namespace Tests
 
             phone.IsVoice = false;
             Assert.IsFalse(phone.IsVoice, "IsVoice should have been set to false.");
-
         }
 
         #endregion
@@ -276,7 +246,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_IsWork()
         {
-
             vCardPhone phone = new vCardPhone();
 
             phone.IsWork = true;
@@ -284,12 +253,13 @@ namespace Tests
 
             phone.IsWork = false;
             Assert.IsFalse(phone.IsWork, "IsWork should have been set to false.");
-
         }
 
         #endregion
 
-        public void Dispose() {// driver.Dispose(); 
+        public void Dispose()
+        {
+            // driver.Dispose(); 
         }
     }
 }

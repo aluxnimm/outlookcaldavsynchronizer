@@ -21,39 +21,41 @@ using System.Runtime.CompilerServices;
 
 namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
 {
-  public class ObjectIdProvider
-  {
-    private readonly Dictionary<Type, Dictionary<int, int>> _objectIdsByHashCodeByType = new Dictionary<Type, Dictionary<int, int>>();
-
-    public int GetId(object o)
+    public class ObjectIdProvider
     {
-      var type = o.GetType();
-      if (type.IsValueType || type.IsPrimitive) //  Id doesn't make sense for valuetypes or strings
-        return 1;
+        private readonly Dictionary<Type, Dictionary<int, int>> _objectIdsByHashCodeByType = new Dictionary<Type, Dictionary<int, int>>();
 
-      return GetObjectId(GetObjectIdsByHashCode(type), RuntimeHelpers.GetHashCode(o));
-    }
+        public int GetId(object o)
+        {
+            var type = o.GetType();
+            if (type.IsValueType || type.IsPrimitive) //  Id doesn't make sense for valuetypes or strings
+                return 1;
 
-    Dictionary<int, int> GetObjectIdsByHashCode(Type type)
-    {
-      Dictionary<int, int> value;
-      if(!_objectIdsByHashCodeByType.TryGetValue(type,out value))
-      {
-        value = new Dictionary<int, int>();
-        _objectIdsByHashCodeByType.Add(type, value);
-      }
-      return value;
-    }
+            return GetObjectId(GetObjectIdsByHashCode(type), RuntimeHelpers.GetHashCode(o));
+        }
 
-    int GetObjectId (Dictionary<int, int> objectIdsByHashCode, int hashCode)
-    {
-      int objectId ;
-      if (!objectIdsByHashCode.TryGetValue (hashCode, out objectId))
-      {
-        objectId = objectIdsByHashCode.Count+1;
-        objectIdsByHashCode.Add (hashCode, objectId);
-      }
-      return objectId;
+        Dictionary<int, int> GetObjectIdsByHashCode(Type type)
+        {
+            Dictionary<int, int> value;
+            if (!_objectIdsByHashCodeByType.TryGetValue(type, out value))
+            {
+                value = new Dictionary<int, int>();
+                _objectIdsByHashCodeByType.Add(type, value);
+            }
+
+            return value;
+        }
+
+        int GetObjectId(Dictionary<int, int> objectIdsByHashCode, int hashCode)
+        {
+            int objectId;
+            if (!objectIdsByHashCode.TryGetValue(hashCode, out objectId))
+            {
+                objectId = objectIdsByHashCode.Count + 1;
+                objectIdsByHashCode.Add(hashCode, objectId);
+            }
+
+            return objectId;
+        }
     }
-  }
 }

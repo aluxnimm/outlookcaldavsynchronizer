@@ -14,17 +14,18 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using CalDavSynchronizer.Implementation.ComWrappers;
 using DDay.iCal;
 using GenSync.InitialEntityMatching;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  class EventServerEntityMatchDataFactory : IMatchDataFactory<IICalendar, EventServerEntityMatchData>
-  {
-    public EventServerEntityMatchData CreateMatchData(IICalendar entity)
+    class EventServerEntityMatchDataFactory : IMatchDataFactory<IICalendar, EventServerEntityMatchData>
     {
-      return new EventServerEntityMatchData(entity);
+        public EventServerEntityMatchData CreateMatchData(IICalendar entity)
+        {
+            return new EventServerEntityMatchData(entity);
+        }
     }
-  }
 }

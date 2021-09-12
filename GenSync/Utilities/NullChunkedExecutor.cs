@@ -22,25 +22,24 @@ using System.Threading.Tasks;
 
 namespace GenSync.Utilities
 {
-  public class NullChunkedExecutor : IChunkedExecutor
-  {
-    public static readonly IChunkedExecutor Instance = new NullChunkedExecutor();
-
-    private NullChunkedExecutor()
+    public class NullChunkedExecutor : IChunkedExecutor
     {
+        public static readonly IChunkedExecutor Instance = new NullChunkedExecutor();
 
-    }
+        private NullChunkedExecutor()
+        {
+        }
 
-    public async Task<TExecutionContext> ExecuteAsync<TItem, TExecutionContext>(TExecutionContext executionContext, IEnumerable<TItem> items, Func<List<TItem>, TExecutionContext, Task> processChunk)
-    {
-      await processChunk(items.ToList(), executionContext);
-      return executionContext;
-    }
+        public async Task<TExecutionContext> ExecuteAsync<TItem, TExecutionContext>(TExecutionContext executionContext, IEnumerable<TItem> items, Func<List<TItem>, TExecutionContext, Task> processChunk)
+        {
+            await processChunk(items.ToList(), executionContext);
+            return executionContext;
+        }
 
-    public TExecutionContext Execute<TItem, TExecutionContext>(TExecutionContext executionContext, IEnumerable<TItem> items, Action<List<TItem>, TExecutionContext> processChunk)
-    {
-      processChunk (items.ToList (), executionContext);
-      return executionContext;
+        public TExecutionContext Execute<TItem, TExecutionContext>(TExecutionContext executionContext, IEnumerable<TItem> items, Action<List<TItem>, TExecutionContext> processChunk)
+        {
+            processChunk(items.ToList(), executionContext);
+            return executionContext;
+        }
     }
-  }
 }

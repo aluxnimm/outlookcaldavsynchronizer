@@ -19,26 +19,26 @@ using System;
 
 namespace GenSync.Logging
 {
-  public class FullEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> : IFullEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>
+    public class FullEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> : IFullEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>
     {
-    private readonly IEntityLogMessageFactory<TAtypeEntity, TBtypeEntity> _entityLogMessageFactory;
+        private readonly IEntityLogMessageFactory<TAtypeEntity, TBtypeEntity> _entityLogMessageFactory;
 
-    public FullEntitySynchronizationLoggerFactory(IEntityLogMessageFactory<TAtypeEntity,TBtypeEntity> entityLogMessageFactory)
-    {
-      _entityLogMessageFactory = entityLogMessageFactory ?? throw new ArgumentNullException(nameof(entityLogMessageFactory));
+        public FullEntitySynchronizationLoggerFactory(IEntityLogMessageFactory<TAtypeEntity, TBtypeEntity> entityLogMessageFactory)
+        {
+            _entityLogMessageFactory = entityLogMessageFactory ?? throw new ArgumentNullException(nameof(entityLogMessageFactory));
+        }
+
+        public IFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> CreateEntitySynchronizationLogger(SynchronizationOperation operation)
+        {
+            return new EntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>(operation, _entityLogMessageFactory);
+        }
     }
 
-    public IFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> CreateEntitySynchronizationLogger(SynchronizationOperation operation)
+    public static class FullEntitySynchronizationLoggerFactory
     {
-      return new EntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>(operation, _entityLogMessageFactory);
+        public static FullEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> Create<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>(IEntityLogMessageFactory<TAtypeEntity, TBtypeEntity> entityLogMessageFactory)
+        {
+            return new FullEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>(entityLogMessageFactory);
+        }
     }
-  }
-
-  public static class FullEntitySynchronizationLoggerFactory
-  {
-    public static FullEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> Create<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>(IEntityLogMessageFactory<TAtypeEntity, TBtypeEntity> entityLogMessageFactory)
-    {
-      return new FullEntitySynchronizationLoggerFactory<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity>(entityLogMessageFactory);
-    }
-  }
 }

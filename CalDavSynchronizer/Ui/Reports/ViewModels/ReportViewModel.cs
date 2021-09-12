@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Diagnostics;
 using System.Windows;
@@ -24,61 +25,61 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.Ui.Reports.ViewModels
 {
-  public partial class ReportViewModel : ModelBase
-  {
-    private readonly ISynchronizationReportRepository _reportRepository;
-    private readonly ReportProxy _reportProxy;
-    private string _asString;
-    private readonly IReportViewModelParent _parent;
-
-    public ReportViewModel (ReportProxy reportProxy, ISynchronizationReportRepository reportRepository, IReportViewModelParent parent)
+    public partial class ReportViewModel : ModelBase
     {
-      _reportRepository = reportRepository;
-      _parent = parent;
-      _reportProxy = reportProxy;
+        private readonly ISynchronizationReportRepository _reportRepository;
+        private readonly ReportProxy _reportProxy;
+        private string _asString;
+        private readonly IReportViewModelParent _parent;
 
-      OpenAEntityCommand = new DelegateCommand (parameter => { OpenAEntity ((EntitySynchronizationReport) parameter); });
+        public ReportViewModel(ReportProxy reportProxy, ISynchronizationReportRepository reportRepository, IReportViewModelParent parent)
+        {
+            _reportRepository = reportRepository;
+            _parent = parent;
+            _reportProxy = reportProxy;
 
-      OpenBEntityCommand = new DelegateCommand (parameter => { OpenBEntity ((EntitySynchronizationReport) parameter); });
+            OpenAEntityCommand = new DelegateCommand(parameter => { OpenAEntity((EntitySynchronizationReport) parameter); });
 
-      OpenEntityWithLoadErrorCommand = new DelegateCommand (parameter => { OpenEntityWithLoadError ((LoadError) parameter); });
+            OpenBEntityCommand = new DelegateCommand(parameter => { OpenBEntity((EntitySynchronizationReport) parameter); });
+
+            OpenEntityWithLoadErrorCommand = new DelegateCommand(parameter => { OpenEntityWithLoadError((LoadError) parameter); });
+        }
+
+        public SynchronizationReportName ReportName => _reportProxy.Name;
+        public bool HasErrors => _reportProxy.Name.HasErrors;
+        public bool HasWarnings => _reportProxy.Name.HasWarnings;
+        public string ProfileName => _reportProxy.ProfileName;
+        public Guid ProfileId => _reportProxy.Name.SyncronizationProfileId;
+        public DateTime StartTime => _reportProxy.Name.StartTime.ToLocalTime();
+        public SynchronizationReport Report => _reportProxy.Value;
+
+        public ICommand OpenAEntityCommand { get; }
+        public ICommand OpenBEntityCommand { get; }
+        public ICommand OpenEntityWithLoadErrorCommand { get; }
+
+        private void OpenAEntity(EntitySynchronizationReport entitySynchronizationReport)
+        {
+            _parent.DiplayAEntity(_reportProxy.Value.ProfileId, entitySynchronizationReport.AId);
+        }
+
+        private void OpenBEntity(EntitySynchronizationReport entitySynchronizationReport)
+        {
+            _parent.DiplayBEntity(_reportProxy.Value.ProfileId, entitySynchronizationReport.BId);
+        }
+
+        private void OpenEntityWithLoadError(LoadError loadError)
+        {
+            if (loadError.IsAEntity)
+                _parent.DiplayAEntity(_reportProxy.Value.ProfileId, loadError.EntityId);
+            else
+                _parent.DiplayBEntity(_reportProxy.Value.ProfileId, loadError.EntityId);
+        }
+
+        public string AsString => _asString ?? (_asString = Serializer<SynchronizationReport>.Serialize(_reportProxy.Value));
+
+        public void Delete()
+        {
+            _reportRepository.DeleteReport(_reportProxy.Name);
+        }
     }
-
-    public SynchronizationReportName ReportName => _reportProxy.Name;
-    public bool HasErrors => _reportProxy.Name.HasErrors;
-    public bool HasWarnings => _reportProxy.Name.HasWarnings;
-    public string ProfileName => _reportProxy.ProfileName;
-    public Guid ProfileId => _reportProxy.Name.SyncronizationProfileId;
-    public DateTime StartTime => _reportProxy.Name.StartTime.ToLocalTime();
-    public SynchronizationReport Report => _reportProxy.Value;
-
-    public ICommand OpenAEntityCommand { get; }
-    public ICommand OpenBEntityCommand { get; }
-    public ICommand OpenEntityWithLoadErrorCommand { get; }
-
-    private void OpenAEntity (EntitySynchronizationReport entitySynchronizationReport)
-    {
-      _parent.DiplayAEntity (_reportProxy.Value.ProfileId, entitySynchronizationReport.AId);
-    }
-
-    private void OpenBEntity (EntitySynchronizationReport entitySynchronizationReport)
-    {
-      _parent.DiplayBEntity (_reportProxy.Value.ProfileId, entitySynchronizationReport.BId);
-    }
-
-    private void OpenEntityWithLoadError (LoadError loadError)
-    {
-      if (loadError.IsAEntity)
-        _parent.DiplayAEntity (_reportProxy.Value.ProfileId, loadError.EntityId);
-      else
-        _parent.DiplayBEntity (_reportProxy.Value.ProfileId, loadError.EntityId);
-    }
-
-    public string AsString => _asString ?? (_asString = Serializer<SynchronizationReport>.Serialize (_reportProxy.Value));
-    
-    public void Delete ()
-    {
-      _reportRepository.DeleteReport (_reportProxy.Name);
-    }
-  }
 }

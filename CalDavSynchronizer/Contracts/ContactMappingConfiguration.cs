@@ -22,34 +22,33 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Contracts
 {
-  public class ContactMappingConfiguration : MappingConfigurationBase
-  {
-    public bool MapAnniversary { get; set; }
-    public bool MapBirthday { get; set; }
-
-    public bool MapContactPhoto { get; set; }
-    public bool KeepOutlookPhoto { get; set; }
-
-    public bool KeepOutlookFileAs { get; set; }
-
-    public bool FixPhoneNumberFormat { get; set; }
-
-    public bool MapOutlookEmail1ToWork { get; set; }
-
-    public bool WriteImAsImpp { get; set; }
-    public IMServiceType DefaultImServicType { get; set; }
-
-    public bool MapDistributionLists { get; set; }
-    public DistributionListType DistributionListType { get; set; }
-
-    public ContactMappingConfiguration ()
+    public class ContactMappingConfiguration : MappingConfigurationBase
     {
-    
-    }
+        public bool MapAnniversary { get; set; }
+        public bool MapBirthday { get; set; }
 
-    public override TResult Accept<TResult>(IMappingConfigurationBaseVisitor<TResult> visitor)
-    {
-      return visitor.Visit(this);
+        public bool MapContactPhoto { get; set; }
+        public bool KeepOutlookPhoto { get; set; }
+
+        public bool KeepOutlookFileAs { get; set; }
+
+        public bool FixPhoneNumberFormat { get; set; }
+
+        public bool MapOutlookEmail1ToWork { get; set; }
+
+        public bool WriteImAsImpp { get; set; }
+        public IMServiceType DefaultImServicType { get; set; }
+
+        public bool MapDistributionLists { get; set; }
+        public DistributionListType DistributionListType { get; set; }
+
+        public ContactMappingConfiguration()
+        {
+        }
+
+        public override TResult Accept<TResult>(IMappingConfigurationBaseVisitor<TResult> visitor)
+        {
+            return visitor.Visit(this);
+        }
     }
-  }
 }

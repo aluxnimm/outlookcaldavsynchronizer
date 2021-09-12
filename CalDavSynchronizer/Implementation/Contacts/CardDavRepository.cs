@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,81 +32,83 @@ using GenSync.Utilities;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class CardDavRepository<TContext> : CardDavEntityRepository<vCard, vCardStandardReader, TContext>
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
-    private readonly vCardStandardWriter _vCardStandardWriter;
-
-    public CardDavRepository(ICardDavDataAccess cardDavDataAccess, bool writeImAsImpp, IEqualityComparer<string> versionComparer) : base(cardDavDataAccess, versionComparer)
+    public class CardDavRepository<TContext> : CardDavEntityRepository<vCard, vCardStandardReader, TContext>
     {
-      _vCardStandardWriter = new vCardStandardWriter()
-      {
-        WriteImAsImpp = writeImAsImpp
-      };
-    }
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+        private readonly vCardStandardWriter _vCardStandardWriter;
 
-    protected override void SetUid(vCard entity, string uid)
-    {
-      entity.UniqueId = uid;
-    }
-
-    protected override string GetUid(vCard entity)
-    {
-      return entity.UniqueId;
-    }
-
-    protected override string Serialize(vCard vcard)
-    {
-      using (var writer = new StringWriter())
-      {
-        _vCardStandardWriter.Write(vcard, writer);
-        writer.Flush();
-        var newvCardString = writer.GetStringBuilder().ToString();
-        return newvCardString;
-      }
-    }
-
-    protected override bool TryDeserialize(
-      string vcardData,
-      out vCard vcard,
-      WebResourceName uriOfAddressbookForLogging,
-      vCardStandardReader deserializer,
-      ILoadEntityLogger logger)
-    {
-      vcard = null;
-
-      // fix some linebreak issues with Open-Xchange
-      string normalizedVcardData = vcardData.Contains("\r\r\n") ? ContactDataPreprocessor.NormalizeLineBreaks(vcardData) : vcardData;
-
-      try
-      {
-        vcard = Deserialize(normalizedVcardData, deserializer);
-        return true;
-      }
-      catch (Exception x)
-      {
-        s_logger.Error(string.Format("Could not deserialize vcardData of '{0}':\r\n{1}", uriOfAddressbookForLogging, normalizedVcardData), x);
-        logger.LogSkipLoadBecauseOfError(uriOfAddressbookForLogging, x);
-        return false;
-      }
-    }
-
-    private static vCard Deserialize(string vcardData, vCardStandardReader serializer)
-    {
-      using (var reader = new StringReader(vcardData))
-      {
-        var card = serializer.Read(reader);
-        if (serializer.Warnings.Count > 0)
+        public CardDavRepository(ICardDavDataAccess cardDavDataAccess, bool writeImAsImpp, IEqualityComparer<string> versionComparer) : base(cardDavDataAccess, versionComparer)
         {
-          var warningsBuilder = new StringBuilder();
-          foreach (var warning in serializer.Warnings)
-          {
-            warningsBuilder.AppendLine(warning);
-          }
-          s_logger.WarnFormat ("Encountered warnings while reading vCardData:\r\n{0}\r\n{1}", warningsBuilder, vcardData);
+            _vCardStandardWriter = new vCardStandardWriter()
+            {
+                WriteImAsImpp = writeImAsImpp
+            };
         }
-        return card;
-      }
+
+        protected override void SetUid(vCard entity, string uid)
+        {
+            entity.UniqueId = uid;
+        }
+
+        protected override string GetUid(vCard entity)
+        {
+            return entity.UniqueId;
+        }
+
+        protected override string Serialize(vCard vcard)
+        {
+            using (var writer = new StringWriter())
+            {
+                _vCardStandardWriter.Write(vcard, writer);
+                writer.Flush();
+                var newvCardString = writer.GetStringBuilder().ToString();
+                return newvCardString;
+            }
+        }
+
+        protected override bool TryDeserialize(
+            string vcardData,
+            out vCard vcard,
+            WebResourceName uriOfAddressbookForLogging,
+            vCardStandardReader deserializer,
+            ILoadEntityLogger logger)
+        {
+            vcard = null;
+
+            // fix some linebreak issues with Open-Xchange
+            string normalizedVcardData = vcardData.Contains("\r\r\n") ? ContactDataPreprocessor.NormalizeLineBreaks(vcardData) : vcardData;
+
+            try
+            {
+                vcard = Deserialize(normalizedVcardData, deserializer);
+                return true;
+            }
+            catch (Exception x)
+            {
+                s_logger.Error(string.Format("Could not deserialize vcardData of '{0}':\r\n{1}", uriOfAddressbookForLogging, normalizedVcardData), x);
+                logger.LogSkipLoadBecauseOfError(uriOfAddressbookForLogging, x);
+                return false;
+            }
+        }
+
+        private static vCard Deserialize(string vcardData, vCardStandardReader serializer)
+        {
+            using (var reader = new StringReader(vcardData))
+            {
+                var card = serializer.Read(reader);
+                if (serializer.Warnings.Count > 0)
+                {
+                    var warningsBuilder = new StringBuilder();
+                    foreach (var warning in serializer.Warnings)
+                    {
+                        warningsBuilder.AppendLine(warning);
+                    }
+
+                    s_logger.WarnFormat("Encountered warnings while reading vCardData:\r\n{0}\r\n{1}", warningsBuilder, vcardData);
+                }
+
+                return card;
+            }
+        }
     }
-  }
 }

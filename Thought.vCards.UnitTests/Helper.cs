@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Specialized;
 using System.IO;
@@ -7,14 +6,11 @@ using Thought.vCards;
 
 namespace Tests
 {
-
     /// <summary>
     ///     Provides common unit test routines.
     /// </summary>
     public static class Helper
     {
- 
-
         // The following functions export a vCard and then re-read it back
         // as a new vCard.  All fields and collections are compared to ensure
         // the full fidelity of the export/import process.
@@ -26,7 +22,6 @@ namespace Tests
             CycleStandard21(card);
         }
 
-
         #endregion
 
         #region [ CycleStandard21 ]
@@ -36,7 +31,6 @@ namespace Tests
         /// </summary>
         public static void CycleStandard21(vCard card)
         {
-
             if (card == null)
                 throw new ArgumentNullException("cycle");
 
@@ -64,18 +58,16 @@ namespace Tests
             vCard reloaded = standardReader.Read(streamReader);
 
             Equals(card, reloaded);
-
         }
 
         #endregion
 
         // The following functions compare two vCard-related objects.
-        
+
         #region [ Equals(vCard) ]
 
         public static void Equals(vCard c1, vCard c2)
         {
-
             // Start by comparing the base fields.
 
             Assert.AreEqual(
@@ -209,7 +201,6 @@ namespace Tests
             Equals(
                 c1.Websites,
                 c2.Websites);
-
         }
 
         #endregion
@@ -218,12 +209,10 @@ namespace Tests
 
         public static void Equals(vCardCertificate c1, vCardCertificate c2)
         {
-
             Assert.AreEqual(
                 c1.KeyType,
                 c2.KeyType,
                 "The key type of the certificates differ.");
-
         }
 
         #endregion
@@ -234,7 +223,6 @@ namespace Tests
             vCardCertificateCollection cc1,
             vCardCertificateCollection cc2)
         {
-
             Assert.AreEqual(
                 cc1.Count,
                 cc2.Count,
@@ -244,7 +232,6 @@ namespace Tests
             {
                 Equals(cc1[index], cc2[index]);
             }
-
         }
 
         #endregion
@@ -255,7 +242,6 @@ namespace Tests
             vCardDeliveryAddress da1,
             vCardDeliveryAddress da2)
         {
-
             Assert.AreEqual(
                 da1.AddressType,
                 da2.AddressType,
@@ -320,7 +306,6 @@ namespace Tests
                 da1.ToString(),
                 da2.ToString(),
                 "vCardDeliveryAddress.ToString differs.");
-
         }
 
         #endregion
@@ -331,7 +316,6 @@ namespace Tests
             vCardDeliveryAddressCollection dac1,
             vCardDeliveryAddressCollection dac2)
         {
-
             Assert.AreEqual(
                 dac1.Count,
                 dac2.Count,
@@ -341,7 +325,6 @@ namespace Tests
             {
                 Equals(dac1[index], dac2[index]);
             }
-
         }
 
         #endregion
@@ -352,7 +335,6 @@ namespace Tests
             vCardDeliveryLabel dl1,
             vCardDeliveryLabel dl2)
         {
-
             Assert.AreEqual(
                 dl1.AddressType,
                 dl2.AddressType,
@@ -397,7 +379,6 @@ namespace Tests
                 dl1.ToString(),
                 dl2.ToString(),
                 "vCardDeliveryLabel.ToString differs.");
-
         }
 
         #endregion
@@ -408,7 +389,6 @@ namespace Tests
             vCardDeliveryLabelCollection dlc1,
             vCardDeliveryLabelCollection dlc2)
         {
-
             Assert.AreEqual(
                 dlc1.Count,
                 dlc2.Count,
@@ -419,9 +399,7 @@ namespace Tests
                 Equals(
                     dlc1[index],
                     dlc2[index]);
-
             }
-
         }
 
         #endregion
@@ -433,7 +411,6 @@ namespace Tests
         /// </summary>
         public static void Equals(vCardEmailAddress e1, vCardEmailAddress e2)
         {
-
             Assert.AreEqual(
                 e1.Address,
                 e2.Address,
@@ -453,7 +430,6 @@ namespace Tests
                 e1.ToString(),
                 e2.ToString(),
                 "vCardEmailAddress.ToString differs.");
-
         }
 
         #endregion
@@ -468,17 +444,15 @@ namespace Tests
             vCardEmailAddressCollection ec1,
             vCardEmailAddressCollection ec2)
         {
-
             Assert.AreEqual(
                 ec1.Count,
                 ec2.Count,
                 "The email address collections do not have the same count.");
 
-            for(int index = 0; index < ec1.Count; index++)
+            for (int index = 0; index < ec1.Count; index++)
             {
                 Equals(ec1[index], ec2[index]);
             }
-
         }
 
         #endregion
@@ -490,7 +464,6 @@ namespace Tests
         /// </summary>
         public static void Equals(vCardNote n1, vCardNote n2)
         {
-
             Assert.AreEqual(
                 n1.Language,
                 n2.Language,
@@ -505,7 +478,6 @@ namespace Tests
                 n1.ToString(),
                 n2.ToString(),
                 "vCardNote.ToString differs.");
-
         }
 
         #endregion
@@ -514,7 +486,6 @@ namespace Tests
 
         public static void Equals(vCardNoteCollection nc1, vCardNoteCollection nc2)
         {
-
             Assert.AreEqual(
                 nc1.Count,
                 nc2.Count,
@@ -524,7 +495,6 @@ namespace Tests
             {
                 Equals(nc1[index], nc2[index]);
             }
-
         }
 
         #endregion
@@ -536,7 +506,6 @@ namespace Tests
         /// </summary>
         public static void Equals(vCardPhone p1, vCardPhone p2)
         {
-
             Assert.AreEqual(
                 p1.FullNumber,
                 p2.FullNumber,
@@ -616,7 +585,6 @@ namespace Tests
                 p1.ToString(),
                 p2.ToString(),
                 "vCardPhone.ToString differs.");
-
         }
 
         #endregion
@@ -625,7 +593,6 @@ namespace Tests
 
         public static void Equals(vCardPhoneCollection pc1, vCardPhoneCollection pc2)
         {
-
             Assert.AreEqual(
                 pc1.Count,
                 pc2.Count,
@@ -635,7 +602,6 @@ namespace Tests
             {
                 Equals(pc1[index], pc2[index]);
             }
-
         }
 
         #endregion
@@ -644,7 +610,6 @@ namespace Tests
 
         public static void Equals(vCardPhoto p1, vCardPhoto p2)
         {
-
             Assert.AreEqual(
                 p1.IsLoaded,
                 p2.IsLoaded,
@@ -659,7 +624,6 @@ namespace Tests
                 p1.Url,
                 p2.Url,
                 "vCardPhoto.Url differs.");
-
         }
 
         #endregion
@@ -670,7 +634,6 @@ namespace Tests
             vCardPhotoCollection pc1,
             vCardPhotoCollection pc2)
         {
-
             Assert.AreEqual(
                 pc1.Count,
                 pc2.Count,
@@ -680,7 +643,6 @@ namespace Tests
             {
                 Equals(pc1[index], pc2[index]);
             }
-
         }
 
         #endregion
@@ -689,7 +651,6 @@ namespace Tests
 
         public static void Equals(vCardSource s1, vCardSource s2)
         {
-
             Assert.AreEqual(
                 s1.Context,
                 s2.Context,
@@ -704,7 +665,6 @@ namespace Tests
                 s1.Uri,
                 s2.Uri,
                 "vCardSource.Uri differs.");
-
         }
 
         #endregion
@@ -715,7 +675,6 @@ namespace Tests
             vCardSourceCollection sc1,
             vCardSourceCollection sc2)
         {
-
             Assert.AreEqual(
                 sc1.Count,
                 sc2.Count,
@@ -736,7 +695,6 @@ namespace Tests
         /// </summary>
         public static void Equals(vCardWebsite w1, vCardWebsite w2)
         {
-
             Assert.AreEqual(
                 w1.IsPersonalSite,
                 w2.IsPersonalSite,
@@ -761,7 +719,6 @@ namespace Tests
                 w1.WebsiteType,
                 w2.WebsiteType,
                 "vCardWebSite.WebSiteType differs.");
-
         }
 
         #endregion
@@ -770,7 +727,6 @@ namespace Tests
 
         public static void Equals(vCardWebsiteCollection wc1, vCardWebsiteCollection wc2)
         {
-
             Assert.AreEqual(
                 wc1.Count,
                 wc2.Count,
@@ -780,7 +736,6 @@ namespace Tests
             {
                 Equals(wc1[index], wc2[index]);
             }
-
         }
 
         #endregion
@@ -789,7 +744,6 @@ namespace Tests
 
         public static void Equals(StringCollection sc1, StringCollection sc2)
         {
-
             Assert.AreEqual(
                 sc1.Count,
                 sc2.Count,
@@ -797,17 +751,13 @@ namespace Tests
 
             for (int index = 0; index < sc1.Count; index++)
             {
-
                 Assert.AreEqual(
                     sc1[index],
                     sc2[index],
                     "The strings differ at index " + index + ".");
-
             }
-
         }
 
         #endregion
-
     }
 }

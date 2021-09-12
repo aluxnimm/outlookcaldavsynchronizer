@@ -14,14 +14,15 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GenSync.Logging;
 
 namespace GenSync.EntityRepositories
 {
-  public interface IStateAwareEntityRepository<TEntityId, TEntityVersion, TContext, TStateToken>
-  {
-    Task<(IEntityStateCollection<TEntityId,TEntityVersion> States, TStateToken NewToken)> GetFullRepositoryState(IEnumerable<TEntityId> idsOfknownEntities, TStateToken stateToken, TContext context, IGetVersionsLogger logger);
-  }
+    public interface IStateAwareEntityRepository<TEntityId, TEntityVersion, TContext, TStateToken>
+    {
+        Task<(IEntityStateCollection<TEntityId, TEntityVersion> States, TStateToken NewToken)> GetFullRepositoryState(IEnumerable<TEntityId> idsOfknownEntities, TStateToken stateToken, TContext context, IGetVersionsLogger logger);
+    }
 }

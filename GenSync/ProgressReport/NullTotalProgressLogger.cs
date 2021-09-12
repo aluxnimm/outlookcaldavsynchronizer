@@ -17,27 +17,25 @@
 
 namespace GenSync.ProgressReport
 {
-  public class NullTotalProgressLogger : ITotalProgressLogger
-  {
-    public static readonly ITotalProgressLogger Instance = new NullTotalProgressLogger();
+    public class NullTotalProgressLogger : ITotalProgressLogger
+    {
+        public static readonly ITotalProgressLogger Instance = new NullTotalProgressLogger();
 
-    private NullTotalProgressLogger ()
-    {
-    }
-    
-    public void NotifyWork(int totalEntitiesBeingLoaded, int chunkCount)
-    {
-      
-    }
+        private NullTotalProgressLogger()
+        {
+        }
 
-    public IChunkProgressLogger StartChunk()
-    {
-      return NullChunkProgressLogger.Instance;
-    }
+        public void NotifyWork(int totalEntitiesBeingLoaded, int chunkCount)
+        {
+        }
 
-    public void Dispose()
-    {
+        public IChunkProgressLogger StartChunk()
+        {
+            return NullChunkProgressLogger.Instance;
+        }
+
+        public void Dispose()
+        {
+        }
     }
-    
-  }
 }

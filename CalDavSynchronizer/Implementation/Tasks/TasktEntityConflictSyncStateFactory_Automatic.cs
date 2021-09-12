@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
@@ -25,22 +26,22 @@ using GenSync.Synchronization.States;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
-  internal class TaskConflictInitialSyncStateCreationStrategyAutomatic
-      : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, ITaskItemWrapper, WebResourceName, string, IICalendar, int>
-  {
-    public TaskConflictInitialSyncStateCreationStrategyAutomatic (EntitySyncStateEnvironment<string, DateTime, ITaskItemWrapper, WebResourceName, string, IICalendar, int> environment)
-        : base (environment)
+    internal class TaskConflictInitialSyncStateCreationStrategyAutomatic
+        : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, ITaskItemWrapper, WebResourceName, string, IICalendar, int>
     {
-    }
+        public TaskConflictInitialSyncStateCreationStrategyAutomatic(EntitySyncStateEnvironment<string, DateTime, ITaskItemWrapper, WebResourceName, string, IICalendar, int> environment)
+            : base(environment)
+        {
+        }
 
-    protected override IEntitySyncState<string, DateTime, ITaskItemWrapper, WebResourceName, string, IICalendar, int> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
-    {
-      return new TaskUpdateFromNewerToOlder (
-          _environment,
-          knownData,
-          newA,
-          newB
-          );
+        protected override IEntitySyncState<string, DateTime, ITaskItemWrapper, WebResourceName, string, IICalendar, int> Create_FromNewerToOlder(IEntityRelationData<string, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
+        {
+            return new TaskUpdateFromNewerToOlder(
+                _environment,
+                knownData,
+                newA,
+                newB
+            );
+        }
     }
-  }
 }

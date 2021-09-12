@@ -1,4 +1,3 @@
-
 using System;
 using System.IO;
 using NUnit.Framework;
@@ -9,23 +8,18 @@ namespace Tests
     [TestFixture]
     public class RfcAuthorTests
     {
-
         [Test]
         public void CycleRfcAuthors()
         {
-
             using (StreamReader reader = new StreamReader(
                 new MemoryStream(SampleCards.RfcAuthors)))
             {
-
                 vCard card1 = new vCard(reader);
                 vCard card2 = new vCard(reader);
 
                 Helper.CycleStandard(card1);
                 Helper.CycleStandard(card2);
-
             }
-
         }
 
 
@@ -36,27 +30,21 @@ namespace Tests
         [Test]
         public void ParseRfcAuthors()
         {
-
             using (StreamReader reader = new StreamReader(
                 new MemoryStream(SampleCards.RfcAuthors)))
             {
-
                 vCard card1 = new vCard(reader);
                 vCard card2 = new vCard(reader);
 
                 _parseCard1(card1);
                 _parseCard2(card2);
-
             }
-
-
         }
 
         #region [ _parseCard1 ]
 
         private void _parseCard1(vCard card)
         {
-
             // 01 BEGIN:vCard
             // 02 VERSION:3.0
             // 03 FN:Frank Dawson
@@ -204,7 +192,6 @@ namespace Tests
                 "http://home.earthlink.net/~fdawson",
                 card.Websites[0].Url,
                 "URL at line 11 has a different value.");
-
         }
 
         #endregion
@@ -213,7 +200,6 @@ namespace Tests
 
         private void _parseCard2(vCard card)
         {
-
             // 13 BEGIN:vCard
             // 14 VERSION:3.0
             // 15 FN:Tim Howes
@@ -328,10 +314,8 @@ namespace Tests
                 "howes@netscape.com",
                 card.EmailAddresses[0].Address,
                 "EMAIL on line 21 has a different value.");
-
         }
 
         #endregion
-
     }
 }

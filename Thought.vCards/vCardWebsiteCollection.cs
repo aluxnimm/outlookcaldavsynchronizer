@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -10,7 +9,6 @@ using System.Collections.ObjectModel;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     A collection of <see cref="vCardWebsite"/> objects.
     /// </summary>
@@ -18,7 +16,6 @@ namespace Thought.vCards
     /// <seealso cref="vCardWebsiteTypes"/>
     public class vCardWebsiteCollection : Collection<vCardWebsite>
     {
-
         /// <summary>
         ///     Returns the first web site of the specified type.  If
         ///     the collection does not contain a website of the specified
@@ -29,33 +26,26 @@ namespace Thought.vCards
         /// <returns></returns>
         public vCardWebsite GetFirstChoice(vCardWebsiteTypes siteType)
         {
-
             vCardWebsite alternate = null;
 
             foreach (vCardWebsite webSite in this)
             {
-
                 if ((webSite.WebsiteType & siteType) == siteType)
                 {
                     return webSite;
                 }
                 else
                 {
-
                     if (
                         (alternate == null) &&
                         (webSite.WebsiteType == vCardWebsiteTypes.Default))
                     {
                         alternate = webSite;
                     }
-
                 }
             }
 
             return alternate;
-
         }
-
     }
-
 }

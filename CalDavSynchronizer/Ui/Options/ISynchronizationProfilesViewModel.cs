@@ -19,9 +19,9 @@ using System;
 
 namespace CalDavSynchronizer.Ui.Options
 {
-  interface ISynchronizationProfilesViewModel
-  {
-    void ShowProfile (Guid value);
-    void BringToFront ();
-  }
+    interface ISynchronizationProfilesViewModel
+    {
+        void ShowProfile(Guid value);
+        void BringToFront();
+    }
 }

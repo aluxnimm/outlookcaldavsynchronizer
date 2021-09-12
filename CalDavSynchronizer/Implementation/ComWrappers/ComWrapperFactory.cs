@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -21,26 +22,26 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.ComWrappers
 {
-  public class ComWrapperFactory : IComWrapperFactory
-  {
-    public IAppointmentItemWrapper Create(AppointmentItem inner, LoadAppointmentItemDelegate load)
+    public class ComWrapperFactory : IComWrapperFactory
     {
-      return new AppointmentItemWrapper(inner, load);
-    }
+        public IAppointmentItemWrapper Create(AppointmentItem inner, LoadAppointmentItemDelegate load)
+        {
+            return new AppointmentItemWrapper(inner, load);
+        }
 
-    public IContactItemWrapper Create(ContactItem inner, LoadContactItemDelegate load)
-    {
-      return new ContactItemWrapper(inner, load);
-    }
+        public IContactItemWrapper Create(ContactItem inner, LoadContactItemDelegate load)
+        {
+            return new ContactItemWrapper(inner, load);
+        }
 
-    public ITaskItemWrapper Create(TaskItem inner, LoadTaskItemDelegate load)
-    {
-      return new TaskItemWrapper(inner, load);
-    }
+        public ITaskItemWrapper Create(TaskItem inner, LoadTaskItemDelegate load)
+        {
+            return new TaskItemWrapper(inner, load);
+        }
 
-    public IDistListItemWrapper Create(DistListItem inner)
-    {
-      return new DistListItemWrapper(inner);
+        public IDistListItemWrapper Create(DistListItem inner)
+        {
+            return new DistListItemWrapper(inner);
+        }
     }
-  }
 }

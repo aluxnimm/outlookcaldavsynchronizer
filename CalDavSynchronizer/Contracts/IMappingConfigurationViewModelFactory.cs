@@ -17,10 +17,10 @@
 
 namespace CalDavSynchronizer.Contracts
 {
-  public interface IMappingConfigurationBaseVisitor<out TResult>
-  {
-    TResult Visit(ContactMappingConfiguration configuration);
-    TResult Visit(EventMappingConfiguration configuration);
-    TResult Visit(TaskMappingConfiguration configuration);
-  }
+    public interface IMappingConfigurationBaseVisitor<out TResult>
+    {
+        TResult Visit(ContactMappingConfiguration configuration);
+        TResult Visit(EventMappingConfiguration configuration);
+        TResult Visit(TaskMappingConfiguration configuration);
+    }
 }

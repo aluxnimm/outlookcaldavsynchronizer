@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,75 +28,68 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public abstract class OptionsViewModelBase : ModelBase, IOptionsViewModel
-  {
-    private readonly OptionsModel _model;
-    private IEnumerable<IOptionsSection> _sections;
-    private IEnumerable<ISubOptionsViewModel> _subOptions;
-    private bool _isSelected;
-    private bool _isExpanded;
-
-    protected OptionsViewModelBase (IViewOptions options, OptionsModel model)
+    public abstract class OptionsViewModelBase : ModelBase, IOptionsViewModel
     {
-      if (options == null) throw new ArgumentNullException (nameof (options));
-      if (model == null) throw new ArgumentNullException(nameof(model));
+        private readonly OptionsModel _model;
+        private IEnumerable<IOptionsSection> _sections;
+        private IEnumerable<ISubOptionsViewModel> _subOptions;
+        private bool _isSelected;
+        private bool _isExpanded;
 
-      ViewOptions = options;
-      _model = model;
+        protected OptionsViewModelBase(IViewOptions options, OptionsModel model)
+        {
+            if (options == null) throw new ArgumentNullException(nameof(options));
+            if (model == null) throw new ArgumentNullException(nameof(model));
 
-      RegisterPropertyChangePropagation(_model, nameof(_model.Name), nameof(Name));
-      RegisterPropertyChangePropagation(_model, nameof(_model.IsActive), nameof(IsActive));
+            ViewOptions = options;
+            _model = model;
 
+            RegisterPropertyChangePropagation(_model, nameof(_model.Name), nameof(Name));
+            RegisterPropertyChangePropagation(_model, nameof(_model.IsActive), nameof(IsActive));
+        }
+
+        public bool IsMultipleOptionsTemplateViewModel { get; } = false;
+        public abstract OlItemType? OutlookFolderType { get; }
+
+        public IEnumerable<IOptionsSection> Sections => _sections ?? (_sections = CreateSections());
+
+
+        public bool IsActive
+        {
+            get { return _model.IsActive; }
+            set { _model.IsActive = value; }
+        }
+
+        public IEnumerable<ISubOptionsViewModel> Items => _subOptions ?? (_subOptions = CreateSubOptions());
+        IEnumerable<ITreeNodeViewModel> ITreeNodeViewModel.Items => Items;
+
+        public bool SupportsIsActive { get; } = true;
+
+        public string Name
+        {
+            get { return _model.Name; }
+            set { _model.Name = value; }
+        }
+
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set { CheckedPropertyChange(ref _isSelected, value); }
+        }
+
+        public bool IsExpanded
+        {
+            get { return _isExpanded; }
+            set { CheckedPropertyChange(ref _isExpanded, value); }
+        }
+
+        public abstract OptionsModel Model { get; }
+
+        public abstract bool Validate(StringBuilder errorMessageBuilder);
+
+
+        protected abstract IEnumerable<ISubOptionsViewModel> CreateSubOptions();
+        protected abstract IEnumerable<IOptionsSection> CreateSections();
+        public IViewOptions ViewOptions { get; }
     }
-
-    public bool IsMultipleOptionsTemplateViewModel { get; } = false;
-    public abstract OlItemType? OutlookFolderType { get; } 
-
-    public IEnumerable<IOptionsSection> Sections => _sections ?? (_sections = CreateSections());
-
-
-    public bool IsActive
-    {
-      get { return _model.IsActive; }
-      set { _model.IsActive = value; }
-    }
-    
-    public IEnumerable<ISubOptionsViewModel> Items => _subOptions ?? (_subOptions = CreateSubOptions());
-    IEnumerable<ITreeNodeViewModel> ITreeNodeViewModel.Items => Items;
-
-    public bool SupportsIsActive { get; } = true;
-
-    public string Name
-    {
-      get { return _model.Name; }
-      set { _model.Name = value; }
-    }
-
-    public bool IsSelected
-    {
-      get { return _isSelected; }
-      set
-      {
-        CheckedPropertyChange (ref _isSelected, value);
-      }
-    }
-
-    public bool IsExpanded
-    {
-      get { return _isExpanded; }
-      set
-      {
-        CheckedPropertyChange (ref _isExpanded, value);
-      }
-    }
-
-    public abstract OptionsModel Model { get; }
-
-    public abstract bool Validate(StringBuilder errorMessageBuilder);
-  
-
-    protected abstract IEnumerable<ISubOptionsViewModel> CreateSubOptions ();
-    protected abstract IEnumerable<IOptionsSection> CreateSections ();
-    public IViewOptions ViewOptions { get; }
-  }
 }

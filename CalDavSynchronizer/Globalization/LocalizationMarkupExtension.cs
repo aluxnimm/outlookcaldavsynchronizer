@@ -7,24 +7,24 @@ using System.Windows.Markup;
 
 namespace CalDavSynchronizer.Globalization
 {
-  [ContentProperty(nameof(Text))]
-  [MarkupExtensionReturnType(typeof(string))]
-  public class LocalizeExtension : MarkupExtension
-  {
-    public string Text { get; set; }
-
-    public LocalizeExtension()
+    [ContentProperty(nameof(Text))]
+    [MarkupExtensionReturnType(typeof(string))]
+    public class LocalizeExtension : MarkupExtension
     {
-    }
+        public string Text { get; set; }
 
-    public LocalizeExtension(string text)
-    {
-      Text = text;
-    }
+        public LocalizeExtension()
+        {
+        }
 
-    public override object ProvideValue(IServiceProvider serviceProvider)
-    {
-      return Strings.Localize(Text);
+        public LocalizeExtension(string text)
+        {
+            Text = text;
+        }
+
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return Strings.Localize(Text);
+        }
     }
-  }
 }

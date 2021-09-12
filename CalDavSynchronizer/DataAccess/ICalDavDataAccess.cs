@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -26,31 +27,31 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public interface ICalDavDataAccess
-  {
-    Task<bool> IsResourceCalender ();
-    Task<bool> DoesSupportCalendarQuery ();
-    Task<bool> IsCalendarAccessSupported ();
-    Task<bool> IsCalendarProxySupported (Uri principalUrl);
-    Task<CalendarOwnerProperties> GetCalendarOwnerPropertiesOrNull ();
-    Task<Uri> GetResourceUriOrNull (string displayName);
-    Task<AccessPrivileges> GetPrivileges ();
+    public interface ICalDavDataAccess
+    {
+        Task<bool> IsResourceCalender();
+        Task<bool> DoesSupportCalendarQuery();
+        Task<bool> IsCalendarAccessSupported();
+        Task<bool> IsCalendarProxySupported(Uri principalUrl);
+        Task<CalendarOwnerProperties> GetCalendarOwnerPropertiesOrNull();
+        Task<Uri> GetResourceUriOrNull(string displayName);
+        Task<AccessPrivileges> GetPrivileges();
 
-    Task<ArgbColor?> GetCalendarColorNoThrow ();
-    Task<bool> SetCalendarColorNoThrow (ArgbColor color);
+        Task<ArgbColor?> GetCalendarColorNoThrow();
+        Task<bool> SetCalendarColorNoThrow(ArgbColor color);
 
-    Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetEventVersions (DateTimeRange? range);
-    Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetTodoVersions (DateTimeRange? range);
-    Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions (IEnumerable<WebResourceName> eventUrls);
+        Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetEventVersions(DateTimeRange? range);
+        Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetTodoVersions(DateTimeRange? range);
+        Task<IReadOnlyList<EntityVersion<WebResourceName, string>>> GetVersions(IEnumerable<WebResourceName> eventUrls);
 
-    Task<IReadOnlyList<EntityWithId<WebResourceName, string>>> GetEntities (IEnumerable<WebResourceName> eventUrls);
+        Task<IReadOnlyList<EntityWithId<WebResourceName, string>>> GetEntities(IEnumerable<WebResourceName> eventUrls);
 
-    Task<EntityVersion<WebResourceName, string>> CreateEntity (string iCalData, string name);
+        Task<EntityVersion<WebResourceName, string>> CreateEntity(string iCalData, string name);
 
-    Task<bool> TryDeleteEntity (WebResourceName uri, string etag);
-    Task<EntityVersion<WebResourceName, string>> TryUpdateEntity (WebResourceName url, string etag, string iCalData);
+        Task<bool> TryDeleteEntity(WebResourceName uri, string etag);
+        Task<EntityVersion<WebResourceName, string>> TryUpdateEntity(WebResourceName url, string etag, string iCalData);
 
-    Task<bool> DoesSupportWebDavCollectionSync();
-    Task<(string SyncToken, IReadOnlyList<(WebResourceName Id, string Version)> ChangedOrAddedItems, IReadOnlyList<WebResourceName> DeletedItems)> CollectionSync(string syncTokenOrNull, IGetVersionsLogger logger);
-  }
+        Task<bool> DoesSupportWebDavCollectionSync();
+        Task<(string SyncToken, IReadOnlyList<(WebResourceName Id, string Version)> ChangedOrAddedItems, IReadOnlyList<WebResourceName> DeletedItems)> CollectionSync(string syncTokenOrNull, IGetVersionsLogger logger);
+    }
 }

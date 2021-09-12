@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
@@ -26,22 +27,22 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  internal class ContactConflictInitialSyncStateCreationStrategyAutomatic
-      : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger>
-  {
-    public ContactConflictInitialSyncStateCreationStrategyAutomatic (EntitySyncStateEnvironment<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> environment)
-        : base (environment)
+    internal class ContactConflictInitialSyncStateCreationStrategyAutomatic
+        : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger>
     {
-    }
+        public ContactConflictInitialSyncStateCreationStrategyAutomatic(EntitySyncStateEnvironment<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> environment)
+            : base(environment)
+        {
+        }
 
-    protected override IEntitySyncState<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
-    {
-      return new OutlookCardDavUpdateFromNewerToOlder (
-          _environment,
-          knownData,
-          newA,
-          newB
-          );
+        protected override IEntitySyncState<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> Create_FromNewerToOlder(IEntityRelationData<string, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
+        {
+            return new OutlookCardDavUpdateFromNewerToOlder(
+                _environment,
+                knownData,
+                newA,
+                newB
+            );
+        }
     }
-  }
 }

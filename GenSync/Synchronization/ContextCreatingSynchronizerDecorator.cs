@@ -22,36 +22,36 @@ using GenSync.Logging;
 
 namespace GenSync.Synchronization
 {
-  public class ContextCreatingSynchronizerDecorator<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
-    : IPartialSynchronizer<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
-  {
-    private readonly IPartialSynchronizer<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion, TContext> _inner;
-    private readonly ISynchronizationContextFactory<TContext> _contextFactory;
-
-    public ContextCreatingSynchronizerDecorator(
-      IPartialSynchronizer<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion, TContext> inner, 
-      ISynchronizationContextFactory<TContext> contextFactory)
+    public class ContextCreatingSynchronizerDecorator<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
+        : IPartialSynchronizer<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
     {
-      if (inner == null) throw new ArgumentNullException(nameof(inner));
-      if (contextFactory == null) throw new ArgumentNullException(nameof(contextFactory));
+        private readonly IPartialSynchronizer<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion, TContext> _inner;
+        private readonly ISynchronizationContextFactory<TContext> _contextFactory;
 
-      _inner = inner;
-      _contextFactory = contextFactory;
-    }
+        public ContextCreatingSynchronizerDecorator(
+            IPartialSynchronizer<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion, TContext> inner,
+            ISynchronizationContextFactory<TContext> contextFactory)
+        {
+            if (inner == null) throw new ArgumentNullException(nameof(inner));
+            if (contextFactory == null) throw new ArgumentNullException(nameof(contextFactory));
 
-    public async Task Synchronize(ISynchronizationLogger logger)
-    {
-      var synchronizationContext = await _contextFactory.Create();
-      await _inner.Synchronize(logger, synchronizationContext);
-      await _contextFactory.SynchronizationFinished(synchronizationContext);
-    }
+            _inner = inner;
+            _contextFactory = contextFactory;
+        }
 
-    public async Task SynchronizePartial(
-      IEnumerable<IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> aIds,
-      IEnumerable<IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> bIds,
-      ISynchronizationLogger logger)
-    {
-      await _inner.SynchronizePartial(aIds, bIds, logger, _contextFactory.Create, _contextFactory.SynchronizationFinished);
+        public async Task Synchronize(ISynchronizationLogger logger)
+        {
+            var synchronizationContext = await _contextFactory.Create();
+            await _inner.Synchronize(logger, synchronizationContext);
+            await _contextFactory.SynchronizationFinished(synchronizationContext);
+        }
+
+        public async Task SynchronizePartial(
+            IEnumerable<IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> aIds,
+            IEnumerable<IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> bIds,
+            ISynchronizationLogger logger)
+        {
+            await _inner.SynchronizePartial(aIds, bIds, logger, _contextFactory.Create, _contextFactory.SynchronizationFinished);
+        }
     }
-  }
 }

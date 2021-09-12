@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -7,13 +6,11 @@
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     A member in a vCard.
     /// </summary>
     public class vCardMember
     {
-
         private string emailAddress;
         private string displayName;
         private string uid;
@@ -48,14 +45,8 @@ namespace Thought.vCards
         /// </summary>
         public string EmailAddress
         {
-            get
-            {
-                return this.emailAddress ?? string.Empty;
-            }
-            set
-            {
-                this.emailAddress = value;
-            }
+            get { return this.emailAddress ?? string.Empty; }
+            set { this.emailAddress = value; }
         }
 
         /// <summary>
@@ -63,14 +54,8 @@ namespace Thought.vCards
         /// </summary>
         public string DisplayName
         {
-            get
-            {
-                return this.displayName ?? string.Empty;
-            }
-            set
-            {
-                this.displayName = value;
-            }
+            get { return this.displayName ?? string.Empty; }
+            set { this.displayName = value; }
         }
 
         /// <summary>
@@ -78,14 +63,8 @@ namespace Thought.vCards
         /// </summary>
         public string Uid
         {
-            get
-            {
-                return this.uid;
-            }
-            set
-            {
-                this.uid = value;
-            }
+            get { return this.uid; }
+            set { this.uid = value; }
         }
 
         /// <summary>
@@ -95,7 +74,5 @@ namespace Thought.vCards
         {
             return this.emailAddress ?? string.Empty;
         }
-
     }
-
 }

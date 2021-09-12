@@ -17,10 +17,10 @@
 
 namespace CalDavSynchronizer.ChangeWatching
 {
-  public enum ItemAction
-  {
-    Add,
-    Change,
-    Delete
-  }
+    public enum ItemAction
+    {
+        Add,
+        Change,
+        Delete
+    }
 }

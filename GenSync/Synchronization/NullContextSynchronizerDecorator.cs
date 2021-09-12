@@ -14,33 +14,34 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GenSync.Logging;
 
 namespace GenSync.Synchronization
 {
-  public class NullContextSynchronizerDecorator<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
-    : IPartialSynchronizer<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
-  {
-    private readonly IPartialSynchronizer<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion, int> _inner;
-
-    public NullContextSynchronizerDecorator(IPartialSynchronizer<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion, int> inner)
+    public class NullContextSynchronizerDecorator<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
+        : IPartialSynchronizer<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>
     {
-      _inner = inner;
-    }
+        private readonly IPartialSynchronizer<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion, int> _inner;
 
-    public async Task Synchronize(ISynchronizationLogger logger)
-    {
-      await _inner.Synchronize(logger, 0);
-    }
+        public NullContextSynchronizerDecorator(IPartialSynchronizer<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion, int> inner)
+        {
+            _inner = inner;
+        }
 
-    public async Task SynchronizePartial(
-      IEnumerable<IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> aIds,
-      IEnumerable<IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> bIds,
-      ISynchronizationLogger logger)
-    {
-      await _inner.SynchronizePartial(aIds, bIds, logger, () => Task.FromResult(0), c => Task.FromResult(0));
+        public async Task Synchronize(ISynchronizationLogger logger)
+        {
+            await _inner.Synchronize(logger, 0);
+        }
+
+        public async Task SynchronizePartial(
+            IEnumerable<IIdWithHints<TAtypeEntityId, TAtypeEntityVersion>> aIds,
+            IEnumerable<IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>> bIds,
+            ISynchronizationLogger logger)
+        {
+            await _inner.SynchronizePartial(aIds, bIds, logger, () => Task.FromResult(0), c => Task.FromResult(0));
+        }
     }
-  }
 }

@@ -33,28 +33,28 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Scheduling.ComponentCollectors
 {
-  public class AvailableContactSynchronizerComponents : AvailableSynchronizerComponents
-  {
-    public ICardDavDataAccess CardDavDataAccess { get; set; }
-    public ICardDavDataAccess SogoDistListDataAccessOrNull { get; set; }
-
-    public IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> CardDavEntityRepository { get; set; }
-    public IEntityRepository<string, DateTime, IContactItemWrapper, ICardDavRepositoryLogger> OutlookContactRepository { get; set; }
-
-    public IEntityRepository<WebResourceName, string, DistributionList, DistributionListSychronizationContext>  SogoDistListRepositoryOrNull { get; set; }
-    public IEntityRepository<WebResourceName, string, vCard, DistributionListSychronizationContext> VCardGroupRepositoryOrNull { get; set; }
-    public IEntityRepository<string, DateTime, IDistListItemWrapper, DistributionListSychronizationContext> OutlookDistListRepositoryOrNull { get; set; }
-    public IEntityRelationDataAccess<string, DateTime, WebResourceName, string> EntityRelationDataAccess { get; set; }
-    public IEntityRelationDataAccess<string, DateTime, WebResourceName, string> DistListEntityRelationDataAccess { get; set; }
-
-
-    public override DataAccessComponents GetDataAccessComponents ()
+    public class AvailableContactSynchronizerComponents : AvailableSynchronizerComponents
     {
-      return new DataAccessComponents
-      {
-        CardDavDataAccess = CardDavDataAccess,
-        DistListDataAccess = SogoDistListDataAccessOrNull
-      };
+        public ICardDavDataAccess CardDavDataAccess { get; set; }
+        public ICardDavDataAccess SogoDistListDataAccessOrNull { get; set; }
+
+        public IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> CardDavEntityRepository { get; set; }
+        public IEntityRepository<string, DateTime, IContactItemWrapper, ICardDavRepositoryLogger> OutlookContactRepository { get; set; }
+
+        public IEntityRepository<WebResourceName, string, DistributionList, DistributionListSychronizationContext> SogoDistListRepositoryOrNull { get; set; }
+        public IEntityRepository<WebResourceName, string, vCard, DistributionListSychronizationContext> VCardGroupRepositoryOrNull { get; set; }
+        public IEntityRepository<string, DateTime, IDistListItemWrapper, DistributionListSychronizationContext> OutlookDistListRepositoryOrNull { get; set; }
+        public IEntityRelationDataAccess<string, DateTime, WebResourceName, string> EntityRelationDataAccess { get; set; }
+        public IEntityRelationDataAccess<string, DateTime, WebResourceName, string> DistListEntityRelationDataAccess { get; set; }
+
+
+        public override DataAccessComponents GetDataAccessComponents()
+        {
+            return new DataAccessComponents
+            {
+                CardDavDataAccess = CardDavDataAccess,
+                DistListDataAccess = SogoDistListDataAccessOrNull
+            };
+        }
     }
-  }
 }

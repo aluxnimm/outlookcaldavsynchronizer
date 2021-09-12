@@ -43,7 +43,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             _nextCharacterCode = 0;
             _nextCharacter = ' ';
             _lookAheadCharacterCode = _inputStringReader.Read();
-            _lookAheadCharacter = (char)_lookAheadCharacterCode;
+            _lookAheadCharacter = (char) _lookAheadCharacterCode;
             _previousCharacter = ' ';
             _ignoreNextWhitespace = true;
             _nextToken = new StringBuilder(100);
@@ -144,6 +144,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                                 // Treat any control character sequence as one whitespace
                                 _nextToken.Append(' ');
                             }
+
                             _ignoreNextWhitespace = true; // and keep ignoring the following whitespaces
                         }
                         else
@@ -151,6 +152,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                             _nextToken.Append(this.NextCharacter);
                             _ignoreNextWhitespace = false;
                         }
+
                         this.GetNextCharacter();
                     }
                 }
@@ -261,6 +263,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                     _nextToken.Append(this.NextCharacter);
                     this.GetNextCharacter();
                 }
+
                 if (this.NextCharacter == startingQuote)
                 {
                     this.GetNextCharacter();
@@ -298,18 +301,12 @@ namespace CalDavSynchronizer.Conversions.Msft
 
         internal HtmlTokenType NextTokenType
         {
-            get
-            {
-                return _nextTokenType;
-            }
+            get { return _nextTokenType; }
         }
 
         internal string NextToken
         {
-            get
-            {
-                return _nextToken.ToString();
-            }
+            get { return _nextToken.ToString(); }
         }
 
         #endregion Internal Properties
@@ -359,9 +356,10 @@ namespace CalDavSynchronizer.Conversions.Msft
                     // largest numeric entity is 7 characters
                     for (int i = 0; i < 7 && Char.IsDigit(_lookAheadCharacter); i++)
                     {
-                        entityCode = 10 * entityCode + (_lookAheadCharacterCode - (int)'0');
+                        entityCode = 10 * entityCode + (_lookAheadCharacterCode - (int) '0');
                         this.ReadLookAheadCharacter();
                     }
+
                     if (_lookAheadCharacter == ';')
                     {
                         // correct format - advance
@@ -369,7 +367,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                         _nextCharacterCode = entityCode;
 
                         // if this is out of range it will set the character to '?'
-                        _nextCharacter = (char)_nextCharacterCode;
+                        _nextCharacter = (char) _nextCharacterCode;
 
                         // as far as we are concerned, this is an entity
                         _isNextCharacterEntity = true;
@@ -395,6 +393,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                         entity += _lookAheadCharacter;
                         this.ReadLookAheadCharacter();
                     }
+
                     if (_lookAheadCharacter == ';')
                     {
                         // advance
@@ -403,7 +402,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                         if (HtmlSchema.IsEntity(entity))
                         {
                             _nextCharacter = HtmlSchema.EntityCharacterValue(entity);
-                            _nextCharacterCode = (int)_nextCharacter;
+                            _nextCharacterCode = (int) _nextCharacter;
                             _isNextCharacterEntity = true;
                         }
                         else
@@ -435,7 +434,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             if (_lookAheadCharacterCode != -1)
             {
                 _lookAheadCharacterCode = _inputStringReader.Read();
-                _lookAheadCharacter = (char)_lookAheadCharacterCode;
+                _lookAheadCharacter = (char) _lookAheadCharacterCode;
             }
         }
 
@@ -461,6 +460,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                         {
                             this.GetNextCharacter();
                         }
+
                         if (_nextCharacter == '>')
                         {
                             this.GetNextCharacter();
@@ -473,6 +473,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                         {
                             this.GetNextCharacter();
                         }
+
                         if (_nextCharacter == '>')
                         {
                             this.GetNextCharacter();
@@ -521,13 +522,13 @@ namespace CalDavSynchronizer.Conversions.Msft
         {
             // we are not concerned with escaped characters in names
             // we assume that character entities are allowed as part of a name
-            return 
-                this.IsGoodForNameStart(character) || 
-                character == '.' || 
-                character == '-' || 
+            return
+                this.IsGoodForNameStart(character) ||
+                character == '.' ||
+                character == '-' ||
                 character == ':' ||
-                Char.IsDigit(character) || 
-                IsCombiningCharacter(character) || 
+                Char.IsDigit(character) ||
+                IsCombiningCharacter(character) ||
                 IsExtender(character);
         }
 
@@ -580,7 +581,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             // advance twice, once to get the lookahead character and then to reach the start of the cdata
             this.GetNextCharacter();
             this.GetNextCharacter();
-            
+
             // NOTE: 10/12/2004: modified this function to check when called if's reading CDATA or something else
             // some directives may start with a <![ and then have some data and they will just end with a ]>
             // this function is modified to stop at the sequence ]> and not ]]>
@@ -622,7 +623,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             this.GetNextCharacter(); // get first '-'
             this.GetNextCharacter(); // get second '-'
             this.GetNextCharacter(); // get first character of comment content
- 
+
             while (true)
             {
                 // Read text until end of comment
@@ -735,52 +736,34 @@ namespace CalDavSynchronizer.Conversions.Msft
 
         private char NextCharacter
         {
-            get
-            {
-                return _nextCharacter;
-            }
+            get { return _nextCharacter; }
         }
 
         private bool IsAtEndOfStream
         {
-            get
-            {
-                return _nextCharacterCode == -1;
-            }
+            get { return _nextCharacterCode == -1; }
         }
 
         private bool IsAtTagStart
         {
-            get
-            {
-                return _nextCharacter == '<' && (_lookAheadCharacter == '/' || IsGoodForNameStart(_lookAheadCharacter)) && !_isNextCharacterEntity;
-            }
+            get { return _nextCharacter == '<' && (_lookAheadCharacter == '/' || IsGoodForNameStart(_lookAheadCharacter)) && !_isNextCharacterEntity; }
         }
 
         private bool IsAtTagEnd
         {
             // check if at end of empty tag or regular tag
-            get
-            {
-                return (_nextCharacter == '>' || (_nextCharacter == '/' && _lookAheadCharacter == '>')) && !_isNextCharacterEntity;
-            }
+            get { return (_nextCharacter == '>' || (_nextCharacter == '/' && _lookAheadCharacter == '>')) && !_isNextCharacterEntity; }
         }
 
         private bool IsAtDirectiveStart
         {
-            get
-            {
-                return (_nextCharacter == '<' && _lookAheadCharacter == '!' && !this.IsNextCharacterEntity);
-            }
+            get { return (_nextCharacter == '<' && _lookAheadCharacter == '!' && !this.IsNextCharacterEntity); }
         }
 
         private bool IsNextCharacterEntity
         {
             // check if next character is an entity
-            get
-            {
-                return _isNextCharacterEntity;
-            }
+            get { return _isNextCharacterEntity; }
         }
 
         #endregion Private Properties
@@ -795,6 +778,7 @@ namespace CalDavSynchronizer.Conversions.Msft
 
         // string reader which will move over input text
         private StringReader _inputStringReader;
+
         // next character code read from input that is not yet part of any token
         // and the character it represents
         private int _nextCharacterCode;

@@ -14,19 +14,20 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class NullColorCategoryMapperFactory : IColorCategoryMapperFactory
-  {
-    public static readonly IColorCategoryMapperFactory Instance = new NullColorCategoryMapperFactory();
-
-    private NullColorCategoryMapperFactory()
+    public class NullColorCategoryMapperFactory : IColorCategoryMapperFactory
     {
-    }
+        public static readonly IColorCategoryMapperFactory Instance = new NullColorCategoryMapperFactory();
 
-    public IColorCategoryMapper Create()
-    {
-      return NullColorCategoryMapper.Instance;
+        private NullColorCategoryMapperFactory()
+        {
+        }
+
+        public IColorCategoryMapper Create()
+        {
+            return NullColorCategoryMapper.Instance;
+        }
     }
-  }
 }

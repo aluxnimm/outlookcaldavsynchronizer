@@ -14,26 +14,27 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync.Logging
 {
-  public class NullEntityLogMessageFactory<TAtypeEntity, TBtypeEntity> : IEntityLogMessageFactory<TAtypeEntity, TBtypeEntity>
-  {
-    public static readonly IEntityLogMessageFactory<TAtypeEntity, TBtypeEntity> Instance = new NullEntityLogMessageFactory<TAtypeEntity, TBtypeEntity>();
-
-    private NullEntityLogMessageFactory()
+    public class NullEntityLogMessageFactory<TAtypeEntity, TBtypeEntity> : IEntityLogMessageFactory<TAtypeEntity, TBtypeEntity>
     {
-    }
+        public static readonly IEntityLogMessageFactory<TAtypeEntity, TBtypeEntity> Instance = new NullEntityLogMessageFactory<TAtypeEntity, TBtypeEntity>();
 
-    public string GetADisplayNameOrNull(TAtypeEntity entity)
-    {
-      return null;
-    }
+        private NullEntityLogMessageFactory()
+        {
+        }
 
-    public string GetBDisplayNameOrNull(TBtypeEntity entity)
-    {
-      return null;
+        public string GetADisplayNameOrNull(TAtypeEntity entity)
+        {
+            return null;
+        }
+
+        public string GetBDisplayNameOrNull(TBtypeEntity entity)
+        {
+            return null;
+        }
     }
-  }
 }

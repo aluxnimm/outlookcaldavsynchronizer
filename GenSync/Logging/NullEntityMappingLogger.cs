@@ -19,38 +19,32 @@ using System;
 
 namespace GenSync.Logging
 {
-  public class NullEntitySynchronizationLogger : IEntitySynchronizationLogger
-  {
-    public static readonly IEntitySynchronizationLogger Instance = new NullEntitySynchronizationLogger();
-
-    private NullEntitySynchronizationLogger()
+    public class NullEntitySynchronizationLogger : IEntitySynchronizationLogger
     {
+        public static readonly IEntitySynchronizationLogger Instance = new NullEntitySynchronizationLogger();
 
-    }
+        private NullEntitySynchronizationLogger()
+        {
+        }
 
-    public void Dispose()
-    {
-      
-    }
+        public void Dispose()
+        {
+        }
 
-    public void LogError(string message)
-    {
-     
-    }
+        public void LogError(string message)
+        {
+        }
 
-    public void LogError(string message, Exception exception)
-    {
-    
-    }
+        public void LogError(string message, Exception exception)
+        {
+        }
 
-    public void LogWarning(string warning)
-    {
-     
-    }
+        public void LogWarning(string warning)
+        {
+        }
 
-    public void LogWarning(string warning, Exception exception)
-    {
-     
+        public void LogWarning(string warning, Exception exception)
+        {
+        }
     }
-  }
 }

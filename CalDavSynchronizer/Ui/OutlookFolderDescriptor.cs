@@ -20,30 +20,30 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui
 {
-  public class OutlookFolderDescriptor
-  {
-    public string EntryId { get; }
-    public string StoreId { get; }
-    public OlItemType DefaultItemType { get; }
-    public string Name { get; }
-    public int ItemCount { get; }
-
-    public OutlookFolderDescriptor (string entryId, string storeId, OlItemType defaultItemType, string name, int itemCount)
+    public class OutlookFolderDescriptor
     {
-      EntryId = entryId;
-      StoreId = storeId;
-      DefaultItemType = defaultItemType;
-      Name = name;
-      ItemCount = itemCount;
-    }
+        public string EntryId { get; }
+        public string StoreId { get; }
+        public OlItemType DefaultItemType { get; }
+        public string Name { get; }
+        public int ItemCount { get; }
 
-    public  OutlookFolderDescriptor(MAPIFolder folder)
-      : this(folder.EntryID, folder.StoreID, folder.DefaultItemType, folder.Name, 0)
-    {
-      using (var itemsWrapper = GenericComObjectWrapper.Create (folder.Items))
-      {
-        ItemCount = itemsWrapper.Inner.Count;
-      }
+        public OutlookFolderDescriptor(string entryId, string storeId, OlItemType defaultItemType, string name, int itemCount)
+        {
+            EntryId = entryId;
+            StoreId = storeId;
+            DefaultItemType = defaultItemType;
+            Name = name;
+            ItemCount = itemCount;
+        }
+
+        public OutlookFolderDescriptor(MAPIFolder folder)
+            : this(folder.EntryID, folder.StoreID, folder.DefaultItemType, folder.Name, 0)
+        {
+            using (var itemsWrapper = GenericComObjectWrapper.Create(folder.Items))
+            {
+                ItemCount = itemsWrapper.Inner.Count;
+            }
+        }
     }
-  }
 }

@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -10,7 +9,6 @@ using System.Collections.Generic;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     A postal address.
     /// </summary>
@@ -18,7 +16,6 @@ namespace Thought.vCards
     [Serializable]
     public class vCardDeliveryAddress
     {
-
         private List<vCardDeliveryAddressTypes> addressType;
         private string city;
         private string country;
@@ -41,23 +38,17 @@ namespace Thought.vCards
             this.street = string.Empty;
             this.poBox = string.Empty;
             this.extendedAddress = string.Empty;
-			      this.addressType = new List<vCardDeliveryAddressTypes>();
+            this.addressType = new List<vCardDeliveryAddressTypes>();
         }
 
 
         /// <summary>
         ///     The type of postal address.
         /// </summary>
-		public List<vCardDeliveryAddressTypes> AddressType
+        public List<vCardDeliveryAddressTypes> AddressType
         {
-            get
-            {
-                return this.addressType;
-            }
-            set
-            {
-                this.addressType = value;
-            }
+            get { return this.addressType; }
+            set { this.addressType = value; }
         }
 
 
@@ -66,14 +57,8 @@ namespace Thought.vCards
         /// </summary>
         public string City
         {
-            get
-            {
-                return this.city ?? string.Empty;
-            }
-            set
-            {
-                this.city = value;
-            }
+            get { return this.city ?? string.Empty; }
+            set { this.city = value; }
         }
 
 
@@ -82,14 +67,8 @@ namespace Thought.vCards
         /// </summary>
         public string Country
         {
-            get
-            {
-                return this.country ?? string.Empty;
-            }
-            set
-            {
-                this.country = value;
-            }
+            get { return this.country ?? string.Empty; }
+            set { this.country = value; }
         }
 
 
@@ -98,10 +77,7 @@ namespace Thought.vCards
         /// </summary>
         public bool IsDomestic
         {
-            get
-            {
-                return (addressType.Contains(vCardDeliveryAddressTypes.Domestic));
-            }
+            get { return (addressType.Contains(vCardDeliveryAddressTypes.Domestic)); }
         }
 
 
@@ -110,10 +86,7 @@ namespace Thought.vCards
         /// </summary>
         public bool IsHome
         {
-            get
-            {
-				return (addressType.Contains(vCardDeliveryAddressTypes.Home));
-            }
+            get { return (addressType.Contains(vCardDeliveryAddressTypes.Home)); }
         }
 
 
@@ -122,10 +95,7 @@ namespace Thought.vCards
         /// </summary>
         public bool IsInternational
         {
-            get
-            {
-				return (addressType.Contains(vCardDeliveryAddressTypes.International));
-            }
+            get { return (addressType.Contains(vCardDeliveryAddressTypes.International)); }
         }
 
 
@@ -134,10 +104,7 @@ namespace Thought.vCards
         /// </summary>
         public bool IsParcel
         {
-            get
-            {
-				return (addressType.Contains(vCardDeliveryAddressTypes.Parcel));
-            }
+            get { return (addressType.Contains(vCardDeliveryAddressTypes.Parcel)); }
         }
 
 
@@ -146,10 +113,7 @@ namespace Thought.vCards
         /// </summary>
         public bool IsPostal
         {
-            get
-            {
-				return (addressType.Contains(vCardDeliveryAddressTypes.Postal));
-            }
+            get { return (addressType.Contains(vCardDeliveryAddressTypes.Postal)); }
         }
 
 
@@ -158,10 +122,7 @@ namespace Thought.vCards
         /// </summary>
         public bool IsWork
         {
-            get
-            {
-				return (addressType.Contains(vCardDeliveryAddressTypes.Work));
-            }
+            get { return (addressType.Contains(vCardDeliveryAddressTypes.Work)); }
         }
 
         /// <summary>
@@ -169,10 +130,7 @@ namespace Thought.vCards
         /// </summary>
         public bool IsPreferred
         {
-            get
-            {
-				return (addressType.Contains(vCardDeliveryAddressTypes.Preferred));
-            }
+            get { return (addressType.Contains(vCardDeliveryAddressTypes.Preferred)); }
         }
 
 
@@ -181,14 +139,8 @@ namespace Thought.vCards
         /// </summary>
         public string PostalCode
         {
-            get
-            {
-                return this.postalCode ?? string.Empty;
-            }
-            set
-            {
-                this.postalCode = value;
-            }
+            get { return this.postalCode ?? string.Empty; }
+            set { this.postalCode = value; }
         }
 
 
@@ -197,14 +149,8 @@ namespace Thought.vCards
         /// </summary>
         public string Region
         {
-            get
-            {
-                return this.region ?? string.Empty;
-            }
-            set
-            {
-                this.region = value;
-            }
+            get { return this.region ?? string.Empty; }
+            set { this.region = value; }
         }
 
 
@@ -213,14 +159,8 @@ namespace Thought.vCards
         /// </summary>
         public string Street
         {
-            get
-            {
-                return this.street ?? string.Empty;
-            }
-            set
-            {
-                this.street = value;
-            }
+            get { return this.street ?? string.Empty; }
+            set { this.street = value; }
         }
 
         /// <summary>
@@ -228,14 +168,8 @@ namespace Thought.vCards
         /// </summary>
         public string PoBox
         {
-            get
-            {
-                return this.poBox ?? string.Empty;
-            }
-            set
-            {
-                this.poBox = value;
-            }
+            get { return this.poBox ?? string.Empty; }
+            set { this.poBox = value; }
         }
 
         /// <summary>
@@ -243,15 +177,8 @@ namespace Thought.vCards
         /// </summary>
         public string ExtendedAddress
         {
-            get
-            {
-                return this.extendedAddress ?? string.Empty;
-            }
-            set
-            {
-                this.extendedAddress = value;
-            }
+            get { return this.extendedAddress ?? string.Empty; }
+            set { this.extendedAddress = value; }
         }
-  }
-
+    }
 }

@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,77 +23,77 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public class SynchronizationReportRepository : ISynchronizationReportRepository
-  {
-    private readonly string _reportDirectory;
-
-    public SynchronizationReportRepository (string reportDirectory)
+    public class SynchronizationReportRepository : ISynchronizationReportRepository
     {
-      _reportDirectory = reportDirectory;
+        private readonly string _reportDirectory;
+
+        public SynchronizationReportRepository(string reportDirectory)
+        {
+            _reportDirectory = reportDirectory;
+        }
+
+        public event EventHandler<ReportAddedEventArgs> ReportAdded;
+
+        protected virtual void OnReportAdded(SynchronizationReportName name, SynchronizationReport report)
+        {
+            var handler = ReportAdded;
+            if (handler != null)
+                handler(this, new ReportAddedEventArgs(report, name));
+        }
+
+        public SynchronizationReportName AddReport(SynchronizationReport report)
+        {
+            var reportName = GetNextFreeName(_reportDirectory, report);
+
+            using (var fileStream = File.Create(Path.Combine(_reportDirectory, reportName.ToString())))
+            {
+                Serializer<SynchronizationReport>.SerializeTo(report, fileStream);
+            }
+
+            OnReportAdded(reportName, report);
+            return reportName;
+        }
+
+        public IReadOnlyList<SynchronizationReportName> GetAvailableReports()
+        {
+            var names = new List<SynchronizationReportName>();
+            var fileNames = Directory.GetFiles(_reportDirectory);
+
+            foreach (var fileName in fileNames)
+            {
+                SynchronizationReportName name;
+                if (SynchronizationReportName.TryParse(Path.GetFileName(fileName), out name))
+                    names.Add(name);
+            }
+
+            return names;
+        }
+
+        public SynchronizationReport GetReport(SynchronizationReportName name)
+        {
+            using (var fileStream = File.OpenRead(Path.Combine(_reportDirectory, name.ToString())))
+            {
+                return Serializer<SynchronizationReport>.DeserializeFromWithoutCharacterCheck(fileStream);
+            }
+        }
+
+        public void DeleteReport(SynchronizationReportName name)
+        {
+            File.Delete(Path.Combine(_reportDirectory, name.ToString()));
+        }
+
+        public Stream GetReportStream(SynchronizationReportName name)
+        {
+            return File.OpenRead(Path.Combine(_reportDirectory, name.ToString()));
+        }
+
+        private SynchronizationReportName GetNextFreeName(string directory, SynchronizationReport report)
+        {
+            var reportName = SynchronizationReportName.Create(report.ProfileId, report.StartTime, report.HasWarnings, report.HasErrors);
+            while (File.Exists(Path.Combine(directory, reportName.ToString())))
+                reportName = reportName.IncreaseSequence();
+
+            return reportName;
+        }
     }
-
-    public event EventHandler<ReportAddedEventArgs> ReportAdded;
-
-    protected virtual void OnReportAdded (SynchronizationReportName name, SynchronizationReport report)
-    {
-      var handler = ReportAdded;
-      if (handler != null)
-        handler (this, new ReportAddedEventArgs (report, name));
-    }
-
-    public SynchronizationReportName AddReport (SynchronizationReport report)
-    {
-      var reportName = GetNextFreeName (_reportDirectory, report);
-
-      using (var fileStream = File.Create (Path.Combine (_reportDirectory, reportName.ToString())))
-      {
-        Serializer<SynchronizationReport>.SerializeTo (report, fileStream);
-      }
-
-      OnReportAdded (reportName, report);
-      return reportName;
-    }
-
-    public IReadOnlyList<SynchronizationReportName> GetAvailableReports ()
-    {
-      var names = new List<SynchronizationReportName>();
-      var fileNames = Directory.GetFiles (_reportDirectory);
-
-      foreach (var fileName in fileNames)
-      {
-        SynchronizationReportName name;
-        if (SynchronizationReportName.TryParse (Path.GetFileName (fileName), out name))
-          names.Add (name);
-      }
-
-      return names;
-    }
-
-    public SynchronizationReport GetReport (SynchronizationReportName name)
-    {
-      using (var fileStream = File.OpenRead (Path.Combine (_reportDirectory, name.ToString())))
-      {
-        return Serializer<SynchronizationReport>.DeserializeFromWithoutCharacterCheck (fileStream);
-      }
-    }
-
-    public void DeleteReport (SynchronizationReportName name)
-    {
-      File.Delete (Path.Combine (_reportDirectory, name.ToString()));
-    }
-
-    public Stream GetReportStream (SynchronizationReportName name)
-    {
-      return File.OpenRead (Path.Combine (_reportDirectory, name.ToString()));
-    }
-
-    private SynchronizationReportName GetNextFreeName (string directory, SynchronizationReport report)
-    {
-      var reportName = SynchronizationReportName.Create (report.ProfileId, report.StartTime, report.HasWarnings, report.HasErrors);
-      while (File.Exists (Path.Combine (directory, reportName.ToString())))
-        reportName = reportName.IncreaseSequence();
-
-      return reportName;
-    }
-  }
 }

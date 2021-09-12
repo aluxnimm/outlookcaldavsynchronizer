@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -10,7 +9,6 @@ using System.Collections.ObjectModel;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     A collection of <see cref="vCardEmailAddress"/> objects.
     /// </summary>
@@ -18,7 +16,6 @@ namespace Thought.vCards
     /// <seealso cref="vCardEmailAddressType"/>
     public class vCardEmailAddressCollection : Collection<vCardEmailAddress>
     {
-
         /// <summary>
         ///     Initializes a new instance of the <see cref="vCardEmailAddressCollection" />.
         /// </summary>
@@ -43,28 +40,21 @@ namespace Thought.vCards
         /// </returns>
         public vCardEmailAddress GetFirstChoice(vCardEmailAddressType emailType)
         {
-
             vCardEmailAddress firstNonPreferred = null;
 
             foreach (vCardEmailAddress email in this)
             {
-
                 if ((email.EmailType & emailType) == emailType)
                 {
-
                     if (firstNonPreferred == null)
                         firstNonPreferred = email;
 
                     if (email.IsPreferred)
                         return email;
                 }
-
             }
 
             return firstNonPreferred;
-
         }
-
     }
-
 }

@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Net;
 using System.Net.Http;
@@ -22,28 +23,28 @@ using CalDavSynchronizer.DataAccess.HttpClientBasedClient;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public class WebDavClientException : Exception
-  {
-    public HttpStatusCode? StatusCode { get; }
-    public string StatusDescription { get; }
-    public string ResponseMessage { get; }
-    public IHttpHeaders Headers { get; }
-
-    public WebDavClientException (Exception innerException, HttpStatusCode? statusCode, string statusDescription, IHttpHeaders headers)
-        : base (innerException.Message, innerException)
+    public class WebDavClientException : Exception
     {
-      StatusCode = statusCode;
-      StatusDescription = statusDescription;
-      Headers = headers;
-    }
+        public HttpStatusCode? StatusCode { get; }
+        public string StatusDescription { get; }
+        public string ResponseMessage { get; }
+        public IHttpHeaders Headers { get; }
 
-    public WebDavClientException (HttpStatusCode statusCode, string statusDescription,string responseMessage, IHttpHeaders headers)
-      :base ($"Response status code does not indicate success: '{(int)statusCode}' ('{statusDescription}'). Message:\r\n{responseMessage}")
-    {
-      StatusCode = statusCode;
-      StatusDescription = statusDescription;
-      Headers = headers;
-      ResponseMessage = responseMessage;
+        public WebDavClientException(Exception innerException, HttpStatusCode? statusCode, string statusDescription, IHttpHeaders headers)
+            : base(innerException.Message, innerException)
+        {
+            StatusCode = statusCode;
+            StatusDescription = statusDescription;
+            Headers = headers;
+        }
+
+        public WebDavClientException(HttpStatusCode statusCode, string statusDescription, string responseMessage, IHttpHeaders headers)
+            : base($"Response status code does not indicate success: '{(int) statusCode}' ('{statusDescription}'). Message:\r\n{responseMessage}")
+        {
+            StatusCode = statusCode;
+            StatusDescription = statusDescription;
+            Headers = headers;
+            ResponseMessage = responseMessage;
+        }
     }
-  }
 }

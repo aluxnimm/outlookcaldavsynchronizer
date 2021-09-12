@@ -35,86 +35,87 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation
 {
-  public class ContactAndDistListSynchronizer
-    : IPartialSynchronizer<string, DateTime, WebResourceName, string>
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
-
-    private readonly IPartialSynchronizer<string, DateTime, WebResourceName, string, ICardDavRepositoryLogger> _contactSynchronizer;
-    private readonly ISynchronizer<DistributionListSychronizationContext> _distributionListSynchronizer;
-    private readonly EmailAddressCacheDataAccess _emailAddressCacheDataAccess;
-    private readonly IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> _loggingCardDavRepositoryDecorator;
-    private readonly IOutlookSession _outlookSession;
-    private readonly IEntityRelationDataAccess<string, DateTime, WebResourceName, string> _contactEntityRelationDataAccess;
-    private readonly (string FolderId, string FolderStoreId) _contactFolder;
-
-    public ContactAndDistListSynchronizer(
-      IPartialSynchronizer<string, DateTime, WebResourceName, string, ICardDavRepositoryLogger> contactSynchronizer, 
-      ISynchronizer<DistributionListSychronizationContext> distributionListSynchronizer,
-      EmailAddressCacheDataAccess emailAddressCacheDataAccess,
-      IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> loggingCardDavRepositoryDecorator, 
-      IOutlookSession outlookSession,
-      IEntityRelationDataAccess<string, DateTime, WebResourceName, string> contactEntityRelationDataAccess,
-      (string FolderId,string FolderStoreId) contactFolder)
+    public class ContactAndDistListSynchronizer
+        : IPartialSynchronizer<string, DateTime, WebResourceName, string>
     {
-      if (contactSynchronizer == null) throw new ArgumentNullException(nameof(contactSynchronizer));
-      if (distributionListSynchronizer == null) throw new ArgumentNullException(nameof(distributionListSynchronizer));
-      if (loggingCardDavRepositoryDecorator == null) throw new ArgumentNullException(nameof(loggingCardDavRepositoryDecorator));
-      if (outlookSession == null) throw new ArgumentNullException(nameof(outlookSession));
-      if (contactEntityRelationDataAccess == null) throw new ArgumentNullException(nameof(contactEntityRelationDataAccess));
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
 
-      _contactSynchronizer = contactSynchronizer;
-      _distributionListSynchronizer = distributionListSynchronizer;
-      _emailAddressCacheDataAccess = emailAddressCacheDataAccess;
-      _loggingCardDavRepositoryDecorator = loggingCardDavRepositoryDecorator;
-      _outlookSession = outlookSession;
-      _contactEntityRelationDataAccess = contactEntityRelationDataAccess;
-      _contactFolder = contactFolder;
-    }
+        private readonly IPartialSynchronizer<string, DateTime, WebResourceName, string, ICardDavRepositoryLogger> _contactSynchronizer;
+        private readonly ISynchronizer<DistributionListSychronizationContext> _distributionListSynchronizer;
+        private readonly EmailAddressCacheDataAccess _emailAddressCacheDataAccess;
+        private readonly IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> _loggingCardDavRepositoryDecorator;
+        private readonly IOutlookSession _outlookSession;
+        private readonly IEntityRelationDataAccess<string, DateTime, WebResourceName, string> _contactEntityRelationDataAccess;
+        private readonly (string FolderId, string FolderStoreId) _contactFolder;
 
-    public async Task Synchronize (ISynchronizationLogger logger)
-    {
-      var emailAddressCache = new EmailAddressCache();
-      emailAddressCache.SetCacheItems(_emailAddressCacheDataAccess.Load());
-
-      using (var subLogger = logger.CreateSubLogger("Contacts"))
-      {
-        await _contactSynchronizer.Synchronize(subLogger, emailAddressCache);
-      }
-
-      var idsToQuery = emailAddressCache.GetEmptyCacheItems();
-      if (idsToQuery.Length > 0)
-      {
-        await _loggingCardDavRepositoryDecorator.Get(idsToQuery, NullLoadEntityLogger.Instance, emailAddressCache);
-
-        var stillEmptyCacheItems =  emailAddressCache.GetEmptyCacheItems();
-        if (stillEmptyCacheItems.Any())
+        public ContactAndDistListSynchronizer(
+            IPartialSynchronizer<string, DateTime, WebResourceName, string, ICardDavRepositoryLogger> contactSynchronizer,
+            ISynchronizer<DistributionListSychronizationContext> distributionListSynchronizer,
+            EmailAddressCacheDataAccess emailAddressCacheDataAccess,
+            IEntityRepository<WebResourceName, string, vCard, ICardDavRepositoryLogger> loggingCardDavRepositoryDecorator,
+            IOutlookSession outlookSession,
+            IEntityRelationDataAccess<string, DateTime, WebResourceName, string> contactEntityRelationDataAccess,
+            (string FolderId, string FolderStoreId) contactFolder)
         {
-          s_logger.Warn($"Could not update the following empty cache items: {String.Join(", ", stillEmptyCacheItems.Select(id => $"'{id}'"))}");
+            if (contactSynchronizer == null) throw new ArgumentNullException(nameof(contactSynchronizer));
+            if (distributionListSynchronizer == null) throw new ArgumentNullException(nameof(distributionListSynchronizer));
+            if (loggingCardDavRepositoryDecorator == null) throw new ArgumentNullException(nameof(loggingCardDavRepositoryDecorator));
+            if (outlookSession == null) throw new ArgumentNullException(nameof(outlookSession));
+            if (contactEntityRelationDataAccess == null) throw new ArgumentNullException(nameof(contactEntityRelationDataAccess));
+
+            _contactSynchronizer = contactSynchronizer;
+            _distributionListSynchronizer = distributionListSynchronizer;
+            _emailAddressCacheDataAccess = emailAddressCacheDataAccess;
+            _loggingCardDavRepositoryDecorator = loggingCardDavRepositoryDecorator;
+            _outlookSession = outlookSession;
+            _contactEntityRelationDataAccess = contactEntityRelationDataAccess;
+            _contactFolder = contactFolder;
         }
-      }
-      var cacheItems = emailAddressCache.GetNonEmptyCacheItems();
-      _emailAddressCacheDataAccess.Save(cacheItems);
 
-      var distListContext = new DistributionListSychronizationContext(cacheItems, _outlookSession, _contactEntityRelationDataAccess, _contactFolder);
+        public async Task Synchronize(ISynchronizationLogger logger)
+        {
+            var emailAddressCache = new EmailAddressCache();
+            emailAddressCache.SetCacheItems(_emailAddressCacheDataAccess.Load());
 
-      using (var subLogger = logger.CreateSubLogger("DistLists"))
-      {
-        await _distributionListSynchronizer.Synchronize(subLogger, distListContext);
-      }
+            using (var subLogger = logger.CreateSubLogger("Contacts"))
+            {
+                await _contactSynchronizer.Synchronize(subLogger, emailAddressCache);
+            }
+
+            var idsToQuery = emailAddressCache.GetEmptyCacheItems();
+            if (idsToQuery.Length > 0)
+            {
+                await _loggingCardDavRepositoryDecorator.Get(idsToQuery, NullLoadEntityLogger.Instance, emailAddressCache);
+
+                var stillEmptyCacheItems = emailAddressCache.GetEmptyCacheItems();
+                if (stillEmptyCacheItems.Any())
+                {
+                    s_logger.Warn($"Could not update the following empty cache items: {String.Join(", ", stillEmptyCacheItems.Select(id => $"'{id}'"))}");
+                }
+            }
+
+            var cacheItems = emailAddressCache.GetNonEmptyCacheItems();
+            _emailAddressCacheDataAccess.Save(cacheItems);
+
+            var distListContext = new DistributionListSychronizationContext(cacheItems, _outlookSession, _contactEntityRelationDataAccess, _contactFolder);
+
+            using (var subLogger = logger.CreateSubLogger("DistLists"))
+            {
+                await _distributionListSynchronizer.Synchronize(subLogger, distListContext);
+            }
+        }
+
+        public async Task SynchronizePartial(IEnumerable<IIdWithHints<string, DateTime>> aIds, IEnumerable<IIdWithHints<WebResourceName, string>> bIds, ISynchronizationLogger logger)
+        {
+            var emailAddressCache = new EmailAddressCache();
+            emailAddressCache.SetCacheItems(_emailAddressCacheDataAccess.Load());
+
+            using (var subLogger = logger.CreateSubLogger("Contacts"))
+            {
+                await _contactSynchronizer.Synchronize(subLogger, emailAddressCache);
+            }
+
+            _emailAddressCacheDataAccess.Save(emailAddressCache.GetNonEmptyCacheItems());
+        }
     }
-
-    public async Task SynchronizePartial(IEnumerable<IIdWithHints<string, DateTime>> aIds, IEnumerable<IIdWithHints<WebResourceName, string>> bIds, ISynchronizationLogger logger)
-    {
-      var emailAddressCache = new EmailAddressCache();
-      emailAddressCache.SetCacheItems(_emailAddressCacheDataAccess.Load());
-
-      using (var subLogger = logger.CreateSubLogger("Contacts"))
-      {
-        await _contactSynchronizer.Synchronize(subLogger, emailAddressCache);
-      }
-
-      _emailAddressCacheDataAccess.Save(emailAddressCache.GetNonEmptyCacheItems());
-    }
-  }
 }

@@ -24,37 +24,39 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Utilities
 {
-  public static class DictionaryExtensions
-  {
-    public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TValue> valueFactory)
+    public static class DictionaryExtensions
     {
-      TValue value;
-      if (!dictionary.TryGetValue(key, out value))
-      {
-        value = valueFactory();
-        dictionary.Add(key, value);
-      }
-      return value;
-    }
+        public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, Func<TValue> valueFactory)
+        {
+            TValue value;
+            if (!dictionary.TryGetValue(key, out value))
+            {
+                value = valueFactory();
+                dictionary.Add(key, value);
+            }
 
-    public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
-      where TValue : new()
-    {
-      TValue value;
-      if (!dictionary.TryGetValue(key, out value))
-      {
-        value = new TValue();
-        dictionary.Add(key, value);
-      }
-      return value;
-    }
+            return value;
+        }
 
-    public static TValue GetOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
-    {
-      if (dictionary.TryGetValue(key, out var value))
-        return value;
-      else
-        return default(TValue);
+        public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
+            where TValue : new()
+        {
+            TValue value;
+            if (!dictionary.TryGetValue(key, out value))
+            {
+                value = new TValue();
+                dictionary.Add(key, value);
+            }
+
+            return value;
+        }
+
+        public static TValue GetOrDefault<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
+        {
+            if (dictionary.TryGetValue(key, out var value))
+                return value;
+            else
+                return default(TValue);
+        }
     }
-  }
 }

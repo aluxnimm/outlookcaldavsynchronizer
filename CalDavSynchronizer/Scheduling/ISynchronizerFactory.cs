@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Threading.Tasks;
 using CalDavSynchronizer.Contracts;
@@ -23,8 +24,8 @@ using GenSync.Synchronization;
 
 namespace CalDavSynchronizer.Scheduling
 {
-  public interface ISynchronizerFactory
-  {
-    Task<IOutlookSynchronizer> CreateSynchronizer (Options options, GeneralOptions generalOptions);
-  }
+    public interface ISynchronizerFactory
+    {
+        Task<IOutlookSynchronizer> CreateSynchronizer(Options options, GeneralOptions generalOptions);
+    }
 }

@@ -23,42 +23,42 @@ using CalDavSynchronizer.ProfileTypes;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  class ColorMappingDataAccess : IColorMappingsDataAccess
-  {
-    private readonly IOptionDataAccess _optionDataAccess;
-    private readonly IProfileType _profileType;
-
-    public ColorMappingDataAccess(IOptionDataAccess optionDataAccess, IProfileType profileType)
+    class ColorMappingDataAccess : IColorMappingsDataAccess
     {
-      if (optionDataAccess == null) throw new ArgumentNullException(nameof(optionDataAccess));
-      if (profileType == null) throw new ArgumentNullException(nameof(profileType));
+        private readonly IOptionDataAccess _optionDataAccess;
+        private readonly IProfileType _profileType;
 
-      _optionDataAccess = optionDataAccess;
-      _profileType = profileType;
-    }
-
-    public IReadOnlyList<ColorCategoryMapping> Load()
-    {
-     return (_optionDataAccess.LoadOrNull().MappingConfiguration as EventMappingConfiguration)
-        ?.EventColorToCategoryMappings
-        ?? new ColorCategoryMapping[0];
-    }
-
-    public void Save(IEnumerable<ColorCategoryMapping> mappings)
-    {
-      _optionDataAccess.Modify(o =>
-      {
-        if (o.MappingConfiguration is EventMappingConfiguration eventMappingConfiguration)
+        public ColorMappingDataAccess(IOptionDataAccess optionDataAccess, IProfileType profileType)
         {
-          eventMappingConfiguration.EventColorToCategoryMappings = mappings.ToArray();
+            if (optionDataAccess == null) throw new ArgumentNullException(nameof(optionDataAccess));
+            if (profileType == null) throw new ArgumentNullException(nameof(profileType));
+
+            _optionDataAccess = optionDataAccess;
+            _profileType = profileType;
         }
-        else
+
+        public IReadOnlyList<ColorCategoryMapping> Load()
         {
-          var mappingConfiguration = _profileType.CreateEventMappingConfiguration();
-          mappingConfiguration.EventColorToCategoryMappings = mappings.ToArray();
-          o.MappingConfiguration = mappingConfiguration;
+            return (_optionDataAccess.LoadOrNull().MappingConfiguration as EventMappingConfiguration)
+                   ?.EventColorToCategoryMappings
+                   ?? new ColorCategoryMapping[0];
         }
-      });
+
+        public void Save(IEnumerable<ColorCategoryMapping> mappings)
+        {
+            _optionDataAccess.Modify(o =>
+            {
+                if (o.MappingConfiguration is EventMappingConfiguration eventMappingConfiguration)
+                {
+                    eventMappingConfiguration.EventColorToCategoryMappings = mappings.ToArray();
+                }
+                else
+                {
+                    var mappingConfiguration = _profileType.CreateEventMappingConfiguration();
+                    mappingConfiguration.EventColorToCategoryMappings = mappings.ToArray();
+                    o.MappingConfiguration = mappingConfiguration;
+                }
+            });
+        }
     }
-  }
 }

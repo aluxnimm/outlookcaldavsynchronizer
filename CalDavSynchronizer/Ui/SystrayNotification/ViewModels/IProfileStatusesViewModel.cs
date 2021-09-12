@@ -24,10 +24,9 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
 {
-  public interface IProfileStatusesViewModel
-  {
-    void Update(Guid profileId, SynchronizationRunSummary summary);
-    void NotifyProfilesChanged(Contracts.Options[] profiles);
-
-  }
+    public interface IProfileStatusesViewModel
+    {
+        void Update(Guid profileId, SynchronizationRunSummary summary);
+        void NotifyProfilesChanged(Contracts.Options[] profiles);
+    }
 }

@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Xml;
@@ -26,42 +27,43 @@ using Google.Apis.Tasks.v1.Data;
 
 namespace CalDavSynchronizer.Implementation.GoogleTasks
 {
-  internal class InitialGoogleTastEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, TaskEntityMatchData, string, string, string, Task, string>
-  {
-    public InitialGoogleTastEntityMatcher (IEqualityComparer<string> btypeIdEqualityComparer)
-        : base (btypeIdEqualityComparer)
+    internal class InitialGoogleTastEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, TaskEntityMatchData, string, string, string, Task, string>
     {
-    }
-
-    protected override bool AreEqual (TaskEntityMatchData atypeEntity, Task btypeEntity)
-    {
-      if (atypeEntity.Subject == btypeEntity.Title)
-      {
-        if (string.IsNullOrEmpty(btypeEntity.Due))
+        public InitialGoogleTastEntityMatcher(IEqualityComparer<string> btypeIdEqualityComparer)
+            : base(btypeIdEqualityComparer)
         {
-          return atypeEntity.DueDate == OutlookUtility.OUTLOOK_DATE_NONE;
         }
-        else
+
+        protected override bool AreEqual(TaskEntityMatchData atypeEntity, Task btypeEntity)
         {
-          return atypeEntity.DueDate == XmlConvert.ToDateTime (btypeEntity.Due, XmlDateTimeSerializationMode.Utc).Date;
+            if (atypeEntity.Subject == btypeEntity.Title)
+            {
+                if (string.IsNullOrEmpty(btypeEntity.Due))
+                {
+                    return atypeEntity.DueDate == OutlookUtility.OUTLOOK_DATE_NONE;
+                }
+                else
+                {
+                    return atypeEntity.DueDate == XmlConvert.ToDateTime(btypeEntity.Due, XmlDateTimeSerializationMode.Utc).Date;
+                }
+            }
+
+            return false;
         }
-      }
-      return false;
-    }
 
-    protected override string GetAtypePropertyValue (TaskEntityMatchData atypeEntity)
-    {
-      return (atypeEntity.Subject ?? string.Empty).ToLower();
-    }
+        protected override string GetAtypePropertyValue(TaskEntityMatchData atypeEntity)
+        {
+            return (atypeEntity.Subject ?? string.Empty).ToLower();
+        }
 
-    protected override string GetBtypePropertyValue (Task btypeEntity)
-    {
-      return (btypeEntity.Title ?? string.Empty).ToLower();
-    }
+        protected override string GetBtypePropertyValue(Task btypeEntity)
+        {
+            return (btypeEntity.Title ?? string.Empty).ToLower();
+        }
 
-    protected override string MapAtypePropertyValue (string value)
-    {
-      return value;
+        protected override string MapAtypePropertyValue(string value)
+        {
+            return value;
+        }
     }
-  }
 }

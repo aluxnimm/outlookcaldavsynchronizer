@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,19 +23,19 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-  public interface IOptionsViewModel : ITreeNodeViewModel
-  {
-    bool IsActive { get; set; }
-    bool SupportsIsActive { get; }
+    public interface IOptionsViewModel : ITreeNodeViewModel
+    {
+        bool IsActive { get; set; }
+        bool SupportsIsActive { get; }
 
-    IViewOptions ViewOptions { get; }
+        IViewOptions ViewOptions { get; }
 
-    new IEnumerable<ISubOptionsViewModel> Items { get; }
+        new IEnumerable<ISubOptionsViewModel> Items { get; }
 
-    OptionsModel Model { get; }
-    bool Validate (StringBuilder errorMessageBuilder);
+        OptionsModel Model { get; }
+        bool Validate(StringBuilder errorMessageBuilder);
 
-    OlItemType? OutlookFolderType {get;}
-    bool IsMultipleOptionsTemplateViewModel { get; }
-  }
+        OlItemType? OutlookFolderType { get; }
+        bool IsMultipleOptionsTemplateViewModel { get; }
+    }
 }

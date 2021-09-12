@@ -14,11 +14,12 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public interface IUidCacheDataAccess
-  {
-    CacheItem[] Load();
-    void Save(CacheItem[] value);
-  }
+    public interface IUidCacheDataAccess
+    {
+        CacheItem[] Load();
+        void Save(CacheItem[] value);
+    }
 }

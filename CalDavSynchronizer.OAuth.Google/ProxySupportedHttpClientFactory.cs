@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Net;
 using System.Net.Http;
@@ -21,25 +22,25 @@ using Google.Apis.Http;
 
 namespace CalDavSynchronizer.OAuth.Google
 {
-  internal class ProxySupportedHttpClientFactory : HttpClientFactory
-  {
-    private readonly IWebProxy _proxyOrNull;
-
-    public ProxySupportedHttpClientFactory (IWebProxy proxyOrNull)
+    internal class ProxySupportedHttpClientFactory : HttpClientFactory
     {
-      _proxyOrNull = proxyOrNull;
-    }
+        private readonly IWebProxy _proxyOrNull;
 
-    protected override HttpMessageHandler CreateHandler (CreateHttpClientArgs args)
-    {
-      var webRequestHandler = new WebRequestHandler()
-                              {
-                                  Proxy = _proxyOrNull,
-                                  UseProxy = (_proxyOrNull != null),
-                                  UseCookies = false
-                              };
+        public ProxySupportedHttpClientFactory(IWebProxy proxyOrNull)
+        {
+            _proxyOrNull = proxyOrNull;
+        }
 
-      return webRequestHandler;
+        protected override HttpMessageHandler CreateHandler(CreateHttpClientArgs args)
+        {
+            var webRequestHandler = new WebRequestHandler()
+            {
+                Proxy = _proxyOrNull,
+                UseProxy = (_proxyOrNull != null),
+                UseCookies = false
+            };
+
+            return webRequestHandler;
+        }
     }
-  }
 }

@@ -12,13 +12,13 @@ using GenSync.Synchronization.States;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  class EventSynchronizationInterceptorFactory
-    : ISynchronizationInterceptorFactory<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext>
-     
-  {
-    public ISynchronizationInterceptor<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> Create()
+    class EventSynchronizationInterceptorFactory
+        : ISynchronizationInterceptorFactory<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext>
+
     {
-      return new EventSynchronizationInterceptor();
+        public ISynchronizationInterceptor<AppointmentId, DateTime, IAppointmentItemWrapper, WebResourceName, string, IICalendar, IEventSynchronizationContext> Create()
+        {
+            return new EventSynchronizationInterceptor();
+        }
     }
-  }
 }

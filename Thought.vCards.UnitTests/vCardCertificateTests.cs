@@ -1,4 +1,3 @@
-
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Thought.vCards;
@@ -9,11 +8,9 @@ namespace Tests
     [TestClass]
     public sealed class vCardCertificateTests : IDisposable
     {
-
         [TestMethod]
         public void EmptyString_KeyType()
         {
-
             vCardCertificate cert = new vCardCertificate();
 
             Assert.IsEmpty(
@@ -25,10 +22,11 @@ namespace Tests
             Assert.IsEmpty(
                 cert.KeyType,
                 "The string KeyType should be String.Empty when assigned null.");
-
         }
 
-        public void Dispose() { //driver.Dispose(); 
+        public void Dispose()
+        {
+            //driver.Dispose(); 
         }
     }
 }

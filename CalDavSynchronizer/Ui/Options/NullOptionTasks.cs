@@ -22,57 +22,59 @@ using CalDavSynchronizer.Ui.Options.Models;
 
 namespace CalDavSynchronizer.Ui.Options
 {
-  class NullOptionTasks : IOptionTasks
-  {
-    private NullOptionTasks()
+    class NullOptionTasks : IOptionTasks
     {
-    }
+        private NullOptionTasks()
+        {
+        }
 
-    public static readonly IOptionTasks Instance = new NullOptionTasks();
+        public static readonly IOptionTasks Instance = new NullOptionTasks();
 
-    public string GetFolderAccountNameOrNull(string folderStoreId)
-    {
-      throw new NotImplementedException();
-    }
+        public string GetFolderAccountNameOrNull(string folderStoreId)
+        {
+            throw new NotImplementedException();
+        }
 
-    public OutlookFolderDescriptor GetFolderFromId(string entryId, object storeId)
-    {
-      throw new NotImplementedException();
-    }
+        public OutlookFolderDescriptor GetFolderFromId(string entryId, object storeId)
+        {
+            throw new NotImplementedException();
+        }
 
-    public OutlookFolderDescriptor PickFolderOrNull()
-    {
-      throw new NotImplementedException();
-    }
+        public OutlookFolderDescriptor PickFolderOrNull()
+        {
+            throw new NotImplementedException();
+        }
 
-    public IProfileExportProcessor ProfileExportProcessor { get; }
+        public IProfileExportProcessor ProfileExportProcessor { get; }
 
-    public void SaveOptions(Contracts.Options[] options, string fileName)
-    {
-      throw new NotImplementedException();
-    }
+        public void SaveOptions(Contracts.Options[] options, string fileName)
+        {
+            throw new NotImplementedException();
+        }
 
-    public Contracts.Options[] LoadOptions(string fileName)
-    {
-      throw new NotImplementedException();
-    }
+        public Contracts.Options[] LoadOptions(string fileName)
+        {
+            throw new NotImplementedException();
+        }
 
-    public Task<string> TestGoogleConnection(OptionsModel options,  string url)
-    {
-      throw new NotImplementedException();
-    }
+        public Task<string> TestGoogleConnection(OptionsModel options, string url)
+        {
+            throw new NotImplementedException();
+        }
 
-    public Task<string> TestWebDavConnection(OptionsModel options)
-    {
-      throw new NotImplementedException();
+        public Task<string> TestWebDavConnection(OptionsModel options)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ValidateBulkProfile(OptionsModel options, AccessPrivileges privileges, CalendarOwnerProperties ownerPropertiesOrNull)
+        {
+            throw new NotImplementedException();
+        }
+
+        public OutlookFolderDescriptor GetDefaultCalendarFolderOrNull()
+        {
+            throw new NotImplementedException();
+        }
     }
-    public void ValidateBulkProfile (OptionsModel options, AccessPrivileges privileges, CalendarOwnerProperties ownerPropertiesOrNull)
-    {
-      throw new NotImplementedException();
-    }
-    public OutlookFolderDescriptor GetDefaultCalendarFolderOrNull()
-    {
-      throw new NotImplementedException();
-    }
-  }
 }

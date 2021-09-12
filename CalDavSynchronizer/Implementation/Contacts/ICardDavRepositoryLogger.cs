@@ -14,17 +14,18 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Collections.Generic;
 using CalDavSynchronizer.DataAccess;
 using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public interface ICardDavRepositoryLogger
-  {
-    void LogEntitiesExists(IEnumerable<WebResourceName> allEntities);
-    void LogEntityExists(WebResourceName entity);
-    void LogEntityExists(WebResourceName entityId, vCard vCard);
-    void LogEntityDeleted(WebResourceName entityId);
-  }
+    public interface ICardDavRepositoryLogger
+    {
+        void LogEntitiesExists(IEnumerable<WebResourceName> allEntities);
+        void LogEntityExists(WebResourceName entity);
+        void LogEntityExists(WebResourceName entityId, vCard vCard);
+        void LogEntityDeleted(WebResourceName entityId);
+    }
 }

@@ -21,21 +21,21 @@ using GenSync;
 
 namespace CalDavSynchronizer.ChangeWatching
 {
-  public class AppointmentId : IOutlookId
-  {
-    public IIdWithHints<Implementation.Events.AppointmentId, DateTime> Inner { get; }
-
-    public AppointmentId (Implementation.Events.AppointmentId appointmentId, DateTime lastModificationTime, bool wasDeleted)
+    public class AppointmentId : IOutlookId
     {
-      Inner = IdWithHints.Create(appointmentId, (DateTime?) lastModificationTime.ToUniversalTime(), wasDeleted);
-    }
+        public IIdWithHints<Implementation.Events.AppointmentId, DateTime> Inner { get; }
 
-    public string EntryId => Inner.Id.EntryId;
-    public DateTime Version => Inner.VersionHint;
-  
-    public void Accept(IOutlookIdVisitor visitor)
-    {
-      visitor.Visit(this);
+        public AppointmentId(Implementation.Events.AppointmentId appointmentId, DateTime lastModificationTime, bool wasDeleted)
+        {
+            Inner = IdWithHints.Create(appointmentId, (DateTime?) lastModificationTime.ToUniversalTime(), wasDeleted);
+        }
+
+        public string EntryId => Inner.Id.EntryId;
+        public DateTime Version => Inner.VersionHint;
+
+        public void Accept(IOutlookIdVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
     }
-  }
 }

@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,19 +23,18 @@ using System.Threading.Tasks;
 
 namespace GenSync.Synchronization
 {
-  /// <summary>
-  /// Creates a synchronization interceptor
-  /// In contrast to the synchronization context, which represents just user defined data, which is opaque for the Synchronizer and just passed through the
-  /// whole callchain, the <see cref="ISynchronizationInterceptor"/> is an interface, which is called by the synchronizer at defined steps and
-  /// which can be used to customize the synchronization process.
-  /// </summary>
-  public interface ISynchronizationInterceptorFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
-  {
     /// <summary>
-    /// Is called at the beginning of every sync run, to create an interceptor for the ongoing sync run
+    /// Creates a synchronization interceptor
+    /// In contrast to the synchronization context, which represents just user defined data, which is opaque for the Synchronizer and just passed through the
+    /// whole callchain, the <see cref="ISynchronizationInterceptor"/> is an interface, which is called by the synchronizer at defined steps and
+    /// which can be used to customize the synchronization process.
     /// </summary>
-    /// <returns></returns>
-    ISynchronizationInterceptor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> Create ();
-  }
-  
+    public interface ISynchronizationInterceptorFactory<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext>
+    {
+        /// <summary>
+        /// Is called at the beginning of every sync run, to create an interceptor for the ongoing sync run
+        /// </summary>
+        /// <returns></returns>
+        ISynchronizationInterceptor<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TContext> Create();
+    }
 }

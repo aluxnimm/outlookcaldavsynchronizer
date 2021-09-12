@@ -21,58 +21,57 @@ using CalDavSynchronizer.DataAccess;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class AppointmentId
-  {
-    public string EntryId {get; set; }
-    public string GlobalAppointmentId {get; set; }
-
-    public AppointmentId(string entryId, string globalAppointmentId)
+    public class AppointmentId
     {
-      EntryId = entryId;
-      GlobalAppointmentId = globalAppointmentId;
+        public string EntryId { get; set; }
+        public string GlobalAppointmentId { get; set; }
+
+        public AppointmentId(string entryId, string globalAppointmentId)
+        {
+            EntryId = entryId;
+            GlobalAppointmentId = globalAppointmentId;
+        }
+
+        public AppointmentId()
+        {
+        }
+
+        public override string ToString()
+        {
+            return EntryId;
+        }
+
+        public override int GetHashCode()
+        {
+            return Comparer.GetHashCode(this);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Comparer.Equals(this, obj as AppointmentId);
+        }
+
+        public static readonly IEqualityComparer<AppointmentId> Comparer = new AppointmentIdEqualityComparer();
+
+        private class AppointmentIdEqualityComparer : IEqualityComparer<AppointmentId>
+        {
+            private static readonly IEqualityComparer<string> s_stringComparer = StringComparer.Ordinal;
+
+            public bool Equals(AppointmentId x, AppointmentId y)
+            {
+                if (x == null)
+                    return y == null;
+
+                if (y == null)
+                    return false;
+
+                return s_stringComparer.Equals(x.EntryId, y.EntryId);
+            }
+
+            public int GetHashCode(AppointmentId obj)
+            {
+                return s_stringComparer.GetHashCode(obj.EntryId);
+            }
+        }
     }
-
-    public AppointmentId ()
-    {
-      
-    }
-
-    public override string ToString ()
-    {
-      return EntryId;
-    }
-
-    public override int GetHashCode ()
-    {
-      return Comparer.GetHashCode (this);
-    }
-
-    public override bool Equals (object obj)
-    {
-      return Comparer.Equals (this, obj as AppointmentId);
-    }
-
-    public static readonly IEqualityComparer<AppointmentId> Comparer = new AppointmentIdEqualityComparer ();
-
-    private class AppointmentIdEqualityComparer : IEqualityComparer<AppointmentId>
-    {
-      private static readonly IEqualityComparer<string> s_stringComparer = StringComparer.Ordinal;
-
-      public bool Equals (AppointmentId x, AppointmentId y)
-      {
-        if (x == null)
-          return y == null;
-
-        if (y == null)
-          return false;
-
-        return s_stringComparer.Equals (x.EntryId, y.EntryId);
-      }
-
-      public int GetHashCode (AppointmentId obj)
-      {
-        return s_stringComparer.GetHashCode (obj.EntryId);
-      }
-    }
-  }
 }

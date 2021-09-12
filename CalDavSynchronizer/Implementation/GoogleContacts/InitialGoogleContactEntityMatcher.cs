@@ -24,31 +24,31 @@ using Google.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  internal class InitialGoogleContactEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, ContactMatchData, string, string, GoogleContactVersion, GoogleContactWrapper , string>
-  {
-    public InitialGoogleContactEntityMatcher (IEqualityComparer<string> btypeIdEqualityComparer)
-        : base (btypeIdEqualityComparer)
+    internal class InitialGoogleContactEntityMatcher : InitialEntityMatcherByPropertyGrouping<string, DateTime, ContactMatchData, string, string, GoogleContactVersion, GoogleContactWrapper, string>
     {
-    }
+        public InitialGoogleContactEntityMatcher(IEqualityComparer<string> btypeIdEqualityComparer)
+            : base(btypeIdEqualityComparer)
+        {
+        }
 
-    protected override bool AreEqual (ContactMatchData atypeEntity, GoogleContactWrapper btypeEntity)
-    {
-      return true;
-    }
+        protected override bool AreEqual(ContactMatchData atypeEntity, GoogleContactWrapper btypeEntity)
+        {
+            return true;
+        }
 
-    protected override string GetAtypePropertyValue (ContactMatchData atypeEntity)
-    {
-      return atypeEntity.FirstName + "|" + atypeEntity.LastName;
-    }
+        protected override string GetAtypePropertyValue(ContactMatchData atypeEntity)
+        {
+            return atypeEntity.FirstName + "|" + atypeEntity.LastName;
+        }
 
-    protected override string GetBtypePropertyValue (GoogleContactWrapper btypeEntity)
-    {
-      return btypeEntity.Contact.Name.GivenName + "|" + btypeEntity.Contact.Name.FamilyName;
-    }
+        protected override string GetBtypePropertyValue(GoogleContactWrapper btypeEntity)
+        {
+            return btypeEntity.Contact.Name.GivenName + "|" + btypeEntity.Contact.Name.FamilyName;
+        }
 
-    protected override string MapAtypePropertyValue (string value)
-    {
-      return value;
+        protected override string MapAtypePropertyValue(string value)
+        {
+            return value;
+        }
     }
-  }
 }

@@ -9,34 +9,32 @@ using DDay.iCal.Serialization.iCalendar;
 
 namespace CalDavSynchronizer.DDayICalWorkaround
 {
-
-  public class CalDavSynchronizerSerializerFactory : ISerializerFactory
-  {
-    private readonly ISerializerFactory _decorated;
-
-    public CalDavSynchronizerSerializerFactory(ISerializerFactory decorated)
+    public class CalDavSynchronizerSerializerFactory : ISerializerFactory
     {
-      _decorated = decorated ?? throw new ArgumentNullException(nameof(decorated));
-    }
+        private readonly ISerializerFactory _decorated;
 
-    public ISerializer Build(Type objectType, ISerializationContext ctx)
-    {
-
-      if (objectType != null)
-      {
-        ISerializer serializer = null;
-
-        if (typeof(IAttendee).IsAssignableFrom(objectType))
-          serializer = new CustomAttendeeSerializer();
-     
-        if (serializer != null)
+        public CalDavSynchronizerSerializerFactory(ISerializerFactory decorated)
         {
-          serializer.SerializationContext = ctx;
-          return serializer;
+            _decorated = decorated ?? throw new ArgumentNullException(nameof(decorated));
         }
-      }
 
-      return _decorated.Build(objectType, ctx);
+        public ISerializer Build(Type objectType, ISerializationContext ctx)
+        {
+            if (objectType != null)
+            {
+                ISerializer serializer = null;
+
+                if (typeof(IAttendee).IsAssignableFrom(objectType))
+                    serializer = new CustomAttendeeSerializer();
+
+                if (serializer != null)
+                {
+                    serializer.SerializationContext = ctx;
+                    return serializer;
+                }
+            }
+
+            return _decorated.Build(objectType, ctx);
+        }
     }
-  }
 }

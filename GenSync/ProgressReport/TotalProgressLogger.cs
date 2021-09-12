@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Linq;
 using System.Reflection;
@@ -21,41 +22,40 @@ using log4net;
 
 namespace GenSync.ProgressReport
 {
-  public class TotalProgressLogger : ITotalProgressLogger
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-    private readonly IExceptionLogger _exceptionLogger;
-    private int _currentChunk = -1;
-
-    private readonly IProgressUi _progressUi;
-
-    public TotalProgressLogger (IProgressUiFactory uiFactory, IExceptionLogger exceptionLogger,int chunkCount)
+    public class TotalProgressLogger : ITotalProgressLogger
     {
-      _exceptionLogger = exceptionLogger;
-      _progressUi = uiFactory.Create (chunkCount*3);
-    }
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+        private readonly IExceptionLogger _exceptionLogger;
+        private int _currentChunk = -1;
 
-    public void Dispose ()
-    {
-      try
-      {
-        _progressUi.Dispose();
-      }
-      catch (Exception x)
-      {
-        _exceptionLogger.LogException (x, s_logger);
-      }
-    }
-    
-    public void NotifyWork(int totalEntitiesBeingLoaded, int chunkCount)
-    {
-      
-    }
+        private readonly IProgressUi _progressUi;
 
-    public IChunkProgressLogger StartChunk()
-    {
-      _progressUi.SetMessage($"Processing chunk #{++_currentChunk + 1}");
-      return new ChunkProgressLogger(_progressUi, _exceptionLogger);
+        public TotalProgressLogger(IProgressUiFactory uiFactory, IExceptionLogger exceptionLogger, int chunkCount)
+        {
+            _exceptionLogger = exceptionLogger;
+            _progressUi = uiFactory.Create(chunkCount * 3);
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                _progressUi.Dispose();
+            }
+            catch (Exception x)
+            {
+                _exceptionLogger.LogException(x, s_logger);
+            }
+        }
+
+        public void NotifyWork(int totalEntitiesBeingLoaded, int chunkCount)
+        {
+        }
+
+        public IChunkProgressLogger StartChunk()
+        {
+            _progressUi.SetMessage($"Processing chunk #{++_currentChunk + 1}");
+            return new ChunkProgressLogger(_progressUi, _exceptionLogger);
+        }
     }
-  }
 }

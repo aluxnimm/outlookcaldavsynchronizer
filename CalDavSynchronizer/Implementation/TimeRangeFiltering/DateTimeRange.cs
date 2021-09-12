@@ -14,20 +14,21 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace CalDavSynchronizer.Implementation.TimeRangeFiltering
 {
-  public struct DateTimeRange
-  {
-    public readonly DateTime From;
-    public readonly DateTime To;
-
-    public DateTimeRange (DateTime @from, DateTime to)
-        : this()
+    public struct DateTimeRange
     {
-      From = @from;
-      To = to;
+        public readonly DateTime From;
+        public readonly DateTime To;
+
+        public DateTimeRange(DateTime @from, DateTime to)
+            : this()
+        {
+            From = @from;
+            To = to;
+        }
     }
-  }
 }

@@ -24,40 +24,40 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Common
 {
-  public class OutlookFolderStrategyWrapper : IQueryOutlookFolderStrategy
-  {
-    private IQueryOutlookFolderStrategy _strategy;
-
-    public OutlookFolderStrategyWrapper(IQueryOutlookFolderStrategy strategy)
+    public class OutlookFolderStrategyWrapper : IQueryOutlookFolderStrategy
     {
-      if (strategy == null) throw new ArgumentNullException(nameof(strategy));
-      _strategy = strategy;
-    }
+        private IQueryOutlookFolderStrategy _strategy;
 
-    public void SetStrategy(IQueryOutlookFolderStrategy strategy)
-    {
-      if (strategy == null) throw new ArgumentNullException(nameof(strategy));
-      _strategy = strategy;
-    }
+        public OutlookFolderStrategyWrapper(IQueryOutlookFolderStrategy strategy)
+        {
+            if (strategy == null) throw new ArgumentNullException(nameof(strategy));
+            _strategy = strategy;
+        }
 
-    public List<AppointmentSlim> QueryAppointmentFolder(IOutlookSession session, Folder folder, string filter, IGetVersionsLogger logger)
-    {
-      return _strategy.QueryAppointmentFolder(session, folder, filter, logger);
-    }
+        public void SetStrategy(IQueryOutlookFolderStrategy strategy)
+        {
+            if (strategy == null) throw new ArgumentNullException(nameof(strategy));
+            _strategy = strategy;
+        }
 
-    public List<EntityVersion<string, DateTime>> QueryContactItemFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter, IGetVersionsLogger logger)
-    {
-      return _strategy.QueryContactItemFolder (session, folder, expectedFolderId, filter, logger);
-    }
+        public List<AppointmentSlim> QueryAppointmentFolder(IOutlookSession session, Folder folder, string filter, IGetVersionsLogger logger)
+        {
+            return _strategy.QueryAppointmentFolder(session, folder, filter, logger);
+        }
 
-    public List<EntityVersion<string, DateTime>> QueryDistListFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter, IGetVersionsLogger logger)
-    {
-      return _strategy.QueryDistListFolder (session, folder, expectedFolderId, filter, logger);
-    }
+        public List<EntityVersion<string, DateTime>> QueryContactItemFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter, IGetVersionsLogger logger)
+        {
+            return _strategy.QueryContactItemFolder(session, folder, expectedFolderId, filter, logger);
+        }
 
-    public List<EntityVersion<string, DateTime>> QueryTaskFolder(IOutlookSession session, Folder folder, string filter, IGetVersionsLogger logger)
-    {
-      return _strategy.QueryTaskFolder (session, folder, filter, logger);
+        public List<EntityVersion<string, DateTime>> QueryDistListFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter, IGetVersionsLogger logger)
+        {
+            return _strategy.QueryDistListFolder(session, folder, expectedFolderId, filter, logger);
+        }
+
+        public List<EntityVersion<string, DateTime>> QueryTaskFolder(IOutlookSession session, Folder folder, string filter, IGetVersionsLogger logger)
+        {
+            return _strategy.QueryTaskFolder(session, folder, filter, logger);
+        }
     }
-  }
 }

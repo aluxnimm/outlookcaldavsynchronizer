@@ -17,18 +17,18 @@
 
 namespace GenSync.EntityRepositories.Decorators
 {
-  public static class RunInBackgroundDecoratorFactory
-  {
-    public static IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
-      Create<TEntityId, TEntityVersion, TEntity, TContext>(IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> decorated)
-      => new BatchWriteOnlyEntityRepositoryRunInBackgroundDecorator<TEntityId, TEntityVersion, TEntity, TContext>(decorated);
+    public static class RunInBackgroundDecoratorFactory
+    {
+        public static IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
+            Create<TEntityId, TEntityVersion, TEntity, TContext>(IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> decorated)
+            => new BatchWriteOnlyEntityRepositoryRunInBackgroundDecorator<TEntityId, TEntityVersion, TEntity, TContext>(decorated);
 
-    public static IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
-      Create<TEntityId, TEntityVersion, TEntity, TContext>(IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> decorated)
-      => new ReadOnlyEntityRepositoryRunInBackgroundDecorator<TEntityId, TEntityVersion, TEntity, TContext>(decorated);
+        public static IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
+            Create<TEntityId, TEntityVersion, TEntity, TContext>(IReadOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext> decorated)
+            => new ReadOnlyEntityRepositoryRunInBackgroundDecorator<TEntityId, TEntityVersion, TEntity, TContext>(decorated);
 
-    public static IStateAwareEntityRepository<TEntityId, TEntityVersion, TContext, TStateToken>
-      Create<TEntityId, TEntityVersion, TContext, TStateToken>(IStateAwareEntityRepository<TEntityId, TEntityVersion, TContext, TStateToken> decorated)
-      => new StateAwareEntityRepositoryRunInBackgroundDecorator<TEntityId, TEntityVersion, TContext, TStateToken>(decorated);
-  }
+        public static IStateAwareEntityRepository<TEntityId, TEntityVersion, TContext, TStateToken>
+            Create<TEntityId, TEntityVersion, TContext, TStateToken>(IStateAwareEntityRepository<TEntityId, TEntityVersion, TContext, TStateToken> decorated)
+            => new StateAwareEntityRepositoryRunInBackgroundDecorator<TEntityId, TEntityVersion, TContext, TStateToken>(decorated);
+    }
 }

@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Linq;
 using System.Windows;
@@ -23,43 +24,43 @@ using log4net;
 
 namespace CalDavSynchronizer.Ui.Reports.Views
 {
-  /// <summary>
-  /// Interaction logic for SynchronizationReportView.xaml
-  /// </summary>
-  public partial class SynchronizationReportView : UserControl
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
-
-    public SynchronizationReportView ()
+    /// <summary>
+    /// Interaction logic for SynchronizationReportView.xaml
+    /// </summary>
+    public partial class SynchronizationReportView : UserControl
     {
-      InitializeComponent();
-      EntitySynchronizationReportList.DataContextChanged += EntitySynchronizationReportList_DataContextChanged;
-    }
+        private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
 
-    private void EntitySynchronizationReportList_DataContextChanged (object sender, DependencyPropertyChangedEventArgs e)
-    {
-      try
-      {
-        var reportViewModel = (ReportViewModel) e.NewValue;
-        if (reportViewModel != null)
+        public SynchronizationReportView()
         {
-          EntitySynchronizationReportList.SelectedItem = reportViewModel.Report.EntitySynchronizationReports.FirstOrDefault();
+            InitializeComponent();
+            EntitySynchronizationReportList.DataContextChanged += EntitySynchronizationReportList_DataContextChanged;
+        }
 
-          if (reportViewModel.Report.LoadErrors.Length == 0 && reportViewModel.Report.EntitySynchronizationReports.Length > 0)
-            ErrorsTabControl.SelectedItem = EntitySyncReportsTabItem;
-          else
-            ErrorsTabControl.SelectedItem = LoadErrorsTabItem;
-        }
-        else
+        private void EntitySynchronizationReportList_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-          EntitySynchronizationReportList.SelectedItem = null;
-          ErrorsTabControl.SelectedItem = LoadErrorsTabItem;
+            try
+            {
+                var reportViewModel = (ReportViewModel) e.NewValue;
+                if (reportViewModel != null)
+                {
+                    EntitySynchronizationReportList.SelectedItem = reportViewModel.Report.EntitySynchronizationReports.FirstOrDefault();
+
+                    if (reportViewModel.Report.LoadErrors.Length == 0 && reportViewModel.Report.EntitySynchronizationReports.Length > 0)
+                        ErrorsTabControl.SelectedItem = EntitySyncReportsTabItem;
+                    else
+                        ErrorsTabControl.SelectedItem = LoadErrorsTabItem;
+                }
+                else
+                {
+                    EntitySynchronizationReportList.SelectedItem = null;
+                    ErrorsTabControl.SelectedItem = LoadErrorsTabItem;
+                }
+            }
+            catch (Exception x)
+            {
+                s_logger.Error(null, x);
+            }
         }
-      }
-      catch (Exception x)
-      {
-        s_logger.Error (null, x);
-      }
     }
-  }
 }

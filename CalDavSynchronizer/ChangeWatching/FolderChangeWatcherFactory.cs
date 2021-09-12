@@ -14,27 +14,28 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.ChangeWatching
 {
-  public class FolderChangeWatcherFactory : IFolderChangeWatcherFactory
-  {
-    private readonly NameSpace _mapiNamespace;
-
-    public FolderChangeWatcherFactory (NameSpace mapiNamespace)
+    public class FolderChangeWatcherFactory : IFolderChangeWatcherFactory
     {
-      if (mapiNamespace == null)
-        throw new ArgumentNullException (nameof (mapiNamespace));
+        private readonly NameSpace _mapiNamespace;
 
-      _mapiNamespace = mapiNamespace;
-    }
+        public FolderChangeWatcherFactory(NameSpace mapiNamespace)
+        {
+            if (mapiNamespace == null)
+                throw new ArgumentNullException(nameof(mapiNamespace));
 
-    public IItemCollectionChangeWatcher Create (string folderEntryId, string folderStoreId)
-    {
-      var folder = (Folder)_mapiNamespace.GetFolderFromID (folderEntryId, folderStoreId);
-      return new FolderChangeWatcher (folder, folderEntryId, folderStoreId);
+            _mapiNamespace = mapiNamespace;
+        }
+
+        public IItemCollectionChangeWatcher Create(string folderEntryId, string folderStoreId)
+        {
+            var folder = (Folder) _mapiNamespace.GetFolderFromID(folderEntryId, folderStoreId);
+            return new FolderChangeWatcher(folder, folderEntryId, folderStoreId);
+        }
     }
-  }
 }

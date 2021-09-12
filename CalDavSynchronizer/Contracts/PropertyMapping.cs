@@ -23,9 +23,9 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Contracts
 {
-  public class PropertyMapping 
-  {
-    public string OutlookProperty { get; set; }
-    public string DavProperty { get; set; }
-  }
+    public class PropertyMapping
+    {
+        public string OutlookProperty { get; set; }
+        public string DavProperty { get; set; }
+    }
 }

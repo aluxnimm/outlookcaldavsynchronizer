@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,81 +24,81 @@ using log4net;
 
 namespace GenSync.InitialEntityMatching
 {
-  /// <summary>
-  /// Standardimplementation of IInitialEntityMatcher
-  /// </summary>
-  /// <remarks>
-  /// Finding matches in two entityrepositories with n and m entities requires m*n compare operations
-  /// This class  uses an single property of an entity to do the compare operation. Only if the property-compare-operation suceedes, the expensive compare operation is performed
-  /// For maximum performance the used property has to have a "HashValue-Quality" and a cheap compare operation. e.g. the StartDate of an Appointment
-  /// </remarks>
-  public abstract class InitialEntityMatcherByPropertyGrouping<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TAtypeProperty, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TBtypeProperty>
-      : IInitialEntityMatcher<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
-  {
-    // ReSharper disable once StaticFieldInGenericType
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-    private readonly IEqualityComparer<TBtypeEntityId> _btypeIdEqualityComparer;
-
-    protected InitialEntityMatcherByPropertyGrouping (IEqualityComparer<TBtypeEntityId> btypeIdEqualityComparer)
+    /// <summary>
+    /// Standardimplementation of IInitialEntityMatcher
+    /// </summary>
+    /// <remarks>
+    /// Finding matches in two entityrepositories with n and m entities requires m*n compare operations
+    /// This class  uses an single property of an entity to do the compare operation. Only if the property-compare-operation suceedes, the expensive compare operation is performed
+    /// For maximum performance the used property has to have a "HashValue-Quality" and a cheap compare operation. e.g. the StartDate of an Appointment
+    /// </remarks>
+    public abstract class InitialEntityMatcherByPropertyGrouping<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TAtypeProperty, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity, TBtypeProperty>
+        : IInitialEntityMatcher<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
     {
-      if (btypeIdEqualityComparer == null)
-        throw new ArgumentNullException ("btypeIdEqualityComparer");
+        // ReSharper disable once StaticFieldInGenericType
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+        private readonly IEqualityComparer<TBtypeEntityId> _btypeIdEqualityComparer;
 
-      _btypeIdEqualityComparer = btypeIdEqualityComparer;
-    }
-
-
-    public List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> FindMatchingEntities (
-        IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> relationFactory,
-        IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> allAtypeEntities,
-        IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> allBtypeEntities,
-        IReadOnlyDictionary<TAtypeEntityId, TAtypeEntityVersion> atypeEntityVersions,
-        IReadOnlyDictionary<TBtypeEntityId, TBtypeEntityVersion> btypeEntityVersions
-        )
-    {
-      var atypeEntityIdsGroupedByProperty = allAtypeEntities.GroupBy (a => GetAtypePropertyValue (a.Value)).ToDictionary (g => g.Key, g => g.Select (o => o.Key).ToList());
-      var btypeEntityIdsGroupedByProperty = allBtypeEntities.GroupBy (b => GetBtypePropertyValue (b.Value)).ToDictionary (g => g.Key, g => g.ToDictionary (o => o.Key, o => true, _btypeIdEqualityComparer));
-
-      List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> foundRelations = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
-
-      foreach (var atypeEntityGroup in atypeEntityIdsGroupedByProperty)
-      {
-        foreach (var atypeEntityId in atypeEntityGroup.Value)
+        protected InitialEntityMatcherByPropertyGrouping(IEqualityComparer<TBtypeEntityId> btypeIdEqualityComparer)
         {
-          Dictionary<TBtypeEntityId, bool> btypeEntityGroup;
+            if (btypeIdEqualityComparer == null)
+                throw new ArgumentNullException("btypeIdEqualityComparer");
 
-          var btypeEntityGroupKey = MapAtypePropertyValue (atypeEntityGroup.Key);
-          if (btypeEntityIdsGroupedByProperty.TryGetValue (btypeEntityGroupKey, out btypeEntityGroup))
-          {
-            foreach (var btypeEntityId in btypeEntityGroup.Keys)
+            _btypeIdEqualityComparer = btypeIdEqualityComparer;
+        }
+
+
+        public List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> FindMatchingEntities(
+            IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> relationFactory,
+            IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> allAtypeEntities,
+            IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> allBtypeEntities,
+            IReadOnlyDictionary<TAtypeEntityId, TAtypeEntityVersion> atypeEntityVersions,
+            IReadOnlyDictionary<TBtypeEntityId, TBtypeEntityVersion> btypeEntityVersions
+        )
+        {
+            var atypeEntityIdsGroupedByProperty = allAtypeEntities.GroupBy(a => GetAtypePropertyValue(a.Value)).ToDictionary(g => g.Key, g => g.Select(o => o.Key).ToList());
+            var btypeEntityIdsGroupedByProperty = allBtypeEntities.GroupBy(b => GetBtypePropertyValue(b.Value)).ToDictionary(g => g.Key, g => g.ToDictionary(o => o.Key, o => true, _btypeIdEqualityComparer));
+
+            List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> foundRelations = new List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>>();
+
+            foreach (var atypeEntityGroup in atypeEntityIdsGroupedByProperty)
             {
-              if (AreEqual (allAtypeEntities[atypeEntityId], allBtypeEntities[btypeEntityId]))
-              {
-                s_logger.DebugFormat ("Found matching entities: '{0}' == '{1}'", atypeEntityId, btypeEntityId);
+                foreach (var atypeEntityId in atypeEntityGroup.Value)
+                {
+                    Dictionary<TBtypeEntityId, bool> btypeEntityGroup;
 
-                foundRelations.Add (relationFactory.Create (atypeEntityId, atypeEntityVersions[atypeEntityId], btypeEntityId, btypeEntityVersions[btypeEntityId]));
-                // b has to be removed from the Group, because b is iterated in the inner loop an if an second match would occour this will lead to an exception
-                // not required to remove a from the group, because in the aouter loop every group is just iterated once
-                btypeEntityGroup.Remove (btypeEntityId);
-                break;
-              }
+                    var btypeEntityGroupKey = MapAtypePropertyValue(atypeEntityGroup.Key);
+                    if (btypeEntityIdsGroupedByProperty.TryGetValue(btypeEntityGroupKey, out btypeEntityGroup))
+                    {
+                        foreach (var btypeEntityId in btypeEntityGroup.Keys)
+                        {
+                            if (AreEqual(allAtypeEntities[atypeEntityId], allBtypeEntities[btypeEntityId]))
+                            {
+                                s_logger.DebugFormat("Found matching entities: '{0}' == '{1}'", atypeEntityId, btypeEntityId);
+
+                                foundRelations.Add(relationFactory.Create(atypeEntityId, atypeEntityVersions[atypeEntityId], btypeEntityId, btypeEntityVersions[btypeEntityId]));
+                                // b has to be removed from the Group, because b is iterated in the inner loop an if an second match would occour this will lead to an exception
+                                // not required to remove a from the group, because in the aouter loop every group is just iterated once
+                                btypeEntityGroup.Remove(btypeEntityId);
+                                break;
+                            }
+                        }
+
+                        // throwing away the empty dictionaries is not neccessary. Just to make dubugging easier, because there is less crap the dictionary. 
+                        if (btypeEntityGroup.Count == 0)
+                            btypeEntityIdsGroupedByProperty.Remove(btypeEntityGroupKey);
+                    }
+                }
             }
 
-            // throwing away the empty dictionaries is not neccessary. Just to make dubugging easier, because there is less crap the dictionary. 
-            if (btypeEntityGroup.Count == 0)
-              btypeEntityIdsGroupedByProperty.Remove (btypeEntityGroupKey);
-          }
+
+            return foundRelations;
         }
-      }
 
+        protected abstract bool AreEqual(TAtypeEntity atypeEntity, TBtypeEntity btypeEntity);
 
-      return foundRelations;
+        protected abstract TAtypeProperty GetAtypePropertyValue(TAtypeEntity atypeEntity);
+        protected abstract TBtypeProperty GetBtypePropertyValue(TBtypeEntity btypeEntity);
+        protected abstract TBtypeProperty MapAtypePropertyValue(TAtypeProperty value);
     }
-
-    protected abstract bool AreEqual (TAtypeEntity atypeEntity, TBtypeEntity btypeEntity);
-
-    protected abstract TAtypeProperty GetAtypePropertyValue (TAtypeEntity atypeEntity);
-    protected abstract TBtypeProperty GetBtypePropertyValue (TBtypeEntity btypeEntity);
-    protected abstract TBtypeProperty MapAtypePropertyValue (TAtypeProperty value);
-  }
 }

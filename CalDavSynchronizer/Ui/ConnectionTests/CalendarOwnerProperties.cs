@@ -14,19 +14,20 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace CalDavSynchronizer.Ui.ConnectionTests
 {
-  public class CalendarOwnerProperties
-  {
-    public CalendarOwnerProperties (string calendarOwnerEmail, bool isSharedCalendar)
+    public class CalendarOwnerProperties
     {
-      CalendarOwnerEmail = calendarOwnerEmail;
-      IsSharedCalendar = isSharedCalendar;
-    }
+        public CalendarOwnerProperties(string calendarOwnerEmail, bool isSharedCalendar)
+        {
+            CalendarOwnerEmail = calendarOwnerEmail;
+            IsSharedCalendar = isSharedCalendar;
+        }
 
-    public string CalendarOwnerEmail { get; }
-    public bool IsSharedCalendar { get; }
-  }
+        public string CalendarOwnerEmail { get; }
+        public bool IsSharedCalendar { get; }
+    }
 }

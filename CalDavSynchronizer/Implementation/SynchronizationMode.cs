@@ -14,16 +14,17 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace CalDavSynchronizer.Implementation
 {
-  public enum SynchronizationMode
-  {
-    ReplicateOutlookIntoServer,
-    MergeOutlookIntoServer,
-    ReplicateServerIntoOutlook,
-    MergeServerIntoOutlook,
-    MergeInBothDirections
-  }
+    public enum SynchronizationMode
+    {
+        ReplicateOutlookIntoServer,
+        MergeOutlookIntoServer,
+        ReplicateServerIntoOutlook,
+        MergeServerIntoOutlook,
+        MergeInBothDirections
+    }
 }

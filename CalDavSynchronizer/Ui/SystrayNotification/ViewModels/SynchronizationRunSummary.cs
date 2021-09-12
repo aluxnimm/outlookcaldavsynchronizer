@@ -14,24 +14,25 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using GenSync.Logging;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
 {
-  public struct SynchronizationRunSummary
-  {
-    public readonly DateTime StartTimeUtc;
-    public readonly SyncronizationRunResult Result;
-
-    public SynchronizationRunSummary(SynchronizationReport report)
+    public struct SynchronizationRunSummary
     {
-      StartTimeUtc = report.StartTime;
-      Result = report.HasErrors
-        ? SyncronizationRunResult.Error
-        : report.HasWarnings
-          ? SyncronizationRunResult.Warning
-          : SyncronizationRunResult.Ok;
+        public readonly DateTime StartTimeUtc;
+        public readonly SyncronizationRunResult Result;
+
+        public SynchronizationRunSummary(SynchronizationReport report)
+        {
+            StartTimeUtc = report.StartTime;
+            Result = report.HasErrors
+                ? SyncronizationRunResult.Error
+                : report.HasWarnings
+                    ? SyncronizationRunResult.Warning
+                    : SyncronizationRunResult.Ok;
+        }
     }
-  }
 }

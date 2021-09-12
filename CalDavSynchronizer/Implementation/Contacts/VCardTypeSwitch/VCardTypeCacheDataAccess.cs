@@ -19,11 +19,11 @@ using CalDavSynchronizer.DataAccess;
 
 namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
 {
-  public class VCardTypeCacheDataAccess : FileDataAccess<VCardEntry[]>, IVCardTypeCacheDataAccess
-  {
-    public VCardTypeCacheDataAccess (string filePath)
-      : base (filePath, () => new VCardEntry[0])
+    public class VCardTypeCacheDataAccess : FileDataAccess<VCardEntry[]>, IVCardTypeCacheDataAccess
     {
+        public VCardTypeCacheDataAccess(string filePath)
+            : base(filePath, () => new VCardEntry[0])
+        {
+        }
     }
-  }
 }

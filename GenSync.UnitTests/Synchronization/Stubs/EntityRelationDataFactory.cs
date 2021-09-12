@@ -14,16 +14,17 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using GenSync.EntityRelationManagement;
 
 namespace GenSync.UnitTests.Synchronization.Stubs
 {
-  internal class EntityRelationDataFactory : IEntityRelationDataFactory<Identifier, int, Identifier, int>
-  {
-    public IEntityRelationData<Identifier, int, Identifier, int> Create (Identifier atypeId, int atypeVersion, Identifier btypeId, int btypeVersion)
+    internal class EntityRelationDataFactory : IEntityRelationDataFactory<Identifier, int, Identifier, int>
     {
-      return new EntityRelationData (atypeId, atypeVersion, btypeId, btypeVersion);
+        public IEntityRelationData<Identifier, int, Identifier, int> Create(Identifier atypeId, int atypeVersion, Identifier btypeId, int btypeVersion)
+        {
+            return new EntityRelationData(atypeId, atypeVersion, btypeId, btypeVersion);
+        }
     }
-  }
 }

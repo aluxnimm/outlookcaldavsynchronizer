@@ -17,9 +17,9 @@
 
 namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
 {
-  public interface IVCardTypeCacheDataAccess
-  {
-    VCardEntry[] Load ();
-    void Save (VCardEntry[] value);
-  }
+    public interface IVCardTypeCacheDataAccess
+    {
+        VCardEntry[] Load();
+        void Save(VCardEntry[] value);
+    }
 }

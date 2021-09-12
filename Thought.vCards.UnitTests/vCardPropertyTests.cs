@@ -1,4 +1,3 @@
-
 using System;
 using Thought.vCards;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -6,14 +5,12 @@ using Assert = NUnit.Framework.Assert;
 
 namespace Tests
 {
-
     /// <summary>
     ///     Unit tests of the vCardProperty class.
     /// </summary>
     [TestClass]
     public sealed class vCardPropertyTests : IDisposable
     {
-
         // The next tests ensure the various constructors initialize
         // the class properly (e.g. each constructor should create the
         // subproperties collection and initialize any specified fields).
@@ -23,7 +20,6 @@ namespace Tests
         [TestMethod]
         public void Constructor()
         {
-
             vCardProperty property = new vCardProperty();
 
             Assert.IsNotNull(
@@ -37,7 +33,6 @@ namespace Tests
             Assert.IsNull(
                 property.Value,
                 "The value should be null.");
-
         }
 
         #endregion
@@ -47,7 +42,6 @@ namespace Tests
         [TestMethod]
         public void Constructor_Name()
         {
-
             vCardProperty property = new vCardProperty("NAME");
 
             Assert.AreEqual(
@@ -66,7 +60,6 @@ namespace Tests
             Assert.IsEmpty(
                 property.Subproperties,
                 "The subproperties collection should be empty.");
-
         }
 
         #endregion
@@ -76,7 +69,6 @@ namespace Tests
         [TestMethod]
         public void Constructor_Name_Value()
         {
-
             // This function tests a constructor that accepts
             // a name and initial value.
 
@@ -99,12 +91,13 @@ namespace Tests
             Assert.IsEmpty(
                 property.Subproperties,
                 "The subproperties collection should be empty.");
-
         }
 
         #endregion
 
-        public void Dispose() {// driver.Dispose();
+        public void Dispose()
+        {
+            // driver.Dispose();
         }
     }
 }

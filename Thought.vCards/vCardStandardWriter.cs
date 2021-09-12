@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -11,13 +10,11 @@ using System.Text;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     Implements the standard vCard 2.1 and 3.0 text formats.
     /// </summary>
     public class vCardStandardWriter : vCardWriter
     {
-
         private bool embedInternetImages;
         private bool embedLocalImages;
         private bool writeImAsImpp;
@@ -31,7 +28,7 @@ namespace Thought.vCards
         ///     vCard specification.
         /// </summary>
         private readonly char[] standardEscapedCharacters =
-            new char[] { ',', '\\', ';', '\r', '\n' };
+            new char[] {',', '\\', ';', '\r', '\n'};
 
 
         /// <summary>
@@ -42,7 +39,7 @@ namespace Thought.vCards
         ///     commas in values.
         /// </remarks>
         private readonly char[] outlookEscapedCharacters =
-            new char[] { '\\', ';', '\r', '\n' };
+            new char[] {'\\', ';', '\r', '\n'};
 
 
         /// <summary>
@@ -67,14 +64,8 @@ namespace Thought.vCards
         /// </summary>
         public bool EmbedInternetImages
         {
-            get
-            {
-                return this.embedInternetImages;
-            }
-            set
-            {
-                this.embedInternetImages = value;
-            }
+            get { return this.embedInternetImages; }
+            set { this.embedInternetImages = value; }
         }
 
 
@@ -85,46 +76,28 @@ namespace Thought.vCards
         /// </summary>
         public bool EmbedLocalImages
         {
-            get
-            {
-                return this.embedLocalImages;
-            }
-            set
-            {
-                this.embedLocalImages = value;
-            }
+            get { return this.embedLocalImages; }
+            set { this.embedLocalImages = value; }
         }
 
-      /// <summary>
-      ///     Indicates whether or not IM addresses
-      ///     should be written as IMPP attributes
-      ///     instead of X-PROTOCOL e.g. X-AIM
-      /// </summary>
-      public bool WriteImAsImpp
-      {
-        get
+        /// <summary>
+        ///     Indicates whether or not IM addresses
+        ///     should be written as IMPP attributes
+        ///     instead of X-PROTOCOL e.g. X-AIM
+        /// </summary>
+        public bool WriteImAsImpp
         {
-          return this.writeImAsImpp;
+            get { return this.writeImAsImpp; }
+            set { this.writeImAsImpp = value; }
         }
-        set
-        {
-          this.writeImAsImpp = value;
-        }
-      }
 
-    /// <summary>
-    ///     Extended options for the vCard writer.
-    /// </summary>
-    public vCardStandardWriterOptions Options
+        /// <summary>
+        ///     Extended options for the vCard writer.
+        /// </summary>
+        public vCardStandardWriterOptions Options
         {
-            get
-            {
-                return this.options;
-            }
-            set
-            {
-                this.options = value;
-            }
+            get { return this.options; }
+            set { this.options = value; }
         }
 
 
@@ -133,14 +106,8 @@ namespace Thought.vCards
         /// </summary>
         public string ProductId
         {
-            get
-            {
-                return this.productId;
-            }
-            set
-            {
-                this.productId = value;
-            }
+            get { return this.productId; }
+            set { this.productId = value; }
         }
 
 
@@ -166,7 +133,6 @@ namespace Thought.vCards
         private vCardPropertyCollection BuildProperties(
             vCard card)
         {
-
             vCardPropertyCollection properties =
                 new vCardPropertyCollection();
 
@@ -308,8 +274,8 @@ namespace Thought.vCards
                 properties,
                 card);
 
-      // Add all other unrecognized properties
-      foreach (var other in card.OtherProperties)
+            // Add all other unrecognized properties
+            foreach (var other in card.OtherProperties)
             {
                 properties.Add(other);
             }
@@ -318,7 +284,6 @@ namespace Thought.vCards
 
             properties.Add(new vCardProperty("END", "VCARD"));
             return properties;
-
         }
 
         #endregion
@@ -332,10 +297,8 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             foreach (vCardDeliveryAddress address in card.DeliveryAddresses)
             {
-
                 // Do not generate a postal address (ADR) property
                 // if the entire address is blank.
 
@@ -347,9 +310,8 @@ namespace Thought.vCards
                     (!string.IsNullOrEmpty(address.Street)) ||
                     (!string.IsNullOrEmpty(address.PoBox)) ||
                     (!string.IsNullOrEmpty(address.ExtendedAddress))
-                    )
+                )
                 {
-
                     // The ADR property contains the following
                     // subvalues in order.  All are required:
                     //
@@ -398,11 +360,8 @@ namespace Thought.vCards
                     }
 
                     properties.Add(property);
-
                 }
-
             }
-
         }
 
         #endregion
@@ -416,15 +375,13 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
+            if (card.Anniversary.HasValue)
+            {
+                vCardProperty property =
+                    new vCardProperty("ANNIVERSARY", card.Anniversary.Value.ToString("yyyyMMdd"));
 
-          if (card.Anniversary.HasValue)
-          {
-
-            vCardProperty property =
-              new vCardProperty("ANNIVERSARY", card.Anniversary.Value.ToString("yyyyMMdd"));
-
-            properties.Add(property);
-          }
+                properties.Add(property);
+            }
         }
 
         #endregion
@@ -438,7 +395,6 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             // The BDAY property indicates the birthdate
             // of the person.  The output format here is based on
             // Microsoft Outlook, which writes the date as YYYMMDD.
@@ -446,7 +402,6 @@ namespace Thought.vCards
 
             if (card.BirthDate.HasValue)
             {
-
                 vCardProperty property =
                     new vCardProperty("BDAY", card.BirthDate.Value.ToString("yyyy-MM-dd"));
 
@@ -462,24 +417,19 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             if (card.Categories.Count > 0)
             {
-
                 vCardValueCollection values = new vCardValueCollection(',');
 
                 foreach (string category in card.Categories)
                 {
-
                     if (!string.IsNullOrEmpty(category))
                         values.Add(category);
                 }
 
                 properties.Add(
                     new vCardProperty("CATEGORIES", values));
-
             }
-
         }
 
         #endregion
@@ -490,12 +440,10 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             vCardProperty property = new vCardProperty("CLASS");
 
             switch (card.AccessClassification)
             {
-
                 case vCardAccessClassification.Unknown:
                     // No value is written.
                     return;
@@ -514,11 +462,9 @@ namespace Thought.vCards
 
                 default:
                     throw new NotSupportedException();
-
             }
 
             properties.Add(property);
-
         }
 
         #endregion
@@ -532,7 +478,6 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             // The EMAIL property contains an electronic
             // mail address for the purpose.  A vCard may contain
             // as many email addresses as needed.  The format also
@@ -543,7 +488,6 @@ namespace Thought.vCards
 
             foreach (vCardEmailAddress emailAddress in card.EmailAddresses)
             {
-
                 vCardProperty property = new vCardProperty();
                 property.Name = "EMAIL";
                 property.Value = emailAddress.Address;
@@ -555,7 +499,6 @@ namespace Thought.vCards
 
                 switch (emailAddress.EmailType)
                 {
-
                     case vCardEmailAddressType.Internet:
                         property.Subproperties.Add(TYPE, "INTERNET");
                         break;
@@ -607,7 +550,6 @@ namespace Thought.vCards
                     default:
                         property.Subproperties.Add(TYPE, "INTERNET");
                         break;
-
                 }
 
                 switch (emailAddress.ItemType)
@@ -628,9 +570,7 @@ namespace Thought.vCards
                 }
 
                 properties.Add(property);
-
             }
-
         }
 
         #endregion
@@ -641,21 +581,17 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             // The FN property indicates the formatted 
             // name of the person.  This can be something
             // like "John Smith".
 
             if (!string.IsNullOrEmpty(card.FormattedName))
             {
-
                 vCardProperty property =
                     new vCardProperty("FN", card.FormattedName);
 
                 properties.Add(property);
-
             }
-
         }
 
         #endregion
@@ -669,13 +605,11 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             // The GEO properties contains the latitude and
             // longitude of the person or company of the vCard.
 
             if (card.Latitude.HasValue && card.Longitude.HasValue)
             {
-
                 vCardProperty property = new vCardProperty();
 
                 property.Name = "GEO";
@@ -683,107 +617,99 @@ namespace Thought.vCards
                     card.Latitude.ToString() + ";" + card.Longitude.ToString();
 
                 properties.Add(property);
-
             }
-
         }
 
-    #endregion
+        #endregion
 
 
-    private void BuildProperties_IMPP(vCardPropertyCollection properties, vCard card)
-    {
-
-      // adding support for IMPP (IM handles) in the vCard
-      //iOS outputs this => IMPP;X-SERVICE-TYPE=Skype;type=HOME;type=pref:skype:skypeusernameee
-
-
-
-      foreach (var im in card.IMs)
-      {
-
-        vCardProperty property = new vCardProperty();
-
-        if (writeImAsImpp)
+        private void BuildProperties_IMPP(vCardPropertyCollection properties, vCard card)
         {
-          property.Name = "IMPP";
-
-          string prefix = IMTypeUtils.GetIMTypePropertyPrefix(im.ServiceType);
-          string suffix = IMTypeUtils.GetIMTypePropertySuffix(im.ServiceType);
-
-          if (!string.IsNullOrEmpty(prefix) && !string.IsNullOrEmpty(suffix))
-          {
-            property.Subproperties.Add("X-SERVICE-TYPE", prefix);
-            property.Value = string.Concat(suffix, ":", im.Handle);
-          }
-          else
-          {
-            property.Value = im.Handle;
-          }
+            // adding support for IMPP (IM handles) in the vCard
+            //iOS outputs this => IMPP;X-SERVICE-TYPE=Skype;type=HOME;type=pref:skype:skypeusernameee
 
 
-          if (im.IsPreferred)
-          {
-            property.Subproperties.Add(TYPE, "PREF");
-          }
+            foreach (var im in card.IMs)
+            {
+                vCardProperty property = new vCardProperty();
 
-          switch (im.ItemType)
-          {
+                if (writeImAsImpp)
+                {
+                    property.Name = "IMPP";
 
-            case ItemType.HOME:
-              property.Subproperties.Add(TYPE, ItemType.HOME.ToString());
-              break;
-            case ItemType.WORK:
-              property.Subproperties.Add(TYPE, ItemType.WORK.ToString());
-              break;
+                    string prefix = IMTypeUtils.GetIMTypePropertyPrefix(im.ServiceType);
+                    string suffix = IMTypeUtils.GetIMTypePropertySuffix(im.ServiceType);
 
-            case ItemType.UNSPECIFIED:
-            default:
-              property.Subproperties.Add(TYPE, "OTHER");
-              break;
-          }
+                    if (!string.IsNullOrEmpty(prefix) && !string.IsNullOrEmpty(suffix))
+                    {
+                        property.Subproperties.Add("X-SERVICE-TYPE", prefix);
+                        property.Value = string.Concat(suffix, ":", im.Handle);
+                    }
+                    else
+                    {
+                        property.Value = im.Handle;
+                    }
+
+
+                    if (im.IsPreferred)
+                    {
+                        property.Subproperties.Add(TYPE, "PREF");
+                    }
+
+                    switch (im.ItemType)
+                    {
+                        case ItemType.HOME:
+                            property.Subproperties.Add(TYPE, ItemType.HOME.ToString());
+                            break;
+                        case ItemType.WORK:
+                            property.Subproperties.Add(TYPE, ItemType.WORK.ToString());
+                            break;
+
+                        case ItemType.UNSPECIFIED:
+                        default:
+                            property.Subproperties.Add(TYPE, "OTHER");
+                            break;
+                    }
+                }
+                else
+                {
+                    var prefix = IMTypeUtils.GetIMTypePropertyPrefix(im.ServiceType);
+
+                    if (im.ServiceType == IMServiceType.GoogleTalk)
+                    {
+                        property.Name = "X-GOOGLE-TALK";
+                    }
+                    else if (!string.IsNullOrEmpty(prefix))
+                    {
+                        property.Name = "X-" + prefix.ToUpperInvariant();
+                    }
+                    else
+                    {
+                        // default to X-AIM
+                        property.Name = "X-AIM";
+                    }
+
+                    property.Value = im.Handle;
+                }
+
+                properties.Add(property);
+            }
         }
-        else
-        {
-          var prefix = IMTypeUtils.GetIMTypePropertyPrefix(im.ServiceType);
-
-          if (im.ServiceType == IMServiceType.GoogleTalk)
-          {
-            property.Name = "X-GOOGLE-TALK";
-          }
-          else if (!string.IsNullOrEmpty(prefix))
-          {
-            property.Name = "X-" + prefix.ToUpperInvariant();
-          }
-          else
-          {
-            // default to X-AIM
-            property.Name = "X-AIM";
-          }
-          property.Value = im.Handle;
-
-        }
-        properties.Add(property);
-      }
-
-    }
 
 
         #region [ BuildProperties_KEY ]
 
-    /// <summary>
-    ///     Builds KEY properties.
-    /// </summary>
-    private void BuildProperties_KEY(
+        /// <summary>
+        ///     Builds KEY properties.
+        /// </summary>
+        private void BuildProperties_KEY(
             vCardPropertyCollection properties,
             vCard card)
         {
-
             // A KEY field contains an embedded security certificate.
 
             foreach (vCardCertificate certificate in card.Certificates)
             {
-
                 vCardProperty property = new vCardProperty();
 
                 property.Name = "KEY";
@@ -791,63 +717,54 @@ namespace Thought.vCards
                 property.Subproperties.Add(TYPE, certificate.KeyType);
 
                 properties.Add(property);
-
             }
-
         }
 
-    #endregion
+        #endregion
 
         #region [ BuildProperties_KIND ]
 
-    private void BuildProperties_KIND(
-        vCardPropertyCollection properties,
-        vCard card)
-    {
-
-      vCardProperty property = new vCardProperty("X-ADDRESSBOOKSERVER-KIND");
-
-      switch (card.Kind)
-      {
-
-        case vCardKindType.Group:
-          property.Value = "group";
-          break;
-
-        case vCardKindType.Org:
-          property.Value = "org";
-          break;
-
-        case vCardKindType.Location:
-          property.Value = "location";
-          break;
-
-        case vCardKindType.Individual:
-        default:
-          // No value is written.
-          return;
-
-      }
-
-      properties.Add(property);
-
-    }
-
-    #endregion
-    
-        #region [ BuildProperties_LABEL ]
-
-    private void BuildProperties_LABEL(
+        private void BuildProperties_KIND(
             vCardPropertyCollection properties,
             vCard card)
         {
+            vCardProperty property = new vCardProperty("X-ADDRESSBOOKSERVER-KIND");
 
+            switch (card.Kind)
+            {
+                case vCardKindType.Group:
+                    property.Value = "group";
+                    break;
+
+                case vCardKindType.Org:
+                    property.Value = "org";
+                    break;
+
+                case vCardKindType.Location:
+                    property.Value = "location";
+                    break;
+
+                case vCardKindType.Individual:
+                default:
+                    // No value is written.
+                    return;
+            }
+
+            properties.Add(property);
+        }
+
+        #endregion
+
+        #region [ BuildProperties_LABEL ]
+
+        private void BuildProperties_LABEL(
+            vCardPropertyCollection properties,
+            vCard card)
+        {
             foreach (vCardDeliveryLabel label in card.DeliveryLabels)
             {
-
                 if (label.Text.Length > 0)
                 {
-
                     vCardProperty property = new vCardProperty("LABEL", label.Text);
 
                     if (label.IsDomestic)
@@ -869,12 +786,8 @@ namespace Thought.vCards
                         property.Subproperties.Add(TYPE, "WORK");
 
                     properties.Add(property);
-
-
                 }
-
             }
-
         }
 
         #endregion
@@ -888,69 +801,59 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             // The MAILER property indicates the software that
             // generated the vCard.  See section 2.4.3 of the
             // vCard 2.1 specification.  Support is not widespread.
 
             if (!string.IsNullOrEmpty(card.Mailer))
             {
-
                 vCardProperty property =
                     new vCardProperty("MAILER", card.Mailer);
 
                 properties.Add(property);
-
             }
-
         }
 
-    #endregion
+        #endregion
 
         #region [ BuildProperties_MEMBER ]
 
-    /// <summary>
-    ///     Builds the MEMBER property.
-    /// </summary>
-    private void BuildProperties_MEMBER(
-        vCardPropertyCollection properties,
-        vCard card)
-    {
-
-      foreach (vCardMember member in card.Members)
-      {
-        var isEmailAddressSpecified = !string.IsNullOrEmpty(member.EmailAddress);
-        if (isEmailAddressSpecified || !string.IsNullOrEmpty(member.Uid))
-        {
-
-          vCardProperty property = new vCardProperty();
-
-          property.Name = "X-ADDRESSBOOKSERVER-MEMBER";
-
-          property.Value = isEmailAddressSpecified ? "mailto:" + member.EmailAddress : "urn:uuid:" + member.Uid;
-
-          if (!string.IsNullOrEmpty(member.DisplayName))
-          {
-            property.Subproperties.Add("CN", member.DisplayName);
-          }
-
-          properties.Add(property);
-
-        }
-
-      }
-
-    }
-
-    #endregion
-
-        #region [ BuildProperties_N ]
-
-    private void BuildProperties_N(
+        /// <summary>
+        ///     Builds the MEMBER property.
+        /// </summary>
+        private void BuildProperties_MEMBER(
             vCardPropertyCollection properties,
             vCard card)
         {
+            foreach (vCardMember member in card.Members)
+            {
+                var isEmailAddressSpecified = !string.IsNullOrEmpty(member.EmailAddress);
+                if (isEmailAddressSpecified || !string.IsNullOrEmpty(member.Uid))
+                {
+                    vCardProperty property = new vCardProperty();
 
+                    property.Name = "X-ADDRESSBOOKSERVER-MEMBER";
+
+                    property.Value = isEmailAddressSpecified ? "mailto:" + member.EmailAddress : "urn:uuid:" + member.Uid;
+
+                    if (!string.IsNullOrEmpty(member.DisplayName))
+                    {
+                        property.Subproperties.Add("CN", member.DisplayName);
+                    }
+
+                    properties.Add(property);
+                }
+            }
+        }
+
+        #endregion
+
+        #region [ BuildProperties_N ]
+
+        private void BuildProperties_N(
+            vCardPropertyCollection properties,
+            vCard card)
+        {
             // The property has the following components: Family Name,
             // Given Name, Additional Names, Name Prefix, and Name
             // Suffix.  Example:
@@ -970,7 +873,6 @@ namespace Thought.vCards
             vCardProperty property = new vCardProperty("N", values);
 
             properties.Add(property);
-
         }
 
         #endregion
@@ -981,90 +883,77 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             if (!string.IsNullOrEmpty(card.DisplayName))
             {
-
                 vCardProperty property =
                     new vCardProperty("NAME", card.DisplayName);
 
                 properties.Add(property);
             }
-
         }
 
-    #endregion
+        #endregion
 
         #region [ BuildProperties_X-ASSISTANT ]
 
-      private void BuildProperties_X_ASSISTANT(
-        vCardPropertyCollection properties,
-        vCard card)
-      {
-
-        if (!string.IsNullOrEmpty(card.Assistant))
-        {
-
-          vCardProperty property =
-            new vCardProperty("X-ASSISTANT", card.Assistant);
-
-          properties.Add(property);
-        }
-
-      }
-
-    #endregion
-
-        #region [ BuildProperties_X-SPOUSE ]
-
-      private void BuildProperties_X_SPOUSE(
-        vCardPropertyCollection properties,
-        vCard card)
-      {
-
-        if (!string.IsNullOrEmpty(card.Spouse))
-        {
-
-          vCardProperty property =
-            new vCardProperty("X-SPOUSE", card.Spouse);
-
-          properties.Add(property);
-        }
-
-      }
-
-    #endregion
-
-        #region [ BuildProperties_X-MANAGER ]
-
-      private void BuildProperties_X_MANAGER(
-        vCardPropertyCollection properties,
-        vCard card)
-      {
-
-        if (!string.IsNullOrEmpty(card.Manager))
-        {
-
-          vCardProperty property =
-            new vCardProperty("X-MANAGER", card.Manager);
-
-          properties.Add(property);
-        }
-
-      }
-
-      #endregion
-
-        #region [ BuildProperties_NICKNAME ]
-
-    /// <summary>
-    ///     Builds the NICKNAME property.
-    /// </summary>
-    private void BuildProperties_NICKNAME(
+        private void BuildProperties_X_ASSISTANT(
             vCardPropertyCollection properties,
             vCard card)
         {
+            if (!string.IsNullOrEmpty(card.Assistant))
+            {
+                vCardProperty property =
+                    new vCardProperty("X-ASSISTANT", card.Assistant);
 
+                properties.Add(property);
+            }
+        }
+
+        #endregion
+
+        #region [ BuildProperties_X-SPOUSE ]
+
+        private void BuildProperties_X_SPOUSE(
+            vCardPropertyCollection properties,
+            vCard card)
+        {
+            if (!string.IsNullOrEmpty(card.Spouse))
+            {
+                vCardProperty property =
+                    new vCardProperty("X-SPOUSE", card.Spouse);
+
+                properties.Add(property);
+            }
+        }
+
+        #endregion
+
+        #region [ BuildProperties_X-MANAGER ]
+
+        private void BuildProperties_X_MANAGER(
+            vCardPropertyCollection properties,
+            vCard card)
+        {
+            if (!string.IsNullOrEmpty(card.Manager))
+            {
+                vCardProperty property =
+                    new vCardProperty("X-MANAGER", card.Manager);
+
+                properties.Add(property);
+            }
+        }
+
+        #endregion
+
+        #region [ BuildProperties_NICKNAME ]
+
+        /// <summary>
+        ///     Builds the NICKNAME property.
+        /// </summary>
+        private void BuildProperties_NICKNAME(
+            vCardPropertyCollection properties,
+            vCard card)
+        {
             // The NICKNAME property specifies the familiar name
             // of the person, such as Jim.  This is defined in
             // section 3.1.3 of RFC 2426.  Multiple names can
@@ -1072,7 +961,6 @@ namespace Thought.vCards
 
             if (card.Nicknames.Count > 0)
             {
-
                 // A NICKNAME property is a comma-separated
                 // list of values.  Create a value list and
                 // add the nicknames collection to it.
@@ -1087,9 +975,7 @@ namespace Thought.vCards
                     new vCardProperty("NICKNAME", values);
 
                 properties.Add(property);
-
             }
-
         }
 
         #endregion
@@ -1103,13 +989,10 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             foreach (vCardNote note in card.Notes)
             {
-
                 if (!string.IsNullOrEmpty(note.Text))
                 {
-
                     vCardProperty property = new vCardProperty();
 
                     property.Name = "NOTE";
@@ -1121,11 +1004,8 @@ namespace Thought.vCards
                     }
 
                     properties.Add(property);
-
                 }
-
             }
-
         }
 
         #endregion
@@ -1139,7 +1019,6 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             // The ORG property specifies the name of the
             // person's company or organization. Example:
             //
@@ -1147,23 +1026,23 @@ namespace Thought.vCards
 
             if (!string.IsNullOrEmpty(card.Organization) || !string.IsNullOrEmpty(card.Department))
             {
+                vCardProperty property;
 
-              vCardProperty property;
+                if (string.IsNullOrEmpty(card.Department))
+                {
+                    property = new vCardProperty("ORG", card.Organization);
+                }
+                else
+                {
+                    // Add department also
 
-              if (string.IsNullOrEmpty(card.Department))
-              {
-                property = new vCardProperty("ORG", card.Organization);
-              }
-              else
-              {
-                // Add department also
+                    vCardValueCollection values = new vCardValueCollection(';');
+                    values.Add(card.Organization);
+                    values.Add(card.Department);
+                    property = new vCardProperty("ORG", values);
+                }
 
-                vCardValueCollection values = new vCardValueCollection(';');
-                values.Add(card.Organization);
-                values.Add(card.Department);
-                property = new vCardProperty("ORG", values);
-              }
-              properties.Add(property);
+                properties.Add(property);
             }
         }
 
@@ -1175,93 +1054,83 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             foreach (vCardPhoto photo in card.Photos)
             {
-
-              if (photo.Url == null)
-              {
-
-                // This photo does not have a URL associated
-                // with it.  Therefore a property can be
-                // generated only if the image data is loaded.
-                // Otherwise there is not enough information.
-
-                vCardProperty property = null;
-
-                if (photo.IsLoaded)
+                if (photo.Url == null)
                 {
-                  property = new vCardProperty("PHOTO", photo.GetBytes());
-                }
-                else if (photo.HasEncodedData)
-                {
-                  property = new vCardProperty("PHOTO", photo.EncodedData);
-                }
+                    // This photo does not have a URL associated
+                    // with it.  Therefore a property can be
+                    // generated only if the image data is loaded.
+                    // Otherwise there is not enough information.
 
-                if (property != null)
-                {
-                  property.Subproperties.Add("TYPE", "JPEG");
-                  properties.Add(property);
-                }
-                
-              }
-              else
-              {
+                    vCardProperty property = null;
 
-                // This photo has a URL associated with it.  The
-                // PHOTO property can either be linked as an image
-                // or embedded, if desired.
+                    if (photo.IsLoaded)
+                    {
+                        property = new vCardProperty("PHOTO", photo.GetBytes());
+                    }
+                    else if (photo.HasEncodedData)
+                    {
+                        property = new vCardProperty("PHOTO", photo.EncodedData);
+                    }
 
-                bool doEmbedded =
-                  photo.Url.IsFile ? this.embedLocalImages : this.embedInternetImages;
-
-                if (doEmbedded)
-                {
-
-                  // According to the settings of the card writer,
-                  // this linked image should be embedded into the
-                  // vCard data.  Attempt to fetch the data.
-
-                  try
-                  {
-                    photo.Fetch();
-                  }
-                  catch
-                  {
-
-                    // An error was encountered.  The image can
-                    // still be written as a link, however.
-
-                    doEmbedded = false;
-                  }
-
-                }
-
-                // At this point, doEmbedded is true only if (a) the
-                // writer was configured to embed the image, and (b)
-                // the image was successfully downloaded.
-
-                if (doEmbedded)
-                {
-                  properties.Add(
-                    new vCardProperty("PHOTO", photo.GetBytes()));
+                    if (property != null)
+                    {
+                        property.Subproperties.Add("TYPE", "JPEG");
+                        properties.Add(property);
+                    }
                 }
                 else
                 {
+                    // This photo has a URL associated with it.  The
+                    // PHOTO property can either be linked as an image
+                    // or embedded, if desired.
 
-                  vCardProperty uriPhotoProperty =
-                    new vCardProperty("PHOTO");
+                    bool doEmbedded =
+                        photo.Url.IsFile ? this.embedLocalImages : this.embedInternetImages;
 
-                  // Set the VALUE property to indicate that
-                  // the data for the photo is a URI.
+                    if (doEmbedded)
+                    {
+                        // According to the settings of the card writer,
+                        // this linked image should be embedded into the
+                        // vCard data.  Attempt to fetch the data.
 
-                  uriPhotoProperty.Subproperties.Add("VALUE", "URI");
-                  uriPhotoProperty.Value = photo.Url.ToString();
+                        try
+                        {
+                            photo.Fetch();
+                        }
+                        catch
+                        {
+                            // An error was encountered.  The image can
+                            // still be written as a link, however.
 
-                  properties.Add(uriPhotoProperty);
+                            doEmbedded = false;
+                        }
+                    }
+
+                    // At this point, doEmbedded is true only if (a) the
+                    // writer was configured to embed the image, and (b)
+                    // the image was successfully downloaded.
+
+                    if (doEmbedded)
+                    {
+                        properties.Add(
+                            new vCardProperty("PHOTO", photo.GetBytes()));
+                    }
+                    else
+                    {
+                        vCardProperty uriPhotoProperty =
+                            new vCardProperty("PHOTO");
+
+                        // Set the VALUE property to indicate that
+                        // the data for the photo is a URI.
+
+                        uriPhotoProperty.Subproperties.Add("VALUE", "URI");
+                        uriPhotoProperty.Value = photo.Url.ToString();
+
+                        properties.Add(uriPhotoProperty);
+                    }
                 }
-
-              }
             }
         }
 
@@ -1276,7 +1145,6 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             if (!string.IsNullOrEmpty(card.ProductId))
             {
                 vCardProperty property = new vCardProperty();
@@ -1284,7 +1152,6 @@ namespace Thought.vCards
                 property.Value = card.ProductId;
                 properties.Add(property);
             }
-
         }
 
         #endregion
@@ -1298,17 +1165,13 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             if (card.RevisionDate.HasValue)
             {
-
                 vCardProperty property =
                     new vCardProperty("REV", card.RevisionDate.Value.ToString("s") + "Z");
 
                 properties.Add(property);
-
             }
-
         }
 
         #endregion
@@ -1322,20 +1185,16 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             // The ROLE property identifies the role of
             // the person at his/her organization.
 
             if (!string.IsNullOrEmpty(card.Role))
             {
-
                 vCardProperty property =
                     new vCardProperty("ROLE", card.Role);
 
                 properties.Add(property);
-
             }
-
         }
 
         #endregion
@@ -1349,10 +1208,8 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             foreach (vCardSource source in card.Sources)
             {
-
                 vCardProperty property = new vCardProperty();
 
                 property.Name = "SOURCE";
@@ -1362,9 +1219,7 @@ namespace Thought.vCards
                     property.Subproperties.Add("CONTEXT", source.Context);
 
                 properties.Add(property);
-
             }
-
         }
 
         #endregion
@@ -1378,7 +1233,6 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             // The TEL property indicates a telephone number of
             // the person (including non-voice numbers like fax
             // and BBS numbers).
@@ -1387,7 +1241,6 @@ namespace Thought.vCards
 
             foreach (vCardPhone phone in card.Phones)
             {
-
                 // A telephone entry has the property name TEL and
                 // can have zero or more subproperties like FAX
                 // or HOME.  Examples:
@@ -1400,7 +1253,7 @@ namespace Thought.vCards
                 property.Name = "TEL";
 
                 if (phone.IsBBS)
-                  property.Subproperties.Add(TYPE, "BBS");
+                    property.Subproperties.Add(TYPE, "BBS");
 
                 if (phone.IsCar)
                     property.Subproperties.Add(TYPE, "CAR");
@@ -1414,6 +1267,7 @@ namespace Thought.vCards
                     {
                         property.Subproperties.Add(TYPE, "OTHER");
                     }
+
                     property.Subproperties.Add(TYPE, "FAX");
                 }
 
@@ -1444,6 +1298,7 @@ namespace Thought.vCards
                     {
                         property.Subproperties.Add(TYPE, "OTHER");
                     }
+
                     property.Subproperties.Add(TYPE, "VOICE");
                 }
 
@@ -1454,6 +1309,7 @@ namespace Thought.vCards
                 {
                     property.Subproperties.Add(TYPE, "IPHONE");
                 }
+
                 if (phone.IsMain)
                 {
                     property.Subproperties.Add(TYPE, "MAIN");
@@ -1461,9 +1317,7 @@ namespace Thought.vCards
 
                 property.Value = phone.FullNumber;
                 properties.Add(property);
-
             }
-
         }
 
         #endregion
@@ -1474,7 +1328,6 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             // The TITLE property specifies the job title of 
             // the person.  Example:
             //
@@ -1488,7 +1341,6 @@ namespace Thought.vCards
 
                 properties.Add(property);
             }
-
         }
 
         #endregion
@@ -1499,12 +1351,10 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             if (!string.IsNullOrEmpty(card.TimeZone))
             {
                 properties.Add(new vCardProperty("TZ", card.TimeZone));
             }
-
         }
 
         #endregion
@@ -1515,7 +1365,6 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             if (!string.IsNullOrEmpty(card.UniqueId))
             {
                 vCardProperty property = new vCardProperty();
@@ -1523,7 +1372,6 @@ namespace Thought.vCards
                 property.Value = card.UniqueId;
                 properties.Add(property);
             }
-
         }
 
         #endregion
@@ -1534,10 +1382,8 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             foreach (vCardWebsite webSite in card.Websites)
             {
-
                 if (!string.IsNullOrEmpty(webSite.Url))
                 {
                     vCardProperty property =
@@ -1551,9 +1397,7 @@ namespace Thought.vCards
 
                     properties.Add(property);
                 }
-
             }
-
         }
 
         #endregion
@@ -1561,13 +1405,11 @@ namespace Thought.vCards
 
         private void BuildProperties_XSOCIALPROFILE(vCardPropertyCollection properties, vCard card)
         {
-
             // adding support for X-SOCIALPROFILE) in the vCard
 
 
             foreach (var sp in card.SocialProfiles)
             {
-
                 vCardProperty property = new vCardProperty();
                 property.Name = "X-SOCIALPROFILE";
 
@@ -1578,9 +1420,7 @@ namespace Thought.vCards
                 property.Value = sp.ProfileUrl;
 
                 properties.Add(property);
-
             }
-
         }
 
 
@@ -1590,7 +1430,6 @@ namespace Thought.vCards
             vCardPropertyCollection properties,
             vCard card)
         {
-
             // The X-WAB-GENDER property is an extended (custom)
             // property supported by Microsoft Outlook.
 
@@ -1603,9 +1442,7 @@ namespace Thought.vCards
                 case vCardGender.Male:
                     properties.Add(new vCardProperty("X-WAB-GENDER", "2"));
                     break;
-
             }
-
         }
 
         #endregion
@@ -1623,7 +1460,7 @@ namespace Thought.vCards
         /// </summary>
         public static string EncodeBase64(byte value)
         {
-            return Convert.ToBase64String(new byte[] { value });
+            return Convert.ToBase64String(new byte[] {value});
         }
 
         #endregion
@@ -1647,13 +1484,12 @@ namespace Thought.vCards
         /// </summary>
         public static string EncodeBase64(int value)
         {
-
             byte[] buffer = new byte[4];
 
-            buffer[0] = (byte)(value);
-            buffer[1] = (byte)(value >> 8);
-            buffer[2] = (byte)(value >> 16);
-            buffer[3] = (byte)(value >> 24);
+            buffer[0] = (byte) (value);
+            buffer[1] = (byte) (value >> 8);
+            buffer[2] = (byte) (value >> 16);
+            buffer[3] = (byte) (value >> 24);
 
             return Convert.ToBase64String(buffer);
         }
@@ -1667,10 +1503,9 @@ namespace Thought.vCards
         /// </summary>
         public string EncodeEscaped(string value)
         {
-
             if (
                 (this.options & vCardStandardWriterOptions.IgnoreCommas) ==
-                    vCardStandardWriterOptions.IgnoreCommas)
+                vCardStandardWriterOptions.IgnoreCommas)
             {
                 return EncodeEscaped(value, outlookEscapedCharacters);
             }
@@ -1691,7 +1526,6 @@ namespace Thought.vCards
             string value,
             char[] escaped)
         {
-
             if (escaped == null)
                 throw new ArgumentNullException("escaped");
 
@@ -1704,7 +1538,6 @@ namespace Thought.vCards
 
             do
             {
-
                 // Get the index of the next character
                 // to be escaped (e.g. the next semicolon).
 
@@ -1723,11 +1556,9 @@ namespace Thought.vCards
                         value.Length - startIndex);
 
                     break;
-
                 }
                 else
                 {
-
                     char replacement;
                     switch (value[nextIndex])
                     {
@@ -1742,7 +1573,6 @@ namespace Thought.vCards
                         default:
                             replacement = value[nextIndex];
                             break;
-
                     }
 
                     buffer.Append(
@@ -1754,9 +1584,7 @@ namespace Thought.vCards
                     buffer.Append(replacement);
 
                     startIndex = nextIndex + 1;
-
                 }
-
             } while (startIndex < value.Length);
 
             return buffer.ToString();
@@ -1766,7 +1594,6 @@ namespace Thought.vCards
             // Backslash (\\)
             // Colon (\:)
             // Semicolon (\;)
-
         }
 
         #endregion
@@ -1784,7 +1611,6 @@ namespace Thought.vCards
         /// </returns>
         public static string EncodeQuotedPrintable(string value)
         {
-
             if (string.IsNullOrEmpty(value))
                 return value;
 
@@ -1792,8 +1618,7 @@ namespace Thought.vCards
 
             foreach (char c in value)
             {
-
-                int v = (int)c;
+                int v = (int) c;
 
                 // The following are not required to be encoded:
                 //
@@ -1813,7 +1638,6 @@ namespace Thought.vCards
                     builder.Append('=');
                     builder.Append(v.ToString("X2"));
                 }
-
             }
 
             char lastChar = builder[builder.Length - 1];
@@ -1821,11 +1645,10 @@ namespace Thought.vCards
             {
                 builder.Remove(builder.Length - 1, 1);
                 builder.Append('=');
-                builder.Append(((int)lastChar).ToString("X2"));
+                builder.Append(((int) lastChar).ToString("X2"));
             }
 
             return builder.ToString();
-
         }
 
         #endregion
@@ -1835,7 +1658,6 @@ namespace Thought.vCards
         /// </summary>
         public string EncodeProperty(vCardProperty property)
         {
-
             if (property == null)
                 throw new ArgumentNullException("property");
 
@@ -1872,17 +1694,14 @@ namespace Thought.vCards
             }
             else
             {
-
                 Type valueType = property.Value.GetType();
 
                 if (valueType == typeof(byte[]))
                 {
-
                     // A byte array should be encoded in BASE64 format.
 
                     builder.Append(";ENCODING=b:");
-                    builder.Append(EncodeBase64((byte[])property.Value));
-
+                    builder.Append(EncodeBase64((byte[]) property.Value));
                 }
                 else if (property.Name.Equals("PHOTO", StringComparison.OrdinalIgnoreCase) && valueType == typeof(string))
                 {
@@ -1892,24 +1711,20 @@ namespace Thought.vCards
                 }
                 else if (valueType == typeof(vCardValueCollection))
                 {
-
-                    vCardValueCollection values = (vCardValueCollection)property.Value;
+                    vCardValueCollection values = (vCardValueCollection) property.Value;
 
                     builder.Append(':');
                     for (int index = 0; index < values.Count; index++)
                     {
-
                         builder.Append(EncodeEscaped(values[index]));
                         if (index < values.Count - 1)
                         {
                             builder.Append(values.Separator);
                         }
                     }
-
                 }
                 else
                 {
-
                     // The object will be converted to a string (if it is
                     // not a string already) and encoded if necessary.
                     // The first step is to get the string value.
@@ -1918,7 +1733,7 @@ namespace Thought.vCards
 
                     if (valueType == typeof(char[]))
                     {
-                        stringValue = new string(((char[])property.Value));
+                        stringValue = new string(((char[]) property.Value));
                     }
                     else
                     {
@@ -1929,7 +1744,6 @@ namespace Thought.vCards
 
                     switch (property.Subproperties.GetValue("ENCODING"))
                     {
-
                         case "QUOTED-PRINTABLE":
                             builder.Append(EncodeQuotedPrintable(stringValue));
                             break;
@@ -1937,15 +1751,11 @@ namespace Thought.vCards
                         default:
                             builder.Append(EncodeEscaped(stringValue));
                             break;
-
                     }
-
                 }
-
             }
 
             return builder.ToString();
-
         }
 
 
@@ -1954,7 +1764,6 @@ namespace Thought.vCards
         /// </summary>
         public override void Write(vCard card, TextWriter output)
         {
-
             if (card == null)
                 throw new ArgumentNullException("card");
 
@@ -1967,7 +1776,6 @@ namespace Thought.vCards
                 BuildProperties(card);
 
             Write(properties, output);
-
         }
 
         /// <summary>
@@ -1975,7 +1783,6 @@ namespace Thought.vCards
         /// </summary>
         public void Write(vCardPropertyCollection properties, TextWriter output)
         {
-
             if (properties == null)
                 throw new ArgumentNullException("properties");
 
@@ -1986,9 +1793,6 @@ namespace Thought.vCards
             {
                 output.WriteLine(EncodeProperty(property));
             }
-
         }
-
     }
-
 }

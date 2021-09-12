@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,56 +28,56 @@ using CalDavSynchronizer.Implementation;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  static class WebExceptionMapper
-  {
-    private const HttpStatusCode HttpTooManyRequests = (HttpStatusCode) 429;
-
-    public static Exception Map(WebDavClientException exception)
+    static class WebExceptionMapper
     {
-      if (exception.StatusCode == HttpTooManyRequests)
-      {
-        DateTime? retryAfter = null;
+        private const HttpStatusCode HttpTooManyRequests = (HttpStatusCode) 429;
 
-        IEnumerable<string> values;
-        if (exception.Headers.TryGetValues("Retry-After", out values))
+        public static Exception Map(WebDavClientException exception)
         {
-          if (values.Any())
-          {
-            int retryAfterSeconds;
-            if (int.TryParse(values.First(), out retryAfterSeconds))
-              retryAfter = DateTime.UtcNow.AddSeconds(retryAfterSeconds);
-          }
+            if (exception.StatusCode == HttpTooManyRequests)
+            {
+                DateTime? retryAfter = null;
+
+                IEnumerable<string> values;
+                if (exception.Headers.TryGetValues("Retry-After", out values))
+                {
+                    if (values.Any())
+                    {
+                        int retryAfterSeconds;
+                        if (int.TryParse(values.First(), out retryAfterSeconds))
+                            retryAfter = DateTime.UtcNow.AddSeconds(retryAfterSeconds);
+                    }
+                }
+
+                return new WebRepositoryOverloadException(retryAfter, exception);
+            }
+
+            return exception;
         }
 
-        return new WebRepositoryOverloadException (retryAfter, exception);
-      }
-
-      return exception;
+        internal static Exception Map(HttpRequestException x)
+        {
+            var match = Regex.Match(x.Message, @"'(?<code>\d{3})'\s+\('(?<description>.*?)'\)");
+            if (match.Success)
+            {
+                var httpStatusCode = (HttpStatusCode) int.Parse(match.Groups["code"].Value);
+                if (httpStatusCode == HttpTooManyRequests)
+                {
+                    return new WebRepositoryOverloadException(null, x);
+                }
+                else
+                {
+                    return new WebDavClientException(
+                        x,
+                        httpStatusCode,
+                        match.Groups["description"].Value,
+                        new NullHeaders());
+                }
+            }
+            else
+            {
+                return new WebDavClientException(x, null, null, new NullHeaders());
+            }
+        }
     }
-
-    internal static Exception Map(HttpRequestException x)
-    {
-      var match = Regex.Match (x.Message, @"'(?<code>\d{3})'\s+\('(?<description>.*?)'\)");
-      if (match.Success)
-      {
-        var httpStatusCode = (HttpStatusCode) int.Parse (match.Groups["code"].Value);
-        if (httpStatusCode == HttpTooManyRequests)
-        {
-          return new WebRepositoryOverloadException (null, x);
-        }
-        else
-        {
-          return new WebDavClientException(
-            x,
-            httpStatusCode,
-            match.Groups["description"].Value,
-            new NullHeaders());
-        }
-      }
-      else
-      {
-        return new WebDavClientException (x, null, null, new NullHeaders());
-      }
-    }
-  }
 }

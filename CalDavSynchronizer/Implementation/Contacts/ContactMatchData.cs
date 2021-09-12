@@ -14,19 +14,20 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using CalDavSynchronizer.Implementation.ComWrappers;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public struct ContactMatchData
-  {
-    public string FirstName { get;  }
-    public object LastName { get; }
-
-    public ContactMatchData(IContactItemWrapper wrapper)
+    public struct ContactMatchData
     {
-      FirstName = wrapper.Inner.FirstName;
-      LastName = wrapper.Inner.LastName;
+        public string FirstName { get; }
+        public object LastName { get; }
+
+        public ContactMatchData(IContactItemWrapper wrapper)
+        {
+            FirstName = wrapper.Inner.FirstName;
+            LastName = wrapper.Inner.LastName;
+        }
     }
-  }
 }

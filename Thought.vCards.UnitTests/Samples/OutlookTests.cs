@@ -1,4 +1,3 @@
-
 using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
@@ -7,7 +6,6 @@ using Thought.vCards;
 
 namespace Tests.Samples
 {
-
     /* ===================================================================
      * OutlookTests
      * -------------------------------------------------------------------
@@ -17,7 +15,6 @@ namespace Tests.Samples
     [TestClass]
     public sealed class OutlookTests : IDisposable
     {
-
         /// <summary>
         ///     The issuing organization of the certificate embedded
         ///     into the Outlook vCard.
@@ -25,7 +22,7 @@ namespace Tests.Samples
         public const string KeyIssuer =
             "CN=Thawte Personal Freemail Issuing CA, O=Thawte Consulting (Pty) Ltd., C=ZA";
 
-        
+
         /// <summary>
         ///     The subject of the certificate.
         /// </summary>
@@ -38,14 +35,12 @@ namespace Tests.Samples
         [TestMethod]
         public void CycleOutlookCertificate()
         {
-
             // Load the vCard with the test certificate.
 
             vCard card = new vCard(
                 new StreamReader(new MemoryStream(SampleCards.OutlookCertificate)));
 
             Helper.CycleStandard(card);
-
         }
 
         #endregion
@@ -55,12 +50,10 @@ namespace Tests.Samples
         [TestMethod]
         public void CycleOutlookSimple()
         {
-
             vCard card = new vCard(
                 new StreamReader(new MemoryStream(SampleCards.OutlookSimple)));
 
             Helper.CycleStandard(card);
-
         }
 
         #endregion
@@ -70,7 +63,6 @@ namespace Tests.Samples
         [TestMethod]
         public void ParseOutlookCertificate()
         {
-
             // 01 BEGIN:VCARD
             // 02 VERSION:2.1
             // 03 N:Pinch;David;John
@@ -219,8 +211,6 @@ namespace Tests.Samples
                 KeySubject,
                 cert.Subject,
                 "The key subject has a different value.");
-
-
         }
 
         #endregion
@@ -230,7 +220,6 @@ namespace Tests.Samples
         [TestMethod]
         public void ParseOutlookSimple()
         {
-
             // 01 BEGIN:VCARD
             // 02 VERSION:2.1
             // 03 N:Pinch;David;John
@@ -422,8 +411,6 @@ namespace Tests.Samples
                 vCardStandardReader.ParseDate("20061130T234000Z").Value,
                 card.RevisionDate.Value,
                 "REV at line 14 has a different value.");
-
-
         }
 
         #endregion
@@ -434,7 +421,7 @@ namespace Tests.Samples
         public void ParseUnicodeSimple()
         {
             vCard card = new vCard(
-               new StreamReader(new MemoryStream(SampleCards.UnicodeNameSample)));
+                new StreamReader(new MemoryStream(SampleCards.UnicodeNameSample)));
 
             Assert.IsNotNull(card);
             //Assert.AreEqual("³ÂÀö¾ý", card.GivenName);
@@ -442,7 +429,9 @@ namespace Tests.Samples
 
         #endregion
 
-        public void Dispose() { //driver.Dispose(); 
+        public void Dispose()
+        {
+            //driver.Dispose(); 
         }
     }
 }

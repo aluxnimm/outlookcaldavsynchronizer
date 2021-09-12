@@ -14,26 +14,25 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace CalDavSynchronizer.Ui.Reports.ViewModels
 {
-  class NullReportsViewModelParent : IReportsViewModelParent
-  {
-    public static readonly IReportsViewModelParent Instance = new NullReportsViewModelParent ();
-
-    private NullReportsViewModelParent ()
+    class NullReportsViewModelParent : IReportsViewModelParent
     {
+        public static readonly IReportsViewModelParent Instance = new NullReportsViewModelParent();
+
+        private NullReportsViewModelParent()
+        {
+        }
+
+        public void DiplayAEntity(Guid synchronizationProfileId, string entityId)
+        {
+        }
+
+        public void DiplayBEntityAsync(Guid synchronizationProfileId, string entityId)
+        {
+        }
     }
-
-    public void DiplayAEntity (Guid synchronizationProfileId, string entityId)
-    {
-
-    }
-
-    public void DiplayBEntityAsync (Guid synchronizationProfileId, string entityId)
-    {
-
-    }
-  }
 }

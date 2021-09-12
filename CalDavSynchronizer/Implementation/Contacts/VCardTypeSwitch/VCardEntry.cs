@@ -19,9 +19,9 @@ using CalDavSynchronizer.DataAccess;
 
 namespace CalDavSynchronizer.Implementation.Contacts.VCardTypeSwitch
 {
-  public class VCardEntry
-  {
-    public WebResourceName Id { get; set; }
-    public VCardType Type { get; set; }
-  }
+    public class VCardEntry
+    {
+        public WebResourceName Id { get; set; }
+        public VCardType Type { get; set; }
+    }
 }

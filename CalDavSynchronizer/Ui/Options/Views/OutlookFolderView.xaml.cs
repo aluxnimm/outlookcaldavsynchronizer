@@ -14,19 +14,20 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Windows.Controls;
 
 namespace CalDavSynchronizer.Ui.Options.Views
 {
-  /// <summary>
-  ///   Interaction logic for ReportView.xaml
-  /// </summary>
-  public partial class OutlookFolderView : UserControl
-  {
-    public OutlookFolderView ()
+    /// <summary>
+    ///   Interaction logic for ReportView.xaml
+    /// </summary>
+    public partial class OutlookFolderView : UserControl
     {
-      InitializeComponent();
+        public OutlookFolderView()
+        {
+            InitializeComponent();
+        }
     }
-  }
 }

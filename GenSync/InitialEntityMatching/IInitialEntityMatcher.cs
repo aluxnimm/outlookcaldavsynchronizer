@@ -14,23 +14,24 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using GenSync.EntityRelationManagement;
 
 namespace GenSync.InitialEntityMatching
 {
-  /// <summary>
-  /// Takes the content of two repositories and finds those pairs of A and B entities, such that the A and B part of the pair relate to the same logical entity 
-  /// </summary>
-  public interface IInitialEntityMatcher<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
-  {
-    List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> FindMatchingEntities (
-        IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> relationFactory,
-        IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> allAtypeEntities,
-        IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> allBtypeEntities,
-        IReadOnlyDictionary<TAtypeEntityId, TAtypeEntityVersion> atypeEntityVersions,
-        IReadOnlyDictionary<TBtypeEntityId, TBtypeEntityVersion> btypeEntityVersions
+    /// <summary>
+    /// Takes the content of two repositories and finds those pairs of A and B entities, such that the A and B part of the pair relate to the same logical entity 
+    /// </summary>
+    public interface IInitialEntityMatcher<TAtypeEntityId, TAtypeEntityVersion, TAtypeEntity, TBtypeEntityId, TBtypeEntityVersion, TBtypeEntity>
+    {
+        List<IEntityRelationData<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion>> FindMatchingEntities(
+            IEntityRelationDataFactory<TAtypeEntityId, TAtypeEntityVersion, TBtypeEntityId, TBtypeEntityVersion> relationFactory,
+            IReadOnlyDictionary<TAtypeEntityId, TAtypeEntity> allAtypeEntities,
+            IReadOnlyDictionary<TBtypeEntityId, TBtypeEntity> allBtypeEntities,
+            IReadOnlyDictionary<TAtypeEntityId, TAtypeEntityVersion> atypeEntityVersions,
+            IReadOnlyDictionary<TBtypeEntityId, TBtypeEntityVersion> btypeEntityVersions
         );
-  }
+    }
 }

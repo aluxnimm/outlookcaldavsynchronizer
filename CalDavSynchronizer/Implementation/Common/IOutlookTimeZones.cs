@@ -14,13 +14,14 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Common
 {
-  public interface IOutlookTimeZones
-  {
-    TimeZone CurrentTimeZone { get; }
-    TimeZone this[string id] { get; }
-  }
+    public interface IOutlookTimeZones
+    {
+        TimeZone CurrentTimeZone { get; }
+        TimeZone this[string id] { get; }
+    }
 }

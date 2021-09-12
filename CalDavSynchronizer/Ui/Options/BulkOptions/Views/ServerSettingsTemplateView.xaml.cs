@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Windows.Controls;
 using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
@@ -22,33 +23,33 @@ using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.Ui.Options.BulkOptions.Views
 {
-  /// <summary>
-  ///   Interaction logic for ReportView.xaml
-  /// </summary>
-  public partial class ServerSettingsTemplateView : UserControl
-  {
-    private ServerSettingsTemplateViewModel _viewModel;
-
-    public ServerSettingsTemplateView ()
+    /// <summary>
+    ///   Interaction logic for ReportView.xaml
+    /// </summary>
+    public partial class ServerSettingsTemplateView : UserControl
     {
-      InitializeComponent();
-      DataContextChanged += ServerSettingsView_DataContextChanged;
-      _passwordBox.PasswordChanged += PasswordBox_PasswordChanged;
-    }
+        private ServerSettingsTemplateViewModel _viewModel;
 
-    private void PasswordBox_PasswordChanged (object sender, System.Windows.RoutedEventArgs e)
-    {
-      _viewModel.Password = _passwordBox.SecurePassword;
-    }
+        public ServerSettingsTemplateView()
+        {
+            InitializeComponent();
+            DataContextChanged += ServerSettingsView_DataContextChanged;
+            _passwordBox.PasswordChanged += PasswordBox_PasswordChanged;
+        }
 
-    private void ServerSettingsView_DataContextChanged (object sender, System.Windows.DependencyPropertyChangedEventArgs e)
-    {
-      _viewModel = e.NewValue as ServerSettingsTemplateViewModel;
-      if (_viewModel != null)
-      {
-        // Password is just a OneWayBinding. Therefore just set the initial value
-        _passwordBox.Password = SecureStringUtility.ToUnsecureString (_viewModel.Password);
-      }
+        private void PasswordBox_PasswordChanged(object sender, System.Windows.RoutedEventArgs e)
+        {
+            _viewModel.Password = _passwordBox.SecurePassword;
+        }
+
+        private void ServerSettingsView_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+            _viewModel = e.NewValue as ServerSettingsTemplateViewModel;
+            if (_viewModel != null)
+            {
+                // Password is just a OneWayBinding. Therefore just set the initial value
+                _passwordBox.Password = SecureStringUtility.ToUnsecureString(_viewModel.Password);
+            }
+        }
     }
-  }
 }

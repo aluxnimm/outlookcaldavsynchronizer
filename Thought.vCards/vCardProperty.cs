@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -10,7 +9,6 @@ using System.Text;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     A property of a <see cref="vCard"/>.
     /// </summary>
@@ -34,7 +32,6 @@ namespace Thought.vCards
     /// <seealso cref="vCardPropertyCollection"/>
     public class vCardProperty
     {
-
         private string group;
         private string language;
         private string name;
@@ -129,7 +126,6 @@ namespace Thought.vCards
         /// <param name="value">The date/time value.</param>
         public vCardProperty(string name, DateTime value)
         {
-
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name");
 
@@ -146,7 +142,6 @@ namespace Thought.vCards
         public vCardProperty(string name, vCardValueCollection values)
             : this()
         {
-
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name");
 
@@ -164,14 +159,8 @@ namespace Thought.vCards
         /// </summary>
         public string Group
         {
-            get
-            {
-                return this.group ?? string.Empty;
-            }
-            set
-            {
-                this.group = value;
-            }
+            get { return this.group ?? string.Empty; }
+            set { this.group = value; }
         }
 
 
@@ -180,14 +169,8 @@ namespace Thought.vCards
         /// </summary>
         public string Language
         {
-            get
-            {
-                return this.language ?? string.Empty;
-            }
-            set
-            {
-                this.language = value;
-            }
+            get { return this.language ?? string.Empty; }
+            set { this.language = value; }
         }
 
 
@@ -196,14 +179,8 @@ namespace Thought.vCards
         /// </summary>
         public string Name
         {
-            get
-            {
-                return this.name ?? string.Empty;
-            }
-            set
-            {
-                this.name = value;
-            }
+            get { return this.name ?? string.Empty; }
+            set { this.name = value; }
         }
 
 
@@ -213,10 +190,7 @@ namespace Thought.vCards
         /// </summary>
         public vCardSubpropertyCollection Subproperties
         {
-            get
-            {
-                return this.subproperties;
-            }
+            get { return this.subproperties; }
         }
 
 
@@ -233,7 +207,6 @@ namespace Thought.vCards
             {
                 return value.ToString();
             }
-
         }
 
 
@@ -242,17 +215,8 @@ namespace Thought.vCards
         /// </summary>
         public object Value
         {
-            get
-            {
-                return this.value;
-            }
-            set
-            {
-                this.value = value;
-            }
+            get { return this.value; }
+            set { this.value = value; }
         }
-
-
     }
-
 }

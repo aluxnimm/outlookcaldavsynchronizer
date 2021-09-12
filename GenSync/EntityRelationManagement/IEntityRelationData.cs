@@ -14,21 +14,22 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync.EntityRelationManagement
 {
-  /// <summary>
-  /// Describes the relation between an entity in the A repository and an entity in the B repository 
-  /// </summary>
-  /// <remarks>
-  /// The implementig type has to be XML-Serializable!!!
-  /// </remarks>
-  public interface IEntityRelationData<out TAtypeEntityId, out TAtypeEntityVersion, out TBtypeEntityId, out TBtypeEntityVersion>
-  {
-    TAtypeEntityId AtypeId { get; }
-    TAtypeEntityVersion AtypeVersion { get; }
-    TBtypeEntityId BtypeId { get; }
-    TBtypeEntityVersion BtypeVersion { get; }
-  }
+    /// <summary>
+    /// Describes the relation between an entity in the A repository and an entity in the B repository 
+    /// </summary>
+    /// <remarks>
+    /// The implementig type has to be XML-Serializable!!!
+    /// </remarks>
+    public interface IEntityRelationData<out TAtypeEntityId, out TAtypeEntityVersion, out TBtypeEntityId, out TBtypeEntityVersion>
+    {
+        TAtypeEntityId AtypeId { get; }
+        TAtypeEntityVersion AtypeVersion { get; }
+        TBtypeEntityId BtypeId { get; }
+        TBtypeEntityVersion BtypeVersion { get; }
+    }
 }

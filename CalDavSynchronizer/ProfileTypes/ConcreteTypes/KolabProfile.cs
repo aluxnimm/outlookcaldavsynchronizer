@@ -26,59 +26,59 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
 {
-  class KolabProfile : ProfileTypeBase
-  {
-    public override string Name => "Kolab";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_kolab.png";
-    private GeneralOptions _generalOptions;
-
-    public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+    class KolabProfile : ProfileTypeBase
     {
-      _generalOptions = generalOptions;
-      return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData);
+        public override string Name => "Kolab";
+        public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_kolab.png";
+        private GeneralOptions _generalOptions;
+
+        public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+        {
+            _generalOptions = generalOptions;
+            return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData);
+        }
+
+        public override Contracts.Options CreateOptions()
+        {
+            _generalOptions.TriggerSyncAfterSendReceive = true; // Synchronize items when syncing IMAP or sending mail
+            new GeneralOptionsDataAccess().SaveOptions(_generalOptions);
+
+            var data = base.CreateOptions();
+            data.CalenderUrl = "https://kolab.coreboso.de/iRony/";
+            data.EnableChangeTriggeredSynchronization = true; // Synchronize items immediately after change
+            data.DaysToSynchronizeInThePast = 31; // Start syncing one month ago
+            data.DaysToSynchronizeInTheFuture = 365; // Sync up to one year.
+            return data;
+        }
+
+        public override EventMappingConfiguration CreateEventMappingConfiguration()
+        {
+            var data = base.CreateEventMappingConfiguration();
+            // data.UseGlobalAppointmentID = true;
+            // data.UseIanaTz = true;
+            data.MapXAltDescToRtfBody = true;
+            data.MapRtfBodyToXAltDesc = true;
+            return data;
+        }
+
+        class ProfileModelFactory : ProfileModelFactoryBase
+        {
+            public ProfileModelFactory(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+                : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData)
+            {
+            }
+
+            protected override IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
+            {
+                return new KolabMultipleOptionsTemplateViewModel(
+                    OptionsViewModelParent,
+                    new ServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel, ModelOptions),
+                    OptionTasks,
+                    prototypeModel,
+                    ViewOptions);
+            }
+
+            public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true, true, Strings.Get($"Kolab URL"), true, true, true);
+        }
     }
-
-    public override Contracts.Options CreateOptions()
-    {
-      _generalOptions.TriggerSyncAfterSendReceive = true;  // Synchronize items when syncing IMAP or sending mail
-      new GeneralOptionsDataAccess().SaveOptions(_generalOptions);
-
-      var data = base.CreateOptions();
-      data.CalenderUrl = "https://kolab.coreboso.de/iRony/";
-      data.EnableChangeTriggeredSynchronization = true;   // Synchronize items immediately after change
-      data.DaysToSynchronizeInThePast = 31;               // Start syncing one month ago
-      data.DaysToSynchronizeInTheFuture = 365;            // Sync up to one year.
-      return data;
-    }
-
-    public override EventMappingConfiguration CreateEventMappingConfiguration()
-    {
-      var data = base.CreateEventMappingConfiguration();
-      // data.UseGlobalAppointmentID = true;
-      // data.UseIanaTz = true;
-      data.MapXAltDescToRtfBody = true;
-      data.MapRtfBodyToXAltDesc = true;
-      return data;
-    }
-
-    class ProfileModelFactory : ProfileModelFactoryBase
-    {
-      public ProfileModelFactory(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
-        : base(profileType, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData)
-      {
-      }
-
-      protected override IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
-      {
-        return new KolabMultipleOptionsTemplateViewModel(
-          OptionsViewModelParent,
-          new ServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel, ModelOptions),
-          OptionTasks,
-          prototypeModel,
-          ViewOptions);
-      }
-
-      public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true, true, Strings.Get($"Kolab URL"), true, true, true);
-    }
-  }
 }

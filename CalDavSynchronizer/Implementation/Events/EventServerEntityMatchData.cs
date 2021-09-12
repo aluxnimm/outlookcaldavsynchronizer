@@ -14,29 +14,30 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using DDay.iCal;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class EventServerEntityMatchData
-  {
-    public string Summary { get; }
-    public bool IsAllDay { get; }
-    public DateTime Start { get;  }
-    public (DateTime Value,bool IsUniversalTime)? End { get;  }
-    public (DateTime Value,bool IsUniversalTime)? DTEnd { get;  }
-    public bool IsStartUniversalTime { get;  }
-
-    public EventServerEntityMatchData(IICalendar calendar)
+    public class EventServerEntityMatchData
     {
-      var evt = calendar.Events[0];
-      Summary = evt.Summary;
-      IsAllDay = evt.IsAllDay;
-      Start = evt.Start.Value;
-      IsStartUniversalTime = evt.Start.IsUniversalTime;
-      End = evt.End != null ? (evt.End.Value, evt.End.IsUniversalTime) : ((DateTime, bool)?)null;
-      DTEnd = evt.DTEnd != null ? (evt.DTEnd.Value, evt.DTEnd.IsUniversalTime) : ((DateTime, bool)?)null;
+        public string Summary { get; }
+        public bool IsAllDay { get; }
+        public DateTime Start { get; }
+        public (DateTime Value, bool IsUniversalTime)? End { get; }
+        public (DateTime Value, bool IsUniversalTime)? DTEnd { get; }
+        public bool IsStartUniversalTime { get; }
+
+        public EventServerEntityMatchData(IICalendar calendar)
+        {
+            var evt = calendar.Events[0];
+            Summary = evt.Summary;
+            IsAllDay = evt.IsAllDay;
+            Start = evt.Start.Value;
+            IsStartUniversalTime = evt.Start.IsUniversalTime;
+            End = evt.End != null ? (evt.End.Value, evt.End.IsUniversalTime) : ((DateTime, bool)?) null;
+            DTEnd = evt.DTEnd != null ? (evt.DTEnd.Value, evt.DTEnd.IsUniversalTime) : ((DateTime, bool)?) null;
+        }
     }
-  }
 }

@@ -21,23 +21,21 @@ using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.Ui.Options.ResourceSelection.ViewModels
 {
-  public class CalendarDataViewModel : ResourceDataViewModelBase
-  {
-    public CalendarData Model { get; }
-
-    public CalendarDataViewModel (CalendarData model)
+    public class CalendarDataViewModel : ResourceDataViewModelBase
     {
-      if (model == null)
-        throw new ArgumentNullException (nameof (model));
-      Model = model;
+        public CalendarData Model { get; }
+
+        public CalendarDataViewModel(CalendarData model)
+        {
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
+            Model = model;
+        }
+
+        public Uri Uri => Model.Uri;
+        public override string Name => Model.Name;
+        public ArgbColor? Color => Model.Color;
+
+        public string Privileges => AccessPrivilegesConverter.ToString(Model.Privileges);
     }
-
-    public Uri Uri => Model.Uri;
-    public override string Name => Model.Name;
-    public ArgbColor? Color => Model.Color;
-
-    public string Privileges => AccessPrivilegesConverter.ToString(Model.Privileges);
-
-    
-  }
 }

@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,32 +27,32 @@ using TimeZone = Microsoft.Office.Interop.Outlook.TimeZone;
 
 namespace CalDavSynchronizer.Implementation.Common
 {
-  class OutlookTimeZones : IOutlookTimeZones
-  {
-    private readonly Application _application;
-    private readonly Dictionary<string, string> _outlookTimeZoneIdByCaseInsensitiveId;
-
-    public OutlookTimeZones(Application application)
+    class OutlookTimeZones : IOutlookTimeZones
     {
-      _application = application ?? throw new ArgumentNullException(nameof(application));
+        private readonly Application _application;
+        private readonly Dictionary<string, string> _outlookTimeZoneIdByCaseInsensitiveId;
 
-      _outlookTimeZoneIdByCaseInsensitiveId = application.TimeZones
-        .Cast<TimeZone>()
-        .ToSafeEnumerable()
-        .ToDictionary(t => t.ID, t => t.ID, StringComparer.OrdinalIgnoreCase);
+        public OutlookTimeZones(Application application)
+        {
+            _application = application ?? throw new ArgumentNullException(nameof(application));
+
+            _outlookTimeZoneIdByCaseInsensitiveId = application.TimeZones
+                .Cast<TimeZone>()
+                .ToSafeEnumerable()
+                .ToDictionary(t => t.ID, t => t.ID, StringComparer.OrdinalIgnoreCase);
+        }
+
+        public TimeZone CurrentTimeZone => _application.TimeZones.CurrentTimeZone;
+
+        public TimeZone this[string id]
+        {
+            get
+            {
+                if (_outlookTimeZoneIdByCaseInsensitiveId.TryGetValue(id, out string outlookId))
+                    return _application.TimeZones[outlookId];
+                else
+                    return _application.TimeZones[TimeZoneMapper.IanaToWindowsOrNull(id) ?? CurrentTimeZone.ID];
+            }
+        }
     }
-
-    public TimeZone CurrentTimeZone => _application.TimeZones.CurrentTimeZone;
-
-    public TimeZone this[string id]
-    {
-      get
-      {
-        if (_outlookTimeZoneIdByCaseInsensitiveId.TryGetValue(id, out string outlookId))
-          return _application.TimeZones[outlookId];
-        else
-          return _application.TimeZones[TimeZoneMapper.IanaToWindowsOrNull(id) ?? CurrentTimeZone.ID];
-      }
-    }
-  }
 }

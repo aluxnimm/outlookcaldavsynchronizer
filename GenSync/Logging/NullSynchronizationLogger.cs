@@ -14,59 +14,56 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using GenSync.Synchronization;
 
 namespace GenSync.Logging
 {
-  public class NullSynchronizationLogger : ISynchronizationLogger
-  {
-    public static readonly ISynchronizationLogger Instance = new NullSynchronizationLogger();
-  
-    private NullSynchronizationLogger ()
+    public class NullSynchronizationLogger : ISynchronizationLogger
     {
-    }
+        public static readonly ISynchronizationLogger Instance = new NullSynchronizationLogger();
 
-    public ILoadEntityLogger ALoadEntityLogger => NullLoadEntityLogger.Instance;
-    public ILoadEntityLogger BLoadEntityLogger => NullLoadEntityLogger.Instance;
-    public IGetVersionsLogger AGetVersionsEntityLogger => NullGetVersionsLogger.Instance;
-    public IGetVersionsLogger BGetVersionsEntityLogger => NullGetVersionsLogger.Instance;
+        private NullSynchronizationLogger()
+        {
+        }
 
-    public void LogInitialEntityMatching ()
-    {
-    }
+        public ILoadEntityLogger ALoadEntityLogger => NullLoadEntityLogger.Instance;
+        public ILoadEntityLogger BLoadEntityLogger => NullLoadEntityLogger.Instance;
+        public IGetVersionsLogger AGetVersionsEntityLogger => NullGetVersionsLogger.Instance;
+        public IGetVersionsLogger BGetVersionsEntityLogger => NullGetVersionsLogger.Instance;
 
-    public void LogAbortedDueToError (Exception exception)
-    {
-    }
+        public void LogInitialEntityMatching()
+        {
+        }
 
-    public void LogDeltas (VersionDeltaLoginInformation aDeltaLogInfo, VersionDeltaLoginInformation bDeltaLogInfo)
-    {
-    }
-    
-    public void Dispose()
-    {
-      
-    }
+        public void LogAbortedDueToError(Exception exception)
+        {
+        }
 
-    public ISynchronizationLogger CreateSubLogger(string subProfileName)
-    {
-      return this;
-    }
+        public void LogDeltas(VersionDeltaLoginInformation aDeltaLogInfo, VersionDeltaLoginInformation bDeltaLogInfo)
+        {
+        }
 
-    public void AddEntitySynchronizationLog(IEntitySynchronizationLog log)
-    {
-      
-    }
+        public void Dispose()
+        {
+        }
 
-    public void LogJobs(string aJobsInfo, string bJobsInfo)
-    {
-      
-    }
+        public ISynchronizationLogger CreateSubLogger(string subProfileName)
+        {
+            return this;
+        }
 
-    public void LogAbortedDueToWarning(Exception exception)
-    {
-      
+        public void AddEntitySynchronizationLog(IEntitySynchronizationLog log)
+        {
+        }
+
+        public void LogJobs(string aJobsInfo, string bJobsInfo)
+        {
+        }
+
+        public void LogAbortedDueToWarning(Exception exception)
+        {
+        }
     }
-  }
 }

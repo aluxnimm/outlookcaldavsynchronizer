@@ -14,10 +14,11 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace GenSync.Logging
 {
-  public interface IFullEntitySynchronizationLoggerFactory<in TAtypeEntityId, in TAtypeEntity, in TBtypeEntityId, in TBtypeEntity>
-  {
-    IFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> CreateEntitySynchronizationLogger(SynchronizationOperation operation);
-  }
+    public interface IFullEntitySynchronizationLoggerFactory<in TAtypeEntityId, in TAtypeEntity, in TBtypeEntityId, in TBtypeEntity>
+    {
+        IFullEntitySynchronizationLogger<TAtypeEntityId, TAtypeEntity, TBtypeEntityId, TBtypeEntity> CreateEntitySynchronizationLogger(SynchronizationOperation operation);
+    }
 }

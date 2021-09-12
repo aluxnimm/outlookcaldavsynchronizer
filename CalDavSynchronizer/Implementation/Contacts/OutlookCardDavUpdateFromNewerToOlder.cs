@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Implementation.ComWrappers;
@@ -26,21 +27,21 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  internal class OutlookCardDavUpdateFromNewerToOlder
-      : UpdateFromNewerToOlder<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger>
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
-
-    public OutlookCardDavUpdateFromNewerToOlder (
-        EntitySyncStateEnvironment<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> environment,
-        IEntityRelationData<string, DateTime, WebResourceName, string> knownData,
-        DateTime newA,
-        string newB)
-        : base (environment, knownData, newA, newB)
+    internal class OutlookCardDavUpdateFromNewerToOlder
+        : UpdateFromNewerToOlder<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger>
     {
-    }
+        private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
 
-    protected override DateTime ModificationTimeA => _aEntity.Inner.LastModificationTime.ToUniversalTime();
-    protected override DateTime? ModificationTimeB => _bEntity.RevisionDate;
-  }
+        public OutlookCardDavUpdateFromNewerToOlder(
+            EntitySyncStateEnvironment<string, DateTime, IContactItemWrapper, WebResourceName, string, vCard, ICardDavRepositoryLogger> environment,
+            IEntityRelationData<string, DateTime, WebResourceName, string> knownData,
+            DateTime newA,
+            string newB)
+            : base(environment, knownData, newA, newB)
+        {
+        }
+
+        protected override DateTime ModificationTimeA => _aEntity.Inner.LastModificationTime.ToUniversalTime();
+        protected override DateTime? ModificationTimeB => _bEntity.RevisionDate;
+    }
 }

@@ -14,22 +14,23 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using GenSync.Synchronization;
 
 namespace GenSync.UnitTests.Synchronization.Stubs
 {
-  class TestExceptionHandlingStrategy : IExceptionHandlingStrategy
-  {
-    public static readonly IExceptionHandlingStrategy Instance = new TestExceptionHandlingStrategy ();
-
-    private TestExceptionHandlingStrategy ()
+    class TestExceptionHandlingStrategy : IExceptionHandlingStrategy
     {
-    }
+        public static readonly IExceptionHandlingStrategy Instance = new TestExceptionHandlingStrategy();
 
-    public bool DoesGracefullyAbortSynchronization(Exception x)
-    {
-      return x is TestAbortException;
+        private TestExceptionHandlingStrategy()
+        {
+        }
+
+        public bool DoesGracefullyAbortSynchronization(Exception x)
+        {
+            return x is TestAbortException;
+        }
     }
-  }
 }

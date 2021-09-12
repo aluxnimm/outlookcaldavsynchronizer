@@ -14,32 +14,29 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using GenSync.ProgressReport;
 
 namespace CalDavSynchronizer.Ui
 {
-  class NullProgressUi : IProgressUi
-  {
-    public static readonly IProgressUi Instance = new NullProgressUi ();
-
-    public void Dispose ()
+    class NullProgressUi : IProgressUi
     {
+        public static readonly IProgressUi Instance = new NullProgressUi();
 
+        public void Dispose()
+        {
+        }
+
+        public void IncrementValue()
+        {
+        }
+
+        public void SetMessage(string message)
+        {
+        }
+
+        public void SetSubMessage(string message)
+        {
+        }
     }
-
-    public void IncrementValue()
-    {
-
-    }
-
-    public void SetMessage (string message)
-    {
-
-    }
-
-    public void SetSubMessage(string message)
-    {
-
-    }
-  }
 }

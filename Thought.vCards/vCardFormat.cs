@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -9,13 +8,11 @@ using System;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     Identifies different vCard formats.
     /// </summary>
     public enum vCardFormat
     {
-
         /// <summary>
         ///     Standard text format.
         /// </summary>
@@ -37,7 +34,5 @@ namespace Thought.vCards
         ///     hCard microformat (not implemented yet).
         /// </summary>
         hCard
-
     }
-
 }

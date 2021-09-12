@@ -1,4 +1,3 @@
-
 using System;
 using System.Drawing;
 using System.IO;
@@ -7,7 +6,6 @@ using Thought.vCards;
 
 namespace Tests.Samples
 {
-
     /* ===================================================================
      * XPalmWithPhoto
      * -------------------------------------------------------------------
@@ -23,23 +21,19 @@ namespace Tests.Samples
     [TestFixture]
     public class XPalmWithPhotoTests
     {
-
         [Test]
         public void CycleXPlanWithPhoto()
         {
-
             vCard card = new vCard(
                 new StreamReader(new MemoryStream(SampleCards.XPalmWithPhoto)));
 
             Helper.CycleStandard(card);
-
         }
 
 
         [Test]
         public void ParseXPalmWithPhoto()
         {
-
             // 01 BEGIN:VCARD
             // 02 VERSION:2.1
             // 03 N:Leonhard;Gerd
@@ -248,10 +242,7 @@ namespace Tests.Samples
                     96,
                     bitmap.Size.Height,
                     "The height is incorrect.");
-
             }
-
         }
-
     }
 }

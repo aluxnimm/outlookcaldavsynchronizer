@@ -14,16 +14,17 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public interface IGeneralOptionsDataAccess
-  {
-    GeneralOptions LoadOptions ();
-    void SaveOptions (GeneralOptions options);
-    Version IgnoreUpdatesTilVersion { get; set; }
-    int EntityCacheVersion { get; set; }
-  }
+    public interface IGeneralOptionsDataAccess
+    {
+        GeneralOptions LoadOptions();
+        void SaveOptions(GeneralOptions options);
+        Version IgnoreUpdatesTilVersion { get; set; }
+        int EntityCacheVersion { get; set; }
+    }
 }

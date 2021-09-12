@@ -14,54 +14,55 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Reflection;
 using log4net;
 
 namespace GenSync.ProgressReport
 {
-  internal class TotalProgressContext : ITotalProgressLogger
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-    private readonly IProgressUiFactory _progressUiFactory;
-    private readonly int _loadOperationThresholdForProgressDisplay;
-    private ITotalProgressLogger _logger;
-    private readonly IExceptionLogger _exceptionLogger;
-
-    public TotalProgressContext (IProgressUiFactory progressUiFactory, int loadOperationThresholdForProgressDisplay, IExceptionLogger exceptionLogger)
+    internal class TotalProgressContext : ITotalProgressLogger
     {
-      _progressUiFactory = progressUiFactory;
-      _loadOperationThresholdForProgressDisplay = loadOperationThresholdForProgressDisplay;
-      _exceptionLogger = exceptionLogger;
-    }
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+        private readonly IProgressUiFactory _progressUiFactory;
+        private readonly int _loadOperationThresholdForProgressDisplay;
+        private ITotalProgressLogger _logger;
+        private readonly IExceptionLogger _exceptionLogger;
 
-    public void Dispose ()
-    {
-      (_logger ?? NullTotalProgressLogger.Instance).Dispose();
-    }
+        public TotalProgressContext(IProgressUiFactory progressUiFactory, int loadOperationThresholdForProgressDisplay, IExceptionLogger exceptionLogger)
+        {
+            _progressUiFactory = progressUiFactory;
+            _loadOperationThresholdForProgressDisplay = loadOperationThresholdForProgressDisplay;
+            _exceptionLogger = exceptionLogger;
+        }
 
-    public IChunkProgressLogger StartChunk()
-    {
-      return (_logger ?? NullTotalProgressLogger.Instance).StartChunk();
-    }
+        public void Dispose()
+        {
+            (_logger ?? NullTotalProgressLogger.Instance).Dispose();
+        }
 
-    public void NotifyWork(int totalEntitiesBeingLoaded,int chunkCount)
-    {
-      if (_logger != null)
-        return;
+        public IChunkProgressLogger StartChunk()
+        {
+            return (_logger ?? NullTotalProgressLogger.Instance).StartChunk();
+        }
 
-      try
-      {
-        if (totalEntitiesBeingLoaded >= _loadOperationThresholdForProgressDisplay)
-          _logger = new TotalProgressLogger(_progressUiFactory, _exceptionLogger, chunkCount);
-        else
-          _logger = NullTotalProgressLogger.Instance;
-      }
-      catch (Exception x)
-      {
-        _exceptionLogger.LogException(x, s_logger);
-        _logger = NullTotalProgressLogger.Instance;
-      }
+        public void NotifyWork(int totalEntitiesBeingLoaded, int chunkCount)
+        {
+            if (_logger != null)
+                return;
+
+            try
+            {
+                if (totalEntitiesBeingLoaded >= _loadOperationThresholdForProgressDisplay)
+                    _logger = new TotalProgressLogger(_progressUiFactory, _exceptionLogger, chunkCount);
+                else
+                    _logger = NullTotalProgressLogger.Instance;
+            }
+            catch (Exception x)
+            {
+                _exceptionLogger.LogException(x, s_logger);
+                _logger = NullTotalProgressLogger.Instance;
+            }
+        }
     }
-  }
 }

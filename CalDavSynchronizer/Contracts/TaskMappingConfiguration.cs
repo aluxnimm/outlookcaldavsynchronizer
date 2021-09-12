@@ -21,42 +21,42 @@ using CalDavSynchronizer.Ui.Options.ViewModels.Mapping;
 
 namespace CalDavSynchronizer.Contracts
 {
-  public class TaskMappingConfiguration : MappingConfigurationBase, IPropertyMappingConfiguration
-  {
-    public ReminderMapping MapReminder { get; set; }
-    public bool MapReminderAsDateTime { get; set; }
-    public bool MapPriority { get; set; }
-    public bool MapBody { get; set; }
-    public bool MapRecurringTasks { get; set; }
-    public bool MapStartAndDueAsFloating { get; set; }
-    public string TaskCategory { get; set; }
-    public bool IsCategoryFilterSticky { get; set; }
-    public bool IncludeEmptyTaskCategoryFilter { get; set; }
-    public bool InvertTaskCategoryFilter { get; set; }
-    public bool MapCustomProperties { get; set; }
-
-    private PropertyMapping[] _userDefinedCustomPropertyMappings;
-    public PropertyMapping[] UserDefinedCustomPropertyMappings
+    public class TaskMappingConfiguration : MappingConfigurationBase, IPropertyMappingConfiguration
     {
-      get { return _userDefinedCustomPropertyMappings ?? new PropertyMapping[0]; }
-      set { _userDefinedCustomPropertyMappings = value ?? new PropertyMapping[0]; }
-    }
+        public ReminderMapping MapReminder { get; set; }
+        public bool MapReminderAsDateTime { get; set; }
+        public bool MapPriority { get; set; }
+        public bool MapBody { get; set; }
+        public bool MapRecurringTasks { get; set; }
+        public bool MapStartAndDueAsFloating { get; set; }
+        public string TaskCategory { get; set; }
+        public bool IsCategoryFilterSticky { get; set; }
+        public bool IncludeEmptyTaskCategoryFilter { get; set; }
+        public bool InvertTaskCategoryFilter { get; set; }
+        public bool MapCustomProperties { get; set; }
+
+        private PropertyMapping[] _userDefinedCustomPropertyMappings;
+
+        public PropertyMapping[] UserDefinedCustomPropertyMappings
+        {
+            get { return _userDefinedCustomPropertyMappings ?? new PropertyMapping[0]; }
+            set { _userDefinedCustomPropertyMappings = value ?? new PropertyMapping[0]; }
+        }
 
 
-    [XmlIgnore]
-    public bool UseTaskCategoryAsFilter
-    {
-      get { return !string.IsNullOrEmpty (TaskCategory); }
-    }
+        [XmlIgnore]
+        public bool UseTaskCategoryAsFilter
+        {
+            get { return !string.IsNullOrEmpty(TaskCategory); }
+        }
 
-    public TaskMappingConfiguration ()
-    {
-   
-    }
+        public TaskMappingConfiguration()
+        {
+        }
 
-    public override TResult Accept<TResult>(IMappingConfigurationBaseVisitor<TResult> visitor)
-    {
-      return visitor.Visit(this);
+        public override TResult Accept<TResult>(IMappingConfigurationBaseVisitor<TResult> visitor)
+        {
+            return visitor.Visit(this);
+        }
     }
-  }
 }

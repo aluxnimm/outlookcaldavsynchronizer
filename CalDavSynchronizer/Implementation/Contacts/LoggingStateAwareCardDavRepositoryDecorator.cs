@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CalDavSynchronizer.DataAccess;
@@ -22,19 +23,19 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.Implementation.Contacts
 {
-  public class LoggingStateAwareCardDavRepositoryDecorator : IStateAwareEntityRepository<WebResourceName, string, ICardDavRepositoryLogger, string>
-  {
-    private readonly IStateAwareEntityRepository<WebResourceName, string, int, string> _inner;
-
-    public LoggingStateAwareCardDavRepositoryDecorator(IStateAwareEntityRepository<WebResourceName, string, int, string> inner)
+    public class LoggingStateAwareCardDavRepositoryDecorator : IStateAwareEntityRepository<WebResourceName, string, ICardDavRepositoryLogger, string>
     {
-      _inner = inner;
-    }
+        private readonly IStateAwareEntityRepository<WebResourceName, string, int, string> _inner;
 
-    public async Task<(IEntityStateCollection<WebResourceName, string> States, string NewToken)> GetFullRepositoryState(IEnumerable<WebResourceName> idsOfknownEntities, string stateToken, ICardDavRepositoryLogger context, IGetVersionsLogger logger)
-    {
-      var result = await _inner.GetFullRepositoryState(idsOfknownEntities, stateToken, 0, logger);
-      return (new LoggingEntityStateCollectionDecorator(result.States, context), result.NewToken);
+        public LoggingStateAwareCardDavRepositoryDecorator(IStateAwareEntityRepository<WebResourceName, string, int, string> inner)
+        {
+            _inner = inner;
+        }
+
+        public async Task<(IEntityStateCollection<WebResourceName, string> States, string NewToken)> GetFullRepositoryState(IEnumerable<WebResourceName> idsOfknownEntities, string stateToken, ICardDavRepositoryLogger context, IGetVersionsLogger logger)
+        {
+            var result = await _inner.GetFullRepositoryState(idsOfknownEntities, stateToken, 0, logger);
+            return (new LoggingEntityStateCollectionDecorator(result.States, context), result.NewToken);
+        }
     }
-  }
 }

@@ -14,19 +14,20 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Windows.Controls;
 
 namespace CalDavSynchronizer.Ui.Options.Views.Mapping
 {
-  /// <summary>
-  ///   Interaction logic for ReportView.xaml
-  /// </summary>
-  public partial class CustomPropertyMappingView : UserControl
-  {
-    public CustomPropertyMappingView ()
+    /// <summary>
+    ///   Interaction logic for ReportView.xaml
+    /// </summary>
+    public partial class CustomPropertyMappingView : UserControl
     {
-      InitializeComponent();
+        public CustomPropertyMappingView()
+        {
+            InitializeComponent();
+        }
     }
-  }
 }

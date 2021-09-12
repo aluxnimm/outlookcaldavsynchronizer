@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -21,24 +22,24 @@ using System.Xml;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public interface IWebDavClient
-  {
-    Task<XmlDocumentWithNamespaceManager> ExecuteWebDavRequestAndReadResponse (
-        Uri url,
-        string httpMethod,
-        int? depth,
-        string ifMatch,
-        string ifNoneMatch,
-        string mediaType,
-        string requestBody);
+    public interface IWebDavClient
+    {
+        Task<XmlDocumentWithNamespaceManager> ExecuteWebDavRequestAndReadResponse(
+            Uri url,
+            string httpMethod,
+            int? depth,
+            string ifMatch,
+            string ifNoneMatch,
+            string mediaType,
+            string requestBody);
 
-    Task<IHttpHeaders> ExecuteWebDavRequestAndReturnResponseHeaders (
-        Uri url,
-        string httpMethod,
-        int? depth,
-        string ifMatch,
-        string ifNoneMatch,
-        string mediaType,
-        string requestBody);
-  }
+        Task<IHttpHeaders> ExecuteWebDavRequestAndReturnResponseHeaders(
+            Uri url,
+            string httpMethod,
+            int? depth,
+            string ifMatch,
+            string ifNoneMatch,
+            string mediaType,
+            string requestBody);
+    }
 }

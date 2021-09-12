@@ -27,21 +27,21 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  internal class GoogleContactUpdateFromNewerToOlder
-      : UpdateFromNewerToOlder<string, DateTime, IContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext>
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
-
-    public GoogleContactUpdateFromNewerToOlder (
-        EntitySyncStateEnvironment<string, DateTime, IContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext> environment,
-        IEntityRelationData<string, DateTime, string, GoogleContactVersion> knownData,
-        DateTime newA,
-        GoogleContactVersion newB)
-        : base (environment, knownData, newA, newB)
+    internal class GoogleContactUpdateFromNewerToOlder
+        : UpdateFromNewerToOlder<string, DateTime, IContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext>
     {
-    }
+        private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
 
-    protected override DateTime ModificationTimeA => _aEntity.Inner.LastModificationTime.ToUniversalTime();
-    protected override DateTime? ModificationTimeB => _bEntity.Contact.Updated.ToUniversalTime();
-  }
+        public GoogleContactUpdateFromNewerToOlder(
+            EntitySyncStateEnvironment<string, DateTime, IContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext> environment,
+            IEntityRelationData<string, DateTime, string, GoogleContactVersion> knownData,
+            DateTime newA,
+            GoogleContactVersion newB)
+            : base(environment, knownData, newA, newB)
+        {
+        }
+
+        protected override DateTime ModificationTimeA => _aEntity.Inner.LastModificationTime.ToUniversalTime();
+        protected override DateTime? ModificationTimeB => _bEntity.Contact.Updated.ToUniversalTime();
+    }
 }

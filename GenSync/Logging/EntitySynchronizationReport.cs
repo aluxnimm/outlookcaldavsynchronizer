@@ -14,43 +14,44 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Xml.Serialization;
 
 namespace GenSync.Logging
 {
-  public class EntitySynchronizationReport
-  {
-    private string[] _errors;
-    private string[] _warnings;
-
-    [XmlArray("MappingErrors")]
-    public string[] Errors
+    public class EntitySynchronizationReport
     {
-      get => _errors ?? new string[] {};
-      set => _errors = value;
+        private string[] _errors;
+        private string[] _warnings;
+
+        [XmlArray("MappingErrors")]
+        public string[] Errors
+        {
+            get => _errors ?? new string[] { };
+            set => _errors = value;
+        }
+
+        [XmlArray("MappingWarnings")]
+        public string[] Warnings
+        {
+            get => _warnings ?? new string[] { };
+            set => _warnings = value;
+        }
+
+        public string AId { get; set; }
+        public string BId { get; set; }
+
+        public string ADisplayName { get; set; }
+        public string BDisplayName { get; set; }
+
+        public string ExceptionThatLeadToAbortion { get; set; }
+        public SynchronizationOperation Operation { get; set; }
+
+        [XmlIgnore]
+        public bool HasErrors => ExceptionThatLeadToAbortion != null || _errors?.Length > 0;
+
+        [XmlIgnore]
+        public bool HasWarnings => _warnings?.Length > 0;
     }
-
-    [XmlArray("MappingWarnings")]
-    public string[] Warnings
-    {
-      get => _warnings ?? new string[] { };
-      set => _warnings = value;
-    }
-
-    public string AId { get; set; }
-    public string BId { get; set; }
-
-    public string ADisplayName { get; set; }
-    public string BDisplayName { get; set; }
-
-    public string ExceptionThatLeadToAbortion { get; set; }
-    public SynchronizationOperation Operation { get; set; }
-
-    [XmlIgnore]
-    public bool HasErrors => ExceptionThatLeadToAbortion != null || _errors?.Length > 0;
-
-    [XmlIgnore]
-    public bool HasWarnings => _warnings?.Length > 0;
-  }
 }

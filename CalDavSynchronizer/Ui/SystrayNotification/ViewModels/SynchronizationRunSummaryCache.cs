@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,34 +22,34 @@ using GenSync.Logging;
 
 namespace CalDavSynchronizer.Ui.SystrayNotification.ViewModels
 {
-  public class SynchronizationRunSummaryCache
-  {
-    private readonly Dictionary<Guid, SynchronizationRunSummary?> _summaryByProfileId = new Dictionary<Guid, SynchronizationRunSummary?>();
-
-    public IReadOnlyDictionary<Guid, SynchronizationRunSummary?> SummaryByProfileId => _summaryByProfileId;
-
-    public void NotifyProfilesChanged(Contracts.Options[] profiles)
+    public class SynchronizationRunSummaryCache
     {
-      HashSet<Guid> existingProfiles = new HashSet<Guid>();
+        private readonly Dictionary<Guid, SynchronizationRunSummary?> _summaryByProfileId = new Dictionary<Guid, SynchronizationRunSummary?>();
 
-      foreach (var profile in profiles)
-      {
-        existingProfiles.Add(profile.Id);
-        if (!_summaryByProfileId.ContainsKey(profile.Id))
-          _summaryByProfileId[profile.Id] = null;
-      }
+        public IReadOnlyDictionary<Guid, SynchronizationRunSummary?> SummaryByProfileId => _summaryByProfileId;
 
-      foreach (var profileId in _summaryByProfileId.Keys.ToArray())
-      {
-        if (!existingProfiles.Contains(profileId))
-          _summaryByProfileId.Remove(profileId);
-      }
+        public void NotifyProfilesChanged(Contracts.Options[] profiles)
+        {
+            HashSet<Guid> existingProfiles = new HashSet<Guid>();
+
+            foreach (var profile in profiles)
+            {
+                existingProfiles.Add(profile.Id);
+                if (!_summaryByProfileId.ContainsKey(profile.Id))
+                    _summaryByProfileId[profile.Id] = null;
+            }
+
+            foreach (var profileId in _summaryByProfileId.Keys.ToArray())
+            {
+                if (!existingProfiles.Contains(profileId))
+                    _summaryByProfileId.Remove(profileId);
+            }
+        }
+
+        public void Update(Guid profileId, SynchronizationRunSummary summary)
+        {
+            if (_summaryByProfileId.ContainsKey(profileId))
+                _summaryByProfileId[profileId] = summary;
+        }
     }
-
-    public void Update(Guid profileId, SynchronizationRunSummary summary)
-    {
-      if (_summaryByProfileId.ContainsKey(profileId))
-        _summaryByProfileId[profileId] = summary;
-    }
-  }
 }

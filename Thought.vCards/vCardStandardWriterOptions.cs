@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -11,14 +10,12 @@ using System.Text;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     Extended options for the <see cref="vCardStandardWriter"/> class.
     /// </summary>
     [Flags]
     public enum vCardStandardWriterOptions
     {
-
         /// <summary>
         ///     No options.
         /// </summary>
@@ -35,7 +32,5 @@ namespace Thought.vCards
         ///     commas for better compatibility with Outlook.
         /// </remarks>
         IgnoreCommas = 1
-
     }
-
 }

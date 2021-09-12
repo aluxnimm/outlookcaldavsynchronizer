@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Reflection;
 using System.Windows.Input;
@@ -22,57 +23,52 @@ using log4net;
 
 namespace CalDavSynchronizer.Ui
 {
-  public class DelegateCommandHandlingRequerySuggested : ICommand
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-
-    private readonly Predicate<object> _canExecute;
-    private readonly Action<object> _execute;
-
-    public event EventHandler CanExecuteChanged
+    public class DelegateCommandHandlingRequerySuggested : ICommand
     {
-      add
-      {
-        CommandManager.RequerySuggested += value;
-      }
-      remove
-      {
-        CommandManager.RequerySuggested -= value;
-      }
-    }
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
 
-    public DelegateCommandHandlingRequerySuggested (Action<object> execute)
-        : this (execute, null)
-    {
-    }
+        private readonly Predicate<object> _canExecute;
+        private readonly Action<object> _execute;
 
-    public DelegateCommandHandlingRequerySuggested (Action<object> execute,
-        Predicate<object> canExecute)
-    {
-      _execute = execute;
-      _canExecute = canExecute;
-    }
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
 
-    public bool CanExecute (object parameter)
-    {
-      if (_canExecute == null)
-      {
-        return true;
-      }
+        public DelegateCommandHandlingRequerySuggested(Action<object> execute)
+            : this(execute, null)
+        {
+        }
 
-      return _canExecute (parameter);
-    }
+        public DelegateCommandHandlingRequerySuggested(
+            Action<object> execute,
+            Predicate<object> canExecute)
+        {
+            _execute = execute;
+            _canExecute = canExecute;
+        }
 
-    public void Execute (object parameter)
-    {
-      try
-      {
-        _execute (parameter);
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.DisplayException (x, s_logger);
-      }
+        public bool CanExecute(object parameter)
+        {
+            if (_canExecute == null)
+            {
+                return true;
+            }
+
+            return _canExecute(parameter);
+        }
+
+        public void Execute(object parameter)
+        {
+            try
+            {
+                _execute(parameter);
+            }
+            catch (Exception x)
+            {
+                ExceptionHandler.Instance.DisplayException(x, s_logger);
+            }
+        }
     }
-  }
 }

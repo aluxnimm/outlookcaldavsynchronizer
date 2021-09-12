@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -21,13 +22,13 @@ using GenSync.ProgressReport;
 
 namespace GenSync.EntityRepositories
 {
-  public interface IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
-  {
-    Task PerformOperations (
-        IReadOnlyList<ICreateJob<TEntityId, TEntityVersion, TEntity>> createJobs,
-        IReadOnlyList<IUpdateJob<TEntityId, TEntityVersion, TEntity>> updateJobs,
-        IReadOnlyList<IDeleteJob<TEntityId, TEntityVersion>> deleteJobs,
-        IProgressLogger progressLogger,
-        TContext context);
-  }
+    public interface IBatchWriteOnlyEntityRepository<TEntityId, TEntityVersion, TEntity, TContext>
+    {
+        Task PerformOperations(
+            IReadOnlyList<ICreateJob<TEntityId, TEntityVersion, TEntity>> createJobs,
+            IReadOnlyList<IUpdateJob<TEntityId, TEntityVersion, TEntity>> updateJobs,
+            IReadOnlyList<IDeleteJob<TEntityId, TEntityVersion>> deleteJobs,
+            IProgressLogger progressLogger,
+            TContext context);
+    }
 }

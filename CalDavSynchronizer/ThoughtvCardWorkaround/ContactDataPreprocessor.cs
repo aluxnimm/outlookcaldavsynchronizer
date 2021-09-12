@@ -14,17 +14,18 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System.Text.RegularExpressions;
 
 namespace CalDavSynchronizer.ThoughtvCardWorkaround
 {
-  public static class ContactDataPreprocessor
-  {
-    public static string NormalizeLineBreaks (string vcardData)
+    public static class ContactDataPreprocessor
     {
-      // Certain iCal providers like Open-Xchange deliver their data with unexpected linebreaks
-      // which causes the parser to fail. This can be fixed by normalizing the unexpected \r\r\n to \r\n
-      return vcardData.Replace ("\r\r\n", "\r\n");
+        public static string NormalizeLineBreaks(string vcardData)
+        {
+            // Certain iCal providers like Open-Xchange deliver their data with unexpected linebreaks
+            // which causes the parser to fail. This can be fixed by normalizing the unexpected \r\r\n to \r\n
+            return vcardData.Replace("\r\r\n", "\r\n");
+        }
     }
-  }
 }

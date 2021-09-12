@@ -14,34 +14,35 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Diagnostics;
 
 namespace GenSync.UnitTests.Synchronization.Stubs
 {
-  [DebuggerDisplay("{Value}")]
-  public class Identifier
-  {
-    private readonly string _value;
-
-    public Identifier (string value)
+    [DebuggerDisplay("{Value}")]
+    public class Identifier
     {
-      _value = value;
-    }
+        private readonly string _value;
 
-    public static implicit operator Identifier (string value)
-    {
-      return new Identifier (value);
-    }
+        public Identifier(string value)
+        {
+            _value = value;
+        }
 
-    public string Value
-    {
-      get { return _value; }
-    }
+        public static implicit operator Identifier(string value)
+        {
+            return new Identifier(value);
+        }
 
-    public override string ToString ()
-    {
-      return _value;
+        public string Value
+        {
+            get { return _value; }
+        }
+
+        public override string ToString()
+        {
+            return _value;
+        }
     }
-  }
 }

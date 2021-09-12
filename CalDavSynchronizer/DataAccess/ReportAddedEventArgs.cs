@@ -14,24 +14,25 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using GenSync.Logging;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public class ReportAddedEventArgs : ReportEventArgs
-  {
-    private readonly SynchronizationReportName _reportName;
-
-    public ReportAddedEventArgs (SynchronizationReport report, SynchronizationReportName reportName)
-        : base(report)
+    public class ReportAddedEventArgs : ReportEventArgs
     {
-      _reportName = reportName;
-    }
+        private readonly SynchronizationReportName _reportName;
 
-    public SynchronizationReportName ReportName
-    {
-      get { return _reportName; }
+        public ReportAddedEventArgs(SynchronizationReport report, SynchronizationReportName reportName)
+            : base(report)
+        {
+            _reportName = reportName;
+        }
+
+        public SynchronizationReportName ReportName
+        {
+            get { return _reportName; }
+        }
     }
-  }
 }

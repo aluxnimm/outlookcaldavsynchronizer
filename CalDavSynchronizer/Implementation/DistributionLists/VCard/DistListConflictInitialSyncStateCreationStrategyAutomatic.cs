@@ -9,22 +9,22 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists.VCard
 {
-  internal class DistListConflictInitialSyncStateCreationStrategyAutomatic
-    : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, IDistListItemWrapper, WebResourceName, string, vCard, DistributionListSychronizationContext>
-  {
-    public DistListConflictInitialSyncStateCreationStrategyAutomatic (EntitySyncStateEnvironment<string, DateTime, IDistListItemWrapper, WebResourceName, string, vCard, DistributionListSychronizationContext> environment)
-      : base (environment)
+    internal class DistListConflictInitialSyncStateCreationStrategyAutomatic
+        : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, IDistListItemWrapper, WebResourceName, string, vCard, DistributionListSychronizationContext>
     {
-    }
+        public DistListConflictInitialSyncStateCreationStrategyAutomatic(EntitySyncStateEnvironment<string, DateTime, IDistListItemWrapper, WebResourceName, string, vCard, DistributionListSychronizationContext> environment)
+            : base(environment)
+        {
+        }
 
-    protected override IEntitySyncState<string, DateTime, IDistListItemWrapper, WebResourceName, string, vCard, DistributionListSychronizationContext> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
-    {
-      return new OutlookDistListUpdateFromNewerToOlder (
-        _environment,
-        knownData,
-        newA,
-        newB
-      );
+        protected override IEntitySyncState<string, DateTime, IDistListItemWrapper, WebResourceName, string, vCard, DistributionListSychronizationContext> Create_FromNewerToOlder(IEntityRelationData<string, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
+        {
+            return new OutlookDistListUpdateFromNewerToOlder(
+                _environment,
+                knownData,
+                newA,
+                newB
+            );
+        }
     }
-  }
 }

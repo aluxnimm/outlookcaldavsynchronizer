@@ -7,23 +7,23 @@ using System.Text.RegularExpressions;
 
 namespace CalDavSynchronizer.OAuth.Swisscom.Globalization
 {
-  public class Strings
-  {
-    public static string Get(FormattableString key)
+    public class Strings
     {
-      return string.Format(Localize(key.Format), key.GetArguments());
-    }
+        public static string Get(FormattableString key)
+        {
+            return string.Format(Localize(key.Format), key.GetArguments());
+        }
 
-    public static string Localize(string text)
-    {
+        public static string Localize(string text)
+        {
 #if RECORD_RESOURCES
       AddResource(text);
       return Regex.Replace(text, "[A-Za-z]", "_");
 #else
-      var translation = StringResources.ResourceManager.GetString(text);
-      return translation ?? text;
+            var translation = StringResources.ResourceManager.GetString(text);
+            return translation ?? text;
 #endif
-    }
+        }
 
 
 #if RECORD_RESOURCES
@@ -44,7 +44,5 @@ namespace CalDavSynchronizer.OAuth.Swisscom.Globalization
       }
     }
 #endif
-
-
     }
 }

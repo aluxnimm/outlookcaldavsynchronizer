@@ -14,15 +14,16 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace CalDavSynchronizer.Implementation
 {
-  public interface IDaslFilterProvider
-  {
-    string GetAppointmentFilter (bool isInstantSearchEnabled);
-    string GetTaskFilter (bool isInstantSearchEnabled);
-    string GetContactFilter (bool isInstantSearchEnabled);
-    string GetDistListFilter (bool isInstantSearchEnabled);
-  }
+    public interface IDaslFilterProvider
+    {
+        string GetAppointmentFilter(bool isInstantSearchEnabled);
+        string GetTaskFilter(bool isInstantSearchEnabled);
+        string GetContactFilter(bool isInstantSearchEnabled);
+        string GetDistListFilter(bool isInstantSearchEnabled);
+    }
 }

@@ -21,17 +21,17 @@ using CalDavSynchronizer.Utilities;
 
 namespace CalDavSynchronizer.DataAccess
 {
-  public class TaskListData
-  {
-    public string Id { get; }
-    public string Name { get; }
-    public AccessPrivileges Privileges { get; }
-
-    public TaskListData (string id, string name, AccessPrivileges privileges)
+    public class TaskListData
     {
-      Id = id;
-      Name = name;
-      Privileges = privileges;
+        public string Id { get; }
+        public string Name { get; }
+        public AccessPrivileges Privileges { get; }
+
+        public TaskListData(string id, string name, AccessPrivileges privileges)
+        {
+            Id = id;
+            Name = name;
+            Privileges = privileges;
+        }
     }
-  }
 }

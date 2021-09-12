@@ -22,8 +22,8 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public interface IEventSynchronizationContext : IColorCategoryMapper
-  {
-    IDuplicateEventCleaner DuplicateEventCleaner { get; }
-  }
+    public interface IEventSynchronizationContext : IColorCategoryMapper
+    {
+        IDuplicateEventCleaner DuplicateEventCleaner { get; }
+    }
 }

@@ -20,20 +20,20 @@ using System.Linq;
 
 namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
 {
-  public static class TypeExtensions
-  {
-    public static string GetPrettyName(this Type type)
+    public static class TypeExtensions
     {
-      if (!type.IsGenericType)
-      {
-        return type.Name;
-      }
-      else
-      {
-        var i = type.Name.LastIndexOf('`');
-        var name = type.Name.Substring(0, i);
-        return name + "<" + string.Join(", ", type.GetGenericArguments().Select(t => t.GetPrettyName())) + ">";
-      }
+        public static string GetPrettyName(this Type type)
+        {
+            if (!type.IsGenericType)
+            {
+                return type.Name;
+            }
+            else
+            {
+                var i = type.Name.LastIndexOf('`');
+                var name = type.Name.Substring(0, i);
+                return name + "<" + string.Join(", ", type.GetGenericArguments().Select(t => t.GetPrettyName())) + ">";
+            }
+        }
     }
-  }
 }

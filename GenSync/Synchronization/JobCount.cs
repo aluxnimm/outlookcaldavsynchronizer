@@ -14,29 +14,30 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 namespace GenSync.Synchronization
 {
-  public struct JobCount
-  {
-    public readonly int Create;
-    public readonly int Update;
-    public readonly int Delete;
-
-    public JobCount(int create, int update, int delete)
+    public struct JobCount
     {
-      Create = create;
-      Update = update;
-      Delete = delete;
-    }
+        public readonly int Create;
+        public readonly int Update;
+        public readonly int Delete;
 
-    public JobCount Add(JobCount other)
-    {
-      return new JobCount(Create + other.Create, Update + other.Update, Delete + other.Delete);
-    }
+        public JobCount(int create, int update, int delete)
+        {
+            Create = create;
+            Update = update;
+            Delete = delete;
+        }
 
-    public override string ToString()
-    {
-      return $"Create {Create} , Update {Update} , Delete {Delete}";
+        public JobCount Add(JobCount other)
+        {
+            return new JobCount(Create + other.Create, Update + other.Update, Delete + other.Delete);
+        }
+
+        public override string ToString()
+        {
+            return $"Create {Create} , Update {Update} , Delete {Delete}";
+        }
     }
-  }
 }

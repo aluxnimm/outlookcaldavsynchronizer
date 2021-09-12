@@ -25,22 +25,22 @@ using GenSync.Synchronization.States;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
 {
-  internal class SogoDistListConflictInitialSyncStateCreationStrategyAutomatic
-      : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, IDistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext>
-  {
-    public SogoDistListConflictInitialSyncStateCreationStrategyAutomatic(EntitySyncStateEnvironment<string, DateTime, IDistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext> environment)
-        : base (environment)
+    internal class SogoDistListConflictInitialSyncStateCreationStrategyAutomatic
+        : ConflictInitialSyncStateCreationStrategyAutomatic<string, DateTime, IDistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext>
     {
-    }
+        public SogoDistListConflictInitialSyncStateCreationStrategyAutomatic(EntitySyncStateEnvironment<string, DateTime, IDistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext> environment)
+            : base(environment)
+        {
+        }
 
-    protected override IEntitySyncState<string, DateTime, IDistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext> Create_FromNewerToOlder (IEntityRelationData<string, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
-    {
-      return new OutlookSogoDistListUpdateFromNewerToOlder (
-          _environment,
-          knownData,
-          newA,
-          newB
-          );
+        protected override IEntitySyncState<string, DateTime, IDistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext> Create_FromNewerToOlder(IEntityRelationData<string, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
+        {
+            return new OutlookSogoDistListUpdateFromNewerToOlder(
+                _environment,
+                knownData,
+                newA,
+                newB
+            );
+        }
     }
-  }
 }

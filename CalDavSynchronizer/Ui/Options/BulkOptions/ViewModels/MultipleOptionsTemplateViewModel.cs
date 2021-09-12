@@ -41,189 +41,186 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 {
-  class MultipleOptionsTemplateViewModel : ModelBase, IOptionsViewModel
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
-
-    private readonly NetworkSettingsViewModel _networkSettingsViewModel;
-    private readonly IServerSettingsTemplateViewModel _serverSettingsViewModel;
-    private readonly DelegateCommandWithoutCanExecuteDelegation _discoverResourcesCommand;
-    private readonly DelegateCommandWithoutCanExecuteDelegation _getAccountSettingsCommand;
-
-    private bool _isSelected;
-    private readonly IOptionsViewModelParent _parent;
-    private readonly IOptionTasks _optionTasks;
-    private bool _isExpanded;
-    private readonly OptionsModel _prototypeModel;
-
-    public MultipleOptionsTemplateViewModel (
-        IOptionsViewModelParent parent,
-        IServerSettingsTemplateViewModel serverSettingsViewModel,
-        IOptionTasks optionTasks, 
-        OptionsModel prototypeModel,
-        IViewOptions viewOptions)
-
+    class MultipleOptionsTemplateViewModel : ModelBase, IOptionsViewModel
     {
-      _parent = parent;
-      if (parent == null)
-        throw new ArgumentNullException (nameof (parent));
-    
-      if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
-      if (prototypeModel == null) throw new ArgumentNullException(nameof(prototypeModel));
-      if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-      ViewOptions = viewOptions;
+        private readonly NetworkSettingsViewModel _networkSettingsViewModel;
+        private readonly IServerSettingsTemplateViewModel _serverSettingsViewModel;
+        private readonly DelegateCommandWithoutCanExecuteDelegation _discoverResourcesCommand;
+        private readonly DelegateCommandWithoutCanExecuteDelegation _getAccountSettingsCommand;
 
-      _prototypeModel = prototypeModel;
+        private bool _isSelected;
+        private readonly IOptionsViewModelParent _parent;
+        private readonly IOptionTasks _optionTasks;
+        private bool _isExpanded;
+        private readonly OptionsModel _prototypeModel;
 
-      _discoverResourcesCommand = new DelegateCommandWithoutCanExecuteDelegation (_ =>
-      {
-        ComponentContainer.EnsureSynchronizationContext();
-        DiscoverResourcesAsync();
-      });
+        public MultipleOptionsTemplateViewModel(
+            IOptionsViewModelParent parent,
+            IServerSettingsTemplateViewModel serverSettingsViewModel,
+            IOptionTasks optionTasks,
+            OptionsModel prototypeModel,
+            IViewOptions viewOptions)
 
-      _getAccountSettingsCommand = new DelegateCommandWithoutCanExecuteDelegation(_ =>
-      {
-        ComponentContainer.EnsureSynchronizationContext();
-        GetAccountSettings();
-      });
-
-      _networkSettingsViewModel = new NetworkSettingsViewModel(_prototypeModel);
-
-      Items = new[] { _networkSettingsViewModel };
-
-      _serverSettingsViewModel = serverSettingsViewModel;
-      _optionTasks = optionTasks;
-    
-      RegisterPropertyChangePropagation(_prototypeModel, nameof(_prototypeModel.Name), nameof(Name));
-    }
-
-    private void GetAccountSettings()
-    {
-      _getAccountSettingsCommand.SetCanExecute(false);
-      try
-      {
-        _serverSettingsViewModel.DiscoverAccountServerSettings();
-      }
-      catch (Exception x)
-      {
-        s_logger.Error("Exception while getting account settings.", x);
-        string message = null;
-        for (Exception ex = x; ex != null; ex = ex.InnerException)
-          message += ex.Message + Environment.NewLine;
-        MessageBox.Show(message, Strings.Get($"Account settings"));
-      }
-      finally
-      {
-        _getAccountSettingsCommand.SetCanExecute(true);
-      }
-    }
-
-    private async void DiscoverResourcesAsync ()
-    {
-      _discoverResourcesCommand.SetCanExecute (false);
-      try
-      {
-        var serverResources = await _serverSettingsViewModel.GetServerResources ();
-
-        var calendars = serverResources.Calendars.Select (c => new CalendarDataViewModel (c)).ToArray();
-        var addressBooks = serverResources.AddressBooks.Select (a => new AddressBookDataViewModel (a)).ToArray();
-        var taskLists = serverResources.TaskLists.Select (d => new TaskListDataViewModel (d)).ToArray();
-
-        using (var selectResourcesForm =  SelectResourceForm.CreateForFolderAssignment(_optionTasks, ConnectionTests.ResourceType.Calendar, calendars, addressBooks, taskLists))
         {
-          if (selectResourcesForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-          {
-            var optionList = new List<OptionsModel>();
+            _parent = parent;
+            if (parent == null)
+                throw new ArgumentNullException(nameof(parent));
 
-            foreach (var resource in calendars.Where (c => c.SelectedFolder != null))
+            if (optionTasks == null) throw new ArgumentNullException(nameof(optionTasks));
+            if (prototypeModel == null) throw new ArgumentNullException(nameof(prototypeModel));
+            if (viewOptions == null) throw new ArgumentNullException(nameof(viewOptions));
+
+            ViewOptions = viewOptions;
+
+            _prototypeModel = prototypeModel;
+
+            _discoverResourcesCommand = new DelegateCommandWithoutCanExecuteDelegation(_ =>
             {
-              var options = CreateOptions(resource);
-              _serverSettingsViewModel.SetResourceUrl (options, resource.Model);
-              _optionTasks.ValidateBulkProfile (options, resource.Model.Privileges, resource.Model.OwnerProperties);
-              
-              optionList.Add (options);
-            }
+                ComponentContainer.EnsureSynchronizationContext();
+                DiscoverResourcesAsync();
+            });
 
-            foreach (var resource in addressBooks.Where (c => c.SelectedFolder != null))
+            _getAccountSettingsCommand = new DelegateCommandWithoutCanExecuteDelegation(_ =>
             {
-              var options = CreateOptions (resource);
-              _serverSettingsViewModel.SetResourceUrl (options, resource.Model);
-              _optionTasks.ValidateBulkProfile (options, resource.Model.Privileges, null);
-              optionList.Add (options);
-            }
+                ComponentContainer.EnsureSynchronizationContext();
+                GetAccountSettings();
+            });
 
-            foreach (var resource in taskLists.Where (c => c.SelectedFolder != null))
-            {
-              var options = CreateOptions (resource);
-              _serverSettingsViewModel.SetResourceUrl (options, resource.Model);
-              optionList.Add (options);
-            }
+            _networkSettingsViewModel = new NetworkSettingsViewModel(_prototypeModel);
 
-            _parent.RequestAdd (optionList);
-            _parent.RequestRemoval (this);
-          }
+            Items = new[] {_networkSettingsViewModel};
+
+            _serverSettingsViewModel = serverSettingsViewModel;
+            _optionTasks = optionTasks;
+
+            RegisterPropertyChangePropagation(_prototypeModel, nameof(_prototypeModel.Name), nameof(Name));
         }
-      }
-      catch (Exception x)
-      {
-        s_logger.Error ("Exception while DiscoverResourcesAsync.", x);
-        string message = null;
-        for (Exception ex = x; ex != null; ex = ex.InnerException)
-          message += ex.Message + Environment.NewLine;
-        MessageBox.Show (message, OptionTasks.ConnectionTestCaption);
-      }
-      finally
-      {
-        _discoverResourcesCommand.SetCanExecute (true);
-      }
+
+        private void GetAccountSettings()
+        {
+            _getAccountSettingsCommand.SetCanExecute(false);
+            try
+            {
+                _serverSettingsViewModel.DiscoverAccountServerSettings();
+            }
+            catch (Exception x)
+            {
+                s_logger.Error("Exception while getting account settings.", x);
+                string message = null;
+                for (Exception ex = x; ex != null; ex = ex.InnerException)
+                    message += ex.Message + Environment.NewLine;
+                MessageBox.Show(message, Strings.Get($"Account settings"));
+            }
+            finally
+            {
+                _getAccountSettingsCommand.SetCanExecute(true);
+            }
+        }
+
+        private async void DiscoverResourcesAsync()
+        {
+            _discoverResourcesCommand.SetCanExecute(false);
+            try
+            {
+                var serverResources = await _serverSettingsViewModel.GetServerResources();
+
+                var calendars = serverResources.Calendars.Select(c => new CalendarDataViewModel(c)).ToArray();
+                var addressBooks = serverResources.AddressBooks.Select(a => new AddressBookDataViewModel(a)).ToArray();
+                var taskLists = serverResources.TaskLists.Select(d => new TaskListDataViewModel(d)).ToArray();
+
+                using (var selectResourcesForm = SelectResourceForm.CreateForFolderAssignment(_optionTasks, ConnectionTests.ResourceType.Calendar, calendars, addressBooks, taskLists))
+                {
+                    if (selectResourcesForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        var optionList = new List<OptionsModel>();
+
+                        foreach (var resource in calendars.Where(c => c.SelectedFolder != null))
+                        {
+                            var options = CreateOptions(resource);
+                            _serverSettingsViewModel.SetResourceUrl(options, resource.Model);
+                            _optionTasks.ValidateBulkProfile(options, resource.Model.Privileges, resource.Model.OwnerProperties);
+
+                            optionList.Add(options);
+                        }
+
+                        foreach (var resource in addressBooks.Where(c => c.SelectedFolder != null))
+                        {
+                            var options = CreateOptions(resource);
+                            _serverSettingsViewModel.SetResourceUrl(options, resource.Model);
+                            _optionTasks.ValidateBulkProfile(options, resource.Model.Privileges, null);
+                            optionList.Add(options);
+                        }
+
+                        foreach (var resource in taskLists.Where(c => c.SelectedFolder != null))
+                        {
+                            var options = CreateOptions(resource);
+                            _serverSettingsViewModel.SetResourceUrl(options, resource.Model);
+                            optionList.Add(options);
+                        }
+
+                        _parent.RequestAdd(optionList);
+                        _parent.RequestRemoval(this);
+                    }
+                }
+            }
+            catch (Exception x)
+            {
+                s_logger.Error("Exception while DiscoverResourcesAsync.", x);
+                string message = null;
+                for (Exception ex = x; ex != null; ex = ex.InnerException)
+                    message += ex.Message + Environment.NewLine;
+                MessageBox.Show(message, OptionTasks.ConnectionTestCaption);
+            }
+            finally
+            {
+                _discoverResourcesCommand.SetCanExecute(true);
+            }
+        }
+
+        private OptionsModel CreateOptions(ResourceDataViewModelBase resource)
+        {
+            var options = _prototypeModel.Clone();
+            options.Name = $"{_prototypeModel.Name} ({resource.Name})";
+            options.SetFolder(resource.SelectedFolder);
+            return options;
+        }
+
+        public IServerSettingsTemplateViewModel ServerSettingsViewModel => _serverSettingsViewModel;
+
+        public ICommand DiscoverResourcesCommand => _discoverResourcesCommand;
+        public ICommand GetAccountSettingsCommand => _getAccountSettingsCommand;
+
+        public bool IsActive { get; set; }
+        public bool SupportsIsActive { get; } = false;
+        public IEnumerable<ISubOptionsViewModel> Items { get; }
+        IEnumerable<ITreeNodeViewModel> ITreeNodeViewModel.Items => Items;
+
+        public bool IsMultipleOptionsTemplateViewModel { get; } = true;
+        public OlItemType? OutlookFolderType { get; } = null;
+
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set { CheckedPropertyChange(ref _isSelected, value); }
+        }
+
+        public bool IsExpanded
+        {
+            get { return _isExpanded; }
+            set { CheckedPropertyChange(ref _isExpanded, value); }
+        }
+
+        public string Name
+        {
+            get { return _prototypeModel.Name; }
+            set { _prototypeModel.Name = value; }
+        }
+
+
+        public OptionsModel Model => _prototypeModel;
+        public bool Validate(StringBuilder errorMessageBuilder) => true;
+        public IViewOptions ViewOptions { get; }
     }
-
-    private OptionsModel CreateOptions (ResourceDataViewModelBase resource)
-    {
-      var options = _prototypeModel.Clone();
-      options.Name = $"{_prototypeModel.Name} ({resource.Name})";
-      options.SetFolder(resource.SelectedFolder);
-      return options;
-    }
-
-    public IServerSettingsTemplateViewModel ServerSettingsViewModel => _serverSettingsViewModel;
-
-    public ICommand DiscoverResourcesCommand => _discoverResourcesCommand;
-    public ICommand GetAccountSettingsCommand => _getAccountSettingsCommand;
-
-    public bool IsActive { get; set; }
-    public bool SupportsIsActive { get; } = false;
-    public IEnumerable<ISubOptionsViewModel> Items { get; }
-    IEnumerable<ITreeNodeViewModel> ITreeNodeViewModel.Items => Items;
-
-    public bool IsMultipleOptionsTemplateViewModel { get; } = true;
-    public OlItemType? OutlookFolderType { get; } = null;
-
-    public bool IsSelected
-    {
-      get { return _isSelected; }
-      set { CheckedPropertyChange (ref _isSelected, value); }
-    }
-
-    public bool IsExpanded
-    {
-      get { return _isExpanded; }
-      set
-      {
-        CheckedPropertyChange (ref _isExpanded, value);
-      }
-    }
-
-    public string Name
-    {
-      get { return _prototypeModel.Name; }
-      set { _prototypeModel.Name = value; }
-    }
-
-   
-    public OptionsModel Model => _prototypeModel;
-    public bool Validate (StringBuilder errorMessageBuilder) => true;
-    public IViewOptions ViewOptions { get; }
-  }
 }

@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.DDayICalWorkaround;
@@ -25,15 +26,15 @@ using GenSync.Synchronization.States;
 
 namespace CalDavSynchronizer.Implementation.Tasks
 {
-  internal class TaskUpdateFromNewerToOlder
-      : UpdateFromNewerToOlder<string, DateTime, ITaskItemWrapper, WebResourceName, string, IICalendar, int>
-  {
-    public TaskUpdateFromNewerToOlder (EntitySyncStateEnvironment<string, DateTime, ITaskItemWrapper, WebResourceName, string, IICalendar, int> environment, IEntityRelationData<string, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
-        : base (environment, knownData, newA, newB)
+    internal class TaskUpdateFromNewerToOlder
+        : UpdateFromNewerToOlder<string, DateTime, ITaskItemWrapper, WebResourceName, string, IICalendar, int>
     {
-    }
+        public TaskUpdateFromNewerToOlder(EntitySyncStateEnvironment<string, DateTime, ITaskItemWrapper, WebResourceName, string, IICalendar, int> environment, IEntityRelationData<string, DateTime, WebResourceName, string> knownData, DateTime newA, string newB)
+            : base(environment, knownData, newA, newB)
+        {
+        }
 
-    protected override DateTime ModificationTimeA => _aEntity.Inner.LastModificationTime.ToUniversalTime();
-    protected override DateTime? ModificationTimeB => _bEntity.Todos[0].LastModified?.AsUtc();
-  }
+        protected override DateTime ModificationTimeA => _aEntity.Inner.LastModificationTime.ToUniversalTime();
+        protected override DateTime? ModificationTimeB => _bEntity.Todos[0].LastModified?.AsUtc();
+    }
 }

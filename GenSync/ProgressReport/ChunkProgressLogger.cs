@@ -14,55 +14,56 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Reflection;
 using log4net;
 
 namespace GenSync.ProgressReport
 {
-  class ChunkProgressLogger : IChunkProgressLogger, IDisposable
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
-    private readonly IExceptionLogger _exceptionLogger;
-    private readonly IProgressUi _progressUi;
-
-    public ChunkProgressLogger(IProgressUi progressUi, IExceptionLogger exceptionLogger)
+    class ChunkProgressLogger : IChunkProgressLogger, IDisposable
     {
-      if (progressUi == null) throw new ArgumentNullException(nameof(progressUi));
-      if (exceptionLogger == null) throw new ArgumentNullException(nameof(exceptionLogger));
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+        private readonly IExceptionLogger _exceptionLogger;
+        private readonly IProgressUi _progressUi;
 
-      _progressUi = progressUi;
-      _exceptionLogger = exceptionLogger;
-    }
+        public ChunkProgressLogger(IProgressUi progressUi, IExceptionLogger exceptionLogger)
+        {
+            if (progressUi == null) throw new ArgumentNullException(nameof(progressUi));
+            if (exceptionLogger == null) throw new ArgumentNullException(nameof(exceptionLogger));
 
-    public IDisposable StartARepositoryLoad(int entityCount)
-    {
-      _progressUi.SetSubMessage($"Loading {entityCount} entities from Outlook...");
-      return this;
-    }
+            _progressUi = progressUi;
+            _exceptionLogger = exceptionLogger;
+        }
 
-    public IDisposable StartBRepositoryLoad(int entityCount)
-    {
-      _progressUi.SetSubMessage($"Loading {entityCount} entities from Server...");
-      return this;
-    }
+        public IDisposable StartARepositoryLoad(int entityCount)
+        {
+            _progressUi.SetSubMessage($"Loading {entityCount} entities from Outlook...");
+            return this;
+        }
 
-    public IProgressLogger StartProcessing(int jobCount)
-    {
-      _progressUi.SetSubMessage($"Executing {jobCount} operations...");
-      return new ProgressLogger(_progressUi, _exceptionLogger);
-    }
+        public IDisposable StartBRepositoryLoad(int entityCount)
+        {
+            _progressUi.SetSubMessage($"Loading {entityCount} entities from Server...");
+            return this;
+        }
 
-    public void Dispose()
-    {
-      try
-      {
-        _progressUi.IncrementValue();
-      }
-      catch (Exception x)
-      {
-        _exceptionLogger.LogException(x, s_logger);
-      }
+        public IProgressLogger StartProcessing(int jobCount)
+        {
+            _progressUi.SetSubMessage($"Executing {jobCount} operations...");
+            return new ProgressLogger(_progressUi, _exceptionLogger);
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                _progressUi.IncrementValue();
+            }
+            catch (Exception x)
+            {
+                _exceptionLogger.LogException(x, s_logger);
+            }
+        }
     }
-  }
 }

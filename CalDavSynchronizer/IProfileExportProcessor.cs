@@ -20,9 +20,9 @@ using CalDavSynchronizer.Contracts;
 
 namespace CalDavSynchronizer
 {
-  public interface IProfileExportProcessor
-  {
-    void PrepareForExport(Options[] profiles, Action<string> logger);
-    Options[] PrepareAndMergeForImport (Options[] existingProfiles,Options[] profilesToImport, Action<string> logger);
-  }
+    public interface IProfileExportProcessor
+    {
+        void PrepareForExport(Options[] profiles, Action<string> logger);
+        Options[] PrepareAndMergeForImport(Options[] existingProfiles, Options[] profilesToImport, Action<string> logger);
+    }
 }

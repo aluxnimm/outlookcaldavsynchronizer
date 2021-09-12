@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,25 +24,25 @@ using log4net;
 
 namespace GenSync.EntityRepositories
 {
-  public class VersionAwareToStateAwareEntityRepositoryAdapter<TEntityId, TEntityVersion, TContext, TStateToken> : IStateAwareEntityRepository<TEntityId, TEntityVersion, TContext, TStateToken> 
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-    private readonly IEqualityComparer<TEntityId> _idComparer;
-    private readonly IEqualityComparer<TEntityVersion> _versionComparer;
-    private readonly IVersionAwareEntityRepository<TEntityId, TEntityVersion, TContext> _adapted;
-
-    public VersionAwareToStateAwareEntityRepositoryAdapter(IVersionAwareEntityRepository<TEntityId, TEntityVersion, TContext> adapted, IEqualityComparer<TEntityId> idComparer, IEqualityComparer<TEntityVersion> versionComparer)
+    public class VersionAwareToStateAwareEntityRepositoryAdapter<TEntityId, TEntityVersion, TContext, TStateToken> : IStateAwareEntityRepository<TEntityId, TEntityVersion, TContext, TStateToken>
     {
-      _adapted = adapted ?? throw new ArgumentNullException(nameof(adapted));
-      _idComparer = idComparer ?? throw new ArgumentNullException(nameof(idComparer));
-      _versionComparer = versionComparer ?? throw new ArgumentNullException(nameof(versionComparer));
-    }
+        private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-    public async Task<(IEntityStateCollection<TEntityId, TEntityVersion> States, TStateToken NewToken)> GetFullRepositoryState(IEnumerable<TEntityId> idsOfknownEntities, TStateToken stateToken, TContext context, IGetVersionsLogger logger)
-    {
-      var repositoryVersions = await _adapted.GetAllVersions(idsOfknownEntities, context, logger);
-      return (VersionAwareEntityStateCollection<TEntityId, TEntityVersion>.Create(repositoryVersions, _idComparer, _versionComparer), default(TStateToken));
+        private readonly IEqualityComparer<TEntityId> _idComparer;
+        private readonly IEqualityComparer<TEntityVersion> _versionComparer;
+        private readonly IVersionAwareEntityRepository<TEntityId, TEntityVersion, TContext> _adapted;
+
+        public VersionAwareToStateAwareEntityRepositoryAdapter(IVersionAwareEntityRepository<TEntityId, TEntityVersion, TContext> adapted, IEqualityComparer<TEntityId> idComparer, IEqualityComparer<TEntityVersion> versionComparer)
+        {
+            _adapted = adapted ?? throw new ArgumentNullException(nameof(adapted));
+            _idComparer = idComparer ?? throw new ArgumentNullException(nameof(idComparer));
+            _versionComparer = versionComparer ?? throw new ArgumentNullException(nameof(versionComparer));
+        }
+
+        public async Task<(IEntityStateCollection<TEntityId, TEntityVersion> States, TStateToken NewToken)> GetFullRepositoryState(IEnumerable<TEntityId> idsOfknownEntities, TStateToken stateToken, TContext context, IGetVersionsLogger logger)
+        {
+            var repositoryVersions = await _adapted.GetAllVersions(idsOfknownEntities, context, logger);
+            return (VersionAwareEntityStateCollection<TEntityId, TEntityVersion>.Create(repositoryVersions, _idComparer, _versionComparer), default(TStateToken));
+        }
     }
-  }
 }

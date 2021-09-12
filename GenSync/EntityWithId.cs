@@ -14,30 +14,31 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync
 {
-  /// <summary>
-  /// Represents the Id and the Version of an entity
-  /// </summary>
-  public class EntityWithId<TEntityId, TEntity>
-  {
-    public readonly TEntityId Id;
-    public readonly TEntity Entity;
-
-    public EntityWithId (TEntityId id, TEntity entity)
+    /// <summary>
+    /// Represents the Id and the Version of an entity
+    /// </summary>
+    public class EntityWithId<TEntityId, TEntity>
     {
-      Id = id;
-      Entity = entity;
-    }
-  }
+        public readonly TEntityId Id;
+        public readonly TEntity Entity;
 
-  public class EntityWithId
-  {
-    public static EntityWithId<TEntityId, TEntity> Create<TEntityId, TEntity> (TEntityId id, TEntity entity)
-    {
-      return new EntityWithId<TEntityId, TEntity> (id, entity);
+        public EntityWithId(TEntityId id, TEntity entity)
+        {
+            Id = id;
+            Entity = entity;
+        }
     }
-  }
+
+    public class EntityWithId
+    {
+        public static EntityWithId<TEntityId, TEntity> Create<TEntityId, TEntity>(TEntityId id, TEntity entity)
+        {
+            return new EntityWithId<TEntityId, TEntity>(id, entity);
+        }
+    }
 }

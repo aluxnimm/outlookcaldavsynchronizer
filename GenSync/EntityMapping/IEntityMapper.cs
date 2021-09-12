@@ -14,18 +14,19 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Threading.Tasks;
 using GenSync.Logging;
 
 namespace GenSync.EntityMapping
 {
-  /// <summary>
-  /// Maps a entity from one physical representation into another and vice versa
-  /// </summary>
-  public interface IEntityMapper<T1, T2, TContext>
-  {
-    Task<T2> Map1To2 (T1 source, T2 target, IEntitySynchronizationLogger logger, TContext context);
-    Task<T1> Map2To1 (T2 source, T1 target, IEntitySynchronizationLogger logger, TContext context);
-  }
+    /// <summary>
+    /// Maps a entity from one physical representation into another and vice versa
+    /// </summary>
+    public interface IEntityMapper<T1, T2, TContext>
+    {
+        Task<T2> Map1To2(T1 source, T2 target, IEntitySynchronizationLogger logger, TContext context);
+        Task<T1> Map2To1(T2 source, T1 target, IEntitySynchronizationLogger logger, TContext context);
+    }
 }

@@ -20,9 +20,9 @@ using System.ComponentModel;
 
 namespace CalDavSynchronizer.Ui.Options.Models
 {
-  public interface ICustomPropertiesMappingConfigurationModel : INotifyPropertyChanged
-  {
-    ObservableCollection<PropertyMappingModel> Mappings { get; }
-    bool MapCustomProperties { get; set; }
-  }
+    public interface ICustomPropertiesMappingConfigurationModel : INotifyPropertyChanged
+    {
+        ObservableCollection<PropertyMappingModel> Mappings { get; }
+        bool MapCustomProperties { get; set; }
+    }
 }

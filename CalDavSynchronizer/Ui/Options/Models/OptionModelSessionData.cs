@@ -19,13 +19,13 @@ using System.Collections.Generic;
 
 namespace CalDavSynchronizer.Ui.Options.Models
 {
-  public class OptionModelSessionData
-  {
-    public OptionModelSessionData(IReadOnlyDictionary<string, OutlookCategory> categoriesById)
+    public class OptionModelSessionData
     {
-      CategoriesById = categoriesById;
-    }
+        public OptionModelSessionData(IReadOnlyDictionary<string, OutlookCategory> categoriesById)
+        {
+            CategoriesById = categoriesById;
+        }
 
-    public IReadOnlyDictionary<string, OutlookCategory> CategoriesById { get; }
-  }
+        public IReadOnlyDictionary<string, OutlookCategory> CategoriesById { get; }
+    }
 }

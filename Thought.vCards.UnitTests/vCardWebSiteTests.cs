@@ -1,4 +1,3 @@
-
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Thought.vCards;
@@ -9,7 +8,6 @@ namespace Tests
     [TestClass]
     public sealed class vCardWebSiteTests : IDisposable
     {
-
         private const string TestUrl = "http://www.thoughtproject.com";
 
         #region [ Constructor ]
@@ -17,7 +15,6 @@ namespace Tests
         [TestMethod]
         public void Constructor()
         {
-
             // Tests for default values when a web site
             // object is created without parameters.
 
@@ -31,7 +28,6 @@ namespace Tests
             Assert.IsEmpty(
                 site.Url,
                 "The Url should be String.Empty because it was not initialized.");
-
         }
 
         #endregion
@@ -41,7 +37,6 @@ namespace Tests
         [TestMethod]
         public void Constructor_Url()
         {
-
             // Tests for values when a web site is created
             // with a URL.
 
@@ -56,7 +51,6 @@ namespace Tests
                 vCardWebsiteTypes.Default,
                 site.WebsiteType,
                 "The site type should be default because it was not specified.");
-
         }
 
         #endregion
@@ -66,12 +60,11 @@ namespace Tests
         [TestMethod]
         public void Constructor_NullUrl()
         {
-            vCardWebsite site = new vCardWebsite((string)null);
+            vCardWebsite site = new vCardWebsite((string) null);
 
             Assert.IsEmpty(
                 site.Url,
                 "The Url should be String.Empty even when initialized to null.");
-
         }
 
         #endregion
@@ -81,7 +74,6 @@ namespace Tests
         [TestMethod]
         public void Constructor_Url_WebSiteType()
         {
-
             vCardWebsite site = new vCardWebsite(
                 TestUrl, vCardWebsiteTypes.Personal);
 
@@ -94,7 +86,6 @@ namespace Tests
                 vCardWebsiteTypes.Personal,
                 site.WebsiteType,
                 "The site type should have been set.");
-
         }
 
         #endregion
@@ -104,7 +95,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_IsPersonalSite()
         {
-
             vCardWebsite site = new vCardWebsite();
 
             site.IsPersonalSite = true;
@@ -116,7 +106,6 @@ namespace Tests
             Assert.IsFalse(
                 site.IsPersonalSite,
                 "The IsPersonSite property should be false.");
-
         }
 
         #endregion
@@ -126,7 +115,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_IsWorkSite()
         {
-
             vCardWebsite site = new vCardWebsite();
 
             site.IsWorkSite = true;
@@ -138,7 +126,6 @@ namespace Tests
             Assert.IsFalse(
                 site.IsWorkSite,
                 "The IsWorkSite property should be false.");
-
         }
 
         #endregion
@@ -148,11 +135,10 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_WebSiteType()
         {
-
             vCardWebsite site = new vCardWebsite();
 
             site.WebsiteType = vCardWebsiteTypes.Personal;
-            
+
             Assert.AreEqual(
                 vCardWebsiteTypes.Personal,
                 site.WebsiteType,
@@ -197,7 +183,6 @@ namespace Tests
                 vCardWebsiteTypes.Personal | vCardWebsiteTypes.Work,
                 site.WebsiteType,
                 "The WebSiteType property is not working for multiple values.");
-
         }
 
         #endregion
@@ -207,7 +192,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_Url()
         {
-
             vCardWebsite site = new vCardWebsite();
 
             site.Url = TestUrl;
@@ -215,12 +199,13 @@ namespace Tests
                 TestUrl,
                 site.Url,
                 "The Url property is not working.");
-
         }
 
         #endregion
 
-        public void Dispose() { //driver.Dispose(); 
+        public void Dispose()
+        {
+            //driver.Dispose(); 
         }
     }
 }

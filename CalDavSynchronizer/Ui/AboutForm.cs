@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Diagnostics;
 using System.Reflection;
@@ -25,87 +26,87 @@ using log4net;
 
 namespace CalDavSynchronizer.Ui
 {
-  public partial class AboutForm : Form
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
-
-    private readonly Action _checkForUpdatesActionAsync;
-
-    public AboutForm (Action checkForUpdatesActionAsync)
+    public partial class AboutForm : Form
     {
-      _checkForUpdatesActionAsync = checkForUpdatesActionAsync;
-      InitializeComponent();
+        private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-      btnOK.Text = Strings.Get($"OK");
-      label1.Text = Strings.Get($"Team:");
-      _linkLabelPayPal.Text = Strings.Get($"Donate with PayPal");
-      _linkLabelHelp.Text = Strings.Get($"Documentation and Tutorials");
-      _checkForUpdatesButton.Text = Strings.Get($"Check for Updates");
-      Text = Strings.Get($"About");
+        private readonly Action _checkForUpdatesActionAsync;
 
-      _versionLabel.Text = Strings.Get($"Version: {Assembly.GetExecutingAssembly().GetName().Version}");
+        public AboutForm(Action checkForUpdatesActionAsync)
+        {
+            _checkForUpdatesActionAsync = checkForUpdatesActionAsync;
+            InitializeComponent();
 
-      this._linkLabelProject.Text = WebResourceUrls.ProjectHomeSite.ToString();
+            btnOK.Text = Strings.Get($"OK");
+            label1.Text = Strings.Get($"Team:");
+            _linkLabelPayPal.Text = Strings.Get($"Donate with PayPal");
+            _linkLabelHelp.Text = Strings.Get($"Documentation and Tutorials");
+            _checkForUpdatesButton.Text = Strings.Get($"Check for Updates");
+            Text = Strings.Get($"About");
 
-      _linkLabelTeamMembers.LinkClicked += _linkLabelTeamMembers_LinkClicked;
-      _linkLabelTeamMembers.Text = string.Empty;
-      AddTeamMember ("Alexander Nimmervoll", "http://sourceforge.net/u/nimm/profile/");
-      AddTeamMember ("Gerhard Zehetbauer", "http://sourceforge.net/u/nertsch/profile/");
-      _logoPictureBox.Image = Properties.Resources.ApplicationLogoLarge;
+            _versionLabel.Text = Strings.Get($"Version: {Assembly.GetExecutingAssembly().GetName().Version}");
+
+            this._linkLabelProject.Text = WebResourceUrls.ProjectHomeSite.ToString();
+
+            _linkLabelTeamMembers.LinkClicked += _linkLabelTeamMembers_LinkClicked;
+            _linkLabelTeamMembers.Text = string.Empty;
+            AddTeamMember("Alexander Nimmervoll", "http://sourceforge.net/u/nimm/profile/");
+            AddTeamMember("Gerhard Zehetbauer", "http://sourceforge.net/u/nertsch/profile/");
+            _logoPictureBox.Image = Properties.Resources.ApplicationLogoLarge;
+        }
+
+        public sealed override string Text
+        {
+            get => base.Text;
+            set => base.Text = value;
+        }
+
+        private void _linkLabelTeamMembers_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start((string) e.Link.LinkData);
+        }
+
+
+        private void AddTeamMember(string name, string memberHome)
+        {
+            if (_linkLabelTeamMembers.Text != string.Empty)
+                _linkLabelTeamMembers.Text += ", ";
+            var start = _linkLabelTeamMembers.Text.Length;
+            _linkLabelTeamMembers.Text += name;
+            _linkLabelTeamMembers.Links.Add(start, name.Length, memberHome);
+        }
+
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+            DialogResult = System.Windows.Forms.DialogResult.OK;
+        }
+
+        private void _linkLabelProject_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(_linkLabelProject.Text);
+        }
+
+        private void linkLabelPayPal_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(WebResourceUrls.DonationSite.ToString());
+        }
+
+        private void linkLabelHelp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(WebResourceUrls.HelpSite.ToString());
+        }
+
+        private void CheckForUpdatesButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ComponentContainer.EnsureSynchronizationContext();
+                _checkForUpdatesActionAsync();
+            }
+            catch (Exception x)
+            {
+                ExceptionHandler.Instance.DisplayException(x, s_logger);
+            }
+        }
     }
-
-    public sealed override string Text
-    {
-      get => base.Text;
-      set => base.Text = value;
-    }
-
-    private void _linkLabelTeamMembers_LinkClicked (object sender, LinkLabelLinkClickedEventArgs e)
-    {
-      Process.Start ((string) e.Link.LinkData);
-    }
-
-
-    private void AddTeamMember (string name, string memberHome)
-    {
-      if (_linkLabelTeamMembers.Text != string.Empty)
-        _linkLabelTeamMembers.Text += ", ";
-      var start = _linkLabelTeamMembers.Text.Length;
-      _linkLabelTeamMembers.Text += name;
-      _linkLabelTeamMembers.Links.Add (start, name.Length, memberHome);
-    }
-
-    private void btnOK_Click (object sender, EventArgs e)
-    {
-      DialogResult = System.Windows.Forms.DialogResult.OK;
-    }
-
-    private void _linkLabelProject_LinkClicked (object sender, LinkLabelLinkClickedEventArgs e)
-    {
-      Process.Start (_linkLabelProject.Text);
-    }
-
-    private void linkLabelPayPal_LinkClicked (object sender, LinkLabelLinkClickedEventArgs e)
-    {
-      Process.Start (WebResourceUrls.DonationSite.ToString());
-    }
-
-    private void linkLabelHelp_LinkClicked (object sender, LinkLabelLinkClickedEventArgs e)
-    {
-      Process.Start (WebResourceUrls.HelpSite.ToString());
-    }
-
-    private void CheckForUpdatesButton_Click (object sender, EventArgs e)
-    {
-      try
-      {
-        ComponentContainer.EnsureSynchronizationContext ();
-        _checkForUpdatesActionAsync ();
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.DisplayException (x, s_logger);
-      }
-    }
-  }
 }

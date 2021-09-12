@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -9,13 +8,11 @@ using System;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     The encoding used to store a vCard property value in text format.
     /// </summary>
     public enum vCardEncoding
     {
-
         /// <summary>
         ///     Unknown or no encoding.
         /// </summary>
@@ -35,7 +32,5 @@ namespace Thought.vCards
         ///     Quoted-Printable encoding.
         /// </summary>
         QuotedPrintable
-
     }
-
 }

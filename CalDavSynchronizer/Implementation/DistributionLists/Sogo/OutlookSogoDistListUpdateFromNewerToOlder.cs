@@ -25,21 +25,21 @@ using log4net;
 
 namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
 {
-  internal class OutlookSogoDistListUpdateFromNewerToOlder
-      : UpdateFromNewerToOlder<string, DateTime, IDistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext>
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
-
-    public OutlookSogoDistListUpdateFromNewerToOlder (
-        EntitySyncStateEnvironment<string, DateTime, IDistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext> environment,
-        IEntityRelationData<string, DateTime, WebResourceName, string> knownData,
-        DateTime newA,
-        string newB)
-        : base (environment, knownData, newA, newB)
+    internal class OutlookSogoDistListUpdateFromNewerToOlder
+        : UpdateFromNewerToOlder<string, DateTime, IDistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext>
     {
+        private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
+
+        public OutlookSogoDistListUpdateFromNewerToOlder(
+            EntitySyncStateEnvironment<string, DateTime, IDistListItemWrapper, WebResourceName, string, DistributionList, DistributionListSychronizationContext> environment,
+            IEntityRelationData<string, DateTime, WebResourceName, string> knownData,
+            DateTime newA,
+            string newB)
+            : base(environment, knownData, newA, newB)
+        {
+        }
+
+        protected override DateTime ModificationTimeA => _aEntity.Inner.LastModificationTime.ToUniversalTime();
+        protected override DateTime? ModificationTimeB => _bEntity.ChangeDateUtc;
     }
-    
-    protected override DateTime ModificationTimeA => _aEntity.Inner.LastModificationTime.ToUniversalTime();
-    protected override DateTime? ModificationTimeB => _bEntity.ChangeDateUtc;
-  }
 }

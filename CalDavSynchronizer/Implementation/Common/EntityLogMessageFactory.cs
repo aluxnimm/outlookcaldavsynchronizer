@@ -26,64 +26,64 @@ using Thought.vCards;
 
 namespace CalDavSynchronizer.Implementation.Common
 {
-  class EntityLogMessageFactory :
-    IEntityLogMessageFactory<IAppointmentItemWrapper, IICalendar>,
-    IEntityLogMessageFactory<ITaskItemWrapper, IICalendar>,
-    IEntityLogMessageFactory<IContactItemWrapper, vCard>,
-    IEntityLogMessageFactory<ITaskItemWrapper, Task>,
-    IEntityLogMessageFactory<IContactItemWrapper, GoogleContactWrapper>,
-    IEntityLogMessageFactory<IDistListItemWrapper, DistributionList>,
-    IEntityLogMessageFactory<IDistListItemWrapper, vCard>
-  {
-    public static readonly EntityLogMessageFactory Instance = new EntityLogMessageFactory();
-
-    private EntityLogMessageFactory()
+    class EntityLogMessageFactory :
+        IEntityLogMessageFactory<IAppointmentItemWrapper, IICalendar>,
+        IEntityLogMessageFactory<ITaskItemWrapper, IICalendar>,
+        IEntityLogMessageFactory<IContactItemWrapper, vCard>,
+        IEntityLogMessageFactory<ITaskItemWrapper, Task>,
+        IEntityLogMessageFactory<IContactItemWrapper, GoogleContactWrapper>,
+        IEntityLogMessageFactory<IDistListItemWrapper, DistributionList>,
+        IEntityLogMessageFactory<IDistListItemWrapper, vCard>
     {
-    }
+        public static readonly EntityLogMessageFactory Instance = new EntityLogMessageFactory();
 
-    public string GetADisplayNameOrNull(IAppointmentItemWrapper entity)
-    {
-      return entity.Inner.Subject;
-    }
+        private EntityLogMessageFactory()
+        {
+        }
 
-    public string GetADisplayNameOrNull(ITaskItemWrapper entity)
-    {
-      return entity.Inner.Subject;
-    }
+        public string GetADisplayNameOrNull(IAppointmentItemWrapper entity)
+        {
+            return entity.Inner.Subject;
+        }
 
-    public string GetBDisplayNameOrNull(Task entity)
-    {
-      return entity.Title;
-    }
+        public string GetADisplayNameOrNull(ITaskItemWrapper entity)
+        {
+            return entity.Inner.Subject;
+        }
 
-    public string GetBDisplayNameOrNull(IICalendar entity)
-    {
-      return entity.Calendar.Events.FirstOrDefault()?.Summary ?? entity.Calendar.Todos.FirstOrDefault()?.Summary;
-    }
+        public string GetBDisplayNameOrNull(Task entity)
+        {
+            return entity.Title;
+        }
 
-    public string GetADisplayNameOrNull(IContactItemWrapper entity)
-    {
-      return entity.Inner.FullName;
-    }
+        public string GetBDisplayNameOrNull(IICalendar entity)
+        {
+            return entity.Calendar.Events.FirstOrDefault()?.Summary ?? entity.Calendar.Todos.FirstOrDefault()?.Summary;
+        }
 
-    public string GetBDisplayNameOrNull(GoogleContactWrapper entity)
-    {
-      return entity.Contact.Name.FullName;
-    }
+        public string GetADisplayNameOrNull(IContactItemWrapper entity)
+        {
+            return entity.Inner.FullName;
+        }
 
-    public string GetBDisplayNameOrNull(vCard entity)
-    {
-      return entity.FormattedName;
-    }
+        public string GetBDisplayNameOrNull(GoogleContactWrapper entity)
+        {
+            return entity.Contact.Name.FullName;
+        }
 
-    public string GetADisplayNameOrNull(IDistListItemWrapper entity)
-    {
-      return entity.Inner.DLName;
-    }
+        public string GetBDisplayNameOrNull(vCard entity)
+        {
+            return entity.FormattedName;
+        }
 
-    public string GetBDisplayNameOrNull(DistributionList entity)
-    {
-      return entity.Name;
+        public string GetADisplayNameOrNull(IDistListItemWrapper entity)
+        {
+            return entity.Inner.DLName;
+        }
+
+        public string GetBDisplayNameOrNull(DistributionList entity)
+        {
+            return entity.Name;
+        }
     }
-  }
 }

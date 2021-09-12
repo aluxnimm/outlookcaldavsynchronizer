@@ -28,86 +28,84 @@ using CalDavSynchronizer.Globalization;
 
 namespace CalDavSynchronizer
 {
-  class StartupComponentContainer : IComponentContainer
-  {
-
-    public StartupComponentContainer ()
+    class StartupComponentContainer : IComponentContainer
     {
-    }
+        public StartupComponentContainer()
+        {
+        }
 
-    public Task ShowOptionsAsync(Guid? initialVisibleProfile = null)
-    {
-      ShowStartupMessage();
-      return Task.FromResult(0);
-    }
+        public Task ShowOptionsAsync(Guid? initialVisibleProfile = null)
+        {
+            ShowStartupMessage();
+            return Task.FromResult(0);
+        }
 
-    public Task ShowGeneralOptionsAsync()
-    {
-      ShowStartupMessage ();
-      return Task.FromResult (0);
-    }
+        public Task ShowGeneralOptionsAsync()
+        {
+            ShowStartupMessage();
+            return Task.FromResult(0);
+        }
 
-    public void ShowAbout()
-    {
-      ShowStartupMessage ();
-    }
+        public void ShowAbout()
+        {
+            ShowStartupMessage();
+        }
 
-    public void ShowLatestSynchronizationReport(Guid profileId)
-    {
-      ShowStartupMessage ();
-    }
+        public void ShowLatestSynchronizationReport(Guid profileId)
+        {
+            ShowStartupMessage();
+        }
 
-    public void ShowProfileStatuses()
-    {
-      ShowStartupMessage ();
-    }
+        public void ShowProfileStatuses()
+        {
+            ShowStartupMessage();
+        }
 
-    public void SynchronizeNowAsync()
-    {
-      ShowStartupMessage ();
-    }
+        public void SynchronizeNowAsync()
+        {
+            ShowStartupMessage();
+        }
 
-    public void ShowReports()
-    {
-      ShowStartupMessage ();
-    }
+        public void ShowReports()
+        {
+            ShowStartupMessage();
+        }
 
-    public void Dispose()
-    {
-      
-    }
+        public void Dispose()
+        {
+        }
 
-    public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
-    public event EventHandler<SchedulerStatusEventArgs> StatusChanged;
-    public Task InitializeSchedulerAndStartAsync()
-    {
-      return Task.FromResult(0);
-    }
+        public event EventHandler SynchronizationFailedWhileReportsFormWasNotVisible;
+        public event EventHandler<SchedulerStatusEventArgs> StatusChanged;
 
-    public void SaveToolBarSettings(ToolbarSettings settings)
-    {
-      
-    }
+        public Task InitializeSchedulerAndStartAsync()
+        {
+            return Task.FromResult(0);
+        }
 
-    public ToolbarSettings LoadToolBarSettings()
-    {
-      return ToolbarSettings.CreateDefault();
-    }
+        public void SaveToolBarSettings(ToolbarSettings settings)
+        {
+        }
 
-    void ShowStartupMessage()
-    {
-      // ReSharper disable once LocalizableElement
-      MessageBox.Show(Strings.Get($"CalDAV Synchronizer is currently starting up. Please try again, when startup is finished."), ComponentContainer.MessageBoxTitle, MessageBoxButtons.OK);
-    }
+        public ToolbarSettings LoadToolBarSettings()
+        {
+            return ToolbarSettings.CreateDefault();
+        }
 
-    void OnSynchronizationFailedWhileReportsFormWasNotVisible ()
-    {
-      SynchronizationFailedWhileReportsFormWasNotVisible?.Invoke (this, EventArgs.Empty);
-    }
+        void ShowStartupMessage()
+        {
+            // ReSharper disable once LocalizableElement
+            MessageBox.Show(Strings.Get($"CalDAV Synchronizer is currently starting up. Please try again, when startup is finished."), ComponentContainer.MessageBoxTitle, MessageBoxButtons.OK);
+        }
 
-    void OnStatusChanged (SchedulerStatusEventArgs e)
-    {
-      StatusChanged?.Invoke (this, e);
+        void OnSynchronizationFailedWhileReportsFormWasNotVisible()
+        {
+            SynchronizationFailedWhileReportsFormWasNotVisible?.Invoke(this, EventArgs.Empty);
+        }
+
+        void OnStatusChanged(SchedulerStatusEventArgs e)
+        {
+            StatusChanged?.Invoke(this, e);
+        }
     }
-  }
 }

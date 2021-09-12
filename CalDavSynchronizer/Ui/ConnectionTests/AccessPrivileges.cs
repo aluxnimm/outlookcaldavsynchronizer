@@ -14,17 +14,18 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace CalDavSynchronizer.Ui.ConnectionTests
 {
-  [Flags]
-  public enum AccessPrivileges
-  {
-    None = 0,
-    Modify = 1,
-    Create = 2,
-    Delete = 4,
-    All = 7
-  }
+    [Flags]
+    public enum AccessPrivileges
+    {
+        None = 0,
+        Modify = 1,
+        Create = 2,
+        Delete = 4,
+        All = 7
+    }
 }

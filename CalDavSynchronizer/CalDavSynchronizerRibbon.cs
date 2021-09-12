@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using CalDavSynchronizer.Properties;
 using CalDavSynchronizer.Utilities;
@@ -22,103 +23,103 @@ using Microsoft.Office.Tools.Ribbon;
 
 namespace CalDavSynchronizer
 {
-  public partial class CalDavSynchronizerRibbon
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod ().DeclaringType);
-
-    private void CalDavSynchronizerRibbon_Load (object sender, RibbonUIEventArgs e)
+    public partial class CalDavSynchronizerRibbon
     {
-      ThisAddIn.SynchronizationFailedWhileReportsFormWasNotVisible += SynchronizationFailedWhileReportsFormWasNotVisible;
-      ThisAddIn.StatusChanged += ThisAddIn_StatusChanged;
-    }
+        private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-    private void ThisAddIn_StatusChanged (object sender, Scheduling.SchedulerStatusEventArgs e)
-    {
-      SynchronizeNowButton.Enabled = !e.IsRunning;
-    }
+        private void CalDavSynchronizerRibbon_Load(object sender, RibbonUIEventArgs e)
+        {
+            ThisAddIn.SynchronizationFailedWhileReportsFormWasNotVisible += SynchronizationFailedWhileReportsFormWasNotVisible;
+            ThisAddIn.StatusChanged += ThisAddIn_StatusChanged;
+        }
 
-    private void SynchronizationFailedWhileReportsFormWasNotVisible (object sender, EventArgs e)
-    {
-      ReportsButton.Image = Resources.SyncError;
-    }
+        private void ThisAddIn_StatusChanged(object sender, Scheduling.SchedulerStatusEventArgs e)
+        {
+            SynchronizeNowButton.Enabled = !e.IsRunning;
+        }
 
-    private void SynchronizeNowButton_Click (object sender, RibbonControlEventArgs e)
-    {
-      try
-      {
-        ComponentContainer.EnsureSynchronizationContext();
-        ThisAddIn.ComponentContainer.SynchronizeNowAsync();
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.DisplayException (x, s_logger);
-      }
-    }
+        private void SynchronizationFailedWhileReportsFormWasNotVisible(object sender, EventArgs e)
+        {
+            ReportsButton.Image = Resources.SyncError;
+        }
 
-    private async void OptionsButton_Click (object sender, RibbonControlEventArgs e)
-    {
-      try
-      {
-        ComponentContainer.EnsureSynchronizationContext ();
-        await ThisAddIn.ComponentContainer.ShowOptionsAsync();
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.DisplayException (x, s_logger);
-      }
-    }
+        private void SynchronizeNowButton_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                ComponentContainer.EnsureSynchronizationContext();
+                ThisAddIn.ComponentContainer.SynchronizeNowAsync();
+            }
+            catch (Exception x)
+            {
+                ExceptionHandler.Instance.DisplayException(x, s_logger);
+            }
+        }
 
-    private void AboutButton_Click (object sender, RibbonControlEventArgs e)
-    {
-      try
-      {
-        ComponentContainer.EnsureSynchronizationContext ();
-        ThisAddIn.ComponentContainer.ShowAbout();
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.DisplayException (x, s_logger);
-      }
-    }
+        private async void OptionsButton_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                ComponentContainer.EnsureSynchronizationContext();
+                await ThisAddIn.ComponentContainer.ShowOptionsAsync();
+            }
+            catch (Exception x)
+            {
+                ExceptionHandler.Instance.DisplayException(x, s_logger);
+            }
+        }
 
-    private async void GeneralOptionsButton_Click (object sender, RibbonControlEventArgs e)
-    {
-      try
-      {
-        ComponentContainer.EnsureSynchronizationContext ();
-        await ThisAddIn.ComponentContainer.ShowGeneralOptionsAsync();
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.DisplayException (x, s_logger);
-      }
-    }
+        private void AboutButton_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                ComponentContainer.EnsureSynchronizationContext();
+                ThisAddIn.ComponentContainer.ShowAbout();
+            }
+            catch (Exception x)
+            {
+                ExceptionHandler.Instance.DisplayException(x, s_logger);
+            }
+        }
 
-    private void ReportsButton_Click (object sender, RibbonControlEventArgs e)
-    {
-      try
-      {
-        ComponentContainer.EnsureSynchronizationContext ();
-        ReportsButton.Image = Resources.SyncReport;
-        ThisAddIn.ComponentContainer.ShowReports();
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.DisplayException (x, s_logger);
-      }
-    }
+        private async void GeneralOptionsButton_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                ComponentContainer.EnsureSynchronizationContext();
+                await ThisAddIn.ComponentContainer.ShowGeneralOptionsAsync();
+            }
+            catch (Exception x)
+            {
+                ExceptionHandler.Instance.DisplayException(x, s_logger);
+            }
+        }
 
-    private void StatusesButton_Click (object sender, RibbonControlEventArgs e)
-    {
-      try
-      {
-        ComponentContainer.EnsureSynchronizationContext ();
-        ThisAddIn.ComponentContainer.ShowProfileStatuses();
-      }
-      catch (Exception x)
-      {
-        ExceptionHandler.Instance.DisplayException (x, s_logger);
-      }
+        private void ReportsButton_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                ComponentContainer.EnsureSynchronizationContext();
+                ReportsButton.Image = Resources.SyncReport;
+                ThisAddIn.ComponentContainer.ShowReports();
+            }
+            catch (Exception x)
+            {
+                ExceptionHandler.Instance.DisplayException(x, s_logger);
+            }
+        }
+
+        private void StatusesButton_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                ComponentContainer.EnsureSynchronizationContext();
+                ThisAddIn.ComponentContainer.ShowProfileStatuses();
+            }
+            catch (Exception x)
+            {
+                ExceptionHandler.Instance.DisplayException(x, s_logger);
+            }
+        }
     }
-  }
 }

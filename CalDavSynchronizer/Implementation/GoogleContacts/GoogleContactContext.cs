@@ -27,19 +27,19 @@ using Google.GData.Contacts;
 
 namespace CalDavSynchronizer.Implementation.GoogleContacts
 {
-  public class GoogleContactContext : IGoogleContactContext
-  {
-    public IGoogleGroupCache GroupCache { get; }
-    public IGoogleContactCache ContactCache { get; }
-
-
-    public GoogleContactContext(GoogleGroupCache groupCache, IGoogleContactCache contactCache)
+    public class GoogleContactContext : IGoogleContactContext
     {
-      if (groupCache == null) throw new ArgumentNullException(nameof(groupCache));
-      if (contactCache == null) throw new ArgumentNullException(nameof(contactCache));
+        public IGoogleGroupCache GroupCache { get; }
+        public IGoogleContactCache ContactCache { get; }
 
-      GroupCache = groupCache;
-      ContactCache = contactCache;
+
+        public GoogleContactContext(GoogleGroupCache groupCache, IGoogleContactCache contactCache)
+        {
+            if (groupCache == null) throw new ArgumentNullException(nameof(groupCache));
+            if (contactCache == null) throw new ArgumentNullException(nameof(contactCache));
+
+            GroupCache = groupCache;
+            ContactCache = contactCache;
+        }
     }
-  }
 }

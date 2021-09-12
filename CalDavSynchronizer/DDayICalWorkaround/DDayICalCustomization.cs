@@ -9,29 +9,29 @@ using log4net;
 
 namespace CalDavSynchronizer.DDayICalWorkaround
 {
-  static class DDayICalCustomization
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-    public static void InitializeNoThrow()
+    static class DDayICalCustomization
     {
-      try
-      {
-        var originalFactory = SerializationContext.Default.GetService<SerializerFactory>();
-        if (originalFactory != null)
+        private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public static void InitializeNoThrow()
         {
-          SerializationContext.Default.RemoveService(typeof(SerializerFactory));
-          SerializationContext.Default.SetService(new CalDavSynchronizerSerializerFactory(originalFactory));
+            try
+            {
+                var originalFactory = SerializationContext.Default.GetService<SerializerFactory>();
+                if (originalFactory != null)
+                {
+                    SerializationContext.Default.RemoveService(typeof(SerializerFactory));
+                    SerializationContext.Default.SetService(new CalDavSynchronizerSerializerFactory(originalFactory));
+                }
+                else
+                {
+                    s_logger.Error($"'{nameof(SerializationContext.Default.GetService)}' for '{nameof(SerializerFactory)}' returned NULL!");
+                }
+            }
+            catch (Exception x)
+            {
+                s_logger.Error($"Error while initializing '{nameof(DDayICalWorkaround.DDayICalCustomization)}'", x);
+            }
         }
-        else
-        {
-          s_logger.Error($"'{nameof(SerializationContext.Default.GetService)}' for '{nameof(SerializerFactory)}' returned NULL!");
-        }
-      }
-      catch (Exception x)
-      {
-        s_logger.Error($"Error while initializing '{nameof(DDayICalWorkaround.DDayICalCustomization)}'", x);
-      }
     }
-  }
 }

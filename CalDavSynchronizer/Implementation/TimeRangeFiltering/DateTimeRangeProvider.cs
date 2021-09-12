@@ -14,26 +14,27 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace CalDavSynchronizer.Implementation.TimeRangeFiltering
 {
-  internal class DateTimeRangeProvider : IDateTimeRangeProvider
-  {
-    private readonly int _daysToSynchronizeInThePast;
-    private readonly int _daysToSynchronizeInTheFuture;
-
-    public DateTimeRangeProvider (int daysToSynchronizeInThePast, int daysToSynchronizeInTheFuture)
+    internal class DateTimeRangeProvider : IDateTimeRangeProvider
     {
-      _daysToSynchronizeInThePast = daysToSynchronizeInThePast;
-      _daysToSynchronizeInTheFuture = daysToSynchronizeInTheFuture;
-    }
+        private readonly int _daysToSynchronizeInThePast;
+        private readonly int _daysToSynchronizeInTheFuture;
 
-    public DateTimeRange? GetRange ()
-    {
-      return new DateTimeRange (
-          DateTime.Today.AddDays (-_daysToSynchronizeInThePast),
-          DateTime.Today.AddDays (1 + _daysToSynchronizeInTheFuture));
+        public DateTimeRangeProvider(int daysToSynchronizeInThePast, int daysToSynchronizeInTheFuture)
+        {
+            _daysToSynchronizeInThePast = daysToSynchronizeInThePast;
+            _daysToSynchronizeInTheFuture = daysToSynchronizeInTheFuture;
+        }
+
+        public DateTimeRange? GetRange()
+        {
+            return new DateTimeRange(
+                DateTime.Today.AddDays(-_daysToSynchronizeInThePast),
+                DateTime.Today.AddDays(1 + _daysToSynchronizeInTheFuture));
+        }
     }
-  }
 }

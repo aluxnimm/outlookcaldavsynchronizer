@@ -17,8 +17,8 @@
 
 namespace GenSync.InitialEntityMatching
 {
-  public interface IMatchDataFactory<TEntity, TMatchData>
-  {
-    TMatchData CreateMatchData(TEntity entity);
-  }
+    public interface IMatchDataFactory<TEntity, TMatchData>
+    {
+        TMatchData CreateMatchData(TEntity entity);
+    }
 }

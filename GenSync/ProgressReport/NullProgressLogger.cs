@@ -14,28 +14,29 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 
 namespace GenSync.ProgressReport
 {
-  public class NullProgressLogger : IProgressLogger
-  {
-    public static readonly IProgressLogger Instance = new NullProgressLogger();
-
-    private NullProgressLogger ()
+    public class NullProgressLogger : IProgressLogger
     {
-    }
+        public static readonly IProgressLogger Instance = new NullProgressLogger();
 
-    public void Dispose ()
-    {
-    }
+        private NullProgressLogger()
+        {
+        }
 
-    public void Increase ()
-    {
-    }
+        public void Dispose()
+        {
+        }
 
-    public void IncreaseBy (int value)
-    {
+        public void Increase()
+        {
+        }
+
+        public void IncreaseBy(int value)
+        {
+        }
     }
-  }
 }

@@ -24,29 +24,27 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.ProfileTypes
 {
-  class DesignProfileType : ProfileTypeBase
-  {
-    public static IProfileType Instance => new DesignProfileType();
-    public override string Name { get; } = "Design Profile";
-    public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_sogo.png";
-    
-    public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+    class DesignProfileType : ProfileTypeBase
     {
-      return DesignProfileModelFactory.Instance;
-    }
-    
-    public DesignProfileType ()
-    {
-    }
+        public static IProfileType Instance => new DesignProfileType();
+        public override string Name { get; } = "Design Profile";
+        public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_sogo.png";
 
-    public DesignProfileType(string name, string imageUrl)
-    {
-      if (name == null) throw new ArgumentNullException(nameof(name));
-      if (imageUrl == null) throw new ArgumentNullException(nameof(imageUrl));
-      Name = name;
-      ImageUrl = imageUrl;
-    }
+        public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
+        {
+            return DesignProfileModelFactory.Instance;
+        }
 
- 
-  }
+        public DesignProfileType()
+        {
+        }
+
+        public DesignProfileType(string name, string imageUrl)
+        {
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (imageUrl == null) throw new ArgumentNullException(nameof(imageUrl));
+            Name = name;
+            ImageUrl = imageUrl;
+        }
+    }
 }

@@ -17,9 +17,8 @@
 
 namespace CalDavSynchronizer.Scheduling.ComponentCollectors
 {
-  public abstract class AvailableSynchronizerComponents
-  {
-
-    public abstract DataAccessComponents GetDataAccessComponents();
-  }
+    public abstract class AvailableSynchronizerComponents
+    {
+        public abstract DataAccessComponents GetDataAccessComponents();
+    }
 }

@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Reflection;
 using System.Security;
@@ -26,53 +27,54 @@ using log4net;
 
 namespace CalDavSynchronizer.Contracts
 {
-  public class ProxyOptions
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-    private const int c_saltLength = 17;
-
-    // ReSharper disable MemberCanBePrivate.Global
-    public string ProxySalt { get; set; }
-    public string ProxyProtectedPassword { get; set; }
-    // ReSharper restore MemberCanBePrivate.Global
-
-    public bool ProxyUseDefault { get; set; }
-    public bool ProxyUseManual { get; set; }
-    public string ProxyUrl { get; set; }
-    public string ProxyUserName { get; set; }
-
-    [XmlIgnore]
-    public SecureString ProxyPassword
+    public class ProxyOptions
     {
-      get
-      {
-        if (string.IsNullOrEmpty(ProxyProtectedPassword))
-          return new SecureString();
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+        private const int c_saltLength = 17;
 
-        var salt = Convert.FromBase64String(ProxySalt);
+        // ReSharper disable MemberCanBePrivate.Global
+        public string ProxySalt { get; set; }
 
-        var data = Convert.FromBase64String(ProxyProtectedPassword);
-        try
+        public string ProxyProtectedPassword { get; set; }
+        // ReSharper restore MemberCanBePrivate.Global
+
+        public bool ProxyUseDefault { get; set; }
+        public bool ProxyUseManual { get; set; }
+        public string ProxyUrl { get; set; }
+        public string ProxyUserName { get; set; }
+
+        [XmlIgnore]
+        public SecureString ProxyPassword
         {
-          var transformedData = ProtectedData.Unprotect(data, salt, DataProtectionScope.CurrentUser);
-          return SecureStringUtility.ToSecureString (Encoding.Unicode.GetString(transformedData));
-        }
-        catch (CryptographicException x)
-        {
-          s_logger.Error("Error while decrypting proxy password. Using empty password", x);
-          return new SecureString();
-        }
-      }
-      set
-      {
-        byte[] salt = new byte[c_saltLength];
-        new Random().NextBytes(salt);
-        ProxySalt = Convert.ToBase64String(salt);
+            get
+            {
+                if (string.IsNullOrEmpty(ProxyProtectedPassword))
+                    return new SecureString();
 
-        var data = Encoding.Unicode.GetBytes (SecureStringUtility.ToUnsecureString(value));
-        var transformedData = ProtectedData.Protect(data, salt, DataProtectionScope.CurrentUser);
-        ProxyProtectedPassword = Convert.ToBase64String(transformedData);
-      }
+                var salt = Convert.FromBase64String(ProxySalt);
+
+                var data = Convert.FromBase64String(ProxyProtectedPassword);
+                try
+                {
+                    var transformedData = ProtectedData.Unprotect(data, salt, DataProtectionScope.CurrentUser);
+                    return SecureStringUtility.ToSecureString(Encoding.Unicode.GetString(transformedData));
+                }
+                catch (CryptographicException x)
+                {
+                    s_logger.Error("Error while decrypting proxy password. Using empty password", x);
+                    return new SecureString();
+                }
+            }
+            set
+            {
+                byte[] salt = new byte[c_saltLength];
+                new Random().NextBytes(salt);
+                ProxySalt = Convert.ToBase64String(salt);
+
+                var data = Encoding.Unicode.GetBytes(SecureStringUtility.ToUnsecureString(value));
+                var transformedData = ProtectedData.Protect(data, salt, DataProtectionScope.CurrentUser);
+                ProxyProtectedPassword = Convert.ToBase64String(transformedData);
+            }
+        }
     }
-  }
 }

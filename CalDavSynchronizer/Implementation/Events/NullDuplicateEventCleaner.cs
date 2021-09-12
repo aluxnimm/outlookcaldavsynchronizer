@@ -23,32 +23,30 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Events
 {
-  public class NullDuplicateEventCleaner : IDuplicateEventCleaner
-  {
-    public static readonly IDuplicateEventCleaner Instance = new NullDuplicateEventCleaner();
-
-    private NullDuplicateEventCleaner()
+    public class NullDuplicateEventCleaner : IDuplicateEventCleaner
     {
-    }
+        public static readonly IDuplicateEventCleaner Instance = new NullDuplicateEventCleaner();
 
-    public Task NotifySynchronizationFinished ()
-    {
-      return Task.FromResult (0);
-    }
+        private NullDuplicateEventCleaner()
+        {
+        }
 
-    public void AnnounceAppointment (AppointmentSlim appointment)
-    {
-      
-    }
+        public Task NotifySynchronizationFinished()
+        {
+            return Task.FromResult(0);
+        }
 
-    public void AnnounceAppointmentDeleted (AppointmentId id)
-    {
-     
-    }
+        public void AnnounceAppointment(AppointmentSlim appointment)
+        {
+        }
 
-    public Task<IEnumerable<AppointmentId>> DeleteAnnouncedEventsIfDuplicates(Predicate<AppointmentId> canBeDeleted)
-    {
-      return Task.FromResult<IEnumerable<AppointmentId>>(new AppointmentId[0]);
+        public void AnnounceAppointmentDeleted(AppointmentId id)
+        {
+        }
+
+        public Task<IEnumerable<AppointmentId>> DeleteAnnouncedEventsIfDuplicates(Predicate<AppointmentId> canBeDeleted)
+        {
+            return Task.FromResult<IEnumerable<AppointmentId>>(new AppointmentId[0]);
+        }
     }
-  }
 }

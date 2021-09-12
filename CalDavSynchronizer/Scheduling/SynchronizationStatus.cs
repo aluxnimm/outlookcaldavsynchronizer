@@ -19,54 +19,54 @@ using System;
 
 namespace CalDavSynchronizer.Scheduling
 {
-  public class SynchronizationStatus : ISynchronizationRunLogger
-  {
-    private int _runCount;
-
-    public event EventHandler<SchedulerStatusEventArgs> StatusChanged;
-
-    public IDisposable LogStartSynchronizationRun ()
+    public class SynchronizationStatus : ISynchronizationRunLogger
     {
-      IncrementRunCount();
-      return new SynchronizationRunningScope (this);
+        private int _runCount;
+
+        public event EventHandler<SchedulerStatusEventArgs> StatusChanged;
+
+        public IDisposable LogStartSynchronizationRun()
+        {
+            IncrementRunCount();
+            return new SynchronizationRunningScope(this);
+        }
+
+        private void IncrementRunCount()
+        {
+            // No need for synchronization, since all happens in the ui thread
+            _runCount++;
+            if (_runCount == 1)
+                OnStatusChanged(true);
+        }
+
+        private void DecrementRunCount()
+        {
+            _runCount--;
+            if (_runCount == 0)
+                OnStatusChanged(false);
+        }
+
+        private void OnStatusChanged(bool isRunning)
+        {
+            StatusChanged?.Invoke(this, new SchedulerStatusEventArgs(isRunning));
+        }
+
+        private class SynchronizationRunningScope : IDisposable
+        {
+            readonly SynchronizationStatus _;
+
+            public SynchronizationRunningScope(SynchronizationStatus context)
+            {
+                if (context == null)
+                    throw new ArgumentNullException(nameof(context));
+
+                _ = context;
+            }
+
+            public void Dispose()
+            {
+                _.DecrementRunCount();
+            }
+        }
     }
-
-    private void IncrementRunCount ()
-    {
-      // No need for synchronization, since all happens in the ui thread
-      _runCount++;
-      if (_runCount == 1)
-        OnStatusChanged (true);
-    }
-
-    private void DecrementRunCount ()
-    {
-      _runCount--;
-      if (_runCount == 0)
-        OnStatusChanged (false);
-    }
-
-    private void OnStatusChanged (bool isRunning)
-    {
-      StatusChanged?.Invoke (this, new SchedulerStatusEventArgs (isRunning));
-    }
-
-    private class SynchronizationRunningScope : IDisposable
-    {
-      readonly SynchronizationStatus _;
-
-      public SynchronizationRunningScope (SynchronizationStatus context)
-      {
-        if (context == null)
-          throw new ArgumentNullException (nameof (context));
-
-        _ = context;
-      }
-
-      public void Dispose ()
-      {
-        _.DecrementRunCount();
-      }
-    }
-  }
 }

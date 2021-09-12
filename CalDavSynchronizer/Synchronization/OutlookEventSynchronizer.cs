@@ -27,45 +27,45 @@ using AppointmentId = CalDavSynchronizer.Implementation.Events.AppointmentId;
 
 namespace CalDavSynchronizer.Synchronization
 {
-  public class OutlookEventSynchronizer<TBtypeEntityId, TBtypeEntityVersion> : IOutlookSynchronizer
-  {
-    private readonly IPartialSynchronizer<AppointmentId, DateTime, TBtypeEntityId, TBtypeEntityVersion> _synchronizer;
-
-    public OutlookEventSynchronizer (IPartialSynchronizer<AppointmentId, DateTime, TBtypeEntityId, TBtypeEntityVersion> synchronizer)
+    public class OutlookEventSynchronizer<TBtypeEntityId, TBtypeEntityVersion> : IOutlookSynchronizer
     {
-      if (synchronizer == null)
-        throw new ArgumentNullException (nameof (synchronizer));
+        private readonly IPartialSynchronizer<AppointmentId, DateTime, TBtypeEntityId, TBtypeEntityVersion> _synchronizer;
 
-      _synchronizer = synchronizer;
+        public OutlookEventSynchronizer(IPartialSynchronizer<AppointmentId, DateTime, TBtypeEntityId, TBtypeEntityVersion> synchronizer)
+        {
+            if (synchronizer == null)
+                throw new ArgumentNullException(nameof(synchronizer));
+
+            _synchronizer = synchronizer;
+        }
+
+        public Task Synchronize(ISynchronizationLogger logger)
+        {
+            return _synchronizer.Synchronize(logger);
+        }
+
+        public async Task SynchronizePartial(IEnumerable<IOutlookId> outlookIds, ISynchronizationLogger logger)
+        {
+            var idExtractor = new IdWithHintExtractor();
+            foreach (var outlookId in outlookIds)
+                outlookId.Accept(idExtractor);
+
+            await _synchronizer.SynchronizePartial(idExtractor.Ids, new IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>[] { }, logger);
+        }
+
+        class IdWithHintExtractor : IOutlookIdVisitor
+        {
+            public List<IIdWithHints<AppointmentId, DateTime>> Ids { get; } = new List<IIdWithHints<AppointmentId, DateTime>>();
+
+            public void Visit(GenericId id)
+            {
+                throw new NotSupportedException("Objects other than appointments are not supported!");
+            }
+
+            public void Visit(ChangeWatching.AppointmentId id)
+            {
+                Ids.Add(id.Inner);
+            }
+        }
     }
-
-    public Task Synchronize (ISynchronizationLogger logger)
-    {
-      return _synchronizer.Synchronize (logger);
-    }
-
-    public async Task SynchronizePartial(IEnumerable<IOutlookId> outlookIds, ISynchronizationLogger logger)
-    {
-      var idExtractor = new IdWithHintExtractor();
-      foreach (var outlookId in outlookIds)
-        outlookId.Accept(idExtractor);
-
-      await _synchronizer.SynchronizePartial(idExtractor.Ids, new IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>[] {}, logger);
-    }
-
-    class IdWithHintExtractor : IOutlookIdVisitor
-    {
-      public List<IIdWithHints<AppointmentId, DateTime>> Ids { get; } = new List<IIdWithHints<AppointmentId, DateTime>>();
-
-      public void Visit(GenericId id)
-      {
-        throw new NotSupportedException("Objects other than appointments are not supported!");
-      }
-
-      public void Visit(ChangeWatching.AppointmentId id)
-      {
-        Ids.Add(id.Inner);
-      }
-    }
-  }
 }

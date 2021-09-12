@@ -14,15 +14,16 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.ComWrappers
 {
-  public interface ITaskItemWrapper : IDisposable
-  {
-    TaskItem Inner { get; }
-    void SaveAndReload ();
-    void Replace (TaskItem inner);
-  }
+    public interface ITaskItemWrapper : IDisposable
+    {
+        TaskItem Inner { get; }
+        void SaveAndReload();
+        void Replace(TaskItem inner);
+    }
 }

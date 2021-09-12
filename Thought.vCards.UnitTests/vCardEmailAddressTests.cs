@@ -1,4 +1,3 @@
-
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Thought.vCards;
@@ -6,11 +5,9 @@ using Assert = NUnit.Framework.Assert;
 
 namespace Tests
 {
-
     [TestClass]
     public sealed class vCardEmailAddressTests : IDisposable
     {
-
         private const string TestEmailAddress = "dave@thoughtproject.com";
 
         // The next functions test the constructor of the
@@ -21,13 +18,11 @@ namespace Tests
         [TestMethod]
         public void Constructor()
         {
-
             vCardEmailAddress email = new vCardEmailAddress();
 
             Assert.IsEmpty(
                 email.Address,
                 "The Address property should default to String.Empty.");
-
         }
 
         #endregion
@@ -37,7 +32,6 @@ namespace Tests
         [TestMethod]
         public void Constructor_String()
         {
-
             vCardEmailAddress email =
                 new vCardEmailAddress(TestEmailAddress);
 
@@ -50,7 +44,6 @@ namespace Tests
                 vCardEmailAddressType.Internet,
                 email.EmailType,
                 "The EmailType should default to Internet.");
-
         }
 
         #endregion
@@ -60,7 +53,6 @@ namespace Tests
         [TestMethod]
         public void Constructor_String_EmailType()
         {
-
             // Create a non-Internet email address.  Note:
             // currently address formats are not validated.
             // This means any type can be designated in the
@@ -80,7 +72,6 @@ namespace Tests
                 vCardEmailAddressType.eWorld,
                 email.EmailType,
                 "The EmailType is not correct.");
-
         }
 
         #endregion
@@ -94,7 +85,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_Address()
         {
-
             // Make sure the Address property reads/writes.
 
             vCardEmailAddress email = new vCardEmailAddress();
@@ -104,7 +94,6 @@ namespace Tests
                 TestEmailAddress,
                 email.Address,
                 "The Address property is not working.");
-
         }
 
         #endregion
@@ -114,14 +103,12 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_EmailType()
         {
-
             // Make sure the EmailType property reads/writes
 
             vCardEmailAddress email = new vCardEmailAddress();
 
             email.EmailType = vCardEmailAddressType.AttMail;
             Assert.AreEqual(vCardEmailAddressType.AttMail, email.EmailType);
-
         }
 
         #endregion
@@ -131,7 +118,6 @@ namespace Tests
         [TestMethod]
         public void ReadWriteProperty_IsPreferred()
         {
-
             // Make sure the EmailType property reads/writes
 
             vCardEmailAddress email = new vCardEmailAddress();
@@ -140,12 +126,13 @@ namespace Tests
 
             email.IsPreferred = false;
             Assert.IsFalse(email.IsPreferred);
-
         }
 
         #endregion
 
-        public void Dispose() {// driver.Dispose(); 
+        public void Dispose()
+        {
+            // driver.Dispose(); 
         }
     }
 }

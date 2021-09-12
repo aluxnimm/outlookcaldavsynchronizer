@@ -21,21 +21,21 @@ using Microsoft.Office.Core;
 
 namespace CalDavSynchronizer.Contracts
 {
-  public class ToolbarSettings
-  {
-    public int Top { get; set; }
-    public int Left { get; set; }
-    public bool Visible { get; set; } = true;
-    public MsoBarPosition Position { get; set; }
-    public int RowIndex { get; set; }
-
-    public static ToolbarSettings CreateDefault()
+    public class ToolbarSettings
     {
-      return new ToolbarSettings 
-      {
-        Position = MsoBarPosition.msoBarTop,
-        RowIndex = 2
-      };
+        public int Top { get; set; }
+        public int Left { get; set; }
+        public bool Visible { get; set; } = true;
+        public MsoBarPosition Position { get; set; }
+        public int RowIndex { get; set; }
+
+        public static ToolbarSettings CreateDefault()
+        {
+            return new ToolbarSettings
+            {
+                Position = MsoBarPosition.msoBarTop,
+                RowIndex = 2
+            };
+        }
     }
-  }
 }

@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -11,7 +10,6 @@ using System.IO;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     An abstract reader for vCard and vCard-like file formats.
     /// </summary>
@@ -25,7 +23,6 @@ namespace Thought.vCards
     /// </remarks>
     public abstract class vCardReader
     {
-
         /// <summary>
         ///     Stores the warnings issued by the implementor
         ///     of the vCard reader.  Currently warnings are
@@ -83,12 +80,7 @@ namespace Thought.vCards
         /// <remarks>Reseved for future use.</remarks>
         public StringCollection Warnings
         {
-            get
-            {
-                return this.warnings;
-            }
+            get { return this.warnings; }
         }
-
     }
-
 }

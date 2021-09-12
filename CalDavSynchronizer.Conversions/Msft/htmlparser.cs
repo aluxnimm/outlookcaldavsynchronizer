@@ -73,7 +73,6 @@ namespace CalDavSynchronizer.Conversions.Msft
     /// HtmlParser class accepts a string of possibly badly formed Html, parses it and returns a string
     /// of well-formed Html that is as close to the original string in content as possible
     /// </summary>
-
     internal class HtmlParser
     {
         // ---------------------------------------------------------------------
@@ -169,6 +168,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             {
                 return "ERROR: Urecognized html header";
             }
+
             // TODO: We assume that indices represented by strictly 10 zeros ("0123456789".Length),
             // which could be wrong assumption. We need to implement more flrxible parsing here
             startHtmlIndex = Int32.Parse(htmlDataString.Substring(startHtmlIndex + "StartHTML:".Length, "0123456789".Length));
@@ -182,6 +182,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             {
                 return "ERROR: Urecognized html header";
             }
+
             // TODO: We assume that indices represented by strictly 10 zeros ("0123456789".Length),
             // which could be wrong assumption. We need to implement more flrxible parsing here
             endHtmlIndex = Int32.Parse(htmlDataString.Substring(endHtmlIndex + "EndHTML:".Length, "0123456789".Length));
@@ -219,6 +220,7 @@ namespace CalDavSynchronizer.Conversions.Msft
             {
                 startFragment = startHTML;
             }
+
             int endFragment = htmlString.IndexOf(HtmlEndFragmentComment, 0);
             if (endFragment >= 0)
             {
@@ -351,7 +353,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                 htmlRootElement.FirstChild == htmlRootElement.LastChild &&
                 htmlRootElement.FirstChild.LocalName.ToLower() == "html")
             {
-                htmlRootElement = (XmlElement)htmlRootElement.FirstChild;
+                htmlRootElement = (XmlElement) htmlRootElement.FirstChild;
             }
 
             return htmlRootElement;
@@ -365,6 +367,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                 XmlAttribute attribute = htmlElement.Attributes[i];
                 htmlElementCopy.SetAttribute(attribute.Name, attribute.Value);
             }
+
             return htmlElementCopy;
         }
 
@@ -433,6 +436,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -519,8 +523,8 @@ namespace CalDavSynchronizer.Conversions.Msft
         private void ParseAttributes(XmlElement xmlElement)
         {
             while (_htmlLexicalAnalyzer.NextTokenType != HtmlTokenType.EOF && //
-                _htmlLexicalAnalyzer.NextTokenType != HtmlTokenType.TagEnd && //
-                _htmlLexicalAnalyzer.NextTokenType != HtmlTokenType.EmptyTagEnd)
+                   _htmlLexicalAnalyzer.NextTokenType != HtmlTokenType.TagEnd && //
+                   _htmlLexicalAnalyzer.NextTokenType != HtmlTokenType.EmptyTagEnd)
             {
                 // read next attribute (name=value)
                 if (_htmlLexicalAnalyzer.NextTokenType == HtmlTokenType.Name)
@@ -533,6 +537,7 @@ namespace CalDavSynchronizer.Conversions.Msft
                     string attributeValue = _htmlLexicalAnalyzer.NextToken;
                     xmlElement.SetAttribute(attributeName, attributeValue);
                 }
+
                 _htmlLexicalAnalyzer.GetNextTagToken();
             }
         }

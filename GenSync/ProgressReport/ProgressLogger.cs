@@ -14,47 +14,47 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Reflection;
 using log4net;
 
 namespace GenSync.ProgressReport
 {
-  /// <summary>
-  /// Standardimplementation of IProgressStep
-  /// </summary>
-  public class ProgressLogger : IProgressLogger
-  {
-    private static readonly ILog s_logger = LogManager.GetLogger (MethodInfo.GetCurrentMethod().DeclaringType);
-    private readonly IProgressUi _progressUi;
-    private readonly IExceptionLogger _exceptionLogger;
-
-    public ProgressLogger (IProgressUi progressUi, IExceptionLogger exceptionLogger)
+    /// <summary>
+    /// Standardimplementation of IProgressStep
+    /// </summary>
+    public class ProgressLogger : IProgressLogger
     {
-      _progressUi = progressUi;
-      _exceptionLogger = exceptionLogger;
-    }
+        private static readonly ILog s_logger = LogManager.GetLogger(MethodInfo.GetCurrentMethod().DeclaringType);
+        private readonly IProgressUi _progressUi;
+        private readonly IExceptionLogger _exceptionLogger;
 
-    public void Dispose ()
-    {
-      try
-      {
-        _progressUi.IncrementValue ();
-      }
-      catch (Exception x)
-      {
-        _exceptionLogger.LogException (x, s_logger);
-      }
-    }
+        public ProgressLogger(IProgressUi progressUi, IExceptionLogger exceptionLogger)
+        {
+            _progressUi = progressUi;
+            _exceptionLogger = exceptionLogger;
+        }
 
-    public void Increase ()
-    {
-      IncreaseBy (1);
-    }
+        public void Dispose()
+        {
+            try
+            {
+                _progressUi.IncrementValue();
+            }
+            catch (Exception x)
+            {
+                _exceptionLogger.LogException(x, s_logger);
+            }
+        }
 
-    public void IncreaseBy (int value)
-    {
-     
+        public void Increase()
+        {
+            IncreaseBy(1);
+        }
+
+        public void IncreaseBy(int value)
+        {
+        }
     }
-  }
 }

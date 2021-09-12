@@ -22,29 +22,29 @@ using CalDavSynchronizer.Ui.ViewModels;
 
 namespace CalDavSynchronizer.Ui.Views
 {
-  /// <summary>
-  /// Interaction logic for MainWindow.xaml
-  /// </summary>
-  public partial class GenericReportWindow : Window
-  {
-    public GenericReportWindow ()
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class GenericReportWindow : Window
     {
-      InitializeComponent ();
-      this.DataContextChanged += OptionsWindow_DataContextChanged;
-    }
+        public GenericReportWindow()
+        {
+            InitializeComponent();
+            this.DataContextChanged += OptionsWindow_DataContextChanged;
+        }
 
-    private void OptionsWindow_DataContextChanged (object sender, DependencyPropertyChangedEventArgs e)
-    {
-      var viewModel = e.NewValue as GenericReportViewModel;
-      if (viewModel != null)
-      {
-        viewModel.CloseRequested += ViewModel_CloseRequested;
-      }
-    }
+        private void OptionsWindow_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var viewModel = e.NewValue as GenericReportViewModel;
+            if (viewModel != null)
+            {
+                viewModel.CloseRequested += ViewModel_CloseRequested;
+            }
+        }
 
-    private void ViewModel_CloseRequested (object sender, EventArgs e)
-    {
-      DialogResult = true;
+        private void ViewModel_CloseRequested(object sender, EventArgs e)
+        {
+            DialogResult = true;
+        }
     }
-  }
 }

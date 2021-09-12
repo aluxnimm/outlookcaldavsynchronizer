@@ -23,16 +23,16 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.ProfileTypes
 {
-  public interface IProfileType
-  {
-    string Name { get; }
-    string ImageUrl { get; }
+    public interface IProfileType
+    {
+        string Name { get; }
+        string ImageUrl { get; }
 
-    Contracts.Options CreateOptions();
-    EventMappingConfiguration CreateEventMappingConfiguration();
-    ContactMappingConfiguration CreateContactMappingConfiguration();
-    TaskMappingConfiguration CreateTaskMappingConfiguration();
+        Contracts.Options CreateOptions();
+        EventMappingConfiguration CreateEventMappingConfiguration();
+        ContactMappingConfiguration CreateContactMappingConfiguration();
+        TaskMappingConfiguration CreateTaskMappingConfiguration();
 
-    IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData);
-  }
+        IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData);
+    }
 }

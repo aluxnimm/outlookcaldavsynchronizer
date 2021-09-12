@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace GenSync.Synchronization
 {
-  public static class EnumerableAdditions
-  {
-    public static void ForEach<T>(this IEnumerable<T> values, Action<T> action)
+    public static class EnumerableAdditions
     {
-      foreach (var value in values)
-        action(value);
+        public static void ForEach<T>(this IEnumerable<T> values, Action<T> action)
+        {
+            foreach (var value in values)
+                action(value);
+        }
     }
-  }
 }

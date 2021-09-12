@@ -1,4 +1,3 @@
-
 using System;
 using System.Drawing;
 using System.IO;
@@ -10,7 +9,6 @@ namespace Tests
     [TestClass]
     public sealed class vCardPhotoTests : IDisposable
     {
-
         /// <summary>
         ///     The URL of an image that is under control of the author
         ///     and is sufficiently small to allow quick download.  If you
@@ -43,7 +41,6 @@ namespace Tests
         [TestMethod]
         public void Constructor_String()
         {
-
             // If a filename (string) is passed to the constructor, then
             // the scheme of the URI should be set as file.
 
@@ -51,7 +48,6 @@ namespace Tests
 
             Assert.IsTrue(
                 photo.Url.IsFile);
-
         }
 
         #endregion
@@ -59,7 +55,6 @@ namespace Tests
         [TestMethod]
         public void Constructor_Encoded_Data()
         {
-           
             vCardPhoto p = new vCardPhoto(TestPhotoUrl);
             p.Fetch();
             var bytes = p.GetBytes();
@@ -73,8 +68,6 @@ namespace Tests
             var data = photo.EncodedData;
 
             Assert.AreEqual(base64Image, data);
-           
-
         }
 
         #region [ Constructor_String_Empty ]
@@ -92,7 +85,7 @@ namespace Tests
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_String_Null()
         {
-            vCardPhoto photo = new vCardPhoto((string)null);
+            vCardPhoto photo = new vCardPhoto((string) null);
         }
 
         #endregion
@@ -102,7 +95,7 @@ namespace Tests
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_Uri_Null()
         {
-            new vCardPhoto((Uri)null);
+            new vCardPhoto((Uri) null);
 
             // The following expression is nicer but seems
             // to not work nice in VS2008 depending on
@@ -120,7 +113,6 @@ namespace Tests
         [TestMethod]
         public void Fetch_Good()
         {
-
             // You may wish to ignore this test if you run
             // extensive unit tests and your Internet connection
             // is slow.
@@ -148,7 +140,6 @@ namespace Tests
 
             using (Bitmap bitmap = photo.GetBitmap())
             {
-
                 Assert.AreEqual(
                     TestPhotoHeight,
                     bitmap.Size.Height,
@@ -158,15 +149,14 @@ namespace Tests
                     TestPhotoWidth,
                     bitmap.Size.Width,
                     "The photo width is unexpected.");
-
             }
-
-
         }
 
         #endregion
 
-        public void Dispose() {// driver.Dispose();
+        public void Dispose()
+        {
+            // driver.Dispose();
         }
     }
 }

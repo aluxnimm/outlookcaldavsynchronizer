@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -10,7 +9,6 @@ using System.Collections.ObjectModel;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     A generic collection <see cref="vCardPhone"/> objects.
     /// </summary>
@@ -18,8 +16,6 @@ namespace Thought.vCards
     /// <seealso cref="vCardPhoneTypes"/>
     public class vCardPhoneCollection : Collection<vCardPhone>
     {
-
-
         /// <summary>
         ///     Looks for the first phone of the specified
         ///     type that is a preferred phone.
@@ -34,15 +30,12 @@ namespace Thought.vCards
         /// </returns>
         public vCardPhone GetFirstChoice(vCardPhoneTypes phoneType)
         {
-
             vCardPhone firstNonPreferred = null;
 
             foreach (vCardPhone phone in this)
             {
-
                 if ((phone.PhoneType & phoneType) == phoneType)
                 {
-
                     // This phone has the same phone type as
                     // specified by the caller.  Save a reference
                     // to the first such phone encountered.
@@ -53,7 +46,6 @@ namespace Thought.vCards
                     if (phone.IsPreferred)
                         return phone;
                 }
-
             }
 
             // No phone had the specified phone type and was marked
@@ -61,7 +53,5 @@ namespace Thought.vCards
 
             return firstNonPreferred;
         }
-
     }
-
 }

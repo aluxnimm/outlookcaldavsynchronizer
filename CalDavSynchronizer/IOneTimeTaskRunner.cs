@@ -20,8 +20,8 @@ using CalDavSynchronizer.Ui.Options.Models;
 
 namespace CalDavSynchronizer
 {
-  public interface IOneTimeTaskRunner
-  {
-    void RunOneTimeTasks(IEnumerable<OneTimeChangeCategoryTask> oneTimeTasks);
-  }
+    public interface IOneTimeTaskRunner
+    {
+        void RunOneTimeTasks(IEnumerable<OneTimeChangeCategoryTask> oneTimeTasks);
+    }
 }

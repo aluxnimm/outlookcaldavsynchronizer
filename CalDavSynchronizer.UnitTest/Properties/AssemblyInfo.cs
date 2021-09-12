@@ -14,6 +14,7 @@
 // 
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -22,24 +23,24 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle ("CalDavSynchronizer.UnitTest")]
-[assembly: AssemblyDescription ("")]
-[assembly: AssemblyConfiguration ("")]
-[assembly: AssemblyCompany ("")]
-[assembly: AssemblyProduct ("CalDavSynchronizer.UnitTest")]
-[assembly: AssemblyCopyright ("Copyright © 2015 Gerhard Zehetbauer")]
-[assembly: AssemblyTrademark ("")]
-[assembly: AssemblyCulture ("")]
+[assembly: AssemblyTitle("CalDavSynchronizer.UnitTest")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("CalDavSynchronizer.UnitTest")]
+[assembly: AssemblyCopyright("Copyright © 2015 Gerhard Zehetbauer")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
 
-[assembly: ComVisible (false)]
+[assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
-[assembly: Guid ("b36cb974-7c3b-4d12-a793-8a65e60688f4")]
+[assembly: Guid("b36cb974-7c3b-4d12-a793-8a65e60688f4")]
 
 // Version information for an assembly consists of the following four values:
 //

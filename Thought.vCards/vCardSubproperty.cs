@@ -1,4 +1,3 @@
-
 /* =======================================================================
  * vCard Library for .NET
  * Copyright (c) 2007-2009 David Pinch; http://wwww.thoughtproject.com
@@ -9,7 +8,6 @@ using System;
 
 namespace Thought.vCards
 {
-
     /// <summary>
     ///     A subproperty of a vCard property.
     /// </summary>
@@ -44,7 +42,6 @@ namespace Thought.vCards
     /// </remarks>
     public class vCardSubproperty
     {
-
         /// <summary>
         ///     Stores the name of the subproperty.
         /// </summary>
@@ -66,7 +63,6 @@ namespace Thought.vCards
         /// </param>
         public vCardSubproperty(string name)
         {
-
             if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentNullException("name");
@@ -75,7 +71,6 @@ namespace Thought.vCards
             {
                 this.name = name;
             }
-
         }
 
 
@@ -91,7 +86,6 @@ namespace Thought.vCards
         /// </param>
         public vCardSubproperty(string name, string value)
         {
-
             if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentNullException("name");
@@ -110,14 +104,8 @@ namespace Thought.vCards
         /// </summary>
         public string Name
         {
-            get
-            {
-                return this.name;
-            }
-            set
-            {
-                this.name = value;
-            }
+            get { return this.name; }
+            set { this.name = value; }
         }
 
 
@@ -126,16 +114,8 @@ namespace Thought.vCards
         /// </summary>
         public string Value
         {
-            get
-            {
-                return this.value;
-            }
-            set
-            {
-                this.value = value;
-            }
+            get { return this.value; }
+            set { this.value = value; }
         }
-
     }
-
 }
