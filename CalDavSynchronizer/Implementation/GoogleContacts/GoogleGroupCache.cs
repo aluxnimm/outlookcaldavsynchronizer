@@ -1,127 +1,156 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
-//using Google.Contacts;
-//using Google.GData.Client;
-//using Google.GData.Contacts;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Google.Apis.PeopleService.v1.Data;
 
-//namespace CalDavSynchronizer.Implementation.GoogleContacts
-//{
-//    public class GoogleGroupCache : IGoogleGroupCache
-//    {
-//        readonly Dictionary<string, Group> _groupsByName = new Dictionary<string, Group>();
-//        private readonly IGoogleApiOperationExecutor _apiOperationExecutor;
+namespace CalDavSynchronizer.Implementation.GoogleContacts
+{
+    public class GoogleGroupCache : IGoogleGroupCache
+    {
+        readonly Dictionary<string, ContactGroup> _groupsByName = new Dictionary<string, ContactGroup>();
+        private readonly IGoogleApiOperationExecutor _apiOperationExecutor;
 
-//        private string _defaultGroupIdOrNull;
+        private string _defaultGroupResourceNameOrNull;
 
-//        public GoogleGroupCache(IGoogleApiOperationExecutor apiOperationExecutor)
-//        {
-//            if (apiOperationExecutor == null)
-//                throw new ArgumentNullException(nameof(apiOperationExecutor));
+        public GoogleGroupCache(IGoogleApiOperationExecutor apiOperationExecutor)
+        {
+            if (apiOperationExecutor == null)
+                throw new ArgumentNullException(nameof(apiOperationExecutor));
 
-//            _apiOperationExecutor = apiOperationExecutor;
-//        }
+            _apiOperationExecutor = apiOperationExecutor;
+        }
 
-//        public IEnumerable<Group> Groups => _groupsByName.Values;
+        public IEnumerable<ContactGroup> Groups => _groupsByName.Values;
 
-//        public string DefaultGroupIdOrNull
-//        {
-//            get { return _defaultGroupIdOrNull; }
-//        }
+        public string DefaultGroupResourceNameOrNull
+        {
+            get { return _defaultGroupResourceNameOrNull; }
+        }
 
-//        public void Fill()
-//        {
-//            var groups = new List<Group>();
+        public void Fill()
+        {
+            
+            var groups = new List<ContactGroup>();
 
-//            for (
-//                Feed<Group> feed = _apiOperationExecutor.Execute(f => f.GetGroups());
-//                feed != null;
-//                feed = _apiOperationExecutor.Execute(f => f.Get(feed, FeedRequestType.Next)))
-//            {
-//                groups.AddRange(feed.Entries);
-//            }
+            ListContactGroupsResponse response;
+            // TODO-GPA: es gibt ein executeasync
+            // TODO-GPA: ListRequest hat ein Synctoken, mit den nur neue geholt werden können. Kann für das Batchentityrepository verwendet werden
+            response = _apiOperationExecutor.Execute(s => s.ContactGroups.List().Execute());
 
-//            SetGroups(groups);
-//        }
+            // TODO-GPA: ist die response eh nicht NULL, wenn keine Gruppen (mehr vorhanden sind)
+            for (;;)
+            {
+                groups.AddRange(response.ContactGroups);
+                if (response.NextPageToken != null)
+                {
+                    response = _apiOperationExecutor.Execute(s =>
+                    {
+                        var request = s.ContactGroups.List();
+                        request.PageToken = response.NextPageToken;
+                        return request.Execute();
+                    });
+                }
+                else
+                {
+                    break;
+                }
+            }
 
-//        void SetGroups(IEnumerable<Group> existingGroups)
-//        {
-//            foreach (var group in existingGroups)
-//            {
-//                Group existingGroup;
-//                Group winningGroup;
-//                if (_groupsByName.TryGetValue(group.Title, out existingGroup))
-//                {
-//                    if (!string.IsNullOrEmpty(existingGroup.SystemGroup))
-//                    {
-//                        winningGroup = existingGroup;
-//                    }
-//                    else if (!string.IsNullOrEmpty(group.SystemGroup))
-//                    {
-//                        winningGroup = group;
-//                    }
-//                    else
-//                    {
-//                        if (string.CompareOrdinal(group.Id, existingGroup.Id) > 0)
-//                            winningGroup = group;
-//                        else
-//                            winningGroup = existingGroup;
-//                    }
-//                }
-//                else
-//                {
-//                    winningGroup = group;
-//                }
+            SetGroups(groups);
+        }
 
-//                _groupsByName[winningGroup.Title] = winningGroup;
+        void SetGroups(IEnumerable<ContactGroup> existingGroups)
+        {
+            foreach (var group in existingGroups)
+            {
+                ContactGroup existingGroup;
+                ContactGroup winningGroup;
+                if (_groupsByName.TryGetValue(group.Name, out existingGroup))
+                {
+                    // TODO-GPA: ist das wirklich der String, oder nur der Name einer konstanten, die iwo definiert ist ?
+                    if (existingGroup.GroupType == "SYSTEM_CONTACT_GROUP")
+                    {
+                        winningGroup = existingGroup;
+                    }
+                    else if (group.GroupType == "SYSTEM_CONTACT_GROUP")
+                    {
+                        winningGroup = group;
+                    }
+                    else
+                    {
+                        if (string.CompareOrdinal(group.ResourceName, existingGroup.ResourceName) > 0)
+                            winningGroup = group;
+                        else
+                            winningGroup = existingGroup;
+                    }
+                }
+                else
+                {
+                    winningGroup = group;
+                }
 
-//                if (IsDefaultGroup(winningGroup))
-//                    _defaultGroupIdOrNull = winningGroup.Id;
-//            }
-//        }
+                _groupsByName[winningGroup.Name] = winningGroup;
 
-//        public Group GetOrCreateGroup(string groupName)
-//        {
-//            Group group;
-//            if (!_groupsByName.TryGetValue(groupName, out group))
-//            {
-//                group = CreateGroup(groupName);
-//                _groupsByName.Add(groupName, group);
-//            }
+                if (IsDefaultGroup(winningGroup))
+                    _defaultGroupResourceNameOrNull = winningGroup.ResourceName;
+            }
+        }
 
-//            return group;
-//        }
+        public ContactGroup GetOrCreateGroup(string groupName)
+        {
+            ContactGroup group;
+            if (!_groupsByName.TryGetValue(groupName, out group))
+            {
+                group = CreateGroup(groupName);
+                _groupsByName.Add(groupName, group);
+            }
 
-//        public bool IsDefaultGroupId(string id)
-//        {
-//            if (_defaultGroupIdOrNull == null)
-//                return false;
+            return group;
+        }
 
-//            return StringComparer.InvariantCultureIgnoreCase.Compare(_defaultGroupIdOrNull, id) == 0;
-//        }
+        public bool IsDefaultGroupId(string id)
+        {
+            if (_defaultGroupResourceNameOrNull == null)
+                return false;
 
-//        public bool IsDefaultGroup(Group group)
-//        {
-//            return StringComparer.InvariantCultureIgnoreCase.Compare(group.SystemGroup, "contacts") == 0;
-//        }
+            return StringComparer.InvariantCultureIgnoreCase.Compare(_defaultGroupResourceNameOrNull, id) == 0;
+        }
 
-//        Group CreateGroup(string name)
-//        {
-//            var groupRequest = new Group();
-//            groupRequest.Title = name;
+        public bool IsDefaultGroup(ContactGroup group)
+        {
+            // TODO-GPA: ist das wirklich der String, oder nur der Name einer konstanten, die iwo definiert ist ?
+            // TODO-GPA: ist die defualt gruppe immer eine system gruppe, oder reichts wenn der name gleich ist
+            return group.GroupType == "SYSTEM_CONTACT_GROUP" &&
+                StringComparer.InvariantCultureIgnoreCase.Compare(group.Name, "contacts") == 0;
+        }
 
-//            return _apiOperationExecutor.Execute(f => f.Insert(new Uri("https://www.google.com/m8/feeds/groups/default/full"), groupRequest));
-//        }
+        ContactGroup CreateGroup(string name)
+        {
+            var groupRequest = new CreateContactGroupRequest()
+            {
+                ContactGroup = new ContactGroup()
+            };
+            groupRequest.ContactGroup.Name = name;
+
+            return _apiOperationExecutor.Execute(s => s.ContactGroups.Create( groupRequest).Execute());
+        }
 
 
-//        public void AddDefaultGroupToContact(Contact contact)
-//        {
-//            if (_defaultGroupIdOrNull == null)
-//                return;
+        public void AddDefaultGroupToContact(Person contact)
+        {
+            if (_defaultGroupResourceNameOrNull == null)
+                return;
 
-//            contact.GroupMembership.Add(new GroupMembership() {HRef = _defaultGroupIdOrNull});
-//        }
-//    }
-//}
+            contact.Memberships.Add(
+                new Membership
+                {
+                    ContactGroupMembership = new ContactGroupMembership
+                    {
+                        ContactGroupResourceName = _defaultGroupResourceNameOrNull
+                    }
+                });
+        }
+    }
+}
