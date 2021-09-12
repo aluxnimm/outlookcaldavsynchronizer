@@ -918,35 +918,37 @@ namespace CalDavSynchronizer.Ui.Options
             return connectionTestUrl;
         }
 
-        private async Task<string> TestGoogleContactsConnection(OptionsModel options, OlItemType outlookFolderType, string url)
+        private Task<string> TestGoogleContactsConnection(OptionsModel options, OlItemType outlookFolderType, string url)
         {
-            var service = await GoogleHttpClientFactory.LoginToContactsService(options.EmailAddress, options.GetProxyIfConfigured());
+            // TODO GooglePeopleApi
+            throw new NotImplementedException();
+            //var service = await GoogleHttpClientFactory.LoginToContactsService(options.EmailAddress, options.GetProxyIfConfigured());
 
-            try
-            {
-                await Task.Run(() => service.GetGroups());
-            }
-            catch (Exception x)
-            {
-                s_logger.Error(null, x);
-                MessageBox.Show(x.Message, ConnectionTestCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return url;
-            }
+            //try
+            //{
+            //    await Task.Run(() => service.GetGroups());
+            //}
+            //catch (Exception x)
+            //{
+            //    s_logger.Error(null, x);
+            //    MessageBox.Show(x.Message, ConnectionTestCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    return url;
+            //}
 
-            TestResult result = new TestResult(
-                ResourceType.AddressBook,
-                CalendarProperties.None,
-                AddressBookProperties.AddressBookAccessSupported,
-                AccessPrivileges.All,
-                false,
-                null);
+            //TestResult result = new TestResult(
+            //    ResourceType.AddressBook,
+            //    CalendarProperties.None,
+            //    AddressBookProperties.AddressBookAccessSupported,
+            //    AccessPrivileges.All,
+            //    false,
+            //    null);
 
-            DisplayTestReport(
-                result,
-                options.SynchronizationMode,
-                _enumDisplayNameProvider.Get(options.SynchronizationMode),
-                outlookFolderType);
-            return string.Empty;
+            //DisplayTestReport(
+            //    result,
+            //    options.SynchronizationMode,
+            //    _enumDisplayNameProvider.Get(options.SynchronizationMode),
+            //    outlookFolderType);
+            //return string.Empty;
         }
     }
 }

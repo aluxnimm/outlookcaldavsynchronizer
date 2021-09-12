@@ -31,7 +31,8 @@ namespace CalDavSynchronizer.Implementation.Common
         IEntityLogMessageFactory<ITaskItemWrapper, IICalendar>,
         IEntityLogMessageFactory<IContactItemWrapper, vCard>,
         IEntityLogMessageFactory<ITaskItemWrapper, Task>,
-        IEntityLogMessageFactory<IContactItemWrapper, GoogleContactWrapper>,
+        // TODO GooglePeopleApi
+        //IEntityLogMessageFactory<IContactItemWrapper, GoogleContactWrapper>,
         IEntityLogMessageFactory<IDistListItemWrapper, DistributionList>,
         IEntityLogMessageFactory<IDistListItemWrapper, vCard>
     {
@@ -66,10 +67,11 @@ namespace CalDavSynchronizer.Implementation.Common
             return entity.Inner.FullName;
         }
 
-        public string GetBDisplayNameOrNull(GoogleContactWrapper entity)
-        {
-            return entity.Contact.Name.FullName;
-        }
+        // TODO GooglePeopleApi
+        //public string GetBDisplayNameOrNull(GoogleContactWrapper entity)
+        //{
+        //    return entity.Contact.Name.FullName;
+        //}
 
         public string GetBDisplayNameOrNull(vCard entity)
         {

@@ -61,7 +61,6 @@ using GenSync.Synchronization.StateCreationStrategies.ConflictStrategies;
 using GenSync.Synchronization.StateFactories;
 using GenSync.Utilities;
 using Google.Apis.Tasks.v1.Data;
-using Google.Contacts;
 using log4net;
 using Microsoft.Office.Interop.Outlook;
 using Thought.vCards;
@@ -163,9 +162,13 @@ namespace CalDavSynchronizer.Scheduling
                 case OlItemType.olContactItem:
                     if (options.ServerAdapterType == ServerAdapterType.GoogleContactApi)
                     {
-                        var availableGoogleContactSynchronizerSynchronizerComponents = new AvailableGoogleContactSynchronizerSynchronizerComponents();
-                        synchronizerComponents = availableGoogleContactSynchronizerSynchronizerComponents;
-                        synchronizer = await CreateGoogleContactSynchronizer(options, availableGoogleContactSynchronizerSynchronizerComponents, generalOptions, profileType);
+                        // TODO GooglePeopleApi
+                        // Login example: https://developers.google.com/api-client-library/dotnet/get_started
+                        throw new NotImplementedException("Google people api is not yet implemented");
+
+                        //var availableGoogleContactSynchronizerSynchronizerComponents = new AvailableGoogleContactSynchronizerSynchronizerComponents();
+                        //synchronizerComponents = availableGoogleContactSynchronizerSynchronizerComponents;
+                        //synchronizer = await CreateGoogleContactSynchronizer(options, availableGoogleContactSynchronizerSynchronizerComponents, generalOptions, profileType);
                     }
                     else
                     {
@@ -1011,95 +1014,95 @@ namespace CalDavSynchronizer.Scheduling
 
             return synchronizer;
         }
+        
+        //private async Task<IOutlookSynchronizer> CreateGoogleContactSynchronizer(Options options, AvailableGoogleContactSynchronizerSynchronizerComponents componentsToFill, GeneralOptions generalOptions, IProfileType profileType)
+        //{
+        //    var atypeRepository = new OutlookContactRepository<IGoogleContactContext>(
+        //        _outlookSession,
+        //        options.OutlookFolderEntryId,
+        //        options.OutlookFolderStoreId,
+        //        _daslFilterProvider,
+        //        _queryFolderStrategy,
+        //        _comWrapperFactory,
+        //        generalOptions.IncludeCustomMessageClasses);
 
-        private async Task<IOutlookSynchronizer> CreateGoogleContactSynchronizer(Options options, AvailableGoogleContactSynchronizerSynchronizerComponents componentsToFill, GeneralOptions generalOptions, IProfileType profileType)
-        {
-            var atypeRepository = new OutlookContactRepository<IGoogleContactContext>(
-                _outlookSession,
-                options.OutlookFolderEntryId,
-                options.OutlookFolderStoreId,
-                _daslFilterProvider,
-                _queryFolderStrategy,
-                _comWrapperFactory,
-                generalOptions.IncludeCustomMessageClasses);
+        //    componentsToFill.OutlookContactRepository = atypeRepository;
 
-            componentsToFill.OutlookContactRepository = atypeRepository;
+        //    IWebProxy proxy = options.ProxyOptions != null ? CreateProxy(options.ProxyOptions) : null;
 
-            IWebProxy proxy = options.ProxyOptions != null ? CreateProxy(options.ProxyOptions) : null;
+        //    var googleApiExecutor = new GoogleApiOperationExecutor(await OAuth.Google.GoogleHttpClientFactory.LoginToContactsService(options.UserName, proxy));
 
-            var googleApiExecutor = new GoogleApiOperationExecutor(await OAuth.Google.GoogleHttpClientFactory.LoginToContactsService(options.UserName, proxy));
+        //    var mappingParameters = GetMappingParameters(options, profileType.CreateContactMappingConfiguration);
 
-            var mappingParameters = GetMappingParameters(options, profileType.CreateContactMappingConfiguration);
+        //    var atypeIdEqualityComparer = EqualityComparer<string>.Default;
+        //    var btypeIdEqualityComparer = EqualityComparer<string>.Default;
 
-            var atypeIdEqualityComparer = EqualityComparer<string>.Default;
-            var btypeIdEqualityComparer = EqualityComparer<string>.Default;
+        //    var btypeRepository = new GoogleContactRepository(
+        //        googleApiExecutor,
+        //        options.UserName,
+        //        mappingParameters,
+        //        btypeIdEqualityComparer,
+        //        new ChunkedExecutor(Math.Min(options.ChunkSize, GoogleProfile.MaximumWriteBatchSize)),
+        //        new ChunkedExecutor(options.ChunkSize));
 
-            var btypeRepository = new GoogleContactRepository(
-                googleApiExecutor,
-                options.UserName,
-                mappingParameters,
-                btypeIdEqualityComparer,
-                new ChunkedExecutor(Math.Min(options.ChunkSize, GoogleProfile.MaximumWriteBatchSize)),
-                new ChunkedExecutor(options.ChunkSize));
+        //    componentsToFill.GoogleContactRepository = btypeRepository;
+        //    componentsToFill.GoogleApiOperationExecutor = googleApiExecutor;
 
-            componentsToFill.GoogleContactRepository = btypeRepository;
-            componentsToFill.GoogleApiOperationExecutor = googleApiExecutor;
+        //    var entityMapper = new GoogleContactEntityMapper(mappingParameters);
 
-            var entityMapper = new GoogleContactEntityMapper(mappingParameters);
+        //    var entityRelationDataFactory = new GoogleContactRelationDataFactory();
 
-            var entityRelationDataFactory = new GoogleContactRelationDataFactory();
+        //    var syncStateFactory = new EntitySyncStateFactory<string, DateTime, IContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext>(
+        //        entityMapper,
+        //        entityRelationDataFactory,
+        //        ExceptionHandler.Instance);
 
-            var syncStateFactory = new EntitySyncStateFactory<string, DateTime, IContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext>(
-                entityMapper,
-                entityRelationDataFactory,
-                ExceptionHandler.Instance);
+        //    var storageDataDirectory = _profileDataDirectoryFactory(options.Id);
 
-            var storageDataDirectory = _profileDataDirectoryFactory(options.Id);
+        //    var storageDataAccess = new EntityRelationDataAccess<string, DateTime, GoogleContactRelationData, string, GoogleContactVersion>(storageDataDirectory);
 
-            var storageDataAccess = new EntityRelationDataAccess<string, DateTime, GoogleContactRelationData, string, GoogleContactVersion>(storageDataDirectory);
+        //    componentsToFill.GoogleContactsEntityRelationDataAccess = storageDataAccess;
 
-            componentsToFill.GoogleContactsEntityRelationDataAccess = storageDataAccess;
+        //    var atypeWriteRepository = BatchEntityRepositoryAdapter.Create(atypeRepository, _exceptionHandlingStrategy);
 
-            var atypeWriteRepository = BatchEntityRepositoryAdapter.Create(atypeRepository, _exceptionHandlingStrategy);
+        //    var googleContactVersionComparer = new GoogleContactVersionComparer();
+        //    var synchronizer = new Synchronizer<string, DateTime, IContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext, ContactMatchData, GoogleContactWrapper, int, int>(
+        //        atypeRepository,
+        //        btypeRepository,
+        //        atypeWriteRepository,
+        //        btypeRepository,
+        //        InitialSyncStateCreationStrategyFactory<string, DateTime, IContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext>.Create(
+        //            syncStateFactory,
+        //            syncStateFactory.Environment,
+        //            options.SynchronizationMode,
+        //            options.ConflictResolution,
+        //            e => new GoogleContactConflictInitialSyncStateCreationStrategyAutomatic(e)),
+        //        storageDataAccess,
+        //        entityRelationDataFactory,
+        //        new InitialGoogleContactEntityMatcher(btypeIdEqualityComparer),
+        //        atypeIdEqualityComparer,
+        //        btypeIdEqualityComparer,
+        //        _totalProgressFactory,
+        //        _atypeVersionComparer,
+        //        googleContactVersionComparer,
+        //        syncStateFactory,
+        //        _exceptionHandlingStrategy,
+        //        new ContactMatchDataFactory(),
+        //        IdentityMatchDataFactory<GoogleContactWrapper>.Instance,
+        //        options.EffectiveChunkSize,
+        //        CreateChunkedExecutor(options),
+        //        FullEntitySynchronizationLoggerFactory.Create<string, IContactItemWrapper, string, GoogleContactWrapper>(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<IContactItemWrapper, GoogleContactWrapper>.Instance),
+        //        new VersionAwareToStateAwareEntityRepositoryAdapter<string, DateTime, IGoogleContactContext, int>(atypeRepository, atypeIdEqualityComparer, _atypeVersionComparer),
+        //        new VersionAwareToStateAwareEntityRepositoryAdapter<string, GoogleContactVersion, IGoogleContactContext, int>(btypeRepository, btypeIdEqualityComparer, googleContactVersionComparer),
+        //        NullStateTokensDataAccess<int, int>.Instance);
 
-            var googleContactVersionComparer = new GoogleContactVersionComparer();
-            var synchronizer = new Synchronizer<string, DateTime, IContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext, ContactMatchData, GoogleContactWrapper, int, int>(
-                atypeRepository,
-                btypeRepository,
-                atypeWriteRepository,
-                btypeRepository,
-                InitialSyncStateCreationStrategyFactory<string, DateTime, IContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext>.Create(
-                    syncStateFactory,
-                    syncStateFactory.Environment,
-                    options.SynchronizationMode,
-                    options.ConflictResolution,
-                    e => new GoogleContactConflictInitialSyncStateCreationStrategyAutomatic(e)),
-                storageDataAccess,
-                entityRelationDataFactory,
-                new InitialGoogleContactEntityMatcher(btypeIdEqualityComparer),
-                atypeIdEqualityComparer,
-                btypeIdEqualityComparer,
-                _totalProgressFactory,
-                _atypeVersionComparer,
-                googleContactVersionComparer,
-                syncStateFactory,
-                _exceptionHandlingStrategy,
-                new ContactMatchDataFactory(),
-                IdentityMatchDataFactory<GoogleContactWrapper>.Instance,
-                options.EffectiveChunkSize,
-                CreateChunkedExecutor(options),
-                FullEntitySynchronizationLoggerFactory.Create<string, IContactItemWrapper, string, GoogleContactWrapper>(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<IContactItemWrapper, GoogleContactWrapper>.Instance),
-                new VersionAwareToStateAwareEntityRepositoryAdapter<string, DateTime, IGoogleContactContext, int>(atypeRepository, atypeIdEqualityComparer, _atypeVersionComparer),
-                new VersionAwareToStateAwareEntityRepositoryAdapter<string, GoogleContactVersion, IGoogleContactContext, int>(btypeRepository, btypeIdEqualityComparer, googleContactVersionComparer),
-                NullStateTokensDataAccess<int, int>.Instance);
-
-            var googleContactContextFactory = new GoogleContactContextFactory(googleApiExecutor, btypeIdEqualityComparer, options.UserName, options.ChunkSize);
-            componentsToFill.GoogleContactContextFactory = googleContactContextFactory;
-            return new OutlookSynchronizer<string, GoogleContactVersion>(
-                new ContextCreatingSynchronizerDecorator<string, DateTime, IContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext>(
-                    synchronizer,
-                    googleContactContextFactory));
-        }
+        //    var googleContactContextFactory = new GoogleContactContextFactory(googleApiExecutor, btypeIdEqualityComparer, options.UserName, options.ChunkSize);
+        //    componentsToFill.GoogleContactContextFactory = googleContactContextFactory;
+        //    return new OutlookSynchronizer<string, GoogleContactVersion>(
+        //        new ContextCreatingSynchronizerDecorator<string, DateTime, IContactItemWrapper, string, GoogleContactVersion, GoogleContactWrapper, IGoogleContactContext>(
+        //            synchronizer,
+        //            googleContactContextFactory));
+        //}
 
         private static IChunkedExecutor CreateChunkedExecutor(Options options)
         {
