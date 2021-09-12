@@ -25,13 +25,11 @@ using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Http;
+using Google.Apis.PeopleService.v1;
 using Google.Apis.Services;
 using Google.Apis.Tasks.v1;
 using Google.Apis.Tasks.v1.Data;
 using Google.Apis.Util.Store;
-using Google.Contacts;
-using Google.GData.Client;
-using Google.GData.Contacts;
 using log4net;
 
 namespace CalDavSynchronizer.OAuth.Google
@@ -114,50 +112,17 @@ namespace CalDavSynchronizer.OAuth.Google
             });
         }
 
-        private static OAuth2Parameters CreateOAuth2Parameters(ClientSecrets clientSecrets, UserCredential credential)
-        {
-            return new OAuth2Parameters
-            {
-                ClientId = clientSecrets.ClientId,
-                ClientSecret = clientSecrets.ClientSecret,
-                AccessToken = credential.Token.AccessToken,
-                RefreshToken = credential.Token.RefreshToken
-            };
-        }
 
-        public static async Task<ContactsRequest> LoginToContactsService(string user, IWebProxy proxyOrNull)
+        public static async Task<PeopleServiceService> LoginToContactsService(string user, IWebProxy proxyOrNull)
         {
-            var clientSecrets = CreateClientSecrets();
             var credential = await LoginToGoogle(user, proxyOrNull);
 
-            var parameters = CreateOAuth2Parameters(clientSecrets, credential);
-            var contactsRequest = new ContactsRequest(CreateRequestSettings(parameters));
-
-            ContactsQuery query = new ContactsQuery(ContactsQuery.CreateContactsUri("default"));
-            query.NumberToRetrieve = 1;
-            try
-            {
-                var feed = contactsRequest.Service.Query(query);
-            }
-            catch (GDataRequestException x)
-            {
-                s_logger.Error("Trying to access google contacts API failed. Revoking  token and reauthorizing.", x);
-
-                await credential.RevokeTokenAsync(CancellationToken.None);
-                await GoogleWebAuthorizationBroker.ReauthorizeAsync(credential, CancellationToken.None);
-                parameters = CreateOAuth2Parameters(clientSecrets, credential);
-                contactsRequest = new ContactsRequest(CreateRequestSettings(parameters));
-            }
-
-            if (proxyOrNull != null)
-                contactsRequest.Proxy = proxyOrNull;
-
-            return contactsRequest;
-        }
-
-        private static RequestSettings CreateRequestSettings(OAuth2Parameters parameters)
-        {
-            return new RequestSettings("Outlook CalDav Synchronizer", parameters);
+            return new PeopleServiceService(
+                new BaseClientService.Initializer
+                {
+                    HttpClientInitializer = credential,
+                    ApplicationName = "Outlook CalDav Synchronizer"
+                });
         }
     }
 }
