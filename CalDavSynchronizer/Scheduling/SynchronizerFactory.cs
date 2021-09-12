@@ -162,7 +162,7 @@ namespace CalDavSynchronizer.Scheduling
                 case OlItemType.olContactItem:
                     if (options.ServerAdapterType == ServerAdapterType.GoogleContactApi)
                     {
-                        // TODO GooglePeopleApi
+                        // TODO-GPA
                         // Login example: https://developers.google.com/api-client-library/dotnet/get_started
                         throw new NotImplementedException("Google people api is not yet implemented");
 

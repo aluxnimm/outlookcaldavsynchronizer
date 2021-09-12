@@ -920,7 +920,7 @@ namespace CalDavSynchronizer.Ui.Options
 
         private Task<string> TestGoogleContactsConnection(OptionsModel options, OlItemType outlookFolderType, string url)
         {
-            // TODO GooglePeopleApi
+            // TODO-GPA
             throw new NotImplementedException();
             //var service = await GoogleHttpClientFactory.LoginToContactsService(options.EmailAddress, options.GetProxyIfConfigured());
 

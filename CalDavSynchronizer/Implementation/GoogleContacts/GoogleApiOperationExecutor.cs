@@ -52,7 +52,7 @@ namespace CalDavSynchronizer.Implementation.GoogleContacts
                 {
                     return operation(_contactFacade);
                 }
-                // TODO GooglePeopleApi: check iof it really throws an WebException
+                // TODO-GPA: check iof it really throws an WebException
                 catch (WebException x) when
                 ((x.Response as HttpWebResponse)
                  ?.StatusCode == HttpStatusCode.ServiceUnavailable &&
