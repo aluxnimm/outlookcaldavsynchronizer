@@ -831,6 +831,14 @@ namespace CalDavSynchronizer.Implementation.Contacts
             target.BusinessFaxNumber = string.Empty;
             target.PrimaryTelephoneNumber = string.Empty;
             target.MobileTelephoneNumber = string.Empty;
+            target.PagerNumber = string.Empty;
+            target.OtherTelephoneNumber = string.Empty;
+            target.HomeFaxNumber = string.Empty;
+            target.OtherFaxNumber = string.Empty;
+            target.Home2TelephoneNumber = string.Empty;
+            target.Business2TelephoneNumber = string.Empty;
+            target.CarTelephoneNumber = string.Empty;
+            target.ISDNNumber = string.Empty;
 
             // if no PhoneTypes are set (e.g. Yandex drops the types) 
             // assume a default ordering of cell,work,home to avoid data loss of the first 3 numbers
