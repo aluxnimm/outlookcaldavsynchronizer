@@ -121,6 +121,19 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 4.2.0 ####
+- Released 2022/03/02
+- Security fixes
+	- Update NuGet package for log4net, CVE-2018-1285, gh issue 343.
+- Bug fixes
+	- fix handling close of OptionsWindow.
+	- reset all telephone numbers not only main ones, gh issue 342.
+	- Validate Swisscom profile and check if contact folder is selected.
+	- Default to CardDAV for Google bulk profile since native API changed and needs to be updated.
+	- Fix autodiscovery and ignore 400 error when querying Google CardDAV adress book resource.
+- Known Issues
+	- Google Contact API changed and therefore is not supported anymore, please use CardDAV instead of Google native API meanwhile.
+
 #### 4.1.0 ####
 - Released 2021/05/12
 - New features
@@ -1468,10 +1481,7 @@ For Google you can use the new Google type profile which simplifies the setup. Y
 
 You can control which calendars are available via CalDAV and shown in autodiscovery in your calendar settings, see [https://calendar.google.com/calendar/syncselect](https://calendar.google.com/calendar/syncselect)
 
-For contacts you should activate the checkbox **Use Google native API**. This will improve performance and other mapping issues, since the Google Contacts API supports more features than the generic CardDAV API. Compared to CardDAV this adds:
-
-- Support for google contact groups, which are synced to Outlook categories.
-- Added mapping for anniversary, relations (spouse, child, etc.) and IMs for google contacts (Contribution from Florian Saller, thank you!).
+#### Known Issue: Please use CardDAV instead of Google native API for contacts ####
 
 When switching between native API and CardDAV the sync cache is cleared and a complete initial sync is performed during next sync run.
 
@@ -1529,9 +1539,9 @@ and press '*Test or discover settings*' for autodiscovery, the final URL should 
     
     https://contacts.icloud.com:443/<YOUR UNIQUE Apple USER_ID>/carddavhome/card/
 
-There are PHP files available to determine your Apple USER_ID, see
+There are infos available to determine your Apple USER_ID, see
 
-    https://icloud.niftyside.com/
+    https://community.jamf.com/t5/jamf-pro/what-is-the-current-apple-id-on-the-mac/m-p/229968
 
     https://github.com/muhlba91/icloud
 

@@ -381,32 +381,32 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_59807CD3EE04ED0CD355B5CB1F671260"
+        "MsmKey" = "8:_5B28343A4C98FDF30DF4BC7DE203EECD"
         "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_59807CD3EE04ED0CD355B5CB1F671260"
+        "MsmKey" = "8:_5ED4CEA717179A1D4A254C330BC1511F"
+        "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5ED4CEA717179A1D4A254C330BC1511F"
         "OwnerKey" = "8:_F5E7FDF04E965A59AC2244FBC6EF4BD0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_59807CD3EE04ED0CD355B5CB1F671260"
+        "MsmKey" = "8:_5ED4CEA717179A1D4A254C330BC1511F"
         "OwnerKey" = "8:_C147D8BE91EA133BBF35A4265AD6E7C4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_59807CD3EE04ED0CD355B5CB1F671260"
+        "MsmKey" = "8:_5ED4CEA717179A1D4A254C330BC1511F"
         "OwnerKey" = "8:_E8BFD262316C23666C9E3094B8635548"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_5B28343A4C98FDF30DF4BC7DE203EECD"
-        "OwnerKey" = "8:_71A5BA7C36384A6FA76D693EB014974D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1354,7 +1354,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_59807CD3EE04ED0CD355B5CB1F671260"
+        "OwnerKey" = "8:_5ED4CEA717179A1D4A254C330BC1511F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -3804,20 +3804,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_59807CD3EE04ED0CD355B5CB1F671260"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5B28343A4C98FDF30DF4BC7DE203EECD"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:log4net, Version=2.0.9.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:System.Net.Ping, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
-                    "_59807CD3EE04ED0CD355B5CB1F671260"
+                    "_5B28343A4C98FDF30DF4BC7DE203EECD"
                     {
-                    "Name" = "8:log4net.dll"
+                    "Name" = "8:System.Net.Ping.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:log4net.dll"
+            "SourcePath" = "8:System.Net.Ping.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
@@ -3835,20 +3835,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5B28343A4C98FDF30DF4BC7DE203EECD"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5ED4CEA717179A1D4A254C330BC1511F"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:System.Net.Ping, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+            "AssemblyAsmDisplayName" = "8:log4net, Version=2.0.14.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_5B28343A4C98FDF30DF4BC7DE203EECD"
+                    "_5ED4CEA717179A1D4A254C330BC1511F"
                     {
-                    "Name" = "8:System.Net.Ping.dll"
+                    "Name" = "8:log4net.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:System.Net.Ping.dll"
+            "SourcePath" = "8:log4net.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B9464A368EDA4FBF813D9C26C4B34467"
@@ -7142,15 +7142,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CalDavSynchronizer"
-        "ProductCode" = "8:{49095927-B008-491C-9D9C-ADE67AAC52A7}"
-        "PackageCode" = "8:{478B2AD4-D332-4403-B504-BAA6589BDEA3}"
+        "ProductCode" = "8:{DF8B4C6B-71B4-474B-9FC6-20EAFAB4EBC1}"
+        "PackageCode" = "8:{5BA7A5BA-EB62-47F8-AE3F-E7B78F3B345E}"
         "UpgradeCode" = "8:{691063F4-DD9A-4264-948D-3FBD2565572C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:4.1.0"
+        "ProductVersion" = "8:4.2.0"
         "Manufacturer" = "8:Gerhard Zehetbauer"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
