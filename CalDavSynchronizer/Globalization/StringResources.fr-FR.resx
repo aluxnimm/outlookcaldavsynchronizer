@@ -645,7 +645,7 @@ https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/)</value>
   <data name="Fix imported phone number format" xml:space="preserve">
     <value>Réparation du format des numéros de téléphone importés</value>
   </data>
- <data name="Force Basic authentication" xml:space="preserve">
+  <data name="Force Basic authentication" xml:space="preserve">
     <value>Forcer l'authentification Basic</value>
   </data>
   <data name="Formatted" xml:space="preserve">
@@ -1419,5 +1419,8 @@ ou si vous souhaitez créer une réunion sur un calendrier partagé pour le prop
     <value>Synchroniser les notifications Outlook en tant que valeur absolue DATE-TIME au lieu de la valeur relative à la date de début ou d'échéance.
 Nécessaire pour la compatibilité avec iOS.
     </value>
+  </data>
+  <data name="- The Swisscom profile is currently just supported for contacts, please choose a Contacts folder" xml:space="preserve">
+    <value>- Le profile Swisscom ne fonctionne momentanément que pour les carnets d'adresses, veuillez choisir un dossier de contacts</value>
   </data>
 </root>

@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.OAuth.Swisscom;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Utilities;

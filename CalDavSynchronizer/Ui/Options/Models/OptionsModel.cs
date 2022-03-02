@@ -511,6 +511,11 @@ namespace CalDavSynchronizer.Ui.Options.Models
                 result &= OptionTasks.ValidateWebDavUrl(CalenderUrl, errorMessageBuilder, true);
                 result &= OptionTasks.ValidateEmailAddress(errorMessageBuilder, EmailAddress, true);
             }
+            if (!string.IsNullOrEmpty(_profileTypeOrNull) && String.Equals(_profileTypeOrNull, "Swisscom", StringComparison.OrdinalIgnoreCase) && _selectedFolderOrNull?.DefaultItemType != OlItemType.olContactItem)
+            {
+                result = false;
+                errorMessageBuilder.AppendLine(Strings.Get($"- The Swisscom profile is currently just supported for contacts, please choose a Contacts folder"));
+            }
 
             if (IsChunkedSynchronizationEnabled && ChunkSize < 1)
             {

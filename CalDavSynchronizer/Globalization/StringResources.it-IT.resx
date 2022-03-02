@@ -1430,4 +1430,7 @@ o se si desidera creare una riunione su un calendario condiviso per il proprieta
 Necessario per la compatibilità con iOS.
     </value>
   </data>
+  <data name="- The Swisscom profile is currently just supported for contacts, please choose a Contacts folder" xml:space="preserve">
+    <value>- Momentaneamente il profilo Swisscom è supportato solo per rubrica indirizzi, scegli una cartella Contatti</value>
+  </data>
 </root>

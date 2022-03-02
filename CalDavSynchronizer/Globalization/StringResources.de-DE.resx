@@ -1446,4 +1446,7 @@ Kontaktieren Sie für ein persönliches Angebot zum Outlook Sync for OX am beste
 
 Selbstverständlich können Sie auch weiterhin kostenlos ein generisches Profil erstellen und die Einstellungen manuell vornehmen.</value>
   </data>
+  <data name="- The Swisscom profile is currently just supported for contacts, please choose a Contacts folder" xml:space="preserve">
+    <value>- Das Swisscom Profil wird momentan nur für Adressbücher unterstützt, bitte einen Kontaktordner auswählen</value>
+  </data>
 </root>
