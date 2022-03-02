@@ -81,8 +81,7 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
 
         public void SetResourceUrl(OptionsModel options, AddressBookData resource)
         {
-            options.CalenderUrl = string.Empty;
-            options.UseGoogleNativeApi = true;
+            options.CalenderUrl = resource.Uri.ToString();
         }
 
         public void SetResourceUrl(OptionsModel options, TaskListData resource)
@@ -105,7 +104,8 @@ namespace CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels
             var calDavDataAccess = new CalDavDataAccess(url, webDavClient);
             var foundResources = await calDavDataAccess.GetUserResourcesIncludingCalendarProxies(false);
 
-            var foundAddressBooks = new[] {new AddressBookData(new Uri("googleApi://defaultAddressBook"), "Default AddressBook", AccessPrivileges.All)};
+            var cardDavDataAccess = new CardDavDataAccess(url, webDavClient, string.Empty, contentType => true);
+            var foundAddressBooks = await cardDavDataAccess.GetUserAddressBooksNoThrow(true);
 
             var service = await GoogleHttpClientFactory.LoginToGoogleTasksService(EmailAddress, SynchronizerFactory.CreateProxy(_prototypeModel.CreateProxyOptions()));
             var taskLists = await service.Tasklists.List().ExecuteAsync();

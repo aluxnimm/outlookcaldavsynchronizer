@@ -69,9 +69,9 @@ namespace CalDavSynchronizer.DataAccess
                     null,
                     null);
             }
-            catch (WebDavClientException x) when (x.StatusCode == HttpStatusCode.NotFound)
+            catch (WebDavClientException x) when (x.StatusCode == HttpStatusCode.NotFound || x.StatusCode == HttpStatusCode.BadRequest )
             {
-                // iCloud and Google CardDav return with 404 and OPTIONS doesn't work for the resource uri
+                // iCloud and Google CardDav return with 400 or 404 and OPTIONS doesn't work for the resource uri
                 return true;
             }
 
