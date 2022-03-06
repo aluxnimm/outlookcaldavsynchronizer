@@ -8,8 +8,10 @@
              xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
              mc:Ignorable="d"
              d:DataContext="{x:Static viewModels:ServerSettingsTemplateViewModel.DesignInstance}">
-
-  <GroupBox Header="{g:Localize Server Settings}">
+    <UserControl.Resources>
+        <views:BooleanToVisibilityConverterInverted x:Key="BooleanToVisibilityConverterInverted" />
+    </UserControl.Resources>
+    <GroupBox Header="{g:Localize Server Settings}">
     <DockPanel>
       <Grid DockPanel.Dock="Top">
         <Grid.ColumnDefinitions>
@@ -36,10 +38,14 @@
         <TextBlock Grid.Row="1" Grid.Column="0"><g:Localize>Username:</g:Localize></TextBlock>
         <TextBox Text="{Binding UserName}"  Grid.Row="1" Grid.Column="2" />
 
-        <TextBlock Grid.Row="2" Grid.Column="0"><g:Localize>Password:</g:Localize></TextBlock>
+        <TextBlock Grid.Row="2" 
+                   Grid.Column="0" 
+                   Visibility="{Binding IsChecked, ElementName=UseAccountPasswordCheckBox, Converter={StaticResource BooleanToVisibilityConverterInverted}}">
+            <g:Localize>Password:</g:Localize>
+        </TextBlock>
         <PasswordBox x:Name="_passwordBox"
                      PasswordChar="*" 
-                     IsEnabled="{Binding IsChecked, ElementName=UseAccountPasswordCheckBox, Converter={StaticResource BooleanNotConverter}}"            
+                     Visibility="{Binding IsChecked, ElementName=UseAccountPasswordCheckBox, Converter={StaticResource BooleanToVisibilityConverterInverted}}" 
                      Grid.Row="2" Grid.Column="2" />
         <CheckBox IsChecked="{Binding UseAccountPassword}" x:Name="UseAccountPasswordCheckBox" Grid.Row="3" Grid.ColumnSpan="3" Grid.Column="0"><g:Localize>Use IMAP/POP3 account password</g:Localize></CheckBox>
 
