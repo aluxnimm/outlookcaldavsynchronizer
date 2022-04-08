@@ -748,6 +748,9 @@
     <EmbeddedResource Include="CalDavSynchronizerRibbon.resx">
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\StringResources.de-DE.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Globalization\StringResources.fr-FR.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -760,7 +763,7 @@
     <EmbeddedResource Include="Globalization\StringResources.ru-RU.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\StringResources.de-DE.resx">
+    <EmbeddedResource Include="Globalization\StringResources.zh-CN.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\StringResources.resx">
