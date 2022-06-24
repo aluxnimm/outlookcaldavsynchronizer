@@ -116,16 +116,13 @@
       <Version>1.0.2.575</Version>
     </PackageReference>
     <PackageReference Include="Google.Apis.Tasks.v1">
-      <Version>1.51.0.2231</Version>
+      <Version>1.57.0.2384</Version>
     </PackageReference>
     <PackageReference Include="Google.GData.Contacts">
       <Version>2.2.0</Version>
     </PackageReference>
     <PackageReference Include="log4net">
       <Version>2.0.14</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Bcl.Async">
-      <Version>1.0.168</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Net.Http">
       <Version>2.2.29</Version>
