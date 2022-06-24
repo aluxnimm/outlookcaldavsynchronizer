@@ -573,7 +573,7 @@ Utilisé notamment pour Yahoo et cPanel Horde Server.</value>
     <value>Activer l'icône de la barre des tâches</value>
   </data>
   <data name="Enable useUnsafeHeaderParsing" xml:space="preserve">
-    <value>Activer  useUnsafeHeaderParsing</value>
+    <value>Activer useUnsafeHeaderParsing</value>
   </data>
   <data name="Enables the systray icon in the Windows taskbar." xml:space="preserve">
     <value>Activer l'icône dans la barre des tâches Windows.</value>
@@ -1099,7 +1099,7 @@ Veuillez noter que l'activation de cette option peut entraîner une diminution d
     <value>Certaines options contiennent des valeurs incorrectes</value>
   </data>
   <data name="SSL/TLS Settings" xml:space="preserve">
-    <value>Paramètres SSL/TLS </value>
+    <value>Paramètres SSL/TLS</value>
   </data>
   <data name="Start a manual synchronization of all active profiles." xml:space="preserve">
     <value>Démarrer une synchronisation manuelle de tous les profils actifs.</value>
