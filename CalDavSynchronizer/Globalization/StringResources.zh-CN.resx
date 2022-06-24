@@ -1,0 +1,1419 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="- CalDavConnectTimeout must be &gt; 0" xml:space="preserve">
+    <value>- CalDavConnectTimeout 必须大于 0</value>
+  </data>
+	<data name="- Custom properties must not be empty." xml:space="preserve">
+    <value>- 自定义属性不能为空。</value>
+  </data>
+	<data name="- DAV X-Attributes for manual mapped properties have to start with 'X-'" xml:space="preserve">
+    <value>- 手动映射属性的 DAV X-Attributes 必须以 “X-” 开头</value>
+  </data>
+	<data name="- If you don't know the URL you can also enter the Email address and try to discover it." xml:space="preserve">
+    <value>- 如果您不知道 URL，您也可以输入电子邮件地址并尝试找到它。</value>
+  </data>
+	<data name="- Invalid CalDavConnectTimeout" xml:space="preserve">
+    <value>- 无效的 CalDavConnectTimeout 值</value>
+  </data>
+	<data name="- Invalid Max Report Age" xml:space="preserve">
+    <value>- 无效的最大报告年龄</value>
+  </data>
+	<data name="- Max Report Age must be &gt; 0" xml:space="preserve">
+    <value>- 最大报告年龄必须大于 0</value>
+  </data>
+	<data name="- Resources which are a calendar and an addressbook are not valid!" xml:space="preserve">
+    <value>- 日历与通讯簿资源无效！</value>
+  </data>
+	<data name="- The CalDav/CardDav URL cannot end/start with whitespaces." xml:space="preserve">
+    <value>- CalDav/CardDav URL 不能以空格为开头或结尾。</value>
+  </data>
+	<data name="- The CalDav/CardDav URL has to end with a slash ('/')." xml:space="preserve">
+    <value>- CalDav/CardDav URL 必须以斜杠（“/”）结尾。</value>
+  </data>
+	<data name="- The CalDav/CardDav URL is empty." xml:space="preserve">
+    <value>- CalDav/CardDav URL 为空。</value>
+  </data>
+	<data name="- The CalDav/CardDav URL is not a well formed URL. ({0})" xml:space="preserve">
+    <value>- CalDav/CardDav URL 不符合格式。({0})</value>
+  </data>
+	<data name="- The category name must not contain commas." xml:space="preserve">
+    <value>- 类别名称中不能包含逗号。</value>
+  </data>
+	<data name="- The category name must not contain semicolons." xml:space="preserve">
+    <value>- 类别名称中不能包含分号。</value>
+  </data>
+	<data name="- The chunk size has to be 1 or greater." xml:space="preserve">
+    <value>- 块大小必须大于等于 1。</value>
+  </data>
+	<data name="- The Email address is empty." xml:space="preserve">
+    <value>- 电子邮件地址为空。</value>
+  </data>
+	<data name="- The Email address is invalid." xml:space="preserve">
+    <value>- 电子邮件地址无效。</value>
+  </data>
+	<data name="- The specified address book doesn't allow creation of contacts!" xml:space="preserve">
+    <value>- 指定的通讯簿不允许创建联系人！</value>
+  </data>
+	<data name="- The specified address book doesn't allow deletion of contacts!" xml:space="preserve">
+    <value>- 指定的通讯簿不允许删除联系人！</value>
+  </data>
+	<data name="- The specified calendar doesn't allow creation of appointments!" xml:space="preserve">
+    <value>- 指定的通讯簿不允许创建约会！</value>
+  </data>
+	<data name="- The specified calendar doesn't allow deletion of appointments!" xml:space="preserve">
+    <value>- 指定的通讯簿不允许删除约会！</value>
+  </data>
+	<data name="- The specified calendar is not writeable. Therefore it is not possible to use the synchronization mode '{0}'." xml:space="preserve">
+    <value>- 指定的日历不可写，因此不能使用同步模式 '{0}'。</value>
+  </data>
+	<data name="- The specified URL does not support address books." xml:space="preserve">
+    <value>- 指定的 URL 不支持通讯簿。</value>
+  </data>
+	<data name="- The specified URL does not support calendar access." xml:space="preserve">
+    <value>- 指定的 URL 不支持日历访问。</value>
+  </data>
+	<data name="- The specified URL does not support calendar queries. Some features like time range filter may not work!" xml:space="preserve">
+    <value>- 指定的 URL 不支持日历查询，部分功能如时间范围过滤器可能无法工作！</value>
+  </data>
+	<data name="- The specified URL is not a calendar!" xml:space="preserve">
+    <value>- 指定的 URL 不是日历！</value>
+  </data>
+	<data name="- The specified URL is not an addressbook!" xml:space="preserve">
+    <value>- 指定的 URL 不是通讯簿！</value>
+  </data>
+	<data name="- The specified URL is not an task list!" xml:space="preserve">
+    <value>- 指定的 URL 不是任务列表！</value>
+  </data>
+	<data name="- There is no Outlook folder selected." xml:space="preserve">
+    <value>- 没有 Outlook 文件夹被选择。</value>
+  </data>
+	<data name="- WebDav collection sync is currently just supported for appointments and contacts." xml:space="preserve">
+    <value>- WebDav 收集同步目前只支持约会和联系人。</value>
+  </data>
+	<data name="1 day" xml:space="preserve">
+    <value>1 日</value>
+  </data>
+	<data name="12 hours" xml:space="preserve">
+    <value>12 小时</value>
+  </data>
+	<data name="&lt;MISSING&gt;" xml:space="preserve">
+    <value>&lt;缺失&gt;</value>
+  </data>
+	<data name="&lt;New Profile&gt;" xml:space="preserve">
+    <value>&lt;新配置文件&gt;</value>
+  </data>
+	<data name="About" xml:space="preserve">
+    <value>关于</value>
+  </data>
+	<data name="About CalDav Synchronizer" xml:space="preserve">
+    <value>关于 CalDav Synchronizer</value>
+  </data>
+	<data name="Accept invalid chars in server response" xml:space="preserve">
+    <value>接受服务器响应中的无效字符</value>
+  </data>
+	<data name="Account settings" xml:space="preserve">
+    <value>账户设置</value>
+  </data>
+	<data name="Add addressbook resource on server" xml:space="preserve">
+    <value>在服务器中添加通讯簿资源</value>
+  </data>
+	<data name="Add calendar resource on server" xml:space="preserve">
+    <value>在服务器中添加日历资源</value>
+  </data>
+	<data name="Add manual mapping pairs of Outlook custom properties and DAV X-attributes. &#xA;If properties do not exist , they are created. &#xA;The manual mapping overrules the general mapping of all Outlook custom attributes if both activated. &#xA;DAV attributes MUST start with X-" xml:space="preserve">
+    <value>添加 Outlook 自定义属性与 DAV X-attributes 的手动映射对。如果属性不存在，则创建它们。手动映射将覆盖所有 Outlook 自定义属性的一般映射（若二者都激活）。DAV 属性必须以 X- 开头</value>
+  </data>
+	<data name="Add multiple profiles" xml:space="preserve">
+    <value>添加多个配置文件</value>
+  </data>
+	<data name="Add new profile" xml:space="preserve">
+    <value>添加新配置文件</value>
+  </data>
+	<data name="Add resource" xml:space="preserve">
+    <value>添加资源</value>
+  </data>
+	<data name="Added addressbook resource '{0}' successfully!" xml:space="preserve">
+    <value>成功添加通讯簿资源 '{0}' ！</value>
+  </data>
+	<data name="Added calendar resource '{0}' successfully!" xml:space="preserve">
+    <value>成功添加日历资源 '{0}' ！</value>
+  </data>
+	<data name="Adding profile '{0}'" xml:space="preserve">
+    <value>添加配置文件 '{0}'</value>
+  </data>
+	<data name="Address Books" xml:space="preserve">
+    <value>通讯簿</value>
+  </data>
+	<data name="Advanced Network Settings" xml:space="preserve">
+    <value>高级网络设置</value>
+  </data>
+	<data name="All sync runs" xml:space="preserve">
+    <value>所有同步执行</value>
+  </data>
+	<data name="Assign category color when OK is clicked." xml:space="preserve">
+    <value>当单击 OK 时分配类别颜色。</value>
+  </data>
+	<data name="Assign category color:" xml:space="preserve">
+    <value>分配类别颜色：</value>
+  </data>
+	<data name="Assign Easy Project resources to different Outlook folders" xml:space="preserve">
+    <value>将 Easy Project 资源分配到不同的 Outlook 文件夹</value>
+  </data>
+	<data name="Assign Kolab folders to distinct Outlook folders" xml:space="preserve">
+    <value>将 Kolab 文件夹分配到不同的 Outlook 文件夹</value>
+  </data>
+	<data name="Assign shortcut key when OK is clicked." xml:space="preserve">
+    <value>当单击 OK 时分配快捷键。</value>
+  </data>
+	<data name="Assign shortcut key:" xml:space="preserve">
+    <value>分配快捷键：</value>
+  </data>
+	<data name="Automatic" xml:space="preserve">
+    <value>自动</value>
+  </data>
+	<data name="Automatic check for newer version turned off." xml:space="preserve">
+    <value>自动检查新版本已关闭。</value>
+  </data>
+	<data name="Automatically check for newer versions" xml:space="preserve">
+    <value>自动检查新版本</value>
+  </data>
+	<data name="Automatically create Outlook folders" xml:space="preserve">
+    <value>自动创建 Outlook 文件夹</value>
+  </data>
+	<data name="CalDav Synchronizer download failed" xml:space="preserve">
+    <value>CalDav Synchronizer 下载失败</value>
+  </data>
+	<data name="CalDAV Synchronizer is currently starting up. Please try again, when startup is finished." xml:space="preserve">
+    <value>CalDAV Synchronizer 当前正在启动，当启动完成后请重试。</value>
+  </data>
+	<data name="CalDav Synchronizer - Synchronizing..." xml:space="preserve">
+    <value>CalDav Synchronizer - 正在同步……</value>
+  </data>
+	<data name="Calendar Color" xml:space="preserve">
+    <value>日历颜色</value>
+  </data>
+	<data name="Calendars" xml:space="preserve">
+    <value>日历</value>
+  </data>
+	<data name="Can't access Outlook item, maybe it was moved or deleted!" xml:space="preserve">
+    <value>无法访问 Outlook 项目，可能已被移动或删除！</value>
+  </data>
+	<data name="Can't add addressbook resource '{0}'" xml:space="preserve">
+    <value>无法添加通讯簿资源 '{0}' </value>
+  </data>
+	<data name="Can't add calendar resource '{0}'" xml:space="preserve">
+    <value>无法添加日历资源 '{0}'</value>
+  </data>
+	<data name="Can't set the calendar color!'" xml:space="preserve">
+    <value>无法设置日历颜色！</value>
+  </data>
+	<data name="Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+	<data name="Category Filter" xml:space="preserve">
+    <value>类别过滤器</value>
+  </data>
+	<data name="Changing the time range filter setting leads to deletion of the sync cache &#xA;and a complete resync of the calendar!" xml:space="preserve">
+    <value>更改时间范围过滤器设置将删除同步缓存并完全重新同步日历！</value>
+  </data>
+	<data name="Changing this option requires a restart of Outlook." xml:space="preserve">
+    <value>更改该选项需要 Outlook 重启。</value>
+  </data>
+	<data name="Check for Updates" xml:space="preserve">
+    <value>检查更新</value>
+  </data>
+	<data name="Check Internet connection before sync run" xml:space="preserve">
+    <value>在执行同步前检查 Internet 连接</value>
+  </data>
+	<data name="Checks if a network interface is up&#xA;and try DNS query to dns.msftncsi.com first and if that fails try to download&#xA;http://www.msftncsi.com/ncsi.txt with the configured proxy settings.&#xA;Should avoid error reports when network is not available after&#xA;coming back from hibernate for example." xml:space="preserve">
+    <value>首先检查网络接口是否启动并尝试 DNS 查询 dns.msftncsi.com。如果失败，尝试下载
+http://www.msftncsi.com/ncsi.txt 配置代理设置。例如，在从休眠中返回后网络不可用时，应避免错误报告。</value>
+  </data>
+	<data name="Choose the default Instant Messenger protocol.&#xA;You can add other protocols with protocol: address" xml:space="preserve">
+    <value>选择默认的即时通讯协议。
+您可以以 “协议: 地址” 的形式添加其他协议</value>
+  </data>
+	<data name="Choose the used format for DAV contact groups.&#xA;SOGO uses its own VLIST format to store contact groups.&#xA;For other CardDAV servers choose the vCard with KIND:group format &#xA;and for iCloud the iCloud group format." xml:space="preserve">
+    <value>选择 DAV 联系人组使用的格式。SOGO 使用自己的 VLIST 格式来存储联系人组。对于其他 CardDAV 服务器，选择具有 KIND:组 格式的 vCard；对于 iCloud，选择 iCloud 组格式。</value>
+  </data>
+	<data name="Chunk size:" xml:space="preserve">
+    <value>块大小：</value>
+  </data>
+	<data name="Cleanup duplicate events after each sync run" xml:space="preserve">
+    <value>在每次执行同步后清理重复的事件</value>
+  </data>
+	<data name="Clear cache of selected profile" xml:space="preserve">
+    <value>清理选定的配置文件的缓存</value>
+  </data>
+	<data name="Clear log" xml:space="preserve">
+    <value>清理日志</value>
+  </data>
+	<data name="Click to open configuration." xml:space="preserve">
+    <value>单击打开配置。</value>
+  </data>
+	<data name="Click to open latest synchronization report." xml:space="preserve">
+    <value>单击打开最新同步报告。</value>
+  </data>
+	<data name="Close connection after each request" xml:space="preserve">
+    <value>在每次请求后关闭连接</value>
+  </data>
+	<data name="Col" xml:space="preserve">
+    <value>颜色</value>
+  </data>
+	<data name="Collapse all nodes" xml:space="preserve">
+    <value>折叠所有节点</value>
+  </data>
+	<data name="Configuration Error" xml:space="preserve">
+    <value>配置错误</value>
+  </data>
+	<data name="Configure your synchronization profiles." xml:space="preserve">
+    <value>配置您的同步配置文件。</value>
+  </data>
+	<data name="Conflict resolution:" xml:space="preserve">
+    <value>解决冲突：</value>
+  </data>
+	<data name="Connection test NOT successful:" xml:space="preserve">
+    <value>连接测试失败：</value>
+  </data>
+	<data name="Connection test successful BUT:" xml:space="preserve">
+    <value>连接测试成功，但：</value>
+  </data>
+	<data name="Connection test successful." xml:space="preserve">
+    <value>连接测试成功。</value>
+  </data>
+	<data name="Contact Mapping Configuration" xml:space="preserve">
+    <value>联系人映射配置</value>
+  </data>
+	<data name="Convert formatted RTF Body of Outlook appointment to Html and export it as X-ALT-DESC property.&#xA;The RTF to Html conversion is experimental inline images and some formatting properties can not be converted!&#xA;Be aware that some servers like Google Calendar drop this attribute!" xml:space="preserve">
+    <value>将格式化 RTF 正文的 Outlook 约会转换为 HTML 并将其导出为 X-ALT-DESC 属性。
+RTF 到 HTML 的转换是实验性功能，内联图像和部分格式属性不能转换！
+请注意，有些服务器（如 Google Calendar）会删除此属性！</value>
+  </data>
+	<data name="Convert numbers like +1 23 45678 9 &#xA;to +1 (23) 45678 - 9 &#xA;so that Outlook can show country and area code." xml:space="preserve">
+    <value>将例如 +1 23 45678 9 的数字转换成 +1 (23) 45678 - 9 以使 Outlook 可以显示国家与地区代码。</value>
+  </data>
+	<data name="Convert X-ALT-DESC description Html property to RTF and set Outlook appointment RTF Body.&#xA;The html to RTF conversion is experimental not all Html formatting options can be converted!&#xA;This overwrites also the plaintext Body!" xml:space="preserve">
+    <value>将 X-ALT-DESC 描述 HTML 属性转换为 RTF 并设置 Outlook 约会为 RTF 正文。
+HTML 到 RTF 的转换是实验性功能，并非所有 HTML 格式选项都可以被转换！
+这同样会覆盖纯文本正文！</value>
+  </data>
+	<data name="Copy selected profile" xml:space="preserve">
+    <value>复制选定的配置文件</value>
+  </data>
+	<data name="Create DAV resource" xml:space="preserve">
+    <value>创建 DAV 资源</value>
+  </data>
+	<data name="Create DAV server resource" xml:space="preserve">
+    <value>创建 DAV 服务器资源</value>
+  </data>
+	<data name="Create events on server in UTC" xml:space="preserve">
+    <value>在服务器上创建事件（UTC）</value>
+  </data>
+	<data name="Create events on server with downloaded IANA timezones" xml:space="preserve">
+    <value>在服务器上创建事件（使用下载的 IANA 时区）</value>
+  </data>
+	<data name="Current version: {0}" xml:space="preserve">
+    <value>当前版本：{0}</value>
+  </data>
+	<data name="Custom Properties Mapping" xml:space="preserve">
+    <value>自定义属性映射</value>
+  </data>
+	<data name="Custom Properties Mapping Configuration" xml:space="preserve">
+    <value>自定义属性映射配置</value>
+  </data>
+	<data name="DAV Connection Timeout (secs)" xml:space="preserve">
+    <value>DAV 连接超时（秒）</value>
+  </data>
+	<data name="DAV contact group format" xml:space="preserve">
+    <value>DAV 联系人组格式</value>
+  </data>
+	<data name="DAV URL" xml:space="preserve">
+    <value>DAV URL</value>
+  </data>
+	<data name="DAV URL:" xml:space="preserve">
+    <value>DAV URL：</value>
+  </data>
+	<data name="DAV X-attribute" xml:space="preserve">
+    <value>DAV X-attribute</value>
+  </data>
+	<data name="Debug" xml:space="preserve">
+    <value>调试</value>
+  </data>
+	<data name="Default IM protocol:" xml:space="preserve">
+    <value>默认 IM 协议：</value>
+  </data>
+	<data name="Delete reports older than (days):" xml:space="preserve">
+    <value>删除早于此日的报告：</value>
+  </data>
+	<data name="Delete selected" xml:space="preserve">
+    <value>删除选定</value>
+  </data>
+	<data name="Delete selected profile" xml:space="preserve">
+    <value>删除选定的配置文件</value>
+  </data>
+	<data name="Detected URL" xml:space="preserve">
+    <value>检测到的 URL</value>
+  </data>
+	<data name="Detected URL:" xml:space="preserve">
+    <value>检测到的 URL：</value>
+  </data>
+	<data name="Did not find any default version!" xml:space="preserve">
+    <value>未找到任何默认版本！</value>
+  </data>
+	<data name="Did not find any news." xml:space="preserve">
+    <value>未找到任何新闻。</value>
+  </data>
+	<data name="Disable Certificate Validation" xml:space="preserve">
+    <value>禁用证书验证</value>
+  </data>
+	<data name="Disabling is a major security risk, not recommended!" xml:space="preserve">
+    <value>禁用该选项会导致重要安全风险，不推荐！</value>
+  </data>
+	<data name="Discover resources and assign to Outlook folders" xml:space="preserve">
+    <value>寻找资源并分配给 Outlook 文件夹</value>
+  </data>
+	<data name="Do autodiscovery" xml:space="preserve">
+    <value>执行自动寻找</value>
+  </data>
+	<data name="Do not check for newer version anymore" xml:space="preserve">
+    <value>不要再检查新版本</value>
+  </data>
+	<data name="Do not overwrite FileAs in Outlook" xml:space="preserve">
+    <value>不要在 Outlook 中覆盖 FileAs</value>
+  </data>
+	<data name="Do not overwrite FileAs in Outlook with FN &#xA;Uses default FileAs as set in global Outlook options for new entries." xml:space="preserve">
+    <value>不要在 Outlook 中用 FN 覆盖 FileAs
+对新条目使用全局 Outlook 选项中设置的默认 FileAs。</value>
+  </data>
+	<data name="Do not overwrite the contact photo in Outlook" xml:space="preserve">
+    <value>不要在 Outlook 中覆盖联系人照片</value>
+  </data>
+	<data name="Do not send appointment notifications (from SOGo)" xml:space="preserve">
+    <value>不要（从SOGo）发送约会通知</value>
+  </data>
+	<data name="Documentation and Tutorials" xml:space="preserve">
+    <value>文档与教程</value>
+  </data>
+	<data name="Don't use a time range less than 1 year if your calendar includes recurring events." xml:space="preserve">
+    <value>如果您的日历包含重复事件，不要使用小于一年的时间范围。</value>
+  </data>
+	<data name="Donate with PayPal" xml:space="preserve">
+    <value>通过 PayPal 捐款</value>
+  </data>
+	<data name="Download new version" xml:space="preserve">
+    <value>下载新版本</value>
+  </data>
+	<data name="Duration:" xml:space="preserve">
+    <value>持续时间：</value>
+  </data>
+	<data name="Easy Project Server Settings" xml:space="preserve">
+    <value>Easy Project 服务器设置</value>
+  </data>
+	<data name="Easy Project URL:" xml:space="preserve">
+    <value>Easy Project URL：</value>
+  </data>
+	<data name="Edit URL" xml:space="preserve">
+    <value>编辑 URL</value>
+  </data>
+	<data name="Email address:" xml:space="preserve">
+    <value>电子邮件地址：</value>
+  </data>
+	<data name="Enable Client Certificates" xml:space="preserve">
+    <value>启用证书验证</value>
+  </data>
+	<data name="Enable client certificates with automatic mode.&#xA;The available client certificates from the user store will be automatically provided." xml:space="preserve">
+    <value>启用自动模式的客户端证书。
+将自动提供来自用户存储的可用客户端证书。</value>
+  </data>
+	<data name="Enable if a full report of all modified entities is needed." xml:space="preserve">
+    <value>如果需要所有修改过的实体的完整报告，则启用。</value>
+  </data>
+	<data name="Enable only if you get the following error:&#xA;System.Net.WebException: The server committed a protocol violation. Section=ResponseStatusLine&#xA;Needed for Yahoo and cPanel Horde servers for example." xml:space="preserve">
+    <value>仅当您收到以下错误时启用：
+System.Net.WebExcepion: The server committed a protocol violation. Section=ResponseStatusLine
+雅虎和 cPanel Horde 服务器等需要此项。</value>
+  </data>
+	<data name="Enable SSL3" xml:space="preserve">
+    <value>启用 SSL3</value>
+  </data>
+	<data name="Enable TLS12" xml:space="preserve">
+    <value>启用 TLS12</value>
+  </data>
+	<data name="Enable TLS13" xml:space="preserve">
+    <value>启用 TLS13</value>
+  </data>
+	<data name="Enable to display the summary of the event or task or the name of the contact&#xA;to identify the entity in the sync report." xml:space="preserve">
+    <value>显示事件或任务的摘要信息或联系人的姓名
+用于标识同步报告中的实体。</value>
+  </data>
+	<data name="Enable Tray Icon" xml:space="preserve">
+    <value>启用任务栏角图标</value>
+  </data>
+	<data name="Enable useUnsafeHeaderParsing" xml:space="preserve">
+    <value>启用 useUnsafeHeaderParsing</value>
+  </data>
+	<data name="Enables the systray icon in the Windows taskbar." xml:space="preserve">
+    <value>启用 Windows 任务栏中的 systray 图标。</value>
+  </data>
+	<data name="Enter the DAV resource URL or the server address and discover the available resources. &#xA;If you leave the DAV URL empty it can also be discovered from the email address via DNS lookups." xml:space="preserve">
+    <value>输入 DAV 资源 URL 或服务器地址发现可用资源。
+如果您将 DAV URL 留空，它也可以通过 DNS 查找从电子邮件地址中找到。</value>
+  </data>
+	<data name="Enter the email address of the server identity of the calendar owner. Will be auto-detected if available.&#xA;It can also be used to discover the DAV URL if you leave the URL textbox empty." xml:space="preserve">
+    <value>输入日历所有者的服务器标识的电子邮件地址，若可用，将自动被检测。
+如果您将 URL 文本框留空，也可以使用它来找到 DAV URL。</value>
+  </data>
+	<data name="Enter the name of the Outlook category for filtering. &#xA;If the category does not exist it will be created in Outlook." xml:space="preserve">
+    <value>输入 Outlook 类别名进行过滤。
+如果类别不存在，则将在 Outlook 中被创建。</value>
+  </data>
+	<data name="Error" xml:space="preserve">
+    <value>错误</value>
+  </data>
+	<data name="Error updating the server calendar color!" xml:space="preserve">
+    <value>更新服务器日历颜色时出错！</value>
+  </data>
+	<data name="Error while trying to fetch the news.\r\nPlease see logfile for details." xml:space="preserve">
+    <value>获取新闻时出错。\r\n详细信息请参见日志文件。</value>
+  </data>
+	<data name="Errors and warnings" xml:space="preserve">
+    <value>错误与警告</value>
+  </data>
+	<data name="Event Mapping Configuration" xml:space="preserve">
+    <value>事件映射配置</value>
+  </data>
+	<data name="Exception that lead to abortion:" xml:space="preserve">
+    <value>导致失败的异常：</value>
+  </data>
+	<data name="Executes specific steps of synchronization in chunks to save memory." xml:space="preserve">
+    <value>以块执行同步的特定步骤以节省内存。</value>
+  </data>
+	<data name="Expand all nodes" xml:space="preserve">
+    <value>展开所有节点</value>
+  </data>
+	<data name="Expand all nodes in Synchronization Profiles" xml:space="preserve">
+    <value>展开同步配置文件的所有节点</value>
+  </data>
+	<data name="Expand all nodes in the treeview of the Synchronization Profiles configuration as default if enabled.&#xA;Only applicable if advanced settings are turned on." xml:space="preserve">
+    <value>展开同步配置文件树视图中的所有节点（若启用）。
+仅适用于高级设置启用的情况。</value>
+  </data>
+	<data name="Experimental mapping of the first category color of the appointment to the matching COLOR attribute of the event&#xA;Together with DAVdroid for Android you can map individual event colors from Android to Outlook &#xA;but not all calendar apps support it or can even crash (see &#xA;https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/)" xml:space="preserve">
+    <value>将约会的第一类颜色实验性映射到事件的匹配的 COLOR 属性
+与 Android 的 DAVdroid 一起，您可以将单个事件的颜色从 Android 映射到 Outlook
+但并不是所有的日历应用程序都支持它，甚至可能会崩溃（参见https://davdroid.bitfire.at/faq/entry/setting-event-colors-crash/）</value>
+  </data>
+	<data name="Export cancelled by user." xml:space="preserve">
+    <value>导出被用户取消。</value>
+  </data>
+	<data name="Export Html description X-ALT-DESC converted from RTF Body" xml:space="preserve">
+    <value>导出从 RTF 正文转换的 HTML 描述 X-ALT-DESC</value>
+  </data>
+	<data name="Export profiles" xml:space="preserve">
+    <value>导出配置文件</value>
+  </data>
+	<data name="Export profiles to file" xml:space="preserve">
+    <value>导出配置文件到文件</value>
+  </data>
+	<data name="Fetch color" xml:space="preserve">
+    <value>获取颜色</value>
+  </data>
+	<data name="Fix imported phone number format" xml:space="preserve">
+    <value>修正导入的电话号码格式</value>
+  </data>
+	<data name="Force Basic authentication" xml:space="preserve">
+    <value>强制基本身份验证</value>
+  </data>
+	<data name="Formatted" xml:space="preserve">
+    <value>格式化的</value>
+  </data>
+	<data name="General Contact Mapping Settings" xml:space="preserve">
+    <value>通用联系人映射设置</value>
+  </data>
+	<data name="General Event Mapping Settings" xml:space="preserve">
+    <value>通用事件映射设置</value>
+  </data>
+	<data name="General Logging" xml:space="preserve">
+    <value>通用日志</value>
+  </data>
+	<data name="General Options" xml:space="preserve">
+    <value>通用选项</value>
+  </data>
+	<data name="General Settings" xml:space="preserve">
+    <value>通用设置</value>
+  </data>
+	<data name="General Task Mapping Settings" xml:space="preserve">
+    <value>通用任务映射设置</value>
+  </data>
+	<data name="Generic CalDAV/CardDAV" xml:space="preserve">
+    <value>通用 CalDav/CardDav</value>
+  </data>
+	<data name="Get account settings" xml:space="preserve">
+    <value>获取账户设置</value>
+  </data>
+	<data name="Get IMAP/POP3 account settings" xml:space="preserve">
+    <value>获取 IMAP/POP3 账户设置</value>
+  </data>
+	<data name="Hide Advanced Settings" xml:space="preserve">
+    <value>隐藏高级设置</value>
+  </data>
+	<data name="hours" xml:space="preserve">
+    <value>小时</value>
+  </data>
+	<data name="iCloud group" xml:space="preserve">
+    <value>iCloud 组</value>
+  </data>
+	<data name="If checked a manual sync is always triggered after the Outlook Send/Receive finishes&#xA;and on startup of Outlook." xml:space="preserve">
+    <value>如果选定，则 Outlook 发送/接收完成后及启动时总是触发手动同步。</value>
+  </data>
+	<data name="If checked invalid characters in XML server responses are allowed.&#xA;A typical invalid char, sent by some servers is 'Form feed' (0x0C)." xml:space="preserve">
+    <value>如果选定，则允许 XML 服务器响应中的无效字符。
+一些服务器发送的典型的无效字符是 'Form feed' (0x0C)。</value>
+  </data>
+	<data name="If unchecked the displayname is used for creating the DAV resource Uri instead of a random string." xml:space="preserve">
+    <value>如不选定，displayname 将用于创建 DAV 资源 Uri，而不是随机字符串。</value>
+  </data>
+	<data name="Ignore this version" xml:space="preserve">
+    <value>忽略此版本</value>
+  </data>
+	<data name="Import profiles" xml:space="preserve">
+    <value>导入配置文件</value>
+  </data>
+	<data name="Import profiles from file" xml:space="preserve">
+    <value>从文件导入配置文件</value>
+  </data>
+	<data name="Include custom message classes in Outlook filter" xml:space="preserve">
+    <value>在 Outlook 过滤器中包含自定义消息类</value>
+  </data>
+	<data name="Include full IANA timezone with historical data" xml:space="preserve">
+    <value>包括完整的 IANA 时区与历史数据</value>
+  </data>
+	<data name="Info" xml:space="preserve">
+    <value>信息</value>
+  </data>
+	<data name="Information about the project and version." xml:space="preserve">
+    <value>关于项目和版本的信息。</value>
+  </data>
+	<data name="Install new version" xml:space="preserve">
+    <value>安装新版本</value>
+  </data>
+	<data name="Just errors" xml:space="preserve">
+    <value>仅错误</value>
+  </data>
+	<data name="Just upcoming reminders" xml:space="preserve">
+    <value>仅即将到来的提醒</value>
+  </data>
+	<data name="Keep items in sync even if category changes and filter does not match anymore" xml:space="preserve">
+    <value>保持项目同步，即使类别更改和过滤器不再匹配</value>
+  </data>
+	<data name="Kolab URL" xml:space="preserve">
+    <value>Kolab URL</value>
+  </data>
+	<data name="Language:" xml:space="preserve">
+    <value>语言：</value>
+  </data>
+	<data name="Last run ago" xml:space="preserve">
+    <value>最后一次执行前</value>
+  </data>
+	<data name="Log all entities, even without errors or warnings" xml:space="preserve">
+    <value>记录所有实体，即使没有错误或警告</value>
+  </data>
+	<data name="Log Entity Names" xml:space="preserve">
+    <value>日志实体名</value>
+  </data>
+	<data name="Log Level:" xml:space="preserve">
+    <value>日志等级：</value>
+  </data>
+	<data name="Log:" xml:space="preserve">
+    <value>日志：</value>
+  </data>
+	<data name="Major security risk, not recommended!" xml:space="preserve">
+    <value>重要安全风险，不推荐！</value>
+  </data>
+	<data name="Manual Mapping" xml:space="preserve">
+    <value>手动映射</value>
+  </data>
+	<data name="Manual only" xml:space="preserve">
+    <value>仅手动</value>
+  </data>
+	<data name="Map all Outlook custom properties to DAV attributes with X-CALDAVSYNCHRONIZER prefix." xml:space="preserve">
+    <value>用 X-CALDAVSYNCHRONIZER 前缀将所有 Outlook 自定义属性映射到 DAV 属性。</value>
+  </data>
+	<data name="Map all Outlook custom properties to X-CALDAVSYNCHRONIZER attributes" xml:space="preserve">
+    <value>将所有 Outlook 自定义属性映射到 X-CALDAVSYNCHRONIZER 属性。</value>
+  </data>
+	<data name="Map Birthday" xml:space="preserve">
+    <value>安排生日</value>
+  </data>
+	<data name="Map Body" xml:space="preserve">
+    <value>安排正文</value>
+  </data>
+	<data name="Map Contact Photo" xml:space="preserve">
+    <value>安排联系人照片</value>
+  </data>
+	<data name="Map DAV CLASS:CONFIDENTIAL to Outlook Private flag instead of Confidential" xml:space="preserve">
+    <value>将 DAV CLASS:CONFIDENTIAL 映射到 Outlook 私有标志而非机密标志</value>
+  </data>
+	<data name="Map DAV CLASS:PUBLIC and default events to Outlook Private flag instead of Public" xml:space="preserve">
+    <value>将 DAV CLASS:PUBLIC 与默认事件映射到 Outlook 私有标志而非公有标志</value>
+  </data>
+	<data name="Map Distribution Lists" xml:space="preserve">
+    <value>安排分布列表</value>
+  </data>
+	<data name="Map Distribution Lists / Contact Groups" xml:space="preserve">
+    <value>安排分布列表 / 联系人组</value>
+  </data>
+	<data name="Map event color to category" xml:space="preserve">
+    <value>将事件颜色映射到类别</value>
+  </data>
+	<data name="Map organizer and attendees" xml:space="preserve">
+    <value>安排组织者与参与者</value>
+  </data>
+	<data name="Map Outlook EmailAddress1 to vCard email with TYPE WORK &#xA;and Outlook EmailAddress2 to vCard email with TYPE HOME instead of vice-versa." xml:space="preserve">
+    <value>将 Outlook EmailAddress1 用 TYPE WORK 映射到 vCard 电子邮件
+将 Outlook EmailAddress2 用 TYPE HOME 映射到 vCard 电子邮件而非反之亦然</value>
+  </data>
+	<data name="Map Outlook EmailAddress1 to WORK instead of HOME" xml:space="preserve">
+    <value>将 Outlook EmailAddress1 映射到 WORK 而非 HOME</value>
+  </data>
+	<data name="Map Outlook Private flag to DAV CLASS:CONFIDENTIAL instead of PRIVATE" xml:space="preserve">
+    <value>将 Outlook 私有标志映射到 DAV CLASS:CONFIDENTIAL 而非 PRIVATE</value>
+  </data>
+	<data name="Map Outlook Public flag to default instead of PUBLIC" xml:space="preserve">
+    <value>将 Outlook 公有标志映射到默认而非 PUBLIC</value>
+  </data>
+	<data name="Map Outlook start and due date of task as floating without timezone" xml:space="preserve">
+    <value>将 Outlook 任务的起始或终止日期映射为无时区的 floating</value>
+  </data>
+	<data name="Map plaintext Body of Outlook appointment to description attribute." xml:space="preserve">
+    <value>将 Outlook 约会的纯文本正文映射为描述属性</value>
+  </data>
+	<data name="Map priority" xml:space="preserve">
+    <value>安排优先级</value>
+  </data>
+	<data name="Map recurring tasks" xml:space="preserve">
+    <value>安排重复任务</value>
+  </data>
+	<data name="Map reminder:" xml:space="preserve">
+    <value>安排 reminder：</value>
+  </data>
+	<data name="Mapping Errors:" xml:space="preserve">
+    <value>映射错误：</value>
+  </data>
+	<data name="Mapping Warnings:" xml:space="preserve">
+    <value>映射警告：</value>
+  </data>
+	<data name="Maps changes from Outlook to server but do not update changes from server to Outlook after the initial sync. Useful if another mobile client reduces the photo resolution for example." xml:space="preserve">
+    <value>将 Outlook 更改映射到服务器但在初始同步后不更新从服务器到 Outlook 的更改。
+这在另一个移动客户端降低了照片分辨率时很有用。</value>
+  </data>
+	<data name="Merge Easy Project resources to one single Outlook folder" xml:space="preserve">
+    <value>将 Easy Project 资源合并到单一 Outlook 文件夹</value>
+  </data>
+	<data name="Merge Kolab folders to a common Outlook folder" xml:space="preserve">
+    <value>将 Kolab 文件夹合并到一个共有的 Outlook 文件夹</value>
+  </data>
+	<data name="Move selected profile down" xml:space="preserve">
+    <value>向下拖动选定的配置文件</value>
+  </data>
+	<data name="Move selected profile up" xml:space="preserve">
+    <value>向上拖动选定的配置文件</value>
+  </data>
+	<data name="Name" xml:space="preserve">
+    <value>名称</value>
+  </data>
+	<data name="Name:" xml:space="preserve">
+    <value>名称：</value>
+  </data>
+	<data name="Negate filter and sync all appointments except this category" xml:space="preserve">
+    <value>取消筛选并同步除此类别外的所有约会</value>
+  </data>
+	<data name="Negate filter and sync all tasks except this category" xml:space="preserve">
+    <value>取消筛选并同步除此类别外的所有任务</value>
+  </data>
+	<data name="Network Settings" xml:space="preserve">
+    <value>网络设置</value>
+  </data>
+	<data name="No" xml:space="preserve">
+    <value>不</value>
+  </data>
+	<data name="No color set for updating the server calendar color!" xml:space="preserve">
+    <value>没有为更新服务器日历颜色设置颜色！</value>
+  </data>
+	<data name="No newer version available." xml:space="preserve">
+    <value>没有可用的新版本。</value>
+  </data>
+	<data name="No reports available!" xml:space="preserve">
+    <value>没有可用的报告！</value>
+  </data>
+	<data name="No resources were found via autodiscovery!" xml:space="preserve">
+    <value>没有通过自动寻找找到的资源！</value>
+  </data>
+	<data name="No resource selected!" xml:space="preserve">
+    <value>没有选择资源！</value>
+  </data>
+	<data name="None" xml:space="preserve">
+    <value>无</value>
+  </data>
+	<data name="Not supported in Outlook 2007." xml:space="preserve">
+    <value>Pas compatible avec Outlook 2007.</value>
+  </data>
+	<data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+	<data name="Only add new Kolab resources" xml:space="preserve">
+    <value>只添加新 Kolab 资源</value>
+  </data>
+	<data name="Only sync runs with errors" xml:space="preserve">
+    <value>仅执行出错的同步</value>
+  </data>
+	<data name="Open data directory of selected profile" xml:space="preserve">
+    <value>打开所选配置文件的数据目录</value>
+  </data>
+	<data name="Operation" xml:space="preserve">
+    <value>操作</value>
+  </data>
+	<data name="Operation aborted" xml:space="preserve">
+    <value>操作终止</value>
+  </data>
+	<data name="Options" xml:space="preserve">
+    <value>选项</value>
+  </data>
+	<data name="Outlook and most servers calculate the intersection with the time-range differently for recurring events&#xA;which can cause doubled or deleted events. So it is recommended to select&#xA;a time-range which is larger than the largest interval of your recurring events&#xA;(e.g. 1 year for birthdays)" xml:space="preserve">
+    <value>Outlook和大多数服务器以不同的方式计算重复事件的时间范围的交集
+这会导致重复或删除事件。所以建议选择
+一个大于重复事件的最大间隔的时间范围
+（例如 1 岁生日）</value>
+  </data>
+	<data name="Outlook automatically creates birthday appointments in your calendar &#xA;when the birthday is added to a contact item." xml:space="preserve">
+    <value>当生日添加到联系人项目时，Outlook 自动在您的日历中创建生日约会。</value>
+  </data>
+	<data name="Outlook custom property" xml:space="preserve">
+    <value>Outlook 自定义属性</value>
+  </data>
+	<data name="Outlook Delta:" xml:space="preserve">
+    <value>Outlook Delta：</value>
+  </data>
+	<data name="Outlook Entity" xml:space="preserve">
+    <value>Outlook 实体</value>
+  </data>
+	<data name="Outlook folder:" xml:space="preserve">
+    <value>Outlook 文件夹：</value>
+  </data>
+	<data name="Outlook Id" xml:space="preserve">
+    <value>Outlook ID</value>
+  </data>
+	<data name="Outlook restart required" xml:space="preserve">
+    <value>Outlook 需要重启</value>
+  </data>
+	<data name="Outlook Settings" xml:space="preserve">
+    <value>Outlook 设置</value>
+  </data>
+	<data name="Outlook wins" xml:space="preserve">
+    <value>Outlook 胜利</value>
+  </data>
+	<data name="Outlook ← Server (Merge)" xml:space="preserve">
+    <value>Outlook ← 服务器（合并）</value>
+  </data>
+	<data name="Outlook ← Server (Replicate)" xml:space="preserve">
+    <value>Outlook ← 服务器（复制）</value>
+  </data>
+	<data name="Outlook ←→ Server (Two-Way)" xml:space="preserve">
+    <value>Outlook ←→ 服务器（双向）</value>
+  </data>
+	<data name="Outlook → Server (Merge)" xml:space="preserve">
+    <value>Outlook → 服务器（合并）</value>
+  </data>
+	<data name="Outlook → Server (Replicate)" xml:space="preserve">
+    <value>Outlook → 服务器（复制）</value>
+  </data>
+	<data name="Password (optional):" xml:space="preserve">
+    <value>密码（可选）：</value>
+  </data>
+	<data name="Password:" xml:space="preserve">
+    <value>密码：</value>
+  </data>
+	<data name="Perform synchronization in chunks" xml:space="preserve">
+    <value>按块执行同步</value>
+  </data>
+	<data name="Please be aware that the log file (especially with Log Level Debug) can contain 'Personally identifiable information' (PII) like resource URIs and raw calendar and/or addressbook data but no passwords.\nNever post or attach the log or a sync report in a public forum and mask sensitive data when sending as an e-mail!" xml:space="preserve">
+    <value>请注意，日志文件（特别是日志级别调试）可以包含“个人身份信息”（PII），如资源 URI 和原始日历和/或通讯簿数据，但不会包含密码。\n永远不要在公共论坛贴出或附加日志或同步报告，作为电子邮件发送时要隐藏敏感数据！</value>
+  </data>
+	<data name="Please select an Outlook folder to specify the item type for this profile" xml:space="preserve">
+    <value>请选择 Outlook 文件夹以指定此配置文件的项目类型</value>
+  </data>
+	<data name="Privacy Settings" xml:space="preserve">
+    <value>隐私设置</value>
+  </data>
+	<data name="Processing profiles done." xml:space="preserve">
+    <value>配置文件处理完成。</value>
+  </data>
+	<data name="Processing profiles." xml:space="preserve">
+    <value>正在处理配置文件。</value>
+  </data>
+	<data name="Profile" xml:space="preserve">
+    <value>配置文件</value>
+  </data>
+	<data name="Profile '{0}'" xml:space="preserve">
+    <value>配置文件 '{0}' </value>
+  </data>
+	<data name="Profile cache deleted" xml:space="preserve">
+    <value>配置文件缓存已删除</value>
+  </data>
+	<data name="Profile Id:" xml:space="preserve">
+    <value>配置文件 ID：</value>
+  </data>
+	<data name="Profile name:" xml:space="preserve">
+    <value>配置文件名称：</value>
+  </data>
+	<data name="Proxy Settings" xml:space="preserve">
+    <value>代理设置</value>
+  </data>
+	<data name="Proxy URL:" xml:space="preserve">
+    <value>代理 URL：</value>
+  </data>
+	<data name="Raw" xml:space="preserve">
+    <value>原始数据</value>
+  </data>
+	<data name="removes duplicate Outlook appointments based on start end and subject of the events after each sync run &#xA;be aware of possible performance penalties with this option enabled." xml:space="preserve">
+    <value>在每次同步运行后，根据事件的开始、结束和事件主题删除重复的Outlook约会
+请注意启用此选项可能带来的性能损失。</value>
+  </data>
+	<data name="Replacing profile '{0}'" xml:space="preserve">
+    <value>正在替换配置文件 '{0}'</value>
+  </data>
+	<data name="Reports" xml:space="preserve">
+    <value>报告</value>
+  </data>
+	<data name="Resource Displayname" xml:space="preserve">
+    <value>资源 Displayname</value>
+  </data>
+	<data name="Resource displayname must not be empty!" xml:space="preserve">
+    <value>资源 displayname 不能为空！</value>
+  </data>
+	<data name="Save selected to Zip file" xml:space="preserve">
+    <value>将选定项保存为 Zip 文件</value>
+  </data>
+	<data name="Scheduling Settings" xml:space="preserve">
+    <value>调度设置</value>
+  </data>
+	<data name="Select folder" xml:space="preserve">
+    <value>选择文件夹</value>
+  </data>
+	<data name="Select Profile Type" xml:space="preserve">
+    <value>选择配置文件类型</value>
+  </data>
+	<data name="Select Resource" xml:space="preserve">
+    <value>选择资源</value>
+  </data>
+	<data name="Selected Outlook Folder" xml:space="preserve">
+    <value>已选的 Outlook 文件夹</value>
+  </data>
+	<data name="Server Delta:" xml:space="preserve">
+    <value>服务器 Delta：</value>
+  </data>
+	<data name="Server Entity" xml:space="preserve">
+    <value>服务器实体</value>
+  </data>
+	<data name="Server Id" xml:space="preserve">
+    <value>服务器 ID</value>
+  </data>
+	<data name="Server Settings" xml:space="preserve">
+    <value>服务器设置</value>
+  </data>
+	<data name="Server wins" xml:space="preserve">
+    <value>服务器胜利</value>
+  </data>
+	<data name="Set DAV calendar color" xml:space="preserve">
+    <value>设置 DAV 日历颜色</value>
+  </data>
+	<data name="Set global options for all profiles like SSL/TLS settings." xml:space="preserve">
+    <value>为所有配置文件（如 SSL/TLS 设置）设置全局选项</value>
+  </data>
+	<data name="Set RTF Body from X-ALT-DESC Html description" xml:space="preserve">
+    <value>由 X-ALT-DESC HTML 描述设置 RTF 正文</value>
+  </data>
+	<data name="Set SCHEDULE-AGENT=CLIENT" xml:space="preserve">
+    <value>设置 SCHEDULE-AGENT=CLIENT</value>
+  </data>
+	<data name="Show Advanced Settings" xml:space="preserve">
+    <value>显示高级设置</value>
+  </data>
+	<data name="Show advanced settings as default" xml:space="preserve">
+    <value>显示高级设置作为默认</value>
+  </data>
+	<data name="Show log" xml:space="preserve">
+    <value>显示日志</value>
+  </data>
+	<data name="Show reports and notify:" xml:space="preserve">
+    <value>显示报告和通知：</value>
+  </data>
+	<data name="Show reports of last sync runs." xml:space="preserve">
+    <value>显示最近一次同步执行的报告。</value>
+  </data>
+	<data name="Show status of sync runs." xml:space="preserve">
+    <value>显示同步执行状态。</value>
+  </data>
+	<data name="Show Sync Progress Bar" xml:space="preserve">
+    <value>显示同步进度条</value>
+  </data>
+	<data name="Show synchronization reports immediately and&#xA;notify in systray icon (if enabled)" xml:space="preserve">
+    <value>立即显示同步报告并
+在 systray 图标通知（如果启用）</value>
+  </data>
+	<data name="Show the advanced settings in synchronization profiles as default if enabled." xml:space="preserve">
+    <value>如果启用，默认显示同步配置文件中的高级设置。</value>
+  </data>
+	<data name="Show the sync progress bar when more items than the treshold need to be loaded." xml:space="preserve">
+    <value>当需要加载超过阈值的项目时，显示同步进度条。</value>
+  </data>
+	<data name="SOGo VLIST" xml:space="preserve">
+    <value>SOGo VLIST</value>
+  </data>
+	<data name="Some options contain invalid values" xml:space="preserve">
+    <value>部分选项包含无效值</value>
+  </data>
+	<data name="SSL/TLS Settings" xml:space="preserve">
+    <value>SSL/TLS 设置</value>
+  </data>
+	<data name="Start a manual synchronization of all active profiles." xml:space="preserve">
+    <value>启动所有活动配置文件的手动同步。</value>
+  </data>
+	<data name="StartTime:" xml:space="preserve">
+    <value>开始时间：</value>
+  </data>
+	<data name="Status" xml:space="preserve">
+    <value>状态</value>
+  </data>
+	<data name="Store data in roaming folder" xml:space="preserve">
+    <value>在 Roaming 文件夹中存储数据</value>
+  </data>
+	<data name="Successfully updated the server calendar color!" xml:space="preserve">
+    <value>成功更新服务器日历颜色！</value>
+  </data>
+	<data name="Sucessfully exported {0} profile(s) to '{1}'." xml:space="preserve">
+    <value>成功导出 {0} 配置文件到 '{1}'。</value>
+  </data>
+	<data name="Sucessfully imported {0} profile(s) from '{1}'." xml:space="preserve">
+    <value>成功导入 {0} 配置文件到 '{1}'。</value>
+  </data>
+	<data name="Sync also appointments without any category" xml:space="preserve">
+    <value>同时同步不属于任何类别的约会</value>
+  </data>
+	<data name="Sync also tasks without any category" xml:space="preserve">
+    <value>同时同步不属于任何类别的任务</value>
+  </data>
+	<data name="Sync only appointments with this category:" xml:space="preserve">
+    <value>只同步属于此类别的约会</value>
+  </data>
+	<data name="Sync only tasks with this category:" xml:space="preserve">
+    <value>只同步属于此类别的任务</value>
+  </data>
+	<data name="Sync Progress Bar Threshold (Items)" xml:space="preserve">
+    <value>同步进度条阈值（项目）</value>
+  </data>
+	<data name="Sync runs with errors or warnings" xml:space="preserve">
+    <value>同步执行出现错误或警告</value>
+  </data>
+	<data name="Sync Settings" xml:space="preserve">
+    <value>同步错误</value>
+  </data>
+	<data name="Synchronization interval (minutes):" xml:space="preserve">
+    <value>同步间隔（分钟）：</value>
+  </data>
+	<data name="Synchronization mode is set to '{0}' and the selected Outlook folder is empty. Are you sure, you want to select this folder, because all items on the DAV server will be deleted!" xml:space="preserve">
+    <value>同步模式设置为 '{0}'，所选的 Outlook 文件夹为空。您确定要选择此文件夹吗？因为 DAV 服务器上的所有项目都将被删除！</value>
+  </data>
+	<data name="Synchronization mode is set to '{0}' and the selected Outlook folder is not empty. Are you sure, you want to select this folder because all items will be overwritten with the DAV server resources!" xml:space="preserve">
+    <value>同步模式设置为 '{0}'，所选的 Outlook 文件夹不为空。您确定要选择此文件夹吗？因为 DAV 服务器资源的所有项目都将被覆盖！</value>
+  </data>
+	<data name="Synchronization mode:" xml:space="preserve">
+    <value>同步模式：</value>
+  </data>
+	<data name="Synchronization profile '{0}' executed with error(s)." xml:space="preserve">
+    <value>同步配置文件 '{0}' 执行出现错误。</value>
+  </data>
+	<data name="Synchronization profile '{0}' executed with warning(s)." xml:space="preserve">
+    <value>同步配置文件 '{0}' 执行出现警告。</value>
+  </data>
+	<data name="Synchronization Profiles" xml:space="preserve">
+    <value>同步配置文件</value>
+  </data>
+	<data name="Synchronization Reports" xml:space="preserve">
+    <value>同步报告</value>
+  </data>
+	<data name="Synchronization Status" xml:space="preserve">
+    <value>同步状态</value>
+  </data>
+	<data name="Synchronization timespan future (days):" xml:space="preserve">
+    <value>未来同步时间跨度（日）：</value>
+  </data>
+	<data name="Synchronization timespan past (days):" xml:space="preserve">
+    <value>过去同步时间跨度（日）：</value>
+  </data>
+	<data name="Synchronize items immediately after change" xml:space="preserve">
+    <value>更改后立即同步项目</value>
+  </data>
+	<data name="Synchronize now" xml:space="preserve">
+    <value>现在同步</value>
+  </data>
+	<data name="Take care, when changing settings for non-empty folders (see tooltip)" xml:space="preserve">
+    <value>在更改非空文件夹的设置时要小心（参见工具提示）</value>
+  </data>
+	<data name="Task Mapping Configuration" xml:space="preserve">
+    <value>任务映射配置</value>
+  </data>
+	<data name="Task start date will be mapped to 00:00 and Task due date to 23:59 without timezone.&#xA;Enable this if clients with different timezones are used and the due date should be local." xml:space="preserve">
+    <value>任务起始日期映射为 00:00，任务终止日期映射为 23:59，不带时区。
+如果使用不同时区的客户端并且到期日期应该是本地的，则启用此功能。</value>
+  </data>
+	<data name="Tasks" xml:space="preserve">
+    <value>任务</value>
+  </data>
+	<data name="Team:" xml:space="preserve">
+    <value>小组：</value>
+  </data>
+	<data name="Test or discover settings" xml:space="preserve">
+    <value>测试或寻找设置</value>
+  </data>
+	<data name="Test settings" xml:space="preserve">
+    <value>测试设置</value>
+  </data>
+	<data name="The CalDav/CardDav URL is invalid" xml:space="preserve">
+    <value>CalDav/CardDAV URL 无效</value>
+  </data>
+	<data name="The Email address is invalid" xml:space="preserve">
+    <value>电子邮件地址无效</value>
+  </data>
+	<data name="The profile for the selected report doesn't exist anymore!" xml:space="preserve">
+    <value>选定报告的配置文件不存在！</value>
+  </data>
+	<data name="The selected entity does not exist anymore." xml:space="preserve">
+    <value>选定实体不存在。</value>
+  </data>
+	<data name="The specified URL doesn't support WebDav Collection Sync, the option will be disabled!" xml:space="preserve">
+    <value>指定 URL 不支持 WebDav Collection 同步，选项将被禁用！</value>
+  </data>
+	<data name="The specified URL is a read-only addressbook. Synchronization mode set to '{0}'." xml:space="preserve">
+    <value>指定 URL 是只读通讯簿。同步模式设置为 '{0}'。</value>
+  </data>
+	<data name="The specified URL is a read-only calendar. Synchronization mode set to '{0}'." xml:space="preserve">
+    <value>指定 URL 是只读日历。同步模式设置为 '{0}'。</value>
+  </data>
+	<data name="The tasklist is invalid" xml:space="preserve">
+    <value>任务列表无效</value>
+  </data>
+	<data name="The tasklist with id '{0}' is invalid." xml:space="preserve">
+    <value>ID 为 '{0}' 的任务列表无效</value>
+  </data>
+	<data name="These settings affect the filter which selects the items for synchronization.&#xA;If an item does not pass the filter it is treated as if it would not exist!&#xA;Changing these settings for non-empty folders can lead to deletions on the server or duplicates in Outlook." xml:space="preserve">
+    <value>这些设置会影响选择同步项的筛选器。
+如果一个项目没有通过过滤器，它将被视为不存在！
+更改非空文件夹的这些设置可能删除服务器上的文件或 Outlook 中的副本。</value>
+  </data>
+	<data name="Timezone Settings" xml:space="preserve">
+    <value>时区设置</value>
+  </data>
+	<data name="Trigger a partial synchronization run immediately after &#xA;an item is created changed or deleted in Outlook &#xA;(with a 10 seconds delay).&#xA;Meeting invitations are excluded from this to avoid duplicate meetings!" xml:space="preserve">
+    <value>在Outlook中创建、更改或删除项目之后立即触发部分同步运行（延迟10秒）。
+会议邀请不包括在其中以避免重复的会议！</value>
+  </data>
+	<data name="Trigger sync after Outlook Send/Receive and on Startup" xml:space="preserve">
+    <value>在 Outlook 发送/接收以及启动后触发同步</value>
+  </data>
+	<data name="UI Settings" xml:space="preserve">
+    <value>UI 设置</value>
+  </data>
+	<data name="Use fast GetTable queries when accessing Outlook folders.&#xA;Disable only if you get errors in GetVersions, when disabled every item needs to be requested&#xA;which causes a performance penalty!" xml:space="preserve">
+    <value>在访问 Outlook 文件夹时使用快速获取表查询。
+仅当你在 GetVersions 中得到错误时禁用，禁用时，每个项目都需要被请求
+这会导致性能损！</value>
+  </data>
+	<data name="Use fast queries for Outlook folders" xml:space="preserve">
+    <value>对 Outlook 文件夹使用快速查询</value>
+  </data>
+	<data name="Use full IANA timezone definition with historical data. &#xA;Needs more bandwith and can be incompatible when manually importing in Outlook." xml:space="preserve">
+    <value>使用完整的IANA时区定义与历史数据。
+需要更多的带宽，并且手动导入 Outlook 时可能不兼容。</value>
+  </data>
+	<data name="Use GlobalAppointmentID for UID attribute" xml:space="preserve">
+    <value>为 UID 属性使用 GlobalAppointmentID</value>
+  </data>
+	<data name="Use Google Contacts API instead of CardDAV &#xA;to sync Outlook contact folders with Google contacts &#xA;which improves mapping and performance." xml:space="preserve">
+    <value>使用 Google 联系人 API 代替 CardDAV
+以将 Outlook 联系人文件夹与 Google 联系人同步
+这将改善映射和性能。</value>
+  </data>
+	<data name="Use Google native API" xml:space="preserve">
+    <value>使用 Google 原生 API</value>
+  </data>
+	<data name="Use Iana instead of Windows timezones for creating events on CalDAV server. &#xA;Needed for servers which do not accept non standard Windows timezones like GMX for example. &#xA;Timezone definitions will be downloaded from http://tzurl.org." xml:space="preserve">
+    <value>在 CalDAV 服务器上创建事件使用 IANA 而非 Windows 时区。
+需要不接受非标准的 Windows 时区（例如 GMX）的服务器。
+时区定义可从 http://tzurl.org 下载。</value>
+  </data>
+	<data name="Use IANA timezone:" xml:space="preserve">
+    <value>使用 IANA 时区：</value>
+  </data>
+	<data name="Use IMAP/POP3 account password" xml:space="preserve">
+    <value>使用 IMAP/POP3 账户密码</value>
+  </data>
+	<data name="Use manual proxy configuration" xml:space="preserve">
+    <value>使用手动代理配置</value>
+  </data>
+	<data name="Use Outlook GlobalAppointmendID instead of random Guid for UID attribute in new CalDAV events. &#xA; Can avoid duplicate events from invitations." xml:space="preserve">
+    <value>在新的 CalDAV 事件中使用 Outlook GlobalAppointmendID 作为 UID 属性而非随机 GUID。
+可以避免邀请中的重复事件。</value>
+  </data>
+	<data name="Use preemptive authentication" xml:space="preserve">
+    <value>使用优先验证</value>
+  </data>
+	<data name="Use prefix filter to include also custom message_classes in filter for Outlook folders. &#xA;For better performance, Windows Search Service shouldn't be deactivated if this option is enabled." xml:space="preserve">
+    <value>使用前缀过滤器来为 Outlook 文件夹同时包含自定义 message_classes。
+为达到更好的性能，如果这个选项被启用，Windows 搜索服务不应被禁用。</value>
+  </data>
+	<data name="Use random string for DAV resource Uri" xml:space="preserve">
+    <value>为 DAV 资源 Uri 使用随机字符串</value>
+  </data>
+	<data name="Use system default proxy (settings from IE and config file)" xml:space="preserve">
+    <value>使用系统默认代理（IE 和配置文件的设置）</value>
+  </data>
+	<data name="Use this IANA timezone for default Outlook/Windows timezone. &#xA;Manually selected different timezones in Outlook appointments &#xA;will be mapped to first corresponding IANA timezone." xml:space="preserve">
+    <value>使用此 IANA 时区作为默认的 Outlook/Windows 时区。
+在 Outlook 中手动选择不同的时区
+将映射到第一个相应的 IANA 时区。</value>
+  </data>
+	<data name="Use time range filter" xml:space="preserve">
+    <value>使用时间范围过滤器</value>
+  </data>
+	<data name="Use UTC instead of Outlook appointment timezone for creating events on CalDAV server. &#xA;Not recommended for general use &#xA;because recurrence exceptions over DST changes can not be mapped and &#xA;appointments with different start and end timezones can not be represented." xml:space="preserve">
+    <value>在 CalDAV 服务器上创建事件使用 UTC 而非 Outlook 约会时区。
+不推荐一般使用
+因为 DST 更改的重复异常不能被映射，且
+无法表示具有不同开始和结束时区的约会。</value>
+  </data>
+	<data name="Use WebDAV collection sync" xml:space="preserve">
+    <value>使用 WebDAV Collection 同步</value>
+  </data>
+	<data name="Username (optional):" xml:space="preserve">
+    <value>用户名（可选）：</value>
+  </data>
+	<data name="Username:" xml:space="preserve">
+    <value>用户名：</value>
+  </data>
+	<data name="vCard with KIND:group" xml:space="preserve">
+    <value>具有 KIND:group 的 vCard</value>
+  </data>
+	<data name="Version {0} is available!" xml:space="preserve">
+    <value>版本 {0} 可用！</value>
+  </data>
+	<data name="Version: {0}" xml:space="preserve">
+    <value>版本：{0}</value>
+  </data>
+	<data name="View or set CalDav Synchronization profiles" xml:space="preserve">
+    <value>查看或设置 CalDav Synchronization 同步配置文件</value>
+  </data>
+	<data name="View or set CalDav Synchronizer general options" xml:space="preserve">
+    <value>查看或设置 CalDav Synchronization 通用选项</value>
+  </data>
+	<data name="Waiting for newer version than '{0}'." xml:space="preserve">
+    <value>等待新于 '{0}' 的版本。</value>
+  </data>
+	<data name="WARNING profile '{0}', references an outlook folder that doesn't exist." xml:space="preserve">
+    <value>警告：配置文件 '{0}' 引用了不存在的 Outlook 文件夹。</value>
+  </data>
+	<data name="WARNING:" xml:space="preserve">
+    <value>警告：</value>
+  </data>
+	<data name="Warning: did not find folder '{0}'" xml:space="preserve">
+    <value>警告：找不到文件夹 '{0}'</value>
+  </data>
+	<data name="WARNING: Do not use since it just keeps the items in sync as long as the cache is not cleared.&#xA;After clearing the cache (which happens automatically in some cases) items which were affected by this option do not pass the filter anymore!" xml:space="preserve">
+    <value>警告：不要使用，因为只要缓存没有被清除，它就只是保持项目的同步。
+在清除缓存（在某些情况下会自动发生）后，受此选项影响的项目不再通过过滤器！</value>
+  </data>
+	<data name="WebDAV-Sync is a protocol extension that is defined in RFC 6578 and not supported by all servers.&#xA;Test or discover settings will check if this is supported.&#xA;This option can speed up the detection of server changes dramatically but excludes the time range filter." xml:space="preserve">
+    <value>WebDAV-Sync 是 RFC 6578 协议中定义的扩展，并非所有服务器都支持。
+测试或寻找设置将检查此扩展是否被支持。
+此选项可以加快检测服务器变化的速度，但不包括时间范围过滤器。</value>
+  </data>
+	<data name="WebDAV-Sync is a protocol extension that is defined in RFC 6578 and supported by Google Calendar.&#xA;This option can speed up the detection of server changes dramatically but excludes the time range filter." xml:space="preserve">
+    <value>WebDAV-Sync 是 RFC 6578 协议中定义的扩展并被 Google 日历支持。
+此选项可以加快检测服务器变化的速度，但不包括时间范围过滤器。</value>
+  </data>
+	<data name="Whats's new?" xml:space="preserve">
+    <value>有什么新内容？</value>
+  </data>
+	<data name="Write IM addresses as IMPP attributes" xml:space="preserve">
+    <value>将 IM 地址写入 IMPP 属性</value>
+  </data>
+	<data name="Write Instant Messenger addresses in vCard as IMPP attributes &#xA;(not supported by some servers e.g. SOGo) instead of X-PROTOCOL e.g. X-AIM" xml:space="preserve">
+    <value>在 vCard 中写入即时通讯地址作为 IMPP 属性
+（某些服务器不支持，如SOGo）而非 X-PROTOCOL，比如 X-AIM</value>
+  </data>
+	<data name="Wrong ItemType in folder '{0}'. It should be a calendar, task or contact folder." xml:space="preserve">
+    <value>'{0}' 文件夹中的 ItemType 错误。它应是日历、任务或联系人文件夹。</value>
+  </data>
+	<data name="Yes" xml:space="preserve">
+    <value>是</value>
+  </data>
+	<data name="You need to choose a calendar folder to merge the EasyProject resources!" xml:space="preserve">
+    <value>您需要选择一个日历文件夹来合并 EasyProject 资源！</value>
+  </data>
+	<data name="You need to choose a calendar folder to merge the Kolab resources!" xml:space="preserve">
+    <value>您需要选择一个日历文件夹来合并 Kolab 资源！</value>
+  </data>
+	<data name="You need to restart Outlook after installing the new version!" xml:space="preserve">
+    <value>安装新版本后，您需要重启 Outlook！</value>
+  </data>
+	<data name="Access" xml:space="preserve">
+    <value>访问</value>
+  </data>
+	<data name="Act on behalf of server identity" xml:space="preserve">
+    <value>代表服务器标识进行操作</value>
+  </data>
+	<data name="Set server identity as organizer of meeting and Outlook identity as delegate acting on behalf of it (SENT-BY).&#xA;Useful when Outlook and server identity do not match to avoid invites sent by the wrong email&#xA;or if meetings are created in a shared calendar on behalf of the calendar owner." xml:space="preserve">
+    <value>设置服务器身份为会议组织者，Outlook 身份为会议代表（SENT-BY）。
+当 Outlook 和服务器身份不匹配的情况下很有用，可以避免邀请被错误的电子邮件发送
+或者代表日历所有者在共享日历中创建会议。</value>
+  </data>
+	<data name="The calendar is shared from '{0}', enabling scheduling option 'act on behalf of server identity'!" xml:space="preserve">
+    <value>日历由 '{0}' 共享，启用调度选项“代表服务器身份”！</value>
+  </data>
+	<data name="Map Anniversary" xml:space="preserve">
+    <value>安排周年纪念</value>
+  </data>
+	<data name="Outlook automatically creates anniversary appointments in your calendar &#xA;when the anniversary is added to a contact item." xml:space="preserve">
+    <value>当周年纪念日添加到联系人项目时，Outlook 自动在您的日历中创建周年纪念约会。</value>
+  </data>
+	<data name="Reminder Settings" xml:space="preserve">
+    <value>Reminder 设置</value>
+  </data>
+	<data name="Map reminder as DATE-TIME value" xml:space="preserve">
+    <value>映射 reminder 为 DATE-TIME 值</value>
+  </data>
+	<data name="Map Outlook reminder as absolute DATE-TIME value instead of relative to start or due date.&#xA;Needed for iOS compatibility." xml:space="preserve">
+    <value>将 Outlook reminder 映射为绝对 DATE-TIME 值而非相对于起始或终止日期的值。
+需要 iOS 兼容。</value>
+  </data>
+	<data name="- The Swisscom profile is currently just supported for contacts, please choose a Contacts folder" xml:space="preserve">
+    <value>- Swisscom 配置文件目前只支持联系人，请选择一个联系人文件夹</value>
+  </data>
+</root>

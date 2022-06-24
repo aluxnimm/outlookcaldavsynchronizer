@@ -763,6 +763,9 @@
     <EmbeddedResource Include="Globalization\StringResources.de-DE.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+	<EmbeddedResource Include="Globalization\StringResources.zh-CN.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Globalization\StringResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
