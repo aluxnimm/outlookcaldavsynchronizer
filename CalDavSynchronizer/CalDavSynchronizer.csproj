@@ -377,6 +377,7 @@
     <Compile Include="ProfileTypes\ConcreteTypes\FastMailProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\Open-XchangeProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\EGroupwareProfile.cs" />
+    <Compile Include="ProfileTypes\ConcreteTypes\untermStrichProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\Swisscom\SwisscomServerSettingsView.xaml.cs">
       <DependentUpon>SwisscomServerSettingsView.xaml</DependentUpon>
     </Compile>
@@ -763,7 +764,7 @@
     <EmbeddedResource Include="Globalization\StringResources.de-DE.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-	<EmbeddedResource Include="Globalization\StringResources.zh-CN.resx">
+    <EmbeddedResource Include="Globalization\StringResources.zh-CN.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\StringResources.resx">
@@ -837,6 +838,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <Resource Include="Resources\ProfileLogos\logo_untermStrich.png" />
     <Resource Include="Resources\ProfileLogos\logo_ox_with_claim.png" />
     <Resource Include="Resources\ProfileLogos\logo_fuago.png" />
     <Resource Include="Resources\ProfileLogos\logo_fastmail.png" />

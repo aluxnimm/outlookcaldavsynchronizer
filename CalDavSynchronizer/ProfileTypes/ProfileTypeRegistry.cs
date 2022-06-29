@@ -68,6 +68,7 @@ namespace CalDavSynchronizer.ProfileTypes
             all.Add(new SwisscomProfile());
             all.Add(new EGroupwareProfile());
             all.Add(new FastMailProfile());
+            all.Add(new untermStrichProfile());
 
             return new ProfileTypeRegistry(all, generic, google);
         }
