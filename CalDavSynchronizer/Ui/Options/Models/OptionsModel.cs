@@ -540,8 +540,10 @@ namespace CalDavSynchronizer.Ui.Options.Models
                 ? _optionTasks.GetFolderAccountNameOrNull(_selectedFolderOrNull.StoreId)
                 : null;
 
-            UseSynchronizationTimeRange = folderDescriptor.DefaultItemType != OlItemType.olContactItem;
-
+            if (!UseWebDavCollectionSync)
+            {
+                UseSynchronizationTimeRange = folderDescriptor.DefaultItemType != OlItemType.olContactItem;
+            }
             CoerceMappingConfiguration();
 
             return true;
