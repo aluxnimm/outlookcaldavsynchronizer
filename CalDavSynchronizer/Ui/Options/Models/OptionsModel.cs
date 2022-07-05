@@ -544,6 +544,13 @@ namespace CalDavSynchronizer.Ui.Options.Models
             {
                 UseSynchronizationTimeRange = folderDescriptor.DefaultItemType != OlItemType.olContactItem;
             }
+            else
+            {
+                if (folderDescriptor.DefaultItemType == OlItemType.olTaskItem)
+                {
+                    UseWebDavCollectionSync = false;
+                }
+            }
             CoerceMappingConfiguration();
 
             return true;
