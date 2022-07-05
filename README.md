@@ -121,6 +121,18 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 4.3.0 ####
+- Released 2022/07/05
+- Security Fixes
+	- Update NuGet packages. (fixes security vulnerability in Newtonsoft.Json).
+- New features
+	- Add Simplified Chinese (中国) [zh-CN] translation. Credits to Liu Yihua (yihuajack)
+	- Add untermStrich profile type.
+- Bug fixes
+	- Hide PasswordBox when UsaAccountPassword is enabled to improve profile creation ServerSettings dialog.
+	- Fix typos in fr-FR translation.
+	- Fix WebDavSync setting in profile selection after folder change.
+
 #### 4.2.0 ####
 - Released 2022/03/02
 - Security fixes
