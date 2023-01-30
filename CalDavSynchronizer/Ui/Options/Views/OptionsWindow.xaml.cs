@@ -58,7 +58,7 @@ namespace CalDavSynchronizer.Ui.Options.Views
             {
                 if (!DialogResult.HasValue)
                 {
-                    var result = MessageBox.Show("Dou you want to save profiles?", ComponentContainer.MessageBoxTitle, MessageBoxButton.YesNo);
+                    var result = MessageBox.Show("Do you want to save profiles?", ComponentContainer.MessageBoxTitle, MessageBoxButton.YesNo);
                     DialogResult = (result == MessageBoxResult.Yes);
                 }
 
