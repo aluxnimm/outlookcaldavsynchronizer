@@ -68,6 +68,7 @@
     <Compile Include="..\CalDavSynchronizer\Properties\AssemblyInfoVersion.cs">
       <Link>Properties\AssemblyInfoVersion.cs</Link>
     </Compile>
+    <Compile Include="PKCEAuthorizationCodeFlow.cs" />
     <Compile Include="Globalization\StringResources.de-DE.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -87,6 +88,8 @@
     </Compile>
     <Compile Include="Globalization\LocalizationMarkupExtension.cs" />
     <Compile Include="Globalization\Strings.cs" />
+    <Compile Include="PKCEAuthorizationCodeRequestUrl.cs" />
+    <Compile Include="PKCEAuthorizationCodeTokenRequest.cs" />
     <Compile Include="SwisscomOauth.cs" />
     <Page Include="ErrorWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

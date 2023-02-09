@@ -1,11 +1,8 @@
 ﻿using log4net;
 using Newtonsoft.Json;
 using System;
-using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -154,17 +151,17 @@ namespace CalDavSynchronizer.OAuth.Swisscom
 
         private async Task AuthenticateAsync()
         {
-            var initializer = new Google.Apis.Auth.OAuth2.Flows.AuthorizationCodeFlow.Initializer(AUTH_ENDPOINT, TOKEN_ENDPOINT)
-            {
-                ClientSecrets = new Google.Apis.Auth.OAuth2.ClientSecrets {ClientId = CLIENT_ID, ClientSecret = CLIENT_SECRET},
-            };
+            var initializer = new PKCEAuthorizationCodeFlow.Initializer(AUTH_ENDPOINT, TOKEN_ENDPOINT)
+             {
+                 ClientSecrets = new Google.Apis.Auth.OAuth2.ClientSecrets {ClientId = CLIENT_ID, ClientSecret = CLIENT_SECRET},
+             };
 
-            var authorizer = new Google.Apis.Auth.OAuth2.AuthorizationCodeInstalledApp(
-                new Google.Apis.Auth.OAuth2.Flows.AuthorizationCodeFlow(initializer),
-                new Google.Apis.Auth.OAuth2.LocalServerCodeReceiver(String.Format(Globalization.Strings.Localize("LABEL_CLOSE_AUTH_WINDOW")), Google.Apis.Auth.OAuth2.LocalServerCodeReceiver.CallbackUriChooserStrategy.ForceLocalhost));
+             var authorizer = new Google.Apis.Auth.OAuth2.AuthorizationCodeInstalledApp(
+                 new PKCEAuthorizationCodeFlow(initializer),
+                 new Google.Apis.Auth.OAuth2.LocalServerCodeReceiver(String.Format(Globalization.Strings.Localize("LABEL_CLOSE_AUTH_WINDOW")), Google.Apis.Auth.OAuth2.LocalServerCodeReceiver.CallbackUriChooserStrategy.ForceLocalhost));
 
-            var result = await authorizer.AuthorizeAsync(string.Empty, System.Threading.CancellationToken.None);
-
+             var result = await authorizer.AuthorizeAsync(string.Empty, System.Threading.CancellationToken.None);
+            
             _accessToken = result.Token.AccessToken;
         }
     }
