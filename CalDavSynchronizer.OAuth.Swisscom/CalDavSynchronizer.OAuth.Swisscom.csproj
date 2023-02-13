@@ -68,7 +68,7 @@
     <Compile Include="..\CalDavSynchronizer\Properties\AssemblyInfoVersion.cs">
       <Link>Properties\AssemblyInfoVersion.cs</Link>
     </Compile>
-    <Compile Include="PKCEAuthorizationCodeFlow.cs" />
+    <Compile Include="PkceAuthorizationCodeFlowDecorator.cs" />
     <Compile Include="Globalization\StringResources.de-DE.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
