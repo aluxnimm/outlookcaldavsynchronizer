@@ -1433,4 +1433,7 @@ Necessario per la compatibilità con iOS.
   <data name="- The Swisscom profile is currently just supported for contacts, please choose a Contacts folder" xml:space="preserve">
     <value>- Momentaneamente il profilo Swisscom è supportato solo per rubrica indirizzi, scegli una cartella Contatti</value>
   </data>
+  <data name="Do you want to save profiles?" xml:space="preserve">
+    <value>Vuoi salvare i profili?</value>
+  </data>	
 </root>

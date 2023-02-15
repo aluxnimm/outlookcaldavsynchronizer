@@ -1423,4 +1423,7 @@ Nécessaire pour la compatibilité avec iOS.
   <data name="- The Swisscom profile is currently just supported for contacts, please choose a Contacts folder" xml:space="preserve">
     <value>- Le profile Swisscom ne fonctionne momentanément que pour les carnets d'adresses, veuillez choisir un dossier de contacts</value>
   </data>
+  <data name="Do you want to save profiles?" xml:space="preserve">
+    <value>Voulez-vous enregistrer des profils?</value>
+  </data>
 </root>

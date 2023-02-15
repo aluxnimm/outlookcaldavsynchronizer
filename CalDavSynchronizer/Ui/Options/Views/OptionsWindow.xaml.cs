@@ -18,6 +18,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
+using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.Ui.Options.Views
@@ -58,7 +59,7 @@ namespace CalDavSynchronizer.Ui.Options.Views
             {
                 if (!DialogResult.HasValue)
                 {
-                    var result = MessageBox.Show("Dou you want to save profiles?", ComponentContainer.MessageBoxTitle, MessageBoxButton.YesNo);
+                    var result = MessageBox.Show(Strings.Get($"Do you want to save profiles?"), ComponentContainer.MessageBoxTitle, MessageBoxButton.YesNo);
                     DialogResult = (result == MessageBoxResult.Yes);
                 }
 
