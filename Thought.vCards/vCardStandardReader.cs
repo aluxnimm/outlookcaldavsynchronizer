@@ -2034,11 +2034,17 @@ namespace Thought.vCards
             //URI is the standard, but I've seen examples online of URL
             if ((string.Compare(valueType, "URI", StringComparison.OrdinalIgnoreCase) == 0) || (string.Compare(valueType, "URL", StringComparison.OrdinalIgnoreCase) == 0))
             {
-                // This image has been defined as a URI/URL link, 
-                // rather than being encoded directly in the vCard.
-
-                card.Photos.Add(
-                    new vCardPhoto(new Uri(property.ToString())));
+                try
+                {
+                    // This image has been defined as a URI/URL link, 
+                    // rather than being encoded directly in the vCard.
+                    Uri photoUri = new Uri(property.ToString());
+                    card.Photos.Add(new vCardPhoto(photoUri));
+                }
+                catch (UriFormatException)
+                {
+                    // ignore empty URI
+                }
             }
             else
             {
