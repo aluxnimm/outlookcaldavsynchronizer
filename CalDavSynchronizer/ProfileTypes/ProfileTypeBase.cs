@@ -43,7 +43,7 @@ namespace CalDavSynchronizer.ProfileTypes
                 Id = Guid.NewGuid(),
                 Inactive = false,
                 PreemptiveAuthentication = true,
-                ForceBasicAuthentication = false,
+                ForceBasicAuthentication = true,
                 ProxyOptions = new ProxyOptions() {ProxyUseDefault = true},
                 IsChunkedSynchronizationEnabled = true,
                 ChunkSize = 100,
