@@ -37,7 +37,6 @@ namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes.Swisscom
         public override Options CreateOptions()
         {
             var data = base.CreateOptions();
-            data.PreemptiveAuthentication = false;
             data.SynchronizationMode = Implementation.SynchronizationMode.MergeInBothDirections;
             data.SynchronizationIntervalInMinutes = 30;
             data.IsChunkedSynchronizationEnabled = true;
