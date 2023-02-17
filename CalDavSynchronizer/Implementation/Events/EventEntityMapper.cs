@@ -1234,6 +1234,10 @@ namespace CalDavSynchronizer.Implementation.Events
                                 ? sourceRecurrencePattern.Until.Date
                                 : targetRecurrencePattern.PatternStartDate;
                         }
+                        else
+                        {
+                            targetRecurrencePattern.NoEndDate = true;
+                        }
                     }
                     catch (COMException ex)
                     {
