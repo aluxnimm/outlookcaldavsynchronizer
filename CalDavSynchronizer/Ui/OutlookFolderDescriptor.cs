@@ -16,12 +16,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using CalDavSynchronizer.Implementation.ComWrappers;
+using log4net;
 using Microsoft.Office.Interop.Outlook;
+using System.Runtime.InteropServices;
 
 namespace CalDavSynchronizer.Ui
 {
     public class OutlookFolderDescriptor
     {
+        private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
+
         public string EntryId { get; }
         public string StoreId { get; }
         public OlItemType DefaultItemType { get; }
@@ -42,7 +46,18 @@ namespace CalDavSynchronizer.Ui
         {
             using (var itemsWrapper = GenericComObjectWrapper.Create(folder.Items))
             {
-                ItemCount = itemsWrapper.Inner.Count;
+                try
+                {
+                    ItemCount = itemsWrapper.Inner.Count;
+                }
+                catch (COMException ex)
+                {
+                    s_logger.Warn("Could not get ItemCount of folder: " + folder.Name, ex);          
+                }
+                catch (System.UnauthorizedAccessException ex)
+                {
+                    s_logger.Warn("Could not get ItemCount of folder: " + folder.Name, ex);
+                }
             }
         }
     }
