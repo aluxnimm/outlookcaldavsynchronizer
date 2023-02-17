@@ -54,10 +54,16 @@ namespace CalDavSynchronizer.Contracts
 
         // ReSharper disable MemberCanBePrivate.Global
         public string Salt { get; set; }
-
+        public bool ShouldSerializeSalt()
+        {
+            return !UseAccountPassword;
+        }
         public string ProtectedPassword { get; set; }
+        public bool ShouldSerializeProtectedPassword()
+        {
+            return !UseAccountPassword;
+        }
         // ReSharper restore MemberCanBePrivate.Global
-
         public bool UseAccountPassword { get; set; }
         public ServerAdapterType ServerAdapterType { get; set; }
         public bool CloseAfterEachRequest { get; set; }

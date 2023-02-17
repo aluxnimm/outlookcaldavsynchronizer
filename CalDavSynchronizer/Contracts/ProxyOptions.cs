@@ -34,8 +34,15 @@ namespace CalDavSynchronizer.Contracts
 
         // ReSharper disable MemberCanBePrivate.Global
         public string ProxySalt { get; set; }
-
+        public bool ShouldSerializeProxySalt()
+        {
+            return !ProxyUseDefault && ProxyUseManual;
+        }
         public string ProxyProtectedPassword { get; set; }
+        public bool ShouldSerializeProxyProtectedPassword()
+        {
+            return !ProxyUseDefault && ProxyUseManual;
+        }
         // ReSharper restore MemberCanBePrivate.Global
 
         public bool ProxyUseDefault { get; set; }
