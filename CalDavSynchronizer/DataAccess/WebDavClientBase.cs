@@ -53,7 +53,7 @@ namespace CalDavSynchronizer.DataAccess
 
         private XmlDocument DeserializeXmlStream(Stream webDavXmlStream)
         {
-            using (var reader = new StreamReader(webDavXmlStream, Encoding.UTF8))
+            using (var reader = _acceptInvalidChars ? new RemoveInvalidXmlCharacterStreamReader(webDavXmlStream, Encoding.UTF8) : new StreamReader(webDavXmlStream, Encoding.UTF8))
             {
                 if (_acceptInvalidChars)
                 {

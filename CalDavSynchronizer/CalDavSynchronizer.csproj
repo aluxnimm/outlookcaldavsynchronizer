@@ -205,6 +205,7 @@
     <Compile Include="ChangeWatching\IItemCollectionChangeWatcher.cs" />
     <Compile Include="ChangeWatching\IFolderChangeWatcherFactory.cs" />
     <Compile Include="ChangeWatching\ItemSavedEventArgs.cs" />
+    <Compile Include="DataAccess\RemoveInvalidXmlCharacterStreamReader.cs" />
     <Compile Include="DDayICalWorkaround\CalDavSynchronizerSerializerFactory.cs" />
     <Compile Include="DDayICalWorkaround\CustomAttendeeSerializer.cs" />
     <Compile Include="DDayICalWorkaround\DDayICalCustomization.cs" />
