@@ -23,9 +23,47 @@ public class RemoveInvalidXmlCharacterStreamReader : StreamReader
 {
     // used to save last char from read buffer if it is part of a surrogate pair
     private int _lastBufferChar = -1;
+    private bool _activeSurrogatePair = false;
     private readonly char _replacementCharacter = '\uFFFD';
     public RemoveInvalidXmlCharacterStreamReader(Stream stream, Encoding encoding) : base(stream, encoding)
     {
+    }
+
+    public override int Peek()
+    {
+        int ch = base.Peek();
+        if (ch != -1 && !XmlConvert.IsXmlChar((char)ch) && !_activeSurrogatePair)
+        {
+            return _replacementCharacter;
+        }
+        return ch;
+    }
+
+    public override int Read()
+    {
+        int ch = base.Read();
+        if (ch != -1 && !XmlConvert.IsXmlChar((char)ch))
+        {
+            // if we have an active surrogate pair return the character and set active to false again
+            if (_activeSurrogatePair)
+            {
+                _activeSurrogatePair = false;
+                return ch;
+            }
+
+            // check if there is a valid surrogate pair with the next char in the stream
+            int nextChar = base.Peek();
+            if (XmlConvert.IsXmlSurrogatePair(nextChar != -1 ? (char)nextChar : '\0', (char)ch))
+            {
+                _activeSurrogatePair = true;
+                return ch;
+            }
+            else
+            {
+                return _replacementCharacter;
+            }
+        }
+        return ch;
     }
     public override int Read(char[] buffer, int index, int count)
     {
@@ -49,7 +87,7 @@ public class RemoveInvalidXmlCharacterStreamReader : StreamReader
                 // special case check if there is a surrogate pair with last char of this buffer and first char of next buffer
                 else if (bufferEnd == i + 1)
                 {
-                    int nextBufferFirstChar = Peek();
+                    int nextBufferFirstChar = base.Peek();
                     if (XmlConvert.IsXmlSurrogatePair(nextBufferFirstChar != -1 ? (char)nextBufferFirstChar : '\0', buffer[i]))
                     {
                         _lastBufferChar = buffer[i];
