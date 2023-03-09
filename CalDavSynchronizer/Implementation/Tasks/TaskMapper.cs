@@ -80,10 +80,10 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
         public void Map1To2(ITaskItemWrapper source, ITodo target, iCalTimeZone localIcalTimeZone, IEntitySynchronizationLogger logger)
         {
-            target.Summary = CalendarDataPreprocessor.EscapeBackslash(source.Inner.Subject);
+            target.Summary = CalendarDataPreprocessor.EncodeString(source.Inner.Subject);
 
             if (_configuration.MapBody)
-                target.Description = CalendarDataPreprocessor.EscapeBackslash(source.Inner.Body);
+                target.Description = CalendarDataPreprocessor.EncodeString(source.Inner.Body);
 
             if (source.Inner.StartDate != OutlookUtility.OUTLOOK_DATE_NONE)
             {

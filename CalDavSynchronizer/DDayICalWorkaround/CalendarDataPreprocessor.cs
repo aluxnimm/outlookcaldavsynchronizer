@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml;
 using DDay.iCal;
 using log4net;
 
@@ -209,10 +210,45 @@ namespace CalDavSynchronizer.DDayICalWorkaround
             return iCalendarData.Replace("\r\r\n", "\r\n");
         }
 
+        public static string EncodeString(string value)
+        {
+            string escaped = EscapeBackslash(value);
+            return RemoveInvalidXmlChars(escaped);
+        }
+
         public static string EscapeBackslash(string value)
         {
-            // DDay.iCal doesn't escape Backslash which leads to errors with some servers
             return value?.Replace(@"\", @"\\");
+        }
+
+        public static string RemoveInvalidXmlChars(string value)
+        {
+            const char _replacementCharacter = '\uFFFD';
+            if (string.IsNullOrEmpty(value))
+                return value;
+
+            int length = value.Length;
+            StringBuilder stringBuilder = new StringBuilder(length);
+
+            for (int i = 0; i < length; ++i)
+            {
+                if (XmlConvert.IsXmlChar(value[i]))
+                {
+                    stringBuilder.Append(value[i]);
+                }
+                else if (i + 1 < length && XmlConvert.IsXmlSurrogatePair(value[i + 1], value[i]))
+                {
+                    stringBuilder.Append(value[i]);
+                    stringBuilder.Append(value[i + 1]);
+                    ++i;
+                }
+                else
+                {
+                    stringBuilder.Append(_replacementCharacter);
+                }
+            }
+
+            return stringBuilder.ToString();
         }
     }
 }
