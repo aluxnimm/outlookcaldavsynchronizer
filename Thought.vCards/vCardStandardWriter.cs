@@ -5,8 +5,11 @@
  * ======================================================================= */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Xml;
 
 namespace Thought.vCards
 {
@@ -22,14 +25,18 @@ namespace Thought.vCards
         private string productId;
         private const string TYPE = "TYPE";
 
-
         /// <summary>
         ///     The characters that are escaped per the original
         ///     vCard specification.
         /// </summary>
-        private readonly char[] standardEscapedCharacters =
-            new char[] {',', '\\', ';', '\r', '\n'};
-
+        private readonly Dictionary<string, string> standardEspaceTokens = new Dictionary<string, string>
+        {
+            {@"\", @"\\"},
+            {"\n", @"\n"},
+            {"\r", @"\r"},
+            {",", @"\,"},
+            {";", @"\;"}
+        };
 
         /// <summary>
         ///     The characters that are escaped by Microsoft Outlook.
@@ -38,9 +45,13 @@ namespace Thought.vCards
         ///     Microsoft Outlook does not property decode escaped
         ///     commas in values.
         /// </remarks>
-        private readonly char[] outlookEscapedCharacters =
-            new char[] {'\\', ';', '\r', '\n'};
-
+        private readonly Dictionary<string, string> outlookEspaceTokens = new Dictionary<string, string>
+        {
+            {@"\", @"\\"},
+            {"\n", @"\n"},
+            {"\r", @"\r"},
+            {";", @"\;"}
+        };
 
         /// <summary>
         ///     Creates a new instance of the standard writer.
@@ -1507,24 +1518,22 @@ namespace Thought.vCards
                 (this.options & vCardStandardWriterOptions.IgnoreCommas) ==
                 vCardStandardWriterOptions.IgnoreCommas)
             {
-                return EncodeEscaped(value, outlookEscapedCharacters);
+                return EncodeEscaped(value, outlookEspaceTokens);
             }
             else
             {
-                return EncodeEscaped(value, standardEscapedCharacters);
+                return EncodeEscaped(value, standardEspaceTokens);
             }
         }
 
         #endregion
 
-        #region [ EncodeEscaped(string, char[]) ]
+        #region [ EncodeEscaped(string, Dictionary<string,string>) ]
 
         /// <summary>
         ///     Encodes a character array using simple escape sequences.
         /// </summary>
-        public static string EncodeEscaped(
-            string value,
-            char[] escaped)
+        public static string EncodeEscaped(string value, Dictionary<string,string> escaped)
         {
             if (escaped == null)
                 throw new ArgumentNullException("escaped");
@@ -1532,70 +1541,32 @@ namespace Thought.vCards
             if (string.IsNullOrEmpty(value))
                 return value;
 
-            StringBuilder buffer = new StringBuilder();
+            string escapedValue = escaped.Aggregate(value, (current, token) => current.Replace(token.Key, token.Value));
 
-            int startIndex = 0;
+            // filter out invalid xml characters
+            const char _replacementCharacter = '\uFFFD';
+            int length = escapedValue.Length;
+            StringBuilder stringBuilder = new StringBuilder(length);
 
-            do
+            for (int i = 0; i < length; ++i)
             {
-                // Get the index of the next character
-                // to be escaped (e.g. the next semicolon).
-
-                int nextIndex = value.IndexOfAny(escaped, startIndex);
-
-                if (nextIndex == -1)
+                if (XmlConvert.IsXmlChar(escapedValue[i]))
                 {
-                    // No more characters need to be escaped.
-                    // Any characters between the start index
-                    // and the end of the string can be copied
-                    // to the buffer.
-
-                    buffer.Append(
-                        value,
-                        startIndex,
-                        value.Length - startIndex);
-
-                    break;
+                    stringBuilder.Append(escapedValue[i]);
+                }
+                else if (i + 1 < length && XmlConvert.IsXmlSurrogatePair(escapedValue[i + 1], escapedValue[i]))
+                {
+                    stringBuilder.Append(escapedValue[i]);
+                    stringBuilder.Append(escapedValue[i + 1]);
+                    ++i;
                 }
                 else
                 {
-                    char replacement;
-                    switch (value[nextIndex])
-                    {
-                        case '\n':
-                            replacement = 'n';
-                            break;
-
-                        case '\r':
-                            replacement = 'r';
-                            break;
-
-                        default:
-                            replacement = value[nextIndex];
-                            break;
-                    }
-
-                    buffer.Append(
-                        value,
-                        startIndex,
-                        nextIndex - startIndex);
-
-                    buffer.Append('\\');
-                    buffer.Append(replacement);
-
-                    startIndex = nextIndex + 1;
+                    stringBuilder.Append(_replacementCharacter);
                 }
-            } while (startIndex < value.Length);
-
-            return buffer.ToString();
-
-            // The following must be encoded:
-            //
-            // Backslash (\\)
-            // Colon (\:)
-            // Semicolon (\;)
+            }
+            return stringBuilder.ToString();
         }
-
         #endregion
 
         #region [ EncodeQuotedPrintable ]

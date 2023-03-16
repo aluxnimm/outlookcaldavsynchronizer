@@ -47,7 +47,13 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
 
         protected override string Serialize(DistributionList vcard)
         {
-            char[] escapechars = {',', '\\', ';', '\r', '\n'};
+            Dictionary<string, string> escapeTokens = new Dictionary<string, string>
+            {   {@"\", @"\\"},
+                {"\n", @"\n"},
+                {"\r", @"\r"},
+                {",", @"\,"},
+                {";", @"\;"}
+            };
 
             var builder = new StringBuilder();
             builder.AppendLine("BEGIN:VLIST");
@@ -55,17 +61,17 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
             builder.Append("UID:");
             builder.AppendLine(vcard.Uid);
             builder.Append("FN:");
-            builder.AppendLine(vCardStandardWriter.EncodeEscaped(vcard.Name, escapechars));
+            builder.AppendLine(vCardStandardWriter.EncodeEscaped(vcard.Name, escapeTokens));
             if (!string.IsNullOrEmpty(vcard.Description))
             {
                 builder.Append("DESCRIPTION:");
-                builder.AppendLine(vCardStandardWriter.EncodeEscaped(vcard.Description.Replace("\r\n", "\n"), escapechars));
+                builder.AppendLine(vCardStandardWriter.EncodeEscaped(vcard.Description.Replace("\r\n", "\n"), escapeTokens));
             }
 
             if (!string.IsNullOrEmpty(vcard.Nickname))
             {
                 builder.Append("NICKNAME:");
-                builder.AppendLine(vCardStandardWriter.EncodeEscaped(vcard.Nickname, escapechars));
+                builder.AppendLine(vCardStandardWriter.EncodeEscaped(vcard.Nickname, escapeTokens));
             }
 
             foreach (var member in vcard.Members)
@@ -73,7 +79,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
                 builder.Append("CARD;EMAIL=");
                 builder.Append(member.EmailAddress);
                 builder.Append(";FN=");
-                builder.Append(vCardStandardWriter.EncodeEscaped(member.DisplayName, escapechars));
+                builder.Append(vCardStandardWriter.EncodeEscaped(member.DisplayName, escapeTokens));
                 builder.Append(":");
                 builder.AppendLine(member.ServerFileName);
             }
@@ -81,7 +87,7 @@ namespace CalDavSynchronizer.Implementation.DistributionLists.Sogo
             foreach (var member in vcard.NonAddressBookMembers)
             {
                 builder.Append(NonAddressBookMemberValueName + ";CN=");
-                builder.Append(vCardStandardWriter.EncodeEscaped(member.DisplayName, escapechars));
+                builder.Append(vCardStandardWriter.EncodeEscaped(member.DisplayName, escapeTokens));
                 builder.Append(":mailto:");
                 builder.AppendLine(member.EmailAddress);
             }
