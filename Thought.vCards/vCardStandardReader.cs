@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -254,83 +255,17 @@ namespace Thought.vCards
             if (string.IsNullOrEmpty(value))
                 return value;
 
-            StringBuilder builder = new StringBuilder(value.Length);
-
-            int startIndex = 0;
-
-            do
+            Dictionary<string, string> standardEspaceTokens = new Dictionary<string, string>
             {
-                // Get the index of the next backslash character.
-                // This marks the beginning of an escape sequence.
-
-                int nextIndex = value.IndexOf('\\', startIndex);
-
-                if ((nextIndex == -1) || (nextIndex == value.Length - 1))
-                {
-                    // There are no more escape codes, or the backslash
-                    // is located at the very end of the string.  The
-                    // characters between the index and the end of the
-                    // string need to be copied to the output buffer.
-
-                    builder.Append(
-                        value,
-                        startIndex,
-                        value.Length - startIndex);
-
-                    break;
-                }
-                else
-                {
-                    // A backslash was located somewhere in the string.
-                    // The previous statement ensured the backslash is
-                    // not the very last character, and therefore the
-                    // following statement is safe.
-
-                    char code = value[nextIndex + 1];
-
-                    // Any characters between the starting point and
-                    // the index must be pushed into the buffer.
-
-                    builder.Append(
-                        value,
-                        startIndex,
-                        nextIndex - startIndex);
-
-                    switch (code)
-                    {
-                        case '\\':
-                        case ',':
-                        case ';':
-                        case ':':
-
-                            builder.Append(code);
-                            nextIndex += 2;
-                            break;
-
-                        case 'n':
-                        case 'N':
-                            builder.Append('\n');
-                            nextIndex += 2;
-                            break;
-
-                        case 'r':
-                        case 'R':
-                            builder.Append('\r');
-                            nextIndex += 2;
-                            break;
-
-                        default:
-                            builder.Append('\\');
-                            builder.Append(code);
-                            nextIndex += 2;
-                            break;
-                    }
-                }
-
-                startIndex = nextIndex;
-            } while (startIndex < value.Length);
-
-            return builder.ToString();
+                {@"\\", @"\"},
+                {@"\N", "\n"},
+                {@"\R", "\r"},
+                {@"\n", "\n"},
+                {@"\r", "\r"},
+                {@"\,",","},
+                {@"\;", ";"}
+            };
+            return standardEspaceTokens.Aggregate(value, (current, token) => current.Replace(token.Key, token.Value));
         }
 
         #endregion
