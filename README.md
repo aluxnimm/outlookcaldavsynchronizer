@@ -1,6 +1,6 @@
 ## Outlook CalDav Synchronizer ##
 
-Outlook Plugin, which synchronizes events, tasks and contacts between Outlook and Google, SOGo, Horde or any other CalDAV or CardDAV server. Supported Outlook versions are 2019, 2016, 2013, 2010 and 2007.
+Outlook Plugin, which synchronizes events, tasks and contacts between Outlook and Google, SOGo, Horde or any other CalDAV or CardDAV server. Supported Outlook versions are 2021, 2019, 2016, 2013, 2010 and 2007 and Office 365 for Desktop.
 
 ### Project Homepage ###
 [http://caldavsynchronizer.org](http://caldavsynchronizer.org)
