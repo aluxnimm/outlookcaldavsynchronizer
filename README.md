@@ -121,6 +121,24 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 4.4.0 ####
+- Released 2023/03/21
+- New features
+	- Implement PKCE for Swisscom Oauth2 requests.
+	- Update NuGet packages.
+	- Update mailbox.org logo.
+	- Optimize vCardStandardReader/Writer and use LINQ.
+	- Implement a new RemoveInvalidXmlCharacterStreamReader for option Accept invalid chars in server response.
+- Bug fixes
+	- Fix typo and add translation for Close profile window dialog.
+	- ignore empty photo URI, sourceforge ticket #1822.
+	- Enable force basic authentication as default for new profiles, with CredentialCache there are issues with accentuated characters in passwords, issue #1774, gh issue 363.
+	- Don't serialize password and salt for profiles where UseAccountPassword is enabled, gh issue 364.
+	- Don't serialize ProxyPassword when DefaultProxy is enabled.
+	- Catch possible exceptions in accessing MAPI folder when getting ItemCount, should fix profile load if folders are not accessible, gh issue 310,381.
+	- Explicitely set NoEndDate to true for recurring events and tasks, gh issue 334.
+	- Remove invalid xml chars from appointment, task and vcard encoded strings.
+
 #### 4.3.0 ####
 - Released 2022/07/05
 - Security Fixes
