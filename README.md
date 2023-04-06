@@ -121,6 +121,11 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 4.4.1 ####
+- Released 2023/04/06
+- Bug fixes
+	- fix regression bug gh 388, recurring events and tasks with COUNT!=0, sourceforge #1770.
+
 #### 4.4.0 ####
 - Released 2023/03/21
 - New features
