@@ -1234,8 +1234,9 @@ namespace CalDavSynchronizer.Implementation.Events
                                 ? sourceRecurrencePattern.Until.Date
                                 : targetRecurrencePattern.PatternStartDate;
                         }
-                        else
+                        else if (sourceRecurrencePattern.Count <= 0)
                         {
+                            // set explicitly NoEndDate only if there is no positive COUNT and no UNTIL set
                             targetRecurrencePattern.NoEndDate = true;
                         }
                     }
