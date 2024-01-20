@@ -9,7 +9,7 @@ namespace CalDavSynchronizer.OAuth.Swisscom
         /// Gets or sets the code_verifier.
         /// </summary>
         [Google.Apis.Util.RequestParameterAttribute("code_verifier")]
-        public string CodeVerifier { get; set; }
+        public new string CodeVerifier { get; set; }
 
     }
 }
