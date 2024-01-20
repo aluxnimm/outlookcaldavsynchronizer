@@ -1,10 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33130.400
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer", "CalDavSynchronizer\CalDavSynchronizer.csproj", "{64937844-752B-49A4-9B3F-3526601E93E1}"
 	ProjectSection(ProjectDependencies) = postProject
+		{A8F93F45-42EA-4D4C-8DD1-B03410CC7C55} = {A8F93F45-42EA-4D4C-8DD1-B03410CC7C55}
 		{A53D3CEB-F7AF-41AB-AA04-4D3CF684BBAF} = {A53D3CEB-F7AF-41AB-AA04-4D3CF684BBAF}
 	EndProjectSection
 EndProject
@@ -33,6 +34,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer.IntegrationTests", "CalDavSynchronizer.IntegrationTests\CalDavSynchronizer.IntegrationTests.csproj", "{13B5D6BF-EB84-4570-A3E4-1F272C0F2BC0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalDavSynchronizer.OAuth.Swisscom", "CalDavSynchronizer.OAuth.Swisscom\CalDavSynchronizer.OAuth.Swisscom.csproj", "{424F803E-B641-4473-B9C3-B8DF40E0B3B3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wacton.Unicolour", "Unicolour\Wacton.Unicolour.csproj", "{A8F93F45-42EA-4D4C-8DD1-B03410CC7C55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -94,13 +97,17 @@ Global
 		{424F803E-B641-4473-B9C3-B8DF40E0B3B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{424F803E-B641-4473-B9C3-B8DF40E0B3B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{424F803E-B641-4473-B9C3-B8DF40E0B3B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8F93F45-42EA-4D4C-8DD1-B03410CC7C55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8F93F45-42EA-4D4C-8DD1-B03410CC7C55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8F93F45-42EA-4D4C-8DD1-B03410CC7C55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8F93F45-42EA-4D4C-8DD1-B03410CC7C55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		RESX_AutoCreateNewLanguageFiles = True
-		RESX_SortFileContentOnSave = True
 		SolutionGuid = {C6CA0E38-AF86-45D6-BDCA-263A18B40738}
+		RESX_SortFileContentOnSave = True
+		RESX_AutoCreateNewLanguageFiles = True
 	EndGlobalSection
 EndGlobal

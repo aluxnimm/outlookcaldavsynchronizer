@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AssemblyName>Wacton.Unicolour</AssemblyName>
+        <RootNamespace>Wacton.Unicolour</RootNamespace>
+        <PackageId>$(AssemblyName)</PackageId>
+        <Authors>William Acton</Authors>
+        <Description>🌈 Colour / Color conversion, interpolation, and comparison for .NET</Description>
+        <Copyright>William Acton</Copyright>
+        <PackageProjectUrl>https://github.com/waacton/Unicolour</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/waacton/Unicolour</RepositoryUrl>
+        <LangVersion>Preview</LangVersion>
+        <TargetFramework>NetStandard2.0</TargetFramework>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <PackageIcon>Resources\Unicolour.png</PackageIcon>
+        <PackageVersion>3.0.0</PackageVersion>
+        <PackageTags>colour color RGB HSB HSV HSL HWB XYZ xyY LAB LUV LCH LCHab LCHuv HSLuv HPLuv ICtCp JzAzBz JzCzHz Oklab Oklch CAM02 CAM16 HCT converter colour-converter colour-conversion color-converter color-conversion colour-space colour-spaces color-space color-spaces interpolation colour-interpolation color-interpolation colour-mixing color-mixing comparison colour-comparison color-comparison contrast luminance deltaE chromaticity display-p3 rec-2020 gamut-mapping temperature cct duv cvd colour-vision-deficiency color-vision-deficiency colour-blindness color-blindness protanopia deuteranopia tritanopia achromatopsia</PackageTags>
+        <PackageReleaseNotes>Add gamut mapping, support premultiplied alpha interpolation, and improve API</PackageReleaseNotes>
+        <ApplicationIcon>Resources\Unicolour.ico</ApplicationIcon>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <None Update="Resources\Unicolour.png">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+
+        <None Include="LICENSE">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+    </ItemGroup>
+
+</Project>

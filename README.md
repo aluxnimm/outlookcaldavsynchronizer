@@ -105,7 +105,7 @@ see [https://www.davx5.com](https://www.davx5.com), so we can really recommend i
 -  [Apache log4net](https://logging.apache.org/log4net/)
 -  [Thought.vCard](http://nugetmusthaves.com/Package/Thought.vCards)
 -  [NodaTime](http://nodatime.org/)
--  [ColorMine](https://www.nuget.org/packages/ColorMine/)
+-  [Unicolour](https://github.com/waacton/Unicolour)
 
 ### Install instructions ###
 

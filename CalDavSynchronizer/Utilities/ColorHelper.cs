@@ -26,8 +26,7 @@ using System.Data;
 using System.Reflection;
 using CalDavSynchronizer.DataAccess;
 using log4net;
-using ColorMine;
-using ColorMine.ColorSpaces;
+using Wacton.Unicolour;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Utilities
@@ -67,8 +66,7 @@ namespace CalDavSynchronizer.Utilities
             {OlCategoryColor.olCategoryColorDarkMaroon, ArgbColor.FromRgb(0x93446b)}
         };
 
-
-        public static OlCategoryColor FindMatchingCategoryColor(Color color)
+        public static OlCategoryColor FindMatchingCategoryColor (Color color)
         {
             var minDistance = double.MaxValue;
             var matchingCategoryColor = OlCategoryColor.olCategoryColorNone;
@@ -77,10 +75,10 @@ namespace CalDavSynchronizer.Utilities
             {
                 var catColor = Color.FromArgb(cat.Value.ArgbValue);
 
-                var a = new Rgb {R = color.R, G = color.G, B = color.B};
-                var b = new Rgb {R = catColor.R, G = catColor.G, B = catColor.B};
+                var unicolour_a = new Unicolour(ColourSpace.Rgb255, color.R, color.G, color.B);
+                var unicolour_b = new Unicolour(ColourSpace.Rgb255, catColor.R, catColor.G, catColor.B);
 
-                var curDistance = a.Compare(b, new ColorMine.ColorSpaces.Comparisons.CieDe2000Comparison());
+                var curDistance = unicolour_a.Difference(DeltaE.Ciede2000, unicolour_b);
 
                 if (curDistance < minDistance)
                 {
@@ -91,7 +89,7 @@ namespace CalDavSynchronizer.Utilities
 
             return matchingCategoryColor;
         }
-
+        
         public static OlCategoryColor FindMatchingCategoryColor(ArgbColor argbColor)
         {
             var color = Color.FromArgb(argbColor.ArgbValue);
