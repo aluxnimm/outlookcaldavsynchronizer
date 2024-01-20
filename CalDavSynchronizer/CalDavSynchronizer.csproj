@@ -916,14 +916,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BouncyCastle">
-      <Version>1.8.9</Version>
-    </PackageReference>
     <PackageReference Include="DDay.iCal">
       <Version>1.0.2.575</Version>
     </PackageReference>
     <PackageReference Include="Google.Apis.Tasks.v1">
-      <Version>1.59.0.2384</Version>
+      <Version>1.66.0.3015</Version>
     </PackageReference>
     <PackageReference Include="Google.GData.Contacts">
       <Version>2.2.0</Version>
@@ -935,7 +932,7 @@
       <Version>2.2.29</Version>
     </PackageReference>
     <PackageReference Include="NodaTime">
-      <Version>3.1.6</Version>
+      <Version>3.1.10</Version>
     </PackageReference>
     <PackageReference Include="System.Net.Http">
       <Version>4.3.4</Version>
