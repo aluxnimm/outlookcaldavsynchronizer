@@ -112,8 +112,8 @@ see [https://www.davx5.com](https://www.davx5.com), so we can really recommend i
 **WARNING**: Beginning with release 4.0.0 .NET framework 4.8 is the minimal requirement.
 
 Download and extract the `OutlookCalDavSynchronizer-<Version>.zip` into any directory and start setup.exe. You can change the default install path, but you need to use a directory on the `C:\` drive.
-If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=56961)
-You should also update manually to the latest Visual Studio 2010 Tools for Office Runtime (Version 10.0.60828) if you have an older version installed, since some COMExceptions have been fixed.
+If the installer is complaining about the missing Visual Studio 2010 Tools for Office Runtime, install it manually from [Microsoft Download Link](https://www.microsoft.com/en-us/download/details.aspx?id=105671)
+You should also update manually to the latest Visual Studio 2010 Tools for Office Runtime (Version 10.0.60912) if you have an older version installed, since some COMExceptions have been fixed.
 
 Beginning with version 2.9.0 the default install location is `ProgramFilesDir\CalDavSynchronizer\` and the installer remembers the chosen directory for the next updates. Also the install option to install for Everyone instead of the current user is working now for Outlook 2010 and higher, if you want to install the addin for all users on the current machine. For Outlook 2007 you can only install the addin for the current user.
 
