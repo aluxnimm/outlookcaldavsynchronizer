@@ -22,7 +22,7 @@ namespace CalDavSynchronizer
     public static class WebResourceUrls
     {
         public static Uri GlobalOptionsFile => new Uri("https://sourceforge.net/p/outlookcaldavsynchronizer/code/ci/master/tree/GlobalOptions.xml?format=raw");
-        public static Uri SiteContainingCurrentVersion => new Uri("https://sourceforge.net/projects/outlookcaldavsynchronizer/files/");
+        public static Uri SiteContainingNewestVersion => new Uri("https://sourceforge.net/projects/outlookcaldavsynchronizer/best_release.json");
         public static Uri LatestVersionZipFile => new Uri("https://sourceforge.net/projects/outlookcaldavsynchronizer/files/latest/download?source=files");
         public static Uri ReadMeFile => new Uri("https://sourceforge.net/p/outlookcaldavsynchronizer/code/ci/master/tree/README.md?format=raw");
         public static Uri ReadMeFileDownloadSite => new Uri("https://sourceforge.net/projects/outlookcaldavsynchronizer/files/README.md/download");

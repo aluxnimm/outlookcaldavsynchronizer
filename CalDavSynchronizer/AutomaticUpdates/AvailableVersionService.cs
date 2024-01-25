@@ -20,6 +20,7 @@ using System.Text.RegularExpressions;
 using log4net;
 using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Globalization;
+using Newtonsoft.Json.Linq;
 
 namespace CalDavSynchronizer.AutomaticUpdates
 {
@@ -33,10 +34,15 @@ namespace CalDavSynchronizer.AutomaticUpdates
 
             using (var client = HttpUtility.CreateWebClient())
             {
-                site = client.DownloadString(WebResourceUrls.SiteContainingCurrentVersion);
+                site = client.DownloadString(WebResourceUrls.SiteContainingNewestVersion);
             }
 
-            var match = Regex.Match(site, @"OutlookCalDavSynchronizer-(?<Major>\d+).(?<Minor>\d+).(?<Build>\d+).zip");
+            var bestReleaseJObject = JObject.Parse(site);
+
+            if (!(bestReleaseJObject["release"]?["filename"] is JValue fileNameValue))
+                return null;
+
+            var match = Regex.Match(fileNameValue.Value<string>(), @"/(?<Major>\d+).(?<Minor>\d+).(?<Build>\d+)/");
 
             if (match.Success)
             {
