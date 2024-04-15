@@ -26,7 +26,7 @@ using CalDavSynchronizer.ProfileTypes;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-    class OXInfoDialogViewModel : ModelBase
+    public class OXInfoDialogViewModel : ModelBase
     {
         public event EventHandler<CloseEventArgs> CloseRequested;
         private readonly IUiService _uiService;
