@@ -118,7 +118,7 @@ namespace CalDavSynchronizer
             remove { _synchronizationStatus.StatusChanged -= value; }
         }
 
-        public ComponentContainer(Application application, IGeneralOptionsDataAccess generalOptionsDataAccess, IComWrapperFactory comWrapperFactory, IExceptionHandlingStrategy exceptionHandlingStrategy)
+        public ComponentContainer(Application application, IGeneralOptionsDataAccess generalOptionsDataAccess, IComWrapperFactory comWrapperFactory, IExceptionHandlingStrategy exceptionHandlingStrategy, IUiService uiService = null)
         {
             if (application == null) throw new ArgumentNullException(nameof(application));
             if (generalOptionsDataAccess == null) throw new ArgumentNullException(nameof(generalOptionsDataAccess));
@@ -169,7 +169,7 @@ namespace CalDavSynchronizer
 
             _optionsDataAccess = new OptionsDataAccess(optionsFilePath);
 
-            _uiService = new UiService();
+            _uiService = uiService ?? new UiService();
             var options = _optionsDataAccess.Load();
 
             _permanentStatusesViewModel = new PermanentStatusesViewModel(_uiService, this, options);

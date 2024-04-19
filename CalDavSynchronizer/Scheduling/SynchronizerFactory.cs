@@ -360,7 +360,7 @@ namespace CalDavSynchronizer.Scheduling
             return proxy;
         }
 
-        private static Tuple<string, string> GetProductAndVersion()
+        public static Tuple<string, string> GetProductAndVersion()
         {
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             return Tuple.Create("CalDavSynchronizer", string.Format("{0}.{1}", version.Major, version.Minor));
