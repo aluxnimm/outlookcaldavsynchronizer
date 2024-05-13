@@ -1,72 +1,65 @@
 ﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
 // published by the Free Software Foundation, either version 3 of the
 // License, or (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Affero General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using CalDavSynchronizer.AutomaticUpdates;
+using CalDavSynchronizer.ChangeWatching;
+using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.DataAccess;
+using CalDavSynchronizer.Globalization;
+using CalDavSynchronizer.Implementation;
+using CalDavSynchronizer.Implementation.Common;
+using CalDavSynchronizer.Implementation.ComWrappers;
+using CalDavSynchronizer.Implementation.TimeZones;
+using CalDavSynchronizer.ProfileTypes;
+using CalDavSynchronizer.Reports;
+using CalDavSynchronizer.Scheduling;
+using CalDavSynchronizer.Ui;
+using CalDavSynchronizer.Ui.Options;
+using CalDavSynchronizer.Ui.Options.Models;
+using CalDavSynchronizer.Ui.Options.ViewModels;
+using CalDavSynchronizer.Ui.Reports.ViewModels;
+using CalDavSynchronizer.Ui.SystrayNotification;
+using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
+using CalDavSynchronizer.Utilities;
+using GenSync;
+using GenSync.EntityRelationManagement;
+using GenSync.Logging;
+using GenSync.ProgressReport;
+using GenSync.Synchronization;
+using log4net;
+using log4net.Core;
+using log4net.Repository.Hierarchy;
+using Microsoft.Office.Interop.Outlook;
 using System;
-using System.Configuration;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Markup;
-using CalDavSynchronizer.AutomaticUpdates;
-using CalDavSynchronizer.ChangeWatching;
-using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.DataAccess;
-using CalDavSynchronizer.Implementation.ComWrappers;
-using CalDavSynchronizer.Implementation.Events;
-using CalDavSynchronizer.Reports;
-using CalDavSynchronizer.Scheduling;
-using CalDavSynchronizer.Ui;
-using CalDavSynchronizer.Ui.Reports.ViewModels;
-using CalDavSynchronizer.Utilities;
-using GenSync;
-using GenSync.ProgressReport;
-using log4net;
-using log4net.Repository.Hierarchy;
-using log4net.Core;
-using Microsoft.Office.Interop.Outlook;
+using System.Windows.Media;
 using Application = Microsoft.Office.Interop.Outlook.Application;
 using Exception = System.Exception;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Windows.Media;
-using CalDavSynchronizer.Globalization;
-using CalDavSynchronizer.Implementation;
-using CalDavSynchronizer.Implementation.Common;
-using CalDavSynchronizer.Implementation.Tasks;
-using CalDavSynchronizer.Implementation.TimeZones;
-using CalDavSynchronizer.ProfileTypes;
-using CalDavSynchronizer.Scheduling.ComponentCollectors;
-using CalDavSynchronizer.Ui.Options;
-using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
-using CalDavSynchronizer.Ui.Options.Models;
-using CalDavSynchronizer.Ui.Options.ViewModels;
-using CalDavSynchronizer.Ui.SystrayNotification;
-using CalDavSynchronizer.Ui.SystrayNotification.ViewModels;
-using GenSync.EntityRelationManagement;
-using GenSync.Logging;
-using GenSync.Synchronization;
-using AppointmentId = CalDavSynchronizer.Implementation.Events.AppointmentId;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace CalDavSynchronizer
@@ -118,7 +111,17 @@ namespace CalDavSynchronizer
             remove { _synchronizationStatus.StatusChanged -= value; }
         }
 
-        public ComponentContainer(Application application, IGeneralOptionsDataAccess generalOptionsDataAccess, IComWrapperFactory comWrapperFactory, IExceptionHandlingStrategy exceptionHandlingStrategy, IUiService uiService = null)
+        public IOptionsDataAccess OptionsData { get { return _optionsDataAccess; } }
+        public IGeneralOptionsDataAccess GeneralOptionsData { get { return _generalOptionsDataAccess; } }
+
+        public ComponentContainer(
+            Application application,
+            IGeneralOptionsDataAccess generalOptionsDataAccess,
+            IComWrapperFactory comWrapperFactory,
+            IExceptionHandlingStrategy exceptionHandlingStrategy,
+            IUiService uiService = null,
+            string applicationDataDirectoryBaseParam = null
+        )
         {
             if (application == null) throw new ArgumentNullException(nameof(application));
             if (generalOptionsDataAccess == null) throw new ArgumentNullException(nameof(generalOptionsDataAccess));
@@ -158,7 +161,7 @@ namespace CalDavSynchronizer
             _globalTimeZoneCache = new GlobalTimeZoneCache();
 
 
-            var applicationDataDirectoryBase = Path.Combine(
+            var applicationDataDirectoryBase = applicationDataDirectoryBaseParam ?? Path.Combine(
                 Environment.GetFolderPath(
                     generalOptions.StoreAppDataInRoamingFolder ? Environment.SpecialFolder.ApplicationData : Environment.SpecialFolder.LocalApplicationData),
                 "CalDavSynchronizer");
@@ -327,7 +330,7 @@ namespace CalDavSynchronizer
                         _session,
                         options,
                         o => EntityRelationDataAccess.GetRelationStoragePath(GetProfileDataDirectory(o.Id)),
-                        o => DeleteCachesForProfiles(new[] {Tuple.Create(o.Id, o.Name)}));
+                        o => DeleteCachesForProfiles(new[] { Tuple.Create(o.Id, o.Name) }));
                     _generalOptionsDataAccess.EntityCacheVersion = c_requiredEntityCacheVersion;
                 }
                 catch (Exception x)
@@ -346,7 +349,7 @@ namespace CalDavSynchronizer
                         _session,
                         options,
                         o => EntityRelationDataAccess.GetRelationStoragePath(GetProfileDataDirectory(o.Id)),
-                        o => DeleteCachesForProfiles(new[] {Tuple.Create(o.Id, o.Name)}));
+                        o => DeleteCachesForProfiles(new[] { Tuple.Create(o.Id, o.Name) }));
                     _generalOptionsDataAccess.EntityCacheVersion = c_requiredEntityCacheVersion;
                 }
                 catch (Exception x)
@@ -365,14 +368,14 @@ namespace CalDavSynchronizer
                         _session,
                         options,
                         o => EntityRelationDataAccess.GetRelationStoragePath(GetProfileDataDirectory(o.Id)),
-                        o => DeleteCachesForProfiles(new[] {Tuple.Create(o.Id, o.Name)}));
+                        o => DeleteCachesForProfiles(new[] { Tuple.Create(o.Id, o.Name) }));
 
                     s_logger.InfoFormat("Converting caches from 2 to 3");
                     EntityCacheVersionConversion.Version2To3.Convert(
                         _session,
                         options,
                         o => EntityRelationDataAccess.GetRelationStoragePath(GetProfileDataDirectory(o.Id)),
-                        o => DeleteCachesForProfiles(new[] {Tuple.Create(o.Id, o.Name)}));
+                        o => DeleteCachesForProfiles(new[] { Tuple.Create(o.Id, o.Name) }));
                     _generalOptionsDataAccess.EntityCacheVersion = c_requiredEntityCacheVersion;
                 }
                 catch (Exception x)
@@ -481,14 +484,14 @@ namespace CalDavSynchronizer
         {
             if (debugLogLevel)
             {
-                ((Hierarchy) LogManager.GetRepository()).Root.Level = Level.Debug;
+                ((Hierarchy)LogManager.GetRepository()).Root.Level = Level.Debug;
             }
             else
             {
-                ((Hierarchy) LogManager.GetRepository()).Root.Level = Level.Info;
+                ((Hierarchy)LogManager.GetRepository()).Root.Level = Level.Info;
             }
 
-            ((Hierarchy) LogManager.GetRepository()).RaiseConfigurationChanged(EventArgs.Empty);
+            ((Hierarchy)LogManager.GetRepository()).RaiseConfigurationChanged(EventArgs.Empty);
         }
 
         public async void SynchronizeNowAsync()
@@ -571,7 +574,7 @@ namespace CalDavSynchronizer
             }
         }
 
-        private async Task ApplyNewOptions(Options[] oldOptions, Options[] newOptions, GeneralOptions generalOptions, IEnumerable<OneTimeChangeCategoryTask> oneTimeTasks)
+        public async Task ApplyNewOptions(Options[] oldOptions, Options[] newOptions, GeneralOptions generalOptions, IEnumerable<OneTimeChangeCategoryTask> oneTimeTasks)
         {
             _optionsDataAccess.Save(newOptions);
             await _scheduler.SetOptions(newOptions, generalOptions);
@@ -626,12 +629,12 @@ namespace CalDavSynchronizer
             await EditGeneralOptionsAsync(
                 o =>
                 {
-                    var generalOptionsViewModel = new GeneralOptionsViewModel {Options = o.Clone()};
+                    var generalOptionsViewModel = new GeneralOptionsViewModel { Options = o.Clone() };
 
                     if (_uiService.ShowGeneralOptions(generalOptionsViewModel))
                         return Tuple.Create(true, generalOptionsViewModel.Options);
                     else
-                        return Tuple.Create(false, (GeneralOptions) null);
+                        return Tuple.Create(false, (GeneralOptions)null);
                 });
         }
 
@@ -701,7 +704,7 @@ namespace CalDavSynchronizer
             {
                 s_logger.Info("CheckForUpdates manually triggered");
 
-                var availableVersion = await Task.Run((Func<Version>) _availableVersionService.GetVersionOfDefaultDownload);
+                var availableVersion = await Task.Run((Func<Version>)_availableVersionService.GetVersionOfDefaultDownload);
                 if (availableVersion == null)
                 {
                     MessageBox.Show(Strings.Get($"Did not find any default version!"), MessageBoxTitle);
@@ -775,7 +778,7 @@ namespace CalDavSynchronizer
                     ConfigFileName = "options.xml",
                     DataDirectoryName = profileGuid.ToString()
                 };
-                profiles = profiles.Union(new[] {profile}).ToArray();
+                profiles = profiles.Union(new[] { profile }).ToArray();
                 profileDataAccess.Save(profiles);
             }
 
@@ -912,21 +915,21 @@ namespace CalDavSynchronizer
 
                 if (availableComponents.CalDavDataAccess != null)
                 {
-                    var entityName = new WebResourceName {Id = entityId, OriginalAbsolutePath = entityId};
-                    var entities = await availableComponents.CalDavDataAccess.GetEntities(new[] {entityName});
+                    var entityName = new WebResourceName { Id = entityId, OriginalAbsolutePath = entityId };
+                    var entities = await availableComponents.CalDavDataAccess.GetEntities(new[] { entityName });
                     DisplayFirstEntityIfAvailable(entities.FirstOrDefault());
                 }
                 else if (availableComponents.CardDavDataAccess != null || availableComponents.DistListDataAccess != null)
                 {
-                    var entityName = new WebResourceName {Id = entityId, OriginalAbsolutePath = entityId};
+                    var entityName = new WebResourceName { Id = entityId, OriginalAbsolutePath = entityId };
 
                     EntityWithId<WebResourceName, string> entity = null;
 
                     if (availableComponents.CardDavDataAccess != null)
-                        entity = (await availableComponents.CardDavDataAccess.GetEntities(new[] {entityName})).FirstOrDefault();
+                        entity = (await availableComponents.CardDavDataAccess.GetEntities(new[] { entityName })).FirstOrDefault();
 
                     if (entity == null && availableComponents.DistListDataAccess != null)
-                        entity = (await availableComponents.DistListDataAccess.GetEntities(new[] {entityName})).FirstOrDefault();
+                        entity = (await availableComponents.DistListDataAccess.GetEntities(new[] { entityName })).FirstOrDefault();
 
                     DisplayFirstEntityIfAvailable(entity);
                 }
