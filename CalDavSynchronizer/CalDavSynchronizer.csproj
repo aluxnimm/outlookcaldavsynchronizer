@@ -186,7 +186,9 @@
     <Compile Include="AutomaticUpdates\IAvailableVersionService.cs" />
     <Compile Include="AutomaticUpdates\NewerVersionFoundEventArgs.cs" />
     <Compile Include="AutomaticUpdates\UpdateChecker.cs" />
-    <Compile Include="CalDavSynchronizerRibbon.cs" />
+    <Compile Include="CalDavSynchronizerRibbon.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CalDavSynchronizerRibbon.Designer.cs">
       <DependentUpon>CalDavSynchronizerRibbon.cs</DependentUpon>
     </Compile>
@@ -406,7 +408,9 @@
     <Compile Include="Scheduling\SynchronizationStatus.cs" />
     <Compile Include="Synchronization\OutlookEventSynchronizer.cs" />
     <Compile Include="Implementation\ContactAndDistListSynchronizer.cs" />
-    <Compile Include="Ui\AddResourceForm.cs" />
+    <Compile Include="Ui\AddResourceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Ui\AddResourceForm.Designer.cs">
       <DependentUpon>AddResourceForm.cs</DependentUpon>
     </Compile>
@@ -616,7 +620,9 @@
     <Compile Include="Ui\Options\AutoDiscoveryResult.cs" />
     <Compile Include="Ui\DelegateCommand.cs" />
     <Compile Include="Ui\ColorInfo.cs" />
-    <Compile Include="Ui\ColorPicker.cs" />
+    <Compile Include="Ui\ColorPicker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Ui\ColorPicker.Designer.cs">
       <DependentUpon>ColorPicker.cs</DependentUpon>
     </Compile>
@@ -625,16 +631,24 @@
     <Compile Include="Ui\ConnectionTests\ConnectionTester.cs" />
     <Compile Include="Ui\ConnectionTests\ResourceType.cs" />
     <Compile Include="Ui\ConnectionTests\TestResult.cs" />
-    <Compile Include="Ui\DraggableTabControl.cs" />
-    <Compile Include="Ui\GenericElementHostWindow.cs" />
+    <Compile Include="Ui\DraggableTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ui\GenericElementHostWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Ui\GenericElementHostWindow.Designer.cs">
       <DependentUpon>GenericElementHostWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Ui\GetNewVersionForm.cs" />
+    <Compile Include="Ui\GetNewVersionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Ui\GetNewVersionForm.Designer.cs">
       <DependentUpon>GetNewVersionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Ui\AboutForm.cs" />
+    <Compile Include="Ui\AboutForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Ui\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
@@ -716,7 +730,9 @@
     <Compile Include="Ui\Reports\Views\SynchronizationReportView.xaml.cs">
       <DependentUpon>SynchronizationReportView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Ui\Options\SelectResourceForm.cs" />
+    <Compile Include="Ui\Options\SelectResourceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Ui\Options\SelectResourceForm.Designer.cs">
       <DependentUpon>SelectResourceForm.cs</DependentUpon>
     </Compile>
@@ -913,7 +929,7 @@
       <Version>2.0.15</Version>
     </PackageReference>
     <PackageReference Include="NodaTime">
-      <Version>3.1.10</Version>
+      <Version>3.1.11</Version>
     </PackageReference>
     <PackageReference Include="System.Net.Http">
       <Version>4.3.4</Version>
