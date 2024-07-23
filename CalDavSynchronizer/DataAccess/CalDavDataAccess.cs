@@ -378,7 +378,13 @@ namespace CalDavSynchronizer.DataAccess
                                             {
                                                 var displayName = string.IsNullOrEmpty(displayNameNode.InnerText) ? "Default Calendar" : displayNameNode.InnerText;
                                                 var resourceUri = new Uri(calendarDocument.DocumentUri, path);
-                                                calendars.Add(new CalendarData(resourceUri, displayName, calendarColor, await GetPrivileges(resourceUri), await GetCalendarOwnerPropertiesOrNull(resourceUri)));
+                                                var calendarOrderNode = responseElement.SelectSingleNode("D:propstat/D:prop/E:calendar-order", calendarDocument.XmlNamespaceManager);
+                                                int calendarOrder = 10000;
+                                                if (calendarOrderNode != null && int.TryParse(calendarOrderNode.InnerText, out int order))
+                                                {
+                                                    calendarOrder = order;
+                                                }
+                                                calendars.Add(new CalendarData(resourceUri, displayName, calendarColor, await GetPrivileges(resourceUri), calendarOrder, await GetCalendarOwnerPropertiesOrNull(resourceUri)));
                                             }
 
                                             if (supportedComponentsNode.InnerXml.Contains("VTODO"))
