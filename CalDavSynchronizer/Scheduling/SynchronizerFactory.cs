@@ -249,6 +249,7 @@ namespace CalDavSynchronizer.Scheduling
             switch (serverAdapterType)
             {
                 case ServerAdapterType.WebDavHttpClientBased:
+                case ServerAdapterType.WebDavHttpClientOAuth:
                 case ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth:
                     var productAndVersion = GetProductAndVersion();
                     return new DataAccess.HttpClientBasedClient.WebDavClient(
@@ -282,7 +283,7 @@ namespace CalDavSynchronizer.Scheduling
 
         private static async System.Threading.Tasks.Task<HttpClient> CreateHttpClient(
             string username,
-            SecureString password,
+            SecureString key,
             string serverUrl,
             TimeSpan calDavConnectTimeout,
             ServerAdapterType serverAdapterType,
@@ -296,40 +297,64 @@ namespace CalDavSynchronizer.Scheduling
             switch (serverAdapterType)
             {
                 case ServerAdapterType.WebDavHttpClientBased:
-                    var httpClientHandler = new HttpClientHandler();
-                    if (!string.IsNullOrEmpty(username))
                     {
-                        if (!forceBasicAuthentication)
+                        var httpClientHandler = new HttpClientHandler();
+                        if (!string.IsNullOrEmpty(username))
                         {
-                            var credentials = new NetworkCredential(username, password);
-                            httpClientHandler.Credentials = credentials;
+                            if (!forceBasicAuthentication)
+                            {
+                                var credentials = new NetworkCredential(username, key);
+                                httpClientHandler.Credentials = credentials;
+                            }
+
+                            httpClientHandler.AllowAutoRedirect = false;
+                            httpClientHandler.PreAuthenticate = preemptiveAuthentication;
                         }
 
-                        httpClientHandler.AllowAutoRedirect = false;
-                        httpClientHandler.PreAuthenticate = preemptiveAuthentication;
+                        httpClientHandler.Proxy = proxy;
+                        httpClientHandler.UseProxy = (proxy != null);
+
+                        if (enableClientCertificate)
+                        {
+                            httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Automatic;
+                        }
+
+                        var httpClient = new HttpClient(httpClientHandler);
+                        if (forceBasicAuthentication && !string.IsNullOrEmpty(username))
+                        {
+                            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                                "Basic",
+                                Convert.ToBase64String(Encoding.UTF8.GetBytes($"{username}:{SecureStringUtility.ToUnsecureString(key)}"))
+                            );
+                        }
+
+                        httpClient.Timeout = calDavConnectTimeout;
+                        return httpClient;
                     }
-
-                    httpClientHandler.Proxy = proxy;
-                    httpClientHandler.UseProxy = (proxy != null);
-
-                    if (enableClientCertificate)
-                    {
-                        httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Automatic;
-                    }
-
-                    var httpClient = new HttpClient(httpClientHandler);
-                    if (forceBasicAuthentication && !string.IsNullOrEmpty(username))
-                    {
-                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-                            "Basic",
-                            Convert.ToBase64String(Encoding.UTF8.GetBytes($"{username}:{SecureStringUtility.ToUnsecureString(password)}"))
-                        );
-                    }
-
-                    httpClient.Timeout = calDavConnectTimeout;
-                    return httpClient;
                 case ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth:
                     return await OAuth.Google.GoogleHttpClientFactory.CreateHttpClient(username, GetProductWithVersion(), proxy);
+                case ServerAdapterType.WebDavHttpClientOAuth:
+                    {
+                        var httpClientHandler = new HttpClientHandler();
+                        if (!string.IsNullOrEmpty(username))
+                        {
+                            httpClientHandler.AllowAutoRedirect = false;
+                        }
+
+                        httpClientHandler.Proxy = proxy;
+                        httpClientHandler.UseProxy = (proxy != null);
+
+                        if (enableClientCertificate)
+                        {
+                            httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Automatic;
+                        }
+
+                        var httpClient = new HttpClient(httpClientHandler);
+                        httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + SecureStringUtility.ToUnsecureString(key));
+
+                        httpClient.Timeout = calDavConnectTimeout;
+                        return httpClient;
+                    }
                 default:
                     throw new ArgumentOutOfRangeException("serverAdapterType");
             }
