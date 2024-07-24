@@ -379,7 +379,7 @@ namespace CalDavSynchronizer.DataAccess
                                                 var displayName = string.IsNullOrEmpty(displayNameNode.InnerText) ? "Default Calendar" : displayNameNode.InnerText;
                                                 var resourceUri = new Uri(calendarDocument.DocumentUri, path);
                                                 var calendarOrderNode = responseElement.SelectSingleNode("D:propstat/D:prop/E:calendar-order", calendarDocument.XmlNamespaceManager);
-                                                int calendarOrder = 10000;
+                                                int calendarOrder = int.MaxValue;
                                                 if (calendarOrderNode != null && int.TryParse(calendarOrderNode.InnerText, out int order))
                                                 {
                                                     calendarOrder = order;
