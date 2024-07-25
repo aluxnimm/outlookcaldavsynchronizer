@@ -234,7 +234,7 @@ namespace CalDavSynchronizer.Scheduling
 
         public static IWebDavClient CreateWebDavClient(
             string username,
-            SecureString password,
+            SecureString passwordOrToken,
             string serverUrl,
             TimeSpan timeout,
             ServerAdapterType serverAdapterType,
@@ -249,10 +249,11 @@ namespace CalDavSynchronizer.Scheduling
             switch (serverAdapterType)
             {
                 case ServerAdapterType.WebDavHttpClientBased:
+                case ServerAdapterType.WebDavHttpClientOAuth:
                 case ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth:
                     var productAndVersion = GetProductAndVersion();
                     return new DataAccess.HttpClientBasedClient.WebDavClient(
-                        () => CreateHttpClient(username, password, serverUrl, timeout, serverAdapterType, proxyOptions, preemptiveAuthentication, forceBasicAuthentication, enableClientCertificate),
+                        () => CreateHttpClient(username, passwordOrToken, serverUrl, timeout, serverAdapterType, proxyOptions, preemptiveAuthentication, forceBasicAuthentication, enableClientCertificate),
                         productAndVersion.Item1,
                         productAndVersion.Item2,
                         closeConnectionAfterEachRequest,
@@ -282,7 +283,7 @@ namespace CalDavSynchronizer.Scheduling
 
         private static async System.Threading.Tasks.Task<HttpClient> CreateHttpClient(
             string username,
-            SecureString password,
+            SecureString passwordOrToken,
             string serverUrl,
             TimeSpan calDavConnectTimeout,
             ServerAdapterType serverAdapterType,
@@ -292,16 +293,17 @@ namespace CalDavSynchronizer.Scheduling
             bool enableClientCertificate)
         {
             IWebProxy proxy = (proxyOptions != null) ? CreateProxy(proxyOptions) : null;
+            HttpClientHandler httpClientHandler = new HttpClientHandler();
+            HttpClient httpClient = null;
 
             switch (serverAdapterType)
             {
                 case ServerAdapterType.WebDavHttpClientBased:
-                    var httpClientHandler = new HttpClientHandler();
                     if (!string.IsNullOrEmpty(username))
                     {
                         if (!forceBasicAuthentication)
                         {
-                            var credentials = new NetworkCredential(username, password);
+                            var credentials = new NetworkCredential(username, passwordOrToken);
                             httpClientHandler.Credentials = credentials;
                         }
 
@@ -317,19 +319,41 @@ namespace CalDavSynchronizer.Scheduling
                         httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Automatic;
                     }
 
-                    var httpClient = new HttpClient(httpClientHandler);
+                    httpClient = new HttpClient(httpClientHandler);
                     if (forceBasicAuthentication && !string.IsNullOrEmpty(username))
                     {
                         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
                             "Basic",
-                            Convert.ToBase64String(Encoding.UTF8.GetBytes($"{username}:{SecureStringUtility.ToUnsecureString(password)}"))
+                            Convert.ToBase64String(Encoding.UTF8.GetBytes($"{username}:{SecureStringUtility.ToUnsecureString(passwordOrToken)}"))
                         );
                     }
 
                     httpClient.Timeout = calDavConnectTimeout;
                     return httpClient;
+
                 case ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth:
                     return await OAuth.Google.GoogleHttpClientFactory.CreateHttpClient(username, GetProductWithVersion(), proxy);
+
+                case ServerAdapterType.WebDavHttpClientOAuth:
+                    if (!string.IsNullOrEmpty(username))
+                    {
+                        httpClientHandler.AllowAutoRedirect = false;
+                    }
+
+                    httpClientHandler.Proxy = proxy;
+                    httpClientHandler.UseProxy = (proxy != null);
+
+                    if (enableClientCertificate)
+                    {
+                        httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Automatic;
+                    }
+
+                    httpClient = new HttpClient(httpClientHandler);
+                    httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + SecureStringUtility.ToUnsecureString(passwordOrToken));
+
+                    httpClient.Timeout = calDavConnectTimeout;
+                    return httpClient;
+
                 default:
                     throw new ArgumentOutOfRangeException("serverAdapterType");
             }
@@ -478,7 +502,7 @@ namespace CalDavSynchronizer.Scheduling
                 CreateChunkedExecutor(options),
                 FullEntitySynchronizationLoggerFactory.Create<AppointmentId, IAppointmentItemWrapper, WebResourceName, IICalendar>(generalOptions.LogEntityNames ? EntityLogMessageFactory.Instance : NullEntityLogMessageFactory<IAppointmentItemWrapper, IICalendar>.Instance),
                 new VersionAwareToStateAwareEntityRepositoryAdapter<AppointmentId, DateTime, IEventSynchronizationContext, int>(atypeRepository, atypeIdEqualityComparer, _atypeVersionComparer),
-                options.UseWebDavCollectionSync ? btypeRepository : (IStateAwareEntityRepository<WebResourceName, string, IEventSynchronizationContext, string>) new VersionAwareToStateAwareEntityRepositoryAdapter<WebResourceName, string, IEventSynchronizationContext, string>(btypeRepository, btypeIdEqualityComparer, btypeVersionComparer),
+                options.UseWebDavCollectionSync ? btypeRepository : (IStateAwareEntityRepository<WebResourceName, string, IEventSynchronizationContext, string>)new VersionAwareToStateAwareEntityRepositoryAdapter<WebResourceName, string, IEventSynchronizationContext, string>(btypeRepository, btypeIdEqualityComparer, btypeVersionComparer),
                 options.UseWebDavCollectionSync ? new StateTokensDataAccess<int, string>(storageDataDirectory) : NullStateTokensDataAccess<int, string>.Instance,
                 new EventSynchronizationInterceptorFactory());
 
@@ -778,7 +802,7 @@ namespace CalDavSynchronizer.Scheduling
                             options,
                             generalOptions,
                             contactGroupRepository,
-                            synchronizerComponents.MappingParameters.DistributionListType == DistributionListType.VCardGroup ? (DistListEntityMapperBase) new DistListEntityMapper() : new UidDistListEntityMapper(),
+                            synchronizerComponents.MappingParameters.DistributionListType == DistributionListType.VCardGroup ? (DistListEntityMapperBase)new DistListEntityMapper() : new UidDistListEntityMapper(),
                             new InitialDistListEntityMatcher(btypeIdEqualityComparer),
                             e => new DistListConflictInitialSyncStateCreationStrategyAutomatic(e),
                             btypeIdEqualityComparer,
@@ -886,7 +910,7 @@ namespace CalDavSynchronizer.Scheduling
 
 
             var btypeStateAwareEntityRepository = options.UseWebDavCollectionSync
-                ? (IStateAwareEntityRepository<WebResourceName, string, ICardDavRepositoryLogger, string>) new LoggingStateAwareCardDavRepositoryDecorator(cardDavRepository)
+                ? (IStateAwareEntityRepository<WebResourceName, string, ICardDavRepositoryLogger, string>)new LoggingStateAwareCardDavRepositoryDecorator(cardDavRepository)
                 : new VersionAwareToStateAwareEntityRepositoryAdapter<WebResourceName, string, ICardDavRepositoryLogger, string>(btypeRepository, btypeIdEqualityComparer, btypeVersionComparer);
 
             var stateTokenDataAccess = options.UseWebDavCollectionSync
