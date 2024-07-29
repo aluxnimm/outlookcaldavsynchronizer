@@ -1029,6 +1029,10 @@ namespace Thought.vCards
                     ReadInto_ORG(card, property);
                     break;
 
+                case "DEPARTMENT":
+                    ReadInto_DEPARTMENT(card, property);
+                    break;
+
                 case "PHOTO":
                     ReadInto_PHOTO(card, property);
                     break;
@@ -1943,12 +1947,24 @@ namespace Thought.vCards
             {
                 string[] organizationAndDepartments = organizationProperty.Split(new[] {';'}, 2);
                 card.Organization = organizationAndDepartments[0];
-                card.Department = (organizationAndDepartments.Length > 1) ? organizationAndDepartments[1] : null;
             }
             else
             {
-                card.Organization = card.Department = null;
+                card.Organization = null;
             }
+        }
+
+        #endregion
+
+
+        #region [ ReadInto_DEPARTMENT ]
+
+        /// <summary>
+        ///     Reads the Department property.
+        /// </summary>
+        private void ReadInto_DEPARTMENT(vCard card, vCardProperty property)
+        {
+            card.Department = property.Value.ToString();
         }
 
         #endregion
