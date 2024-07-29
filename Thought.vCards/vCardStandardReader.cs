@@ -2090,33 +2090,19 @@ namespace Thought.vCards
             if (string.IsNullOrEmpty(phone.FullNumber))
                 return;
 
-            foreach (vCardSubproperty sub in property.Subproperties)
+            var values = phone.FullNumber.Split(':');
+
+            try
             {
-                // If this subproperty is a TYPE subproperty
-                // and it has a value, then it is expected
-                // to contain a comma-delimited list of phone types.
+                phone.FullNumber = values[1];
 
-                if (
-                    (string.Compare(sub.Name, "TYPE", StringComparison.OrdinalIgnoreCase) == 0) &&
-                    (!string.IsNullOrEmpty(sub.Value)))
-                {
-                    // This is a vCard 3.0 subproperty.  It defines the
-                    // the list of phone types in a comma-delimited list.
-                    // Note that the vCard specification allows for
-                    // multiple TYPE subproperties (why ?!).
-
-                    phone.PhoneType |=
-                        ParsePhoneType(sub.Value.Split(new char[] {','}));
-                }
-                else
-                {
-                    // The other subproperties in a TEL property
-                    // define the phone type.  The only exception
-                    // are meta fields like ENCODING, CHARSET, etc,
-                    // but these are probably rare with TEL.
-
-                    phone.PhoneType |= ParsePhoneType(sub.Name);
-                }
+                var vals = (vCardPhoneTypes[])Enum.GetValues(typeof(vCardPhoneTypes));
+                var typeGroup = values[0].Split('=');
+                phone.PhoneType = vals.FirstOrDefault(a => a.ToString().Equals(typeGroup[1], StringComparison.InvariantCultureIgnoreCase));
+            }
+            catch
+            {
+                phone.FullNumber = values[values.Length - 1];
             }
 
             card.Phones.Add(phone);
