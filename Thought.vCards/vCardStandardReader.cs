@@ -1045,7 +1045,7 @@ namespace Thought.vCards
                     ReadInto_REV(card, property);
                     break;
 
-                case "ROLE":
+                case "PROF-ROLE":
                     ReadInto_ROLE(card, property);
                     break;
 
@@ -1058,6 +1058,8 @@ namespace Thought.vCards
                     break;
 
                 case "TITLE":
+                case "JOBTITLE":
+                case "ROLE":
                     ReadInto_TITLE(card, property);
                     break;
 
@@ -1121,6 +1123,7 @@ namespace Thought.vCards
                     break;
                 case "X-MANAGER":
                 case "X-MS-MANAGER":
+                case "BOSS":
                     ReadInto_X_MANAGER(card, property);
                     break;
                 default:
@@ -1310,6 +1313,7 @@ namespace Thought.vCards
         }
 
         #endregion
+        
 
         #region [ ReadInto_CATEGORIES ]
 
@@ -1945,8 +1949,9 @@ namespace Thought.vCards
             var organizationProperty = property.Value.ToString();
             if (!string.IsNullOrEmpty(organizationProperty))
             {
-                string[] organizationAndDepartments = organizationProperty.Split(new[] {';'}, 2);
-                card.Organization = organizationAndDepartments[0];
+                string[] organizationAndDepartments = organizationProperty.Split(new[] {','}, 2);
+                card.Organization = organizationAndDepartments[0].Trim();
+                card.Department = organizationAndDepartments[1].Trim();
             }
             else
             {
@@ -2102,26 +2107,44 @@ namespace Thought.vCards
             // rules are applied since the vCard specification
             // is somewhat confusing on this matter.
 
-            phone.FullNumber = property.ToString();
-            if (string.IsNullOrEmpty(phone.FullNumber))
+            var value = property.ToString();
+
+            if (string.IsNullOrEmpty(value))
                 return;
 
-            var values = phone.FullNumber.Split(':');
+            var splited = value.Split(':');
 
             try
             {
-                phone.FullNumber = values[1];
-
-                var vals = (vCardPhoneTypes[])Enum.GetValues(typeof(vCardPhoneTypes));
-                var typeGroup = values[0].Split('=');
-                phone.PhoneType = vals.FirstOrDefault(a => a.ToString().Equals(typeGroup[1], StringComparison.InvariantCultureIgnoreCase));
+                phone.FullNumber = splited[splited.Length - 1];
+                phone.PhoneType = WorkMailToOutlookNumberType(splited[0].Split('=')[1]);
             }
             catch
             {
-                phone.FullNumber = values[values.Length - 1];
+                phone.PhoneType = vCardPhoneTypes.Default;
             }
 
-            card.Phones.Add(phone);
+            if (card.Phones.Count(a => a.PhoneType == phone.PhoneType) == 0)
+            {
+                card.Phones.Add(phone);
+            }
+        }
+
+        private vCardPhoneTypes WorkMailToOutlookNumberType(string type)
+        {
+            switch(type)
+            {
+                case "home":
+                    return vCardPhoneTypes.Home;
+                case "work":
+                    return vCardPhoneTypes.Work;
+                case "fax":
+                    return vCardPhoneTypes.Fax;
+                case "mobile":
+                    return vCardPhoneTypes.CellularVoice;
+                default:
+                    return vCardPhoneTypes.IPhone;
+            }
         }
 
         #endregion

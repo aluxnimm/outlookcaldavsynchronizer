@@ -73,6 +73,7 @@ namespace CalDavSynchronizer.Scheduling
     public class SynchronizerFactory : ISynchronizerFactory
     {
         private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodInfo.GetCurrentMethod().DeclaringType);
+        private static IAuthService _authService;
 
         private readonly string _outlookEmailAddress;
         private readonly ITotalProgressFactory _totalProgressFactory;
@@ -208,6 +209,11 @@ namespace CalDavSynchronizer.Scheduling
             return await CreateEventSynchronizer(options, calDavDataAccess, componentsToFill, generalOptions, profileType);
         }
 
+        public static void SetAuthService(IAuthService authService)
+        {
+            _authService = authService;
+        }
+
         public static IWebDavClient CreateWebDavClient(
             Options options,
             IOutlookAccountPasswordProvider outlookAccountPasswordProvider,
@@ -234,7 +240,7 @@ namespace CalDavSynchronizer.Scheduling
 
         public static IWebDavClient CreateWebDavClient(
             string username,
-            SecureString passwordOrToken,
+            SecureString password,
             string serverUrl,
             TimeSpan timeout,
             ServerAdapterType serverAdapterType,
@@ -246,14 +252,21 @@ namespace CalDavSynchronizer.Scheduling
             bool acceptInvalidChars
         )
         {
+            var productAndVersion = GetProductAndVersion();
             switch (serverAdapterType)
             {
                 case ServerAdapterType.WebDavHttpClientBased:
-                case ServerAdapterType.WebDavHttpClientOAuth:
                 case ServerAdapterType.WebDavHttpClientBasedWithGoogleOAuth:
-                    var productAndVersion = GetProductAndVersion();
                     return new DataAccess.HttpClientBasedClient.WebDavClient(
-                        () => CreateHttpClient(username, passwordOrToken, serverUrl, timeout, serverAdapterType, proxyOptions, preemptiveAuthentication, forceBasicAuthentication, enableClientCertificate),
+                        () => CreateHttpClient(username, password, serverUrl, timeout, serverAdapterType, proxyOptions, preemptiveAuthentication, forceBasicAuthentication, enableClientCertificate),
+                        productAndVersion.Item1,
+                        productAndVersion.Item2,
+                        closeConnectionAfterEachRequest,
+                        acceptInvalidChars,
+                        RequiresEtagsWithoutQuotes(serverUrl));
+                case ServerAdapterType.WebDavHttpClientOAuth:
+                    return new DataAccess.HttpClientBasedClient.WebDavClient(
+                        () => CreateHttpClient(username, SecureStringUtility.ToSecureString(_authService.GetAccessToken()), serverUrl, timeout, serverAdapterType, proxyOptions, preemptiveAuthentication, forceBasicAuthentication, enableClientCertificate),
                         productAndVersion.Item1,
                         productAndVersion.Item2,
                         closeConnectionAfterEachRequest,
