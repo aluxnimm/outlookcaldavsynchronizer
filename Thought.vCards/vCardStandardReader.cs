@@ -1029,6 +1029,10 @@ namespace Thought.vCards
                     ReadInto_ORG(card, property);
                     break;
 
+                case "DEPARTMENT":
+                    ReadInto_DEPARTMENT(card, property);
+                    break;
+
                 case "PHOTO":
                     ReadInto_PHOTO(card, property);
                     break;
@@ -1041,7 +1045,7 @@ namespace Thought.vCards
                     ReadInto_REV(card, property);
                     break;
 
-                case "ROLE":
+                case "PROF-ROLE":
                     ReadInto_ROLE(card, property);
                     break;
 
@@ -1054,6 +1058,8 @@ namespace Thought.vCards
                     break;
 
                 case "TITLE":
+                case "JOBTITLE":
+                case "ROLE":
                     ReadInto_TITLE(card, property);
                     break;
 
@@ -1117,6 +1123,7 @@ namespace Thought.vCards
                     break;
                 case "X-MANAGER":
                 case "X-MS-MANAGER":
+                case "BOSS":
                     ReadInto_X_MANAGER(card, property);
                     break;
                 default:
@@ -1306,6 +1313,7 @@ namespace Thought.vCards
         }
 
         #endregion
+        
 
         #region [ ReadInto_CATEGORIES ]
 
@@ -1941,14 +1949,27 @@ namespace Thought.vCards
             var organizationProperty = property.Value.ToString();
             if (!string.IsNullOrEmpty(organizationProperty))
             {
-                string[] organizationAndDepartments = organizationProperty.Split(new[] {';'}, 2);
-                card.Organization = organizationAndDepartments[0];
-                card.Department = (organizationAndDepartments.Length > 1) ? organizationAndDepartments[1] : null;
+                string[] organizationAndDepartments = organizationProperty.Split(new[] {','}, 2);
+                card.Organization = organizationAndDepartments[0].Trim();
+                card.Department = organizationAndDepartments[1].Trim();
             }
             else
             {
-                card.Organization = card.Department = null;
+                card.Organization = null;
             }
+        }
+
+        #endregion
+
+
+        #region [ ReadInto_DEPARTMENT ]
+
+        /// <summary>
+        ///     Reads the Department property.
+        /// </summary>
+        private void ReadInto_DEPARTMENT(vCard card, vCardProperty property)
+        {
+            card.Department = property.Value.ToString();
         }
 
         #endregion
@@ -2086,40 +2107,44 @@ namespace Thought.vCards
             // rules are applied since the vCard specification
             // is somewhat confusing on this matter.
 
-            phone.FullNumber = property.ToString();
-            if (string.IsNullOrEmpty(phone.FullNumber))
+            var value = property.ToString();
+
+            if (string.IsNullOrEmpty(value))
                 return;
 
-            foreach (vCardSubproperty sub in property.Subproperties)
+            var splited = value.Split(':');
+
+            try
             {
-                // If this subproperty is a TYPE subproperty
-                // and it has a value, then it is expected
-                // to contain a comma-delimited list of phone types.
-
-                if (
-                    (string.Compare(sub.Name, "TYPE", StringComparison.OrdinalIgnoreCase) == 0) &&
-                    (!string.IsNullOrEmpty(sub.Value)))
-                {
-                    // This is a vCard 3.0 subproperty.  It defines the
-                    // the list of phone types in a comma-delimited list.
-                    // Note that the vCard specification allows for
-                    // multiple TYPE subproperties (why ?!).
-
-                    phone.PhoneType |=
-                        ParsePhoneType(sub.Value.Split(new char[] {','}));
-                }
-                else
-                {
-                    // The other subproperties in a TEL property
-                    // define the phone type.  The only exception
-                    // are meta fields like ENCODING, CHARSET, etc,
-                    // but these are probably rare with TEL.
-
-                    phone.PhoneType |= ParsePhoneType(sub.Name);
-                }
+                phone.FullNumber = splited[splited.Length - 1];
+                phone.PhoneType = WorkMailToOutlookNumberType(splited[0].Split('=')[1]);
+            }
+            catch
+            {
+                phone.PhoneType = vCardPhoneTypes.Default;
             }
 
-            card.Phones.Add(phone);
+            if (card.Phones.Count(a => a.PhoneType == phone.PhoneType) == 0)
+            {
+                card.Phones.Add(phone);
+            }
+        }
+
+        private vCardPhoneTypes WorkMailToOutlookNumberType(string type)
+        {
+            switch(type)
+            {
+                case "home":
+                    return vCardPhoneTypes.Home;
+                case "work":
+                    return vCardPhoneTypes.Work;
+                case "fax":
+                    return vCardPhoneTypes.Fax;
+                case "mobile":
+                    return vCardPhoneTypes.CellularVoice;
+                default:
+                    return vCardPhoneTypes.IPhone;
+            }
         }
 
         #endregion
