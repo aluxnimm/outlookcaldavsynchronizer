@@ -15,18 +15,17 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using CalDavSynchronizer.ChangeWatching;
+using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui;
+using CalDavSynchronizer.Utilities;
+using GenSync.Logging;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CalDavSynchronizer.ChangeWatching;
-using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Reports;
-using CalDavSynchronizer.Utilities;
-using GenSync.Logging;
-using GenSync.Synchronization;
-using log4net;
 
 namespace CalDavSynchronizer.Scheduling
 {
@@ -41,15 +40,19 @@ namespace CalDavSynchronizer.Scheduling
         private readonly ISynchronizerFactory _synchronizerFactory;
         private readonly ISynchronizationReportSink _reportSink;
         private readonly IFolderChangeWatcherFactory _folderChangeWatcherFactory;
+        private readonly IUiService _uiService;
         private readonly Action _ensureSynchronizationContext;
         private readonly ISynchronizationRunLogger _runLogger;
+        private readonly Func<Task> _runTask;
 
         public Scheduler(
             ISynchronizerFactory synchronizerFactory,
             ISynchronizationReportSink reportSink,
             Action ensureSynchronizationContext,
             IFolderChangeWatcherFactory folderChangeWatcherFactory,
-            ISynchronizationRunLogger runLogger)
+            ISynchronizationRunLogger runLogger,
+            IUiService uiService,
+            Func<Task> runTask)
         {
             if (synchronizerFactory == null)
                 throw new ArgumentNullException(nameof(synchronizerFactory));
@@ -69,6 +72,8 @@ namespace CalDavSynchronizer.Scheduling
             _runLogger = runLogger;
             _synchronizationTimer.Tick += SynchronizationTimer_Tick;
             _synchronizationTimer.Interval = (int) _timerInterval.TotalMilliseconds;
+            _uiService = uiService;
+            _runTask = runTask;
         }
 
         public void Start()
@@ -95,12 +100,28 @@ namespace CalDavSynchronizer.Scheduling
             try
             {
                 _synchronizationTimer.Stop();
+
+                var progressBar = _uiService.CreateGeneral();
+                progressBar.SetProgressValue(0);
+
+                await _runTask?.Invoke();
+
+                int progressValue = 50;
+                progressBar.SetProgressValue(progressValue);
+
                 using (_runLogger.LogStartSynchronizationRun())
                 {
+                    int step = 50 / _runnersById.Values.Count;
                     foreach (var worker in _runnersById.Values)
+                    {
                         await worker.RunAndRescheduleNoThrow(false);
+
+                        progressValue += step;
+                        progressBar.SetProgressValue(progressValue);
+                    }
                 }
 
+                progressBar.Close();
                 _synchronizationTimer.Start();
             }
             catch (Exception x)
@@ -148,11 +169,27 @@ namespace CalDavSynchronizer.Scheduling
 
         public async Task RunNow()
         {
+            var progressBar = _uiService.CreateGeneral();
+            progressBar.SetProgressValue(0);
+
+            await _runTask?.Invoke();
+
+            int progressValue = 50;
+            progressBar.SetProgressValue(progressValue);
+
             using (_runLogger.LogStartSynchronizationRun())
             {
+                int step = 50 / _runnersById.Values.Count;
                 foreach (var worker in _runnersById.Values)
+                {
                     await worker.RunAndRescheduleNoThrow(true);
+
+                    progressValue += step;
+                    progressBar.SetProgressValue(progressValue);
+                }
             }
+
+            progressBar.Close();
         }
     }
 }

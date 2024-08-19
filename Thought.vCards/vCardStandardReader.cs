@@ -1950,8 +1950,15 @@ namespace Thought.vCards
             if (!string.IsNullOrEmpty(organizationProperty))
             {
                 string[] organizationAndDepartments = organizationProperty.Split(new[] {','}, 2);
-                card.Organization = organizationAndDepartments[0].Trim();
-                card.Department = organizationAndDepartments[1].Trim();
+                if (organizationAndDepartments.Length > 0)
+                {
+                    card.Organization = organizationAndDepartments[0].Trim();
+                }
+
+                if (organizationAndDepartments.Length > 1)
+                {
+                    card.Department = organizationAndDepartments[1].Trim();
+                }
             }
             else
             {
@@ -1969,7 +1976,7 @@ namespace Thought.vCards
         /// </summary>
         private void ReadInto_DEPARTMENT(vCard card, vCardProperty property)
         {
-            card.Department = property.Value.ToString();
+            card.Department = property.Value?.ToString();
         }
 
         #endregion
@@ -2114,12 +2121,20 @@ namespace Thought.vCards
 
             var splited = value.Split(':');
 
-            try
+            if(splited.Length > 1)
             {
                 phone.FullNumber = splited[splited.Length - 1];
-                phone.PhoneType = WorkMailToOutlookNumberType(splited[0].Split('=')[1]);
+                var typePair = splited[0].Split('=');
+                if (typePair.Length == 2)
+                {
+                    phone.PhoneType = WorkMailToOutlookNumberType(splited[0].Split('=')[1]);
+                }
+                else
+                {
+                    phone.PhoneType = vCardPhoneTypes.Default;
+                }
             }
-            catch
+            else
             {
                 phone.PhoneType = vCardPhoneTypes.Default;
             }

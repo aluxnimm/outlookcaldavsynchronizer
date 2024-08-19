@@ -418,6 +418,7 @@
     <Compile Include="Ui\ConnectionTests\AccessPrivileges.cs" />
     <Compile Include="Ui\ConnectionTests\CalendarOwnerProperties.cs" />
     <Compile Include="Ui\DelegateCommandHandlingRequerySuggested.cs" />
+    <Compile Include="Ui\NullGeneralProgressUi.cs" />
     <Compile Include="Ui\NullProgressUi.cs" />
     <Compile Include="Ui\NullUiService.cs" />
     <Compile Include="Ui\Options\BulkOptions\ViewModels\KolabMultipleOptionsTemplateViewModel.cs" />

@@ -120,7 +120,8 @@ namespace CalDavSynchronizer
             IComWrapperFactory comWrapperFactory,
             IExceptionHandlingStrategy exceptionHandlingStrategy,
             IUiService uiService = null,
-            string applicationDataDirectoryBaseParam = null
+            string applicationDataDirectoryBaseParam = null,
+            Func<Task> runTask = null
         )
         {
             if (application == null) throw new ArgumentNullException(nameof(application));
@@ -211,7 +212,9 @@ namespace CalDavSynchronizer
                 EnsureSynchronizationContext,
                 new FolderChangeWatcherFactory(
                     _session),
-                _synchronizationStatus);
+                _synchronizationStatus,
+                uiService,
+                runTask);
 
             EnsureCacheCompatibility(options);
 
@@ -495,6 +498,11 @@ namespace CalDavSynchronizer
         }
 
         public async void SynchronizeNowAsync()
+        {
+            await SynchronizeNow();
+        }
+
+        public async Task SynchronizeNow()
         {
             try
             {

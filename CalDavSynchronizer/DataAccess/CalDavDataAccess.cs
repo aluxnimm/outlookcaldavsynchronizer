@@ -489,6 +489,7 @@ namespace CalDavSynchronizer.DataAccess
                           <D:prop>
                               <D:resourcetype />
                               <D:displayname />
+                              <E:calendar-order />
                               <E:calendar-color />
                               <C:supported-calendar-component-set />
                           </D:prop>
