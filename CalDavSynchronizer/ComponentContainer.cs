@@ -211,7 +211,8 @@ namespace CalDavSynchronizer
                 EnsureSynchronizationContext,
                 new FolderChangeWatcherFactory(
                     _session),
-                _synchronizationStatus);
+                _synchronizationStatus,
+                uiService);
 
             EnsureCacheCompatibility(options);
 
@@ -496,10 +497,15 @@ namespace CalDavSynchronizer
 
         public async void SynchronizeNowAsync()
         {
+            await SynchronizeNow();
+        }
+
+        public async Task SynchronizeNow(IProgress<float> progressBar = null)
+        {
             try
             {
                 s_logger.Info("Synchronization manually triggered");
-                await _scheduler.RunNow();
+                await _scheduler.RunNow(progressBar);
             }
             catch (Exception x)
             {
