@@ -43,7 +43,6 @@ namespace CalDavSynchronizer.Scheduling
         private readonly IUiService _uiService;
         private readonly Action _ensureSynchronizationContext;
         private readonly ISynchronizationRunLogger _runLogger;
-        private readonly Func<Task> _runTask;
 
         public Scheduler(
             ISynchronizerFactory synchronizerFactory,
@@ -51,8 +50,7 @@ namespace CalDavSynchronizer.Scheduling
             Action ensureSynchronizationContext,
             IFolderChangeWatcherFactory folderChangeWatcherFactory,
             ISynchronizationRunLogger runLogger,
-            IUiService uiService,
-            Func<Task> runTask)
+            IUiService uiService)
         {
             if (synchronizerFactory == null)
                 throw new ArgumentNullException(nameof(synchronizerFactory));
@@ -73,7 +71,6 @@ namespace CalDavSynchronizer.Scheduling
             _synchronizationTimer.Tick += SynchronizationTimer_Tick;
             _synchronizationTimer.Interval = (int) _timerInterval.TotalMilliseconds;
             _uiService = uiService;
-            _runTask = runTask;
         }
 
         public void Start()
@@ -101,33 +98,14 @@ namespace CalDavSynchronizer.Scheduling
             {
                 _synchronizationTimer.Stop();
 
-                var progressBar = _uiService.CreateGeneralProgressUi();
-                progressBar.SetProgressValue(0);
-
-                await _runTask?.Invoke();
-
-                float progressValue = 0.5f;
-                progressBar.SetProgressValue((int)(progressValue*100));
-
                 using (_runLogger.LogStartSynchronizationRun())
                 {
-                    float step = 0;
-                    if(_runnersById.Values.Count > 0)
-                    {
-                        step = 0.5f / _runnersById.Values.Count;
-                    }
-
                     foreach (var worker in _runnersById.Values)
                     {
                         await worker.RunAndRescheduleNoThrow(false);
-
-                        progressValue += step;
-                        progressBar.SetProgressValue((int)(progressValue * 100));
                     }
                 }
 
-                progressBar.SetProgressValue(100);
-                progressBar.Close();
                 _synchronizationTimer.Start();
             }
             catch (Exception x)
@@ -173,35 +151,23 @@ namespace CalDavSynchronizer.Scheduling
             _runnersById = workersById;
         }
 
-        public async Task RunNow()
+        public async Task RunNow(Action<float> progressBar = null)
         {
-            var progressBar = _uiService.CreateGeneralProgressUi();
-            progressBar.SetProgressValue(0);
-
-            await _runTask?.Invoke();
-
-            float progressValue = 0.5f;
-            progressBar.SetProgressValue((int)(progressValue * 100));
 
             using (_runLogger.LogStartSynchronizationRun())
             {
-                float step = 0;
-                if (_runnersById.Values.Count > 0)
-                {
-                    step = 0.5f / _runnersById.Values.Count;
-                }
+                float progress = 0, step = 0;
+                if(_runnersById.Count > 0)
+                    step = 1f / _runnersById.Count;
 
                 foreach (var worker in _runnersById.Values)
                 {
                     await worker.RunAndRescheduleNoThrow(true);
 
-                    progressValue += step;
-                    progressBar.SetProgressValue((int)(progressValue * 100));
+                    progress += step;
+                    progressBar?.Invoke(progress);
                 }
             }
-
-            progressBar.SetProgressValue(100);
-            progressBar.Close();
         }
     }
 }

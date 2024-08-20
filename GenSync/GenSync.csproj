@@ -80,7 +80,6 @@
     <Compile Include="Logging\NullEntityMappingLogger.cs" />
     <Compile Include="Logging\NullFullEntitySynchronizationLoggerFactory.cs" />
     <Compile Include="Logging\SynchronizationOperation.cs" />
-    <Compile Include="ProgressReport\IGeneralProgressUi.cs" />
     <Compile Include="Utilities\ChunkedExecutor.cs" />
     <Compile Include="EntityRepositories\BatchEntityRepositoryAdapter.cs" />
     <Compile Include="EntityRepositories\ICreateJob.cs" />

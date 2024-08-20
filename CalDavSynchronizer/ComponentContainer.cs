@@ -120,8 +120,7 @@ namespace CalDavSynchronizer
             IComWrapperFactory comWrapperFactory,
             IExceptionHandlingStrategy exceptionHandlingStrategy,
             IUiService uiService = null,
-            string applicationDataDirectoryBaseParam = null,
-            Func<Task> runTask = null
+            string applicationDataDirectoryBaseParam = null
         )
         {
             if (application == null) throw new ArgumentNullException(nameof(application));
@@ -213,8 +212,7 @@ namespace CalDavSynchronizer
                 new FolderChangeWatcherFactory(
                     _session),
                 _synchronizationStatus,
-                uiService,
-                runTask);
+                uiService);
 
             EnsureCacheCompatibility(options);
 
@@ -502,12 +500,12 @@ namespace CalDavSynchronizer
             await SynchronizeNow();
         }
 
-        public async Task SynchronizeNow()
+        public async Task SynchronizeNow(Action<float> progressBar = null)
         {
             try
             {
                 s_logger.Info("Synchronization manually triggered");
-                await _scheduler.RunNow();
+                await _scheduler.RunNow(progressBar);
             }
             catch (Exception x)
             {

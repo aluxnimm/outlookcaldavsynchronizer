@@ -183,10 +183,5 @@ namespace CalDavSynchronizer.Ui
             window.Show();
             return viewModel;
         }
-
-        public IGeneralProgressUi CreateGeneralProgressUi()
-        {
-            return new NullGeneralProgressUi();
-        }
     }
 }
