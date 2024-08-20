@@ -151,9 +151,9 @@ namespace CalDavSynchronizer.Scheduling
             _runnersById = workersById;
         }
 
-        public async Task RunNow(Action<float> progressBar = null)
+        public async Task RunNow(IProgress<float> progressBar = null)
         {
-
+            
             using (_runLogger.LogStartSynchronizationRun())
             {
                 float progress = 0, step = 0;
@@ -165,7 +165,7 @@ namespace CalDavSynchronizer.Scheduling
                     await worker.RunAndRescheduleNoThrow(true);
 
                     progress += step;
-                    progressBar?.Invoke(progress);
+                    progressBar?.Report(progress);
                 }
             }
         }

@@ -500,7 +500,7 @@ namespace CalDavSynchronizer
             await SynchronizeNow();
         }
 
-        public async Task SynchronizeNow(Action<float> progressBar = null)
+        public async Task SynchronizeNow(IProgress<float> progressBar = null)
         {
             try
             {
