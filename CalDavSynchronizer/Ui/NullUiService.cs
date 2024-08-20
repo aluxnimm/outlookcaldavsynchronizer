@@ -32,7 +32,7 @@ namespace CalDavSynchronizer.Ui
     {
         public static readonly IUiService Instance = new NullUiService();
 
-        private NullUiService()
+        public NullUiService()
         {
         }
 
@@ -86,7 +86,7 @@ namespace CalDavSynchronizer.Ui
             return null;
         }
 
-        public IGeneralProgressUi CreateGeneral()
+        public virtual IGeneralProgressUi CreateGeneralProgressUi()
         {
             return new NullGeneralProgressUi();
         }

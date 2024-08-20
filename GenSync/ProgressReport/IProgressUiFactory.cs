@@ -25,6 +25,6 @@ namespace GenSync.ProgressReport
     public interface IProgressUiFactory
     {
         IProgressUi Create(int maxValue);
-        IGeneralProgressUi CreateGeneral();
+        IGeneralProgressUi CreateGeneralProgressUi();
     }
 }

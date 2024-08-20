@@ -101,26 +101,32 @@ namespace CalDavSynchronizer.Scheduling
             {
                 _synchronizationTimer.Stop();
 
-                var progressBar = _uiService.CreateGeneral();
+                var progressBar = _uiService.CreateGeneralProgressUi();
                 progressBar.SetProgressValue(0);
 
                 await _runTask?.Invoke();
 
-                int progressValue = 50;
-                progressBar.SetProgressValue(progressValue);
+                float progressValue = 0.5f;
+                progressBar.SetProgressValue((int)(progressValue*100));
 
                 using (_runLogger.LogStartSynchronizationRun())
                 {
-                    int step = 50 / _runnersById.Values.Count;
+                    float step = 0;
+                    if(_runnersById.Values.Count > 0)
+                    {
+                        step = 0.5f / _runnersById.Values.Count;
+                    }
+
                     foreach (var worker in _runnersById.Values)
                     {
                         await worker.RunAndRescheduleNoThrow(false);
 
                         progressValue += step;
-                        progressBar.SetProgressValue(progressValue);
+                        progressBar.SetProgressValue((int)(progressValue * 100));
                     }
                 }
 
+                progressBar.SetProgressValue(100);
                 progressBar.Close();
                 _synchronizationTimer.Start();
             }
@@ -169,26 +175,32 @@ namespace CalDavSynchronizer.Scheduling
 
         public async Task RunNow()
         {
-            var progressBar = _uiService.CreateGeneral();
+            var progressBar = _uiService.CreateGeneralProgressUi();
             progressBar.SetProgressValue(0);
 
             await _runTask?.Invoke();
 
-            int progressValue = 50;
-            progressBar.SetProgressValue(progressValue);
+            float progressValue = 0.5f;
+            progressBar.SetProgressValue((int)(progressValue * 100));
 
             using (_runLogger.LogStartSynchronizationRun())
             {
-                int step = 50 / _runnersById.Values.Count;
+                float step = 0;
+                if (_runnersById.Values.Count > 0)
+                {
+                    step = 0.5f / _runnersById.Values.Count;
+                }
+
                 foreach (var worker in _runnersById.Values)
                 {
                     await worker.RunAndRescheduleNoThrow(true);
 
                     progressValue += step;
-                    progressBar.SetProgressValue(progressValue);
+                    progressBar.SetProgressValue((int)(progressValue * 100));
                 }
             }
 
+            progressBar.SetProgressValue(100);
             progressBar.Close();
         }
     }
