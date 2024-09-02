@@ -468,6 +468,13 @@ namespace CalDavSynchronizer.Implementation.Events
                 return;
             }
 
+            if ((source.Start.IsUniversalTime && DateTime.UtcNow > source.Start.Value) || 
+                (!source.Start.IsUniversalTime && DateTime.Now > source.Start.Value))
+            {
+                target.ReminderSet = false;
+                return;
+            }
+
             if (source.Alarms.Count == 0)
             {
                 target.ReminderSet = true;
