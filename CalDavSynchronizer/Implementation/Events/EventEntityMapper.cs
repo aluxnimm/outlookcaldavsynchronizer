@@ -468,9 +468,15 @@ namespace CalDavSynchronizer.Implementation.Events
                 return;
             }
 
-            if (source.Alarms.Count == 0)
+            if (DateTime.UtcNow > source.Start.UTC)
             {
                 target.ReminderSet = false;
+                return;
+            }
+
+            if (source.Alarms.Count == 0)
+            {
+                target.ReminderSet = true;
                 return;
             }
 
@@ -484,7 +490,7 @@ namespace CalDavSynchronizer.Implementation.Events
             if (alarm == null)
             {
                 s_logger.WarnFormat("Event '{0}' contains only not supported alarm types. Ignoring alarm.", source.UID);
-                target.ReminderSet = false;
+                target.ReminderSet = true;
                 return;
             }
 
@@ -492,7 +498,7 @@ namespace CalDavSynchronizer.Implementation.Events
             {
                 s_logger.WarnFormat("Event '{0}' contains non RFC-conform alarm. Ignoring alarm.", source.UID);
                 logger.LogWarning("Event contains non RFC-conform alarm. Ignoring alarm.");
-                target.ReminderSet = false;
+                target.ReminderSet = true;
                 return;
             }
 
@@ -502,7 +508,7 @@ namespace CalDavSynchronizer.Implementation.Events
             {
                 s_logger.WarnFormat("Event '{0}' alarm has an invalid duration or is not before event start. Ignoring.", source.UID);
                 logger.LogWarning("Alarm has an invalid duration or is not before event start. Ignoring.");
-                target.ReminderSet = false;
+                target.ReminderSet = true;
                 return;
             }
 
@@ -570,14 +576,14 @@ namespace CalDavSynchronizer.Implementation.Events
                     {
                         s_logger.WarnFormat("Event '{0}' alarm has an invalid duration which can't be set in Outlook. {1}", source.UID, ex);
                         logger.LogWarning("Alarm has an invalid duration. Ignoring.");
-                        target.ReminderSet = false;
+                        target.ReminderSet = true;
                     }
                 }
                 else
                 {
                     s_logger.WarnFormat("Event '{0}' alarm is not before event start. Ignoring.", source.UID);
                     logger.LogWarning("Alarm is not before event start. Ignoring.");
-                    target.ReminderSet = false;
+                    target.ReminderSet = true;
                 }
             }
         }
