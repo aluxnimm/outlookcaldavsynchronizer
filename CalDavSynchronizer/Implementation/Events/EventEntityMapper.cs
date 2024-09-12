@@ -70,6 +70,7 @@ namespace CalDavSynchronizer.Implementation.Events
         private readonly IOutlookTimeZones _outlookTimeZones;
         private readonly DocumentConverter _documentConverter;
         private readonly ICalendarResourceResolver _calendarResourceResolver;
+        private readonly Regex _regexEmail = new Regex(@"^(\S+)\@\S+$");
 
         public EventEntityMapper(
             string outlookEmailAddress,
@@ -2099,7 +2100,8 @@ namespace CalDavSynchronizer.Implementation.Events
                         }
                         else if (!string.IsNullOrEmpty(sourceOrganizerEmail))
                         {
-                            targetRecipient = target.Recipients.Add(sourceOrganizerEmail);
+                            var name = GetNameByEmail(sourceOrganizerEmail);
+                            targetRecipient = target.Recipients.Add(name + "<" + sourceOrganizerEmail + ">");
                         }
                         else if (!string.IsNullOrEmpty(source.Organizer.CommonName))
                         {
@@ -2209,6 +2211,30 @@ namespace CalDavSynchronizer.Implementation.Events
             finally
             {
                 recipientsToDispose.ToSafeEnumerable().ToArray();
+            }
+        }
+
+        private string GetNameByEmail(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                return string.Empty;
+            }
+
+            try
+            {
+                var match = _regexEmail.Match(email);
+
+                if (!match.Success)
+                {
+                    return string.Empty;
+                }
+
+                return match.Groups[1].Value;
+            }
+            catch
+            {
+                return string.Empty;
             }
         }
 
