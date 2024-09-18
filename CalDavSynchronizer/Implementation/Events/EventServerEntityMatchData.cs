@@ -24,20 +24,18 @@ namespace CalDavSynchronizer.Implementation.Events
     {
         public string Summary { get; }
         public bool IsAllDay { get; }
-        public DateTime Start { get; }
-        public (DateTime Value, bool IsUniversalTime)? End { get; }
-        public (DateTime Value, bool IsUniversalTime)? DTEnd { get; }
-        public bool IsStartUniversalTime { get; }
+        public DateTime StartUtc { get; }
+        public DateTime? EndUtc { get; }
+        public DateTime? DTEndUtc { get; }
 
         public EventServerEntityMatchData(IICalendar calendar)
         {
             var evt = calendar.Events[0];
             Summary = evt.Summary;
             IsAllDay = evt.IsAllDay;
-            Start = evt.Start.Value;
-            IsStartUniversalTime = evt.Start.IsUniversalTime;
-            End = evt.End != null ? (evt.End.Value, evt.End.IsUniversalTime) : ((DateTime, bool)?) null;
-            DTEnd = evt.DTEnd != null ? (evt.DTEnd.Value, evt.DTEnd.IsUniversalTime) : ((DateTime, bool)?) null;
+            StartUtc = evt.Start.UTC;
+            EndUtc = evt.End?.UTC;
+            DTEndUtc = evt.DTEnd?.UTC;
         }
     }
 }

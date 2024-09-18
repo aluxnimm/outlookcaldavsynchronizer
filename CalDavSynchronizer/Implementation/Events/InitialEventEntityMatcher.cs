@@ -37,47 +37,25 @@ namespace CalDavSynchronizer.Implementation.Events
             {
                 if (evt.IsAllDay && atypeEntity.AllDayEvent)
                 {
-                    if (evt.Start == atypeEntity.Start)
+                    if (evt.StartUtc == atypeEntity.StartUtc)
                     {
-                        if (evt.End == null)
-                            return evt.Start.AddDays(1) == atypeEntity.End;
+                        if (evt.EndUtc == null)
+                            return evt.StartUtc.AddDays(1) == atypeEntity.EndUtc;
                         else
-                            return evt.End.Value.Value == atypeEntity.End;
+                            return evt.EndUtc == atypeEntity.EndUtc;
                     }
                     else return false;
                 }
                 else if (!evt.IsAllDay)
                 {
-                    if (evt.IsStartUniversalTime)
+                    if (evt.StartUtc == atypeEntity.StartUtc)
                     {
-                        if (evt.Start == atypeEntity.StartUtc)
-                        {
-                            if (evt.DTEnd == null)
-                                return evt.Start == atypeEntity.EndUtc;
-                            else
-                            {
-                                if (evt.DTEnd.Value.IsUniversalTime)
-                                    return evt.DTEnd.Value.Value == atypeEntity.EndUtc;
-                                else
-                                    return evt.DTEnd.Value.Value == atypeEntity.EndInEndTimeZone;
-                            }
-                        }
-                        else return false;
-                    }
-                    else if (evt.Start == atypeEntity.StartInStartTimeZone)
-                    {
-                        if (evt.DTEnd == null)
-                            return evt.Start == atypeEntity.EndInEndTimeZone;
+                        if (evt.DTEndUtc == null)
+                            return evt.StartUtc == atypeEntity.EndUtc;
                         else
-                        {
-                            if (evt.DTEnd.Value.IsUniversalTime)
-                                return evt.DTEnd.Value.Value == atypeEntity.EndUtc;
-                            else
-                                return evt.DTEnd.Value.Value == atypeEntity.EndInEndTimeZone;
-                        }
+                            return evt.DTEndUtc == atypeEntity.EndUtc;
                     }
-                    else
-                        return false;
+                    else return false;
                 }
             }
 
