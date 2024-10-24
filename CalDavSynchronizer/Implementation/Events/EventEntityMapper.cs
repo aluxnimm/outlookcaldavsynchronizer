@@ -651,24 +651,33 @@ namespace CalDavSynchronizer.Implementation.Events
 
         private void MapOrganizer1To2(AppointmentItem source, IEvent target, IEntitySynchronizationLogger logger)
         {
-            if (source.MeetingStatus != OlMeetingStatus.olNonMeeting)
+            using (var organizerWrapper = GenericComObjectWrapper.Create(OutlookUtility.GetEventOrganizerOrNull(source, logger, s_logger, _outlookMajorVersion)))
             {
-                using (var organizerWrapper = GenericComObjectWrapper.Create(OutlookUtility.GetEventOrganizerOrNull(source, logger, s_logger, _outlookMajorVersion)))
+                if (organizerWrapper.Inner != null)
                 {
-                    if (organizerWrapper.Inner != null)
+                    var email = "";
+                    if (StringComparer.InvariantCultureIgnoreCase.Compare(organizerWrapper.Inner.Name, source.Organizer) == 0)
                     {
-                        if (StringComparer.InvariantCultureIgnoreCase.Compare(organizerWrapper.Inner.Name, source.Organizer) == 0)
-                        {
-                            SetOrganizer(target, organizerWrapper.Inner, organizerWrapper.Inner.Address, logger);
-                        }
-                        else
-                        {
-                            string organizerEmail = OutlookUtility.GetSenderEmailAddressOrNull(source, logger, s_logger);
-                            SetOrganizer(target, source.Organizer, organizerEmail, logger);
-                        }
-
-                        SetOrganizerSchedulingParameters(source, target, logger);
+                        SetOrganizer(target, organizerWrapper.Inner, organizerWrapper.Inner.Address, logger);
+                        email = CreateMailUriOrNull(organizerWrapper.Inner.Address, logger);
                     }
+                    else
+                    {
+                        string organizerEmail = OutlookUtility.GetSenderEmailAddressOrNull(source, logger, s_logger);
+                        SetOrganizer(target, source.Organizer, organizerEmail, logger);
+                        email = CreateMailUriOrNull(organizerEmail, logger);
+                    }
+
+                    //Добавление организатора участником, так как VK не воспринимает изменение списка участников по CalDAV, если список пуст
+                    var ownAttendee = new Attendee();
+                    ownAttendee.Value = new Uri(email);
+                    ownAttendee.CommonName = source.Organizer;
+                    ownAttendee.RSVP = true;
+                    ownAttendee.ParticipationStatus = (source.MeetingStatus == OlMeetingStatus.olMeetingReceivedAndCanceled) ? "DECLINED" : MapParticipation1To2(source.ResponseStatus);
+                    if (_configuration.ScheduleAgentClient)
+                        ownAttendee.Parameters.Add("SCHEDULE-AGENT", "CLIENT");
+                    target.Attendees.Add(ownAttendee);
+                    SetOrganizerSchedulingParameters(source, target, logger);
                 }
             }
         }
@@ -1399,6 +1408,11 @@ namespace CalDavSynchronizer.Implementation.Events
         {
             var organizerSet = false;
             var ownAttendeeSet = false;
+
+            if (source.MeetingStatus == OlMeetingStatus.olNonMeeting)
+            {
+                return organizerSet;
+            }
 
             foreach (var recipient in source.Recipients.ToSafeEnumerable<Recipient>())
             {
