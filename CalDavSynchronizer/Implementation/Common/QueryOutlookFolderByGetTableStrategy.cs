@@ -57,6 +57,7 @@ namespace CalDavSynchronizer.Implementation.Common
             using (var tableWrapper = GenericComObjectWrapper.Create(
                 calendarFolder.GetTable(filter)))
             {
+                bool useCustomModificationTime = true;
                 var table = tableWrapper.Inner;
                 table.Columns.RemoveAll();
                 table.Columns.Add(PR_GLOBAL_OBJECT_ID);
@@ -66,7 +67,14 @@ namespace CalDavSynchronizer.Implementation.Common
                 table.Columns.Add(SubjectColumnId);
                 table.Columns.Add(StartColumnId);
                 table.Columns.Add(EndColumnId);
-                table.Columns.Add(UserModificationTimeColumnId);
+                try
+                {
+                    table.Columns.Add(UserModificationTimeColumnId);
+                }
+                catch 
+                { 
+                    useCustomModificationTime = false; 
+                }
                 while (!table.EndOfTable)
                 {
                     var row = table.GetNextRow();
@@ -102,7 +110,7 @@ namespace CalDavSynchronizer.Implementation.Common
                     var appointmentId = new AppointmentId(entryId, globalAppointmentId);
 
                     var lastModificationTimeObject = row[LastModificationTimeColumnId];
-                    var userModificationTimeObject = row[UserModificationTimeColumnId];
+                    var userModificationTimeObject = useCustomModificationTime ? row[UserModificationTimeColumnId] : null;
                     DateTime lastModificationTime;
                     DateTime userModificationTime;
                     if (lastModificationTimeObject != null)
