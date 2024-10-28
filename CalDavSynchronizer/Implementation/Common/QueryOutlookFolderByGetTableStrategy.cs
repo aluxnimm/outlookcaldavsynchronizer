@@ -67,6 +67,8 @@ namespace CalDavSynchronizer.Implementation.Common
                 table.Columns.Add(SubjectColumnId);
                 table.Columns.Add(StartColumnId);
                 table.Columns.Add(EndColumnId);
+                //The column is added when manually creating/editing an event in the calendar, added to the entire calendar,
+                //in events that were created/edited manually, the value is of the DataTime type, otherwise the value equals null
                 try
                 {
                     table.Columns.Add(UserModificationTimeColumnId);
