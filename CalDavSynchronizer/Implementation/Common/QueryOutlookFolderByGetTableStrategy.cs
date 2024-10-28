@@ -57,6 +57,7 @@ namespace CalDavSynchronizer.Implementation.Common
             using (var tableWrapper = GenericComObjectWrapper.Create(
                 calendarFolder.GetTable(filter)))
             {
+                bool useCustomModificationTime = true;
                 var table = tableWrapper.Inner;
                 table.Columns.RemoveAll();
                 table.Columns.Add(PR_GLOBAL_OBJECT_ID);
@@ -66,11 +67,20 @@ namespace CalDavSynchronizer.Implementation.Common
                 table.Columns.Add(SubjectColumnId);
                 table.Columns.Add(StartColumnId);
                 table.Columns.Add(EndColumnId);
-                table.Columns.Add(UserModificationTimeColumnId);
+                //The column is added when manually creating/editing an event in the calendar, added to the entire calendar,
+                //in events that were created/edited manually, the value is of the DateTime type, otherwise the value equals null
+                try
+                {
+                    table.Columns.Add(UserModificationTimeColumnId);
+                }
+                catch 
+                { 
+                    useCustomModificationTime = false; 
+                }
                 while (!table.EndOfTable)
                 {
                     var row = table.GetNextRow();
-
+                    
                     string entryId;
                     byte[] entryIdArray = row[PR_LONG_TERM_ENTRYID_FROM_TABLE] as byte[];
                     if (entryIdArray != null && entryIdArray.Length > 0)
@@ -102,7 +112,7 @@ namespace CalDavSynchronizer.Implementation.Common
                     var appointmentId = new AppointmentId(entryId, globalAppointmentId);
 
                     var lastModificationTimeObject = row[LastModificationTimeColumnId];
-                    var userModificationTimeObject = row[UserModificationTimeColumnId];
+                    var userModificationTimeObject = useCustomModificationTime ? row[UserModificationTimeColumnId] : null;
                     DateTime lastModificationTime;
                     DateTime userModificationTime;
                     if (lastModificationTimeObject != null)
