@@ -15,18 +15,17 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using CalDavSynchronizer.ChangeWatching;
+using CalDavSynchronizer.Contracts;
+using CalDavSynchronizer.Ui;
+using CalDavSynchronizer.Utilities;
+using GenSync.Logging;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CalDavSynchronizer.ChangeWatching;
-using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.Reports;
-using CalDavSynchronizer.Utilities;
-using GenSync.Logging;
-using GenSync.Synchronization;
-using log4net;
 
 namespace CalDavSynchronizer.Scheduling
 {
@@ -41,6 +40,7 @@ namespace CalDavSynchronizer.Scheduling
         private readonly ISynchronizerFactory _synchronizerFactory;
         private readonly ISynchronizationReportSink _reportSink;
         private readonly IFolderChangeWatcherFactory _folderChangeWatcherFactory;
+        private readonly IUiService _uiService;
         private readonly Action _ensureSynchronizationContext;
         private readonly ISynchronizationRunLogger _runLogger;
 
@@ -49,7 +49,8 @@ namespace CalDavSynchronizer.Scheduling
             ISynchronizationReportSink reportSink,
             Action ensureSynchronizationContext,
             IFolderChangeWatcherFactory folderChangeWatcherFactory,
-            ISynchronizationRunLogger runLogger)
+            ISynchronizationRunLogger runLogger,
+            IUiService uiService)
         {
             if (synchronizerFactory == null)
                 throw new ArgumentNullException(nameof(synchronizerFactory));
@@ -69,6 +70,7 @@ namespace CalDavSynchronizer.Scheduling
             _runLogger = runLogger;
             _synchronizationTimer.Tick += SynchronizationTimer_Tick;
             _synchronizationTimer.Interval = (int) _timerInterval.TotalMilliseconds;
+            _uiService = uiService;
         }
 
         public void Start()
@@ -95,10 +97,13 @@ namespace CalDavSynchronizer.Scheduling
             try
             {
                 _synchronizationTimer.Stop();
+
                 using (_runLogger.LogStartSynchronizationRun())
                 {
                     foreach (var worker in _runnersById.Values)
+                    {
                         await worker.RunAndRescheduleNoThrow(false);
+                    }
                 }
 
                 _synchronizationTimer.Start();
@@ -146,12 +151,22 @@ namespace CalDavSynchronizer.Scheduling
             _runnersById = workersById;
         }
 
-        public async Task RunNow()
+        public async Task RunNow(IProgress<float> progressBar = null)
         {
+            
             using (_runLogger.LogStartSynchronizationRun())
             {
+                float progress = 0, step = 0;
+                if(_runnersById.Count > 0)
+                    step = 1f / _runnersById.Count;
+
                 foreach (var worker in _runnersById.Values)
+                {
                     await worker.RunAndRescheduleNoThrow(true);
+
+                    progress += step;
+                    progressBar?.Report(progress);
+                }
             }
         }
     }

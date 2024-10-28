@@ -32,7 +32,7 @@ namespace CalDavSynchronizer.Ui
     {
         public static readonly IUiService Instance = new NullUiService();
 
-        private NullUiService()
+        public NullUiService()
         {
         }
 
