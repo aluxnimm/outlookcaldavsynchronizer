@@ -29,7 +29,7 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer
 {
-    class LoadErrorComponentContainer : IComponentContainer
+    public class LoadErrorComponentContainer : IComponentContainer
     {
         private readonly string _loadExceptionAsString;
 

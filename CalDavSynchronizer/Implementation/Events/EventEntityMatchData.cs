@@ -25,23 +25,15 @@ namespace CalDavSynchronizer.Implementation.Events
     {
         public string Subject { get; }
         public bool AllDayEvent { get; }
-        public DateTime Start { get; }
-        public DateTime End { get; }
         public DateTime StartUtc { get; }
         public DateTime EndUtc { get; }
-        public DateTime EndInEndTimeZone { get; }
-        public DateTime StartInStartTimeZone { get; }
 
         public EventEntityMatchData(AppointmentItem appointment)
         {
             Subject = appointment.Subject;
             AllDayEvent = appointment.AllDayEvent;
-            Start = appointment.Start;
-            End = appointment.End;
             StartUtc = appointment.StartUTC;
             EndUtc = appointment.EndUTC;
-            EndInEndTimeZone = appointment.EndInEndTimeZone;
-            StartInStartTimeZone = appointment.StartInStartTimeZone;
         }
     }
 }
