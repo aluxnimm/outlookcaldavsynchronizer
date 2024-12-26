@@ -121,6 +121,13 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 4.5.0 ####
+- Released 2024/12/26
+- New features
+	- Update NuGet packages.
+	- Use Unicolour library for colour comparison and remove ColorMine package.
+	- Use json site to query newest version.
+
 #### 4.4.1 ####
 - Released 2023/04/06
 - Bug fixes
