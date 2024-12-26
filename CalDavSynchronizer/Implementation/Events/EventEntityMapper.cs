@@ -70,6 +70,7 @@ namespace CalDavSynchronizer.Implementation.Events
         private readonly IOutlookTimeZones _outlookTimeZones;
         private readonly DocumentConverter _documentConverter;
         private readonly ICalendarResourceResolver _calendarResourceResolver;
+        private readonly Regex _regexEmail = new Regex(@"^(\S+)\@\S+$");
 
         public EventEntityMapper(
             string outlookEmailAddress,
@@ -468,9 +469,15 @@ namespace CalDavSynchronizer.Implementation.Events
                 return;
             }
 
-            if (source.Alarms.Count == 0)
+            if (DateTime.UtcNow > source.Start.UTC)
             {
                 target.ReminderSet = false;
+                return;
+            }
+
+            if (source.Alarms.Count == 0)
+            {
+                target.ReminderSet = true;
                 return;
             }
 
@@ -484,7 +491,7 @@ namespace CalDavSynchronizer.Implementation.Events
             if (alarm == null)
             {
                 s_logger.WarnFormat("Event '{0}' contains only not supported alarm types. Ignoring alarm.", source.UID);
-                target.ReminderSet = false;
+                target.ReminderSet = true;
                 return;
             }
 
@@ -492,7 +499,7 @@ namespace CalDavSynchronizer.Implementation.Events
             {
                 s_logger.WarnFormat("Event '{0}' contains non RFC-conform alarm. Ignoring alarm.", source.UID);
                 logger.LogWarning("Event contains non RFC-conform alarm. Ignoring alarm.");
-                target.ReminderSet = false;
+                target.ReminderSet = true;
                 return;
             }
 
@@ -502,7 +509,7 @@ namespace CalDavSynchronizer.Implementation.Events
             {
                 s_logger.WarnFormat("Event '{0}' alarm has an invalid duration or is not before event start. Ignoring.", source.UID);
                 logger.LogWarning("Alarm has an invalid duration or is not before event start. Ignoring.");
-                target.ReminderSet = false;
+                target.ReminderSet = true;
                 return;
             }
 
@@ -570,14 +577,14 @@ namespace CalDavSynchronizer.Implementation.Events
                     {
                         s_logger.WarnFormat("Event '{0}' alarm has an invalid duration which can't be set in Outlook. {1}", source.UID, ex);
                         logger.LogWarning("Alarm has an invalid duration. Ignoring.");
-                        target.ReminderSet = false;
+                        target.ReminderSet = true;
                     }
                 }
                 else
                 {
                     s_logger.WarnFormat("Event '{0}' alarm is not before event start. Ignoring.", source.UID);
                     logger.LogWarning("Alarm is not before event start. Ignoring.");
-                    target.ReminderSet = false;
+                    target.ReminderSet = true;
                 }
             }
         }
@@ -644,24 +651,33 @@ namespace CalDavSynchronizer.Implementation.Events
 
         private void MapOrganizer1To2(AppointmentItem source, IEvent target, IEntitySynchronizationLogger logger)
         {
-            if (source.MeetingStatus != OlMeetingStatus.olNonMeeting)
+            using (var organizerWrapper = GenericComObjectWrapper.Create(OutlookUtility.GetEventOrganizerOrNull(source, logger, s_logger, _outlookMajorVersion)))
             {
-                using (var organizerWrapper = GenericComObjectWrapper.Create(OutlookUtility.GetEventOrganizerOrNull(source, logger, s_logger, _outlookMajorVersion)))
+                if (organizerWrapper.Inner != null)
                 {
-                    if (organizerWrapper.Inner != null)
+                    var email = "";
+                    if (StringComparer.InvariantCultureIgnoreCase.Compare(organizerWrapper.Inner.Name, source.Organizer) == 0)
                     {
-                        if (StringComparer.InvariantCultureIgnoreCase.Compare(organizerWrapper.Inner.Name, source.Organizer) == 0)
-                        {
-                            SetOrganizer(target, organizerWrapper.Inner, organizerWrapper.Inner.Address, logger);
-                        }
-                        else
-                        {
-                            string organizerEmail = OutlookUtility.GetSenderEmailAddressOrNull(source, logger, s_logger);
-                            SetOrganizer(target, source.Organizer, organizerEmail, logger);
-                        }
-
-                        SetOrganizerSchedulingParameters(source, target, logger);
+                        SetOrganizer(target, organizerWrapper.Inner, organizerWrapper.Inner.Address, logger);
+                        email = CreateMailUriOrNull(organizerWrapper.Inner.Address, logger);
                     }
+                    else
+                    {
+                        string organizerEmail = OutlookUtility.GetSenderEmailAddressOrNull(source, logger, s_logger);
+                        SetOrganizer(target, source.Organizer, organizerEmail, logger);
+                        email = CreateMailUriOrNull(organizerEmail, logger);
+                    }
+
+                    //Добавление организатора участником, так как VK не воспринимает изменение списка участников по CalDAV, если список пуст
+                    var ownAttendee = new Attendee();
+                    ownAttendee.Value = new Uri(email);
+                    ownAttendee.CommonName = source.Organizer;
+                    ownAttendee.RSVP = true;
+                    ownAttendee.ParticipationStatus = (source.MeetingStatus == OlMeetingStatus.olMeetingReceivedAndCanceled) ? "DECLINED" : MapParticipation1To2(source.ResponseStatus);
+                    if (_configuration.ScheduleAgentClient)
+                        ownAttendee.Parameters.Add("SCHEDULE-AGENT", "CLIENT");
+                    target.Attendees.Add(ownAttendee);
+                    SetOrganizerSchedulingParameters(source, target, logger);
                 }
             }
         }
@@ -1393,6 +1409,11 @@ namespace CalDavSynchronizer.Implementation.Events
             var organizerSet = false;
             var ownAttendeeSet = false;
 
+            if (source.MeetingStatus == OlMeetingStatus.olNonMeeting)
+            {
+                return organizerSet;
+            }
+
             foreach (var recipient in source.Recipients.ToSafeEnumerable<Recipient>())
             {
                 string recipientMailAddressOrNull = null;
@@ -2093,7 +2114,8 @@ namespace CalDavSynchronizer.Implementation.Events
                         }
                         else if (!string.IsNullOrEmpty(sourceOrganizerEmail))
                         {
-                            targetRecipient = target.Recipients.Add(sourceOrganizerEmail);
+                            var name = GetNameByEmail(sourceOrganizerEmail);
+                            targetRecipient = target.Recipients.Add(name + "<" + sourceOrganizerEmail + ">");
                         }
                         else if (!string.IsNullOrEmpty(source.Organizer.CommonName))
                         {
@@ -2203,6 +2225,30 @@ namespace CalDavSynchronizer.Implementation.Events
             finally
             {
                 recipientsToDispose.ToSafeEnumerable().ToArray();
+            }
+        }
+
+        private string GetNameByEmail(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                return string.Empty;
+            }
+
+            try
+            {
+                var match = _regexEmail.Match(email);
+
+                if (!match.Success)
+                {
+                    return string.Empty;
+                }
+
+                return match.Groups[1].Value;
+            }
+            catch
+            {
+                return string.Empty;
             }
         }
 
