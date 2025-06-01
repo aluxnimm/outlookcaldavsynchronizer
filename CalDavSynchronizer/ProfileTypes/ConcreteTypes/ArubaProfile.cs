@@ -1,4 +1,4 @@
-// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
+﻿// This file is Part of CalDavSynchronizer (http://outlookcaldavsynchronizer.sourceforge.net/)
 // Copyright (c) 2015 Gerhard Zehetbauer
 // Copyright (c) 2015 Alexander Nimmervoll
 // 
@@ -15,52 +15,43 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Collections.Generic;
 using CalDavSynchronizer.Contracts;
-using CalDavSynchronizer.DataAccess;
 using CalDavSynchronizer.Globalization;
 using CalDavSynchronizer.Ui.Options;
-using CalDavSynchronizer.Ui.Options.BulkOptions.ViewModels;
 using CalDavSynchronizer.Ui.Options.Models;
 using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
 {
-    class KolabProfile : ProfileTypeBase
+    class ArubaProfile : ProfileTypeBase
     {
-        public override string Name => "Kolab";
-        public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_kolab.png";
-        private GeneralOptions _generalOptions;
+        public override string Name => "Aruba";
+        public override string ImageUrl { get; } = "pack://application:,,,/CalDavSynchronizer;component/Resources/ProfileLogos/logo_aruba.png";
 
         public override IProfileModelFactory CreateModelFactory(IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
         {
-            _generalOptions = generalOptions;
             return new ProfileModelFactory(this, optionsViewModelParent, outlookAccountPasswordProvider, availableCategories, optionTasks, generalOptions, viewOptions, sessionData);
         }
 
         public override Contracts.Options CreateOptions()
         {
-            _generalOptions.TriggerSyncAfterSendReceive = true; // Synchronize items when syncing IMAP or sending mail
-            new GeneralOptionsDataAccess().SaveOptions(_generalOptions);
-
             var data = base.CreateOptions();
-            data.CalenderUrl = "https://kolab.coreboso.de/iRony/";
-            data.EnableChangeTriggeredSynchronization = true; // Synchronize items immediately after change
-            data.DaysToSynchronizeInThePast = 31; // Start syncing one month ago
-            data.DaysToSynchronizeInTheFuture = 365; // Sync up to one year.
+            data.CalenderUrl = "https://syncdav.aruba.it/";
+            data.EnableChangeTriggeredSynchronization = true;
+            data.SynchronizationIntervalInMinutes = 15;
+            data.MappingConfiguration = CreateEventMappingConfiguration();
             return data;
         }
 
         public override EventMappingConfiguration CreateEventMappingConfiguration()
         {
             var data = base.CreateEventMappingConfiguration();
-            // data.UseGlobalAppointmentID = true;
-            // data.UseIanaTz = true;
-            data.MapXAltDescToRtfBody = true;
-            data.MapRtfBodyToXAltDesc = true;
+            data.UseGlobalAppointmentID = true;
+            data.CleanupDuplicateEvents = true;
             return data;
         }
-
         class ProfileModelFactory : ProfileModelFactoryBase
         {
             public ProfileModelFactory(IProfileType profileType, IOptionsViewModelParent optionsViewModelParent, IOutlookAccountPasswordProvider outlookAccountPasswordProvider, IReadOnlyList<string> availableCategories, IOptionTasks optionTasks, GeneralOptions generalOptions, IViewOptions viewOptions, OptionModelSessionData sessionData)
@@ -68,17 +59,9 @@ namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes
             {
             }
 
-            protected override IOptionsViewModel CreateTemplateViewModel(OptionsModel prototypeModel)
-            {
-                return new KolabMultipleOptionsTemplateViewModel(
-                    OptionsViewModelParent,
-                    new ServerSettingsTemplateViewModel(OutlookAccountPasswordProvider, prototypeModel, ModelOptions),
-                    OptionTasks,
-                    prototypeModel,
-                    ViewOptions);
-            }
-
-            public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true, true, Strings.Get($"Kolab URL"), true, true, true, true);
+            public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true, true, Strings.Get($"DAV URL"), true, false, true, true);
         }
+
+
     }
 }

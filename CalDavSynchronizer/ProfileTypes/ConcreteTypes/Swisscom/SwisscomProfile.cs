@@ -67,7 +67,7 @@ namespace CalDavSynchronizer.ProfileTypes.ConcreteTypes.Swisscom
                 return new SwisscomServerSettingsDetector();
             }
 
-            public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(false, false, false, false, Strings.Get($"Detected URL"), false, false, false);
+            public override ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(false, false, false, false, Strings.Get($"Detected URL"), false, false, false, false);
         }
     }
 }

@@ -5,13 +5,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:CalDavSynchronizer.Ui.Options.ViewModels"
              xmlns:g="clr-namespace:CalDavSynchronizer.Globalization"
+             xmlns:views="clr-namespace:CalDavSynchronizer.Ui.Options.Views"
              mc:Ignorable="d"
              d:DataContext="{x:Static viewModels:SyncSettingsViewModel.DesignInstance}">
   <UserControl.Resources>
-    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+      <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+      <views:MultiValueToVisibilityConverter x:Key="MultiValueToVisibilityConverter" />
   </UserControl.Resources>
-  <GroupBox Header="{g:Localize Sync Settings}" IsEnabled="{Binding ModelOptions.AreSyncSettingsEnabled}" Visibility="{Binding ModelOptions.AreSyncSettingsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-    <Grid DockPanel.Dock="Top">
+  <GroupBox Header="{g:Localize Sync Settings}" IsEnabled="{Binding ModelOptions.AreSyncSettingsEnabled}">
+        <GroupBox.Visibility>
+            <MultiBinding Converter="{StaticResource MultiValueToVisibilityConverter}">
+                <Binding Path="ModelOptions.AreSyncSettingsVisible" />
+                <Binding Path="ViewOptions.IsAdvancedViewEnabled" />
+                <Binding Path="ModelOptions.AreSyncSettingsVisibleInAdvancedSettings" />
+            </MultiBinding>
+        </GroupBox.Visibility>
+      <Grid DockPanel.Dock="Top">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*" />
         <ColumnDefinition Width="Auto" />

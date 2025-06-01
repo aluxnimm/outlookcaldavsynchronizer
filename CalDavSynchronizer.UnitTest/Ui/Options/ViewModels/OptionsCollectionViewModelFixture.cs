@@ -158,7 +158,7 @@ namespace CalDavSynchronizer.UnitTest.Ui.Options.ViewModels
                 throw new NotImplementedException();
             }
 
-            public ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true, true, "DAV Url", true, true, true);
+            public ProfileModelOptions ModelOptions { get; } = new ProfileModelOptions(true, true, true, true, "DAV Url", true, true, true, true);
 
             public string ImageUrl { get; } = string.Empty;
 

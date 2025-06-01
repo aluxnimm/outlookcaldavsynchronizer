@@ -374,6 +374,7 @@
     <Compile Include="IOutlookSession.cs" />
     <Compile Include="IProfileExportProcessor.cs" />
     <Compile Include="OutlookCategory.cs" />
+    <Compile Include="ProfileTypes\ConcreteTypes\ArubaProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\CalendariCloudProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\FastMailProfile.cs" />
     <Compile Include="ProfileTypes\ConcreteTypes\Open-XchangeProfile.cs" />
@@ -468,6 +469,7 @@
     <Compile Include="Ui\Options\Views\GeneralOptionsWindow.xaml.cs">
       <DependentUpon>GeneralOptionsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Ui\Options\Views\MultiValueToVisibilityConverter.cs" />
     <Compile Include="Ui\Options\Views\OXInfoDialog.xaml.cs">
       <DependentUpon>OXInfoDialog.xaml</DependentUpon>
     </Compile>
@@ -839,6 +841,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <Resource Include="Resources\ProfileLogos\logo_aruba.png" />
     <Resource Include="Resources\ProfileLogos\logo_untermStrich.png" />
     <Resource Include="Resources\ProfileLogos\logo_ox_with_claim.png" />
     <Resource Include="Resources\ProfileLogos\logo_fuago.png" />
