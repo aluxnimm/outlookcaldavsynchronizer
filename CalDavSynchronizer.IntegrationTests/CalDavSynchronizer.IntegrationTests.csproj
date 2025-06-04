@@ -116,7 +116,7 @@
       <Version>1.0.2.575</Version>
     </PackageReference>
     <PackageReference Include="Google.Apis.Tasks.v1">
-      <Version>1.68.0.3468</Version>
+      <Version>1.69.0.3790</Version>
     </PackageReference>
     <PackageReference Include="Google.GData.Contacts">
       <Version>2.2.0</Version>
