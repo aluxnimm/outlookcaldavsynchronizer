@@ -121,6 +121,12 @@ We recommend updating to the latest .Net Framework but the minimal required vers
 
 ### Changelog ###
 
+#### 4.6.0 ####
+- Released 2025/06/04
+- New features
+	- Update NuGet packages.
+	- Add Aruba profile.
+
 #### 4.5.0 ####
 - Released 2024/12/26
 - New features
