@@ -27,7 +27,7 @@ using Exception = System.Exception;
 
 namespace CalDavSynchronizer
 {
-    internal class CalDavSynchronizerToolBar
+    public class CalDavSynchronizerToolBar
     {
         private static readonly ILog s_logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
