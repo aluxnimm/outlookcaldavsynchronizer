@@ -19,9 +19,14 @@ Outlook CalDav Synchronizer is Free and Open-Source Software (FOSS), still you c
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PWA2N6P5WRSJJ&lc=US).
 
+
+### Recall.ai - Calendar Integration API for Meeting Recording
+
+If you’re building tools that automate meeting recording and use data from calendar events, check out [Recall.ai’s free Calendar Integration API](https://www.recall.ai/product/calendar-integration-api?utm_source=github&utm_medium=sponsorship&utm_campaign=aluxnimm-outlookcaldavsynchronizer). It connects with Google Calendar and Outlook to schedule meeting bots across Zoom, Google Meet, Microsoft Teams and more, linking transcripts and participant data to calendar events.
+
 ### Collaboration with Nextcloud ###
 
-New collaboration with Nextcloud, see [https://nextcloud.com/blog/nextcloud-offers-caldav-synchronizer-for-outlook-users/](https://nextcloud.com/blog/nextcloud-offers-caldav-synchronizer-for-outlook-users/) 
+For our collaboration with Nextcloud, see [https://nextcloud.com/blog/nextcloud-offers-caldav-synchronizer-for-outlook-users/](https://nextcloud.com/blog/nextcloud-offers-caldav-synchronizer-for-outlook-users/) 
 
 For possible enterprise support, please contact us [here](https://caldavsynchronizer.org/enterprise/contact/)!
 
