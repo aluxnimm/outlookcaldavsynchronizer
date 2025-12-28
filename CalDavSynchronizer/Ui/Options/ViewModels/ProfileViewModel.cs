@@ -20,7 +20,7 @@ using CalDavSynchronizer.ProfileTypes;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-    class ProfileViewModel
+    public class ProfileViewModel
     {
         public ProfileViewModel(IProfileType profileType)
         {
