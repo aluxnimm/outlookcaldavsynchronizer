@@ -31,13 +31,23 @@ namespace CalDavSynchronizer.Synchronization
     public class OutlookSynchronizer<TBtypeEntityId, TBtypeEntityVersion> : IOutlookSynchronizer
     {
         private readonly IPartialSynchronizer<string, DateTime, TBtypeEntityId, TBtypeEntityVersion> _synchronizer;
+        private readonly Func<
+            IEnumerable<IIdWithHints<string, DateTime>>,
+            IGetVersionsLogger,
+            IEnumerable<IIdWithHints<string, DateTime>>> _idNormalizer;
 
-        public OutlookSynchronizer(IPartialSynchronizer<string, DateTime, TBtypeEntityId, TBtypeEntityVersion> synchronizer)
+        public OutlookSynchronizer(
+            IPartialSynchronizer<string, DateTime, TBtypeEntityId, TBtypeEntityVersion> synchronizer,
+            Func<
+                IEnumerable<IIdWithHints<string, DateTime>>,
+                IGetVersionsLogger,
+                IEnumerable<IIdWithHints<string, DateTime>>> idNormalizer = null)
         {
             if (synchronizer == null)
                 throw new ArgumentNullException(nameof(synchronizer));
 
             _synchronizer = synchronizer;
+            _idNormalizer = idNormalizer;
         }
 
         public Task Synchronize(ISynchronizationLogger logger)
@@ -45,13 +55,25 @@ namespace CalDavSynchronizer.Synchronization
             return _synchronizer.Synchronize(logger);
         }
 
-        public async Task SynchronizePartial(IEnumerable<IOutlookId> outlookIds, ISynchronizationLogger logger)
+        public async Task SynchronizePartial(
+            IEnumerable<IOutlookId> outlookIds,
+            ISynchronizationLogger logger)
         {
             var idExtractor = new IdWithHintExtractor();
+
             foreach (var outlookId in outlookIds)
                 outlookId.Accept(idExtractor);
 
-            await _synchronizer.SynchronizePartial(idExtractor.Ids, new IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>[] { }, logger);
+            IEnumerable<IIdWithHints<string, DateTime>> ids =
+                idExtractor.Ids;
+
+            if (_idNormalizer != null)
+                ids = _idNormalizer(ids, logger.AGetVersionsEntityLogger);
+
+            await _synchronizer.SynchronizePartial(
+                ids,
+                new IIdWithHints<TBtypeEntityId, TBtypeEntityVersion>[] { },
+                logger);
         }
 
         class IdWithHintExtractor : IOutlookIdVisitor

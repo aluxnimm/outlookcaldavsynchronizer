@@ -42,6 +42,14 @@ namespace CalDavSynchronizer.Implementation.Common
         private const string SubjectColumnId = "Subject";
         private const string StartColumnId = "Start";
         private const string EndColumnId = "End";
+        private const string TaskSeriesIdColumn =
+            "http://schemas.microsoft.com/mapi/string/{00020329-0000-0000-C000-000000000046}/CalDavSynchronizerSeriesId/0x0000001F";
+
+        private const string TaskDeadOccurrenceColumn =
+            "http://schemas.microsoft.com/mapi/id/{00062003-0000-0000-C000-000000000046}/8109000B";
+
+        private const string TaskRecurringColumn =
+            "http://schemas.microsoft.com/mapi/id/{00062003-0000-0000-C000-000000000046}/8126000B";
 
         public static readonly IQueryOutlookFolderStrategy Instance = new QueryOutlookFolderByGetTableStrategy();
 
@@ -151,9 +159,86 @@ namespace CalDavSynchronizer.Implementation.Common
             return QueryFolder(folder, filter, logger);
         }
 
-        List<EntityVersion<string, DateTime>> IQueryOutlookTaskItemFolderStrategy.QueryTaskFolder(IOutlookSession session, Folder folder, string filter, IGetVersionsLogger logger)
+        List<TaskSlim> IQueryOutlookTaskItemFolderStrategy.QueryTaskFolder(
+            IOutlookSession session,
+            Folder folder,
+            string filter,
+            IGetVersionsLogger logger)
         {
-            return QueryFolder(folder, filter, logger);
+            var tasks = new List<TaskSlim>();
+
+            using (var tableWrapper = GenericComObjectWrapper.Create(folder.GetTable(filter)))
+            {
+                var table = tableWrapper.Inner;
+
+                table.Columns.RemoveAll();
+                table.Columns.Add(PR_LONG_TERM_ENTRYID_FROM_TABLE);
+                table.Columns.Add(PR_ENTRYID);
+                table.Columns.Add(LastModificationTimeColumnId);
+                table.Columns.Add(TaskSeriesIdColumn);
+                table.Columns.Add(TaskDeadOccurrenceColumn);
+                table.Columns.Add(TaskRecurringColumn);
+
+                while (!table.EndOfTable)
+                {
+                    var row = table.GetNextRow();
+
+                    string entryId;
+                    byte[] entryIdArray = row[PR_LONG_TERM_ENTRYID_FROM_TABLE] as byte[];
+
+                    if (entryIdArray != null && entryIdArray.Length > 0)
+                    {
+                        entryId = row.BinaryToString(PR_LONG_TERM_ENTRYID_FROM_TABLE);
+                    }
+                    else
+                    {
+                        entryId = row.BinaryToString(PR_ENTRYID);
+                        s_logger.Warn(
+                            $"Could not access long-term ENTRYID of task '{entryId}', use short-term ENTRYID as fallback.");
+                    }
+
+                    var lastModificationTimeObject = row[LastModificationTimeColumnId];
+                    DateTime lastModificationTime;
+
+                    if (lastModificationTimeObject != null)
+                    {
+                        lastModificationTime =
+                            ((DateTime)lastModificationTimeObject).ToUniversalTime();
+                    }
+                    else
+                    {
+                        s_logger.Warn(
+                            $"Column '{nameof(LastModificationTimeColumnId)}' of task '{entryId}' is NULL.");
+
+                        logger.LogWarning(
+                            entryId,
+                            $"Column '{nameof(LastModificationTimeColumnId)}' is NULL.");
+
+                        lastModificationTime = OutlookUtility.OUTLOOK_DATE_NONE;
+                    }
+
+                    var seriesId = row[TaskSeriesIdColumn] as string;
+
+                    var isRecurring =
+                        row[TaskRecurringColumn] is bool recurring &&
+                        recurring;
+
+                    var isDeadOccurrence =
+                        row[TaskDeadOccurrenceColumn] is bool deadOccurrence &&
+                        deadOccurrence;
+
+                    tasks.Add(
+                        new TaskSlim(
+                            new EntityVersion<string, DateTime>(
+                                entryId,
+                                lastModificationTime),
+                            seriesId,
+                            isRecurring,
+                            isDeadOccurrence));
+                }
+            }
+
+            return tasks;
         }
 
         List<EntityVersion<string, DateTime>> IQueryOutlookDistListItemFolderStrategy.QueryDistListFolder(IOutlookSession session, Folder folder, string expectedFolderId, string filter, IGetVersionsLogger logger)

@@ -55,7 +55,7 @@ namespace CalDavSynchronizer.Implementation.Common
             return _strategy.QueryDistListFolder(session, folder, expectedFolderId, filter, logger);
         }
 
-        public List<EntityVersion<string, DateTime>> QueryTaskFolder(IOutlookSession session, Folder folder, string filter, IGetVersionsLogger logger)
+        public List<TaskSlim> QueryTaskFolder(IOutlookSession session, Folder folder, string filter, IGetVersionsLogger logger)
         {
             return _strategy.QueryTaskFolder(session, folder, filter, logger);
         }

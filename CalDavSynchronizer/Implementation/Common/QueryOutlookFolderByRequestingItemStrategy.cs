@@ -106,9 +106,13 @@ namespace CalDavSynchronizer.Implementation.Common
             return contacts;
         }
 
-        List<EntityVersion<string, DateTime>> IQueryOutlookTaskItemFolderStrategy.QueryTaskFolder(IOutlookSession session, Folder folder, string filter, IGetVersionsLogger logger)
+        List<TaskSlim> IQueryOutlookTaskItemFolderStrategy.QueryTaskFolder(
+            IOutlookSession session,
+            Folder folder,
+            string filter,
+            IGetVersionsLogger logger)
         {
-            var tasks = new List<EntityVersion<string, DateTime>>();
+            var tasks = new List<TaskSlim>();
 
             using (var tableWrapper = GenericComObjectWrapper.Create(
                 folder.GetTable(filter)))
@@ -122,17 +126,62 @@ namespace CalDavSynchronizer.Implementation.Common
                 while (!table.EndOfTable)
                 {
                     var row = table.GetNextRow();
-                    var entryId = (string) row[c_entryIdColumnName];
+                    var entryId = (string)row[c_entryIdColumnName];
+
                     try
                     {
-                        using (var taskWrapper = GenericComObjectWrapper.Create(session.GetTaskItem(entryId, storeId)))
+                        using (var taskWrapper =
+                               GenericComObjectWrapper.Create(
+                                   session.GetTaskItem(entryId, storeId)))
                         {
-                            tasks.Add(new EntityVersion<string, DateTime>(taskWrapper.Inner.EntryID, taskWrapper.Inner.LastModificationTime.ToUniversalTime()));
+                            var task = taskWrapper.Inner;
+
+                            string seriesId = null;
+
+                            using (var userPropertiesWrapper =
+                                   GenericComObjectWrapper.Create(task.UserProperties))
+                            {
+                                using (var seriesPropertyWrapper =
+                                       GenericComObjectWrapper.Create(
+                                           userPropertiesWrapper.Inner.Find(
+                                               "CalDavSynchronizerSeriesId")))
+                                {
+                                    if (seriesPropertyWrapper.Inner != null)
+                                    {
+                                        seriesId =
+                                            seriesPropertyWrapper.Inner.Value?.ToString();
+                                    }
+                                }
+                            }
+
+                            bool isDeadOccurrence = false;
+
+                            try
+                            {
+                                isDeadOccurrence =
+                                    (bool)task.PropertyAccessor.GetProperty(
+                                        "http://schemas.microsoft.com/mapi/id/{00062003-0000-0000-C000-000000000046}/8109000B");
+                            }
+                            catch (System.Exception)
+                            {
+                                // Property is not present on normal tasks.
+                            }
+
+                            tasks.Add(
+                                new TaskSlim(
+                                    new EntityVersion<string, DateTime>(
+                                        task.EntryID,
+                                        task.LastModificationTime.ToUniversalTime()),
+                                    seriesId,
+                                    task.IsRecurring,
+                                    isDeadOccurrence));
                         }
                     }
                     catch (COMException ex)
                     {
-                        s_logger.Error($"Could not fetch TaskItem '{entryId}', skipping.", ex);
+                        s_logger.Error(
+                            $"Could not fetch TaskItem '{entryId}', skipping.",
+                            ex);
                     }
                 }
             }

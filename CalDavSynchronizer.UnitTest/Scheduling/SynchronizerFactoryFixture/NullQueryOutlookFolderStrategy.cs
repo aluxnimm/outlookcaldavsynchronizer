@@ -42,7 +42,11 @@ namespace CalDavSynchronizer.UnitTest.Scheduling.SynchronizerFactoryFixture
             throw new NotImplementedException();
         }
 
-        public List<EntityVersion<string, DateTime>> QueryTaskFolder(IOutlookSession session, Folder folder, string filter, IGetVersionsLogger logger)
+        public List<TaskSlim> QueryTaskFolder(
+            IOutlookSession session,
+            Folder folder,
+            string filter,
+            IGetVersionsLogger logger)
         {
             throw new NotImplementedException();
         }
