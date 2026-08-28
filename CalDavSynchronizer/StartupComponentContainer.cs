@@ -28,7 +28,7 @@ using CalDavSynchronizer.Globalization;
 
 namespace CalDavSynchronizer
 {
-    class StartupComponentContainer : IComponentContainer
+    public class StartupComponentContainer : IComponentContainer
     {
         public StartupComponentContainer()
         {

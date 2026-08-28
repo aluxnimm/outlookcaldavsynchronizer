@@ -28,6 +28,8 @@ namespace CalDavSynchronizer.Contracts
 
         GoogleTaskApi,
 
-        GoogleContactApi
+        GoogleContactApi,
+
+        WebDavHttpClientOAuth,
     }
 }

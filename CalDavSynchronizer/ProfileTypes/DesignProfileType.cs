@@ -24,7 +24,7 @@ using CalDavSynchronizer.Ui.Options.ViewModels;
 
 namespace CalDavSynchronizer.ProfileTypes
 {
-    class DesignProfileType : ProfileTypeBase
+    public class DesignProfileType : ProfileTypeBase
     {
         public static IProfileType Instance => new DesignProfileType();
         public override string Name { get; } = "Design Profile";

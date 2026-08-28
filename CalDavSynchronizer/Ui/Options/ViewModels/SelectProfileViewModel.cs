@@ -25,7 +25,7 @@ using CalDavSynchronizer.ProfileTypes;
 
 namespace CalDavSynchronizer.Ui.Options.ViewModels
 {
-    class SelectProfileViewModel
+    public class SelectProfileViewModel
     {
         public event EventHandler<CloseEventArgs> CloseRequested;
         private readonly IUiService _uiService;
