@@ -68,28 +68,105 @@ namespace CalDavSynchronizer.Implementation.Tasks
             // completed VTODO and can also lose the original COUNT/end condition. When
             // an existing recurring CalDAV master is available, keep that master and add
             // the final Outlook item as one more completed RECURRENCE-ID exception.
+            IICalendar finalCompletedCalendar;
             if (TryMapFinalCompletedOccurrence1To2(
                     source,
                     existingTargetCalender,
                     localIcalTimeZone,
-                    logger))
+                    logger,
+                    out finalCompletedCalendar))
             {
-                return Task.FromResult(existingTargetCalender);
+                return Task.FromResult(finalCompletedCalendar);
             }
 
-            var newTargetCalender = new iCalendar();
-            if (!_configuration.MapStartAndDueAsFloating) newTargetCalender.TimeZones.Add(localIcalTimeZone);
-
             var existingTargetTodo = existingTargetCalender.Todos.FirstOrDefault(e => e.RecurrenceID == null);
+            var mergeIntoExistingRecurringCalendar =
+                _configuration.MapRecurringTasks &&
+                source.Inner.IsRecurring &&
+                existingTargetTodo != null &&
+                existingTargetTodo.RecurrenceRules.Count > 0;
+
+            // Snapshot the existing value types before rebuilding the master. Outlook
+            // exposes task start/due values as dates, while the mapper normally writes
+            // DATE-TIME values; preserve an existing all-day CalDAV representation.
+            var preserveExistingStartAsDate =
+                mergeIntoExistingRecurringCalendar &&
+                existingTargetTodo.Start != null &&
+                !existingTargetTodo.Start.HasTime;
+            var preserveExistingDueAsDate =
+                mergeIntoExistingRecurringCalendar &&
+                existingTargetTodo.Due != null &&
+                !existingTargetTodo.Due.HasTime;
+
+            // Preserve historical RECURRENCE-ID components without modifying the
+            // repository-owned calendar instance in place. The mapper is called from
+            // CalDavRepository.TryUpdate with the currently loaded server entity; returning
+            // that same mutable DDay.iCal object after changing its component graph can leak
+            // mapping state back into the update pipeline. Work on a serialized deep copy
+            // instead, then replace only the master VTODO while retaining the copied
+            // historical exceptions and calendar-level data.
+            var newTargetCalender =
+                mergeIntoExistingRecurringCalendar
+                    ? CloneCalendar(existingTargetCalender)
+                    : new iCalendar();
+
+            if (!mergeIntoExistingRecurringCalendar &&
+                !_configuration.MapStartAndDueAsFloating)
+            {
+                newTargetCalender.TimeZones.Add(localIcalTimeZone);
+            }
+
+            if (mergeIntoExistingRecurringCalendar)
+            {
+                var clonedExistingMaster =
+                    newTargetCalender.Todos.FirstOrDefault(todo =>
+                        todo.RecurrenceID == null);
+
+                if (clonedExistingMaster == null)
+                    throw new InvalidOperationException(
+                        "Cloned recurring task calendar contains no master VTODO.");
+
+                // Rebuild the master from Outlook data, but leave copied historical
+                // RECURRENCE-ID components untouched.
+                newTargetCalender.Todos.Remove(clonedExistingMaster);
+            }
 
             var newTargetTodo = new Todo();
 
             if (existingTargetTodo != null)
+            {
                 newTargetTodo.UID = existingTargetTodo.UID;
+
+                if (mergeIntoExistingRecurringCalendar)
+                    newTargetTodo.Sequence = existingTargetTodo.Sequence;
+            }
 
             newTargetCalender.Todos.Add(newTargetTodo);
 
             Map1To2(source, newTargetTodo, localIcalTimeZone, logger);
+
+            // Outlook TaskItem exposes StartDate/DueDate only as dates. If the
+            // existing CalDAV series used VALUE=DATE for an all-day task, retain
+            // that representation when writing the master back.
+            // Otherwise a roundtrip would turn DTSTART;VALUE=DATE into DATE-TIME
+            // while RECURRENCE-ID remains DATE, causing clients to treat completed
+            // exceptions as additional occurrences instead of replacements.
+            if (mergeIntoExistingRecurringCalendar)
+                PreserveDateOnlyValueTypes(
+                    preserveExistingStartAsDate,
+                    preserveExistingDueAsDate,
+                    newTargetTodo);
+
+            var existingExceptionsByDate =
+                mergeIntoExistingRecurringCalendar
+                    ? newTargetCalender.Todos
+                        .Where(todo => todo.RecurrenceID != null)
+                        .GroupBy(todo => todo.RecurrenceID.Date.Date)
+                        .ToDictionary(
+                            group => group.Key,
+                            group => group.OrderByDescending(todo => todo.Sequence).First())
+                    : new Dictionary<DateTime, ITodo>();
+
             foreach (var recurrenceException in source.RecurrenceExceptions)
             {
                 DateTime recurrenceIdDate;
@@ -113,10 +190,21 @@ namespace CalDavSynchronizer.Implementation.Tasks
                     continue;
                 }
 
-                var targetException = new Todo
+                ITodo targetException;
+                var isNewException =
+                    !existingExceptionsByDate.TryGetValue(
+                        recurrenceIdDate.Date,
+                        out targetException);
+
+                if (isNewException)
                 {
-                    UID = newTargetTodo.UID
-                };
+                    targetException = new Todo
+                    {
+                        UID = newTargetTodo.UID
+                    };
+
+                    newTargetCalender.Todos.Add(targetException);
+                }
 
                 MapTaskItem1To2(
                     recurrenceException,
@@ -125,21 +213,49 @@ namespace CalDavSynchronizer.Implementation.Tasks
                     logger,
                     false);
 
-                targetException.RecurrenceID =
-                    new iCalDateTime(recurrenceIdDate)
-                    {
-                        HasTime = false
-                    };
+                targetException.UID = newTargetTodo.UID;
+                targetException.RecurrenceRules.Clear();
+                AlignExceptionDateValueTypesWithMaster(newTargetTodo, targetException);
 
-                newTargetCalender.Todos.Add(targetException);
+                // Keep an existing RECURRENCE-ID object when it identifies the same
+                // occurrence. This preserves client-specific, standards-compliant
+                // representations such as VALUE=DATE on all-day tasks.
+                if (isNewException ||
+                    targetException.RecurrenceID == null ||
+                    targetException.RecurrenceID.Date.Date != recurrenceIdDate.Date)
+                {
+                    targetException.RecurrenceID =
+                        CreateRecurrenceIdForMaster(
+                            recurrenceIdDate,
+                            newTargetTodo,
+                            localIcalTimeZone);
+                }
+
+                if (isNewException)
+                {
+                    targetException.Sequence =
+                        newTargetCalender.Todos
+                            .Where(todo => !ReferenceEquals(todo, targetException))
+                            .Select(todo => todo.Sequence)
+                            .DefaultIfEmpty(-1)
+                            .Max() + 1;
+                }
             }
 
-            for (int i = 0, newSequenceNumber = existingTargetCalender.Todos.Count > 0 ? existingTargetCalender.Todos.Max(e => e.Sequence) + 1 : 0;
-                i < newTargetCalender.Todos.Count;
-                i++, newSequenceNumber++)
+            if (!mergeIntoExistingRecurringCalendar)
             {
-                newTargetCalender.Todos[i].Sequence = newSequenceNumber;
+                for (int i = 0, newSequenceNumber = existingTargetCalender.Todos.Count > 0 ? existingTargetCalender.Todos.Max(e => e.Sequence) + 1 : 0;
+                    i < newTargetCalender.Todos.Count;
+                    i++, newSequenceNumber++)
+                {
+                    newTargetCalender.Todos[i].Sequence = newSequenceNumber;
+                }
             }
+
+            // RFC 5545 forbids DUE and DURATION on the same VTODO. DDay.iCal can
+            // recreate DURATION when DTSTART/DUE are converted back to VALUE=DATE,
+            // especially on recurrence exceptions.
+            RemoveDurationWhenDueIsPresent(newTargetCalender);
 
             return Task.FromResult<IICalendar>(newTargetCalender);
         }
@@ -148,8 +264,11 @@ namespace CalDavSynchronizer.Implementation.Tasks
             ITaskItemWrapper source,
             IICalendar existingTargetCalendar,
             iCalTimeZone localIcalTimeZone,
-            IEntitySynchronizationLogger logger)
+            IEntitySynchronizationLogger logger,
+            out IICalendar mappedCalendar)
         {
+            mappedCalendar = null;
+
             if (!_configuration.MapRecurringTasks ||
                 existingTargetCalendar == null ||
                 !source.Inner.IsRecurring ||
@@ -159,13 +278,25 @@ namespace CalDavSynchronizer.Implementation.Tasks
                 return false;
             }
 
+            var hasExistingRecurringMaster =
+                existingTargetCalendar.Todos.Any(todo =>
+                    todo.RecurrenceID == null &&
+                    todo.RecurrenceRules.Count > 0);
+
+            if (!hasExistingRecurringMaster)
+                return false;
+
+            // Never modify the repository-owned calendar in place. The normal recurring
+            // mapping path also works on a deep copy for the same reason.
+            var targetCalendar = CloneCalendar(existingTargetCalendar);
             var existingMaster =
-                existingTargetCalendar.Todos.FirstOrDefault(todo =>
+                targetCalendar.Todos.FirstOrDefault(todo =>
                     todo.RecurrenceID == null &&
                     todo.RecurrenceRules.Count > 0);
 
             if (existingMaster == null)
-                return false;
+                throw new InvalidOperationException(
+                    "Cloned recurring task calendar contains no master VTODO.");
 
             DateTime recurrenceDate;
             if (source.Inner.StartDate != OutlookUtility.OUTLOOK_DATE_NONE)
@@ -188,7 +319,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
             }
 
             var targetException =
-                existingTargetCalendar.Todos.FirstOrDefault(todo =>
+                targetCalendar.Todos.FirstOrDefault(todo =>
                     todo.RecurrenceID != null &&
                     todo.RecurrenceID.Date.Date == recurrenceDate);
 
@@ -200,7 +331,7 @@ namespace CalDavSynchronizer.Implementation.Tasks
                     UID = existingMaster.UID
                 };
 
-                existingTargetCalendar.Todos.Add(targetException);
+                targetCalendar.Todos.Add(targetException);
             }
 
             MapTaskItem1To2(
@@ -215,27 +346,136 @@ namespace CalDavSynchronizer.Implementation.Tasks
             // recurrence definition and retains its original DTSTART/RRULE/COUNT.
             targetException.UID = existingMaster.UID;
             targetException.RecurrenceRules.Clear();
+            AlignExceptionDateValueTypesWithMaster(existingMaster, targetException);
             targetException.RecurrenceID =
-                new iCalDateTime(recurrenceDate)
-                {
-                    HasTime = false
-                };
+                CreateRecurrenceIdForMaster(
+                    recurrenceDate,
+                    existingMaster,
+                    localIcalTimeZone);
 
-            var nextSequence =
-                existingTargetCalendar.Todos
-                    .Where(todo => !ReferenceEquals(todo, targetException))
-                    .Select(todo => todo.Sequence)
-                    .DefaultIfEmpty(-1)
-                    .Max() + 1;
+            if (isNewException)
+            {
+                targetException.Sequence =
+                    targetCalendar.Todos
+                        .Where(todo => !ReferenceEquals(todo, targetException))
+                        .Select(todo => todo.Sequence)
+                        .DefaultIfEmpty(-1)
+                        .Max() + 1;
+            }
 
-            targetException.Sequence = nextSequence;
+            RemoveDurationWhenDueIsPresent(targetCalendar);
 
             s_logger.InfoFormat(
                 "Mapped final completed Outlook recurrence {0:d} as RECURRENCE-ID on existing CalDAV series '{1}'.",
                 recurrenceDate,
                 existingMaster.UID);
 
+            mappedCalendar = targetCalendar;
             return true;
+        }
+
+        private static void PreserveDateOnlyValueTypes(
+            bool preserveStartAsDate,
+            bool preserveDueAsDate,
+            ITodo target)
+        {
+            if (preserveStartAsDate && target.Start != null)
+                target.Start = CreateDateOnly(target.Start.Date);
+
+            if (preserveDueAsDate && target.Due != null)
+                target.Due = CreateDateOnly(target.Due.Date);
+
+            // DDay.iCal may retain/recalculate DURATION while DTSTART/DUE are being
+            // converted from DATE-TIME back to DATE. VTODO must not carry both DUE
+            // and DURATION.
+            if (target.Due != null)
+                target.Properties.Remove(new CalendarProperty("DURATION"));
+        }
+
+        private static void AlignExceptionDateValueTypesWithMaster(ITodo master, ITodo targetException)
+        {
+            if (master.Start != null &&
+                !master.Start.HasTime &&
+                targetException.Start != null)
+            {
+                targetException.Start = CreateDateOnly(targetException.Start.Date);
+            }
+
+            if (master.Due != null &&
+                !master.Due.HasTime &&
+                targetException.Due != null)
+            {
+                targetException.Due = CreateDateOnly(targetException.Due.Date);
+            }
+        }
+
+        private iCalDateTime CreateRecurrenceIdForMaster(
+            DateTime recurrenceDate,
+            ITodo master,
+            iCalTimeZone localIcalTimeZone)
+        {
+            if (master.Start == null || !master.Start.HasTime)
+                return CreateDateOnly(recurrenceDate);
+
+            var recurrenceId =
+                new iCalDateTime(
+                    recurrenceDate.Date.Add(master.Start.Value.TimeOfDay))
+                {
+                    HasTime = true
+                };
+
+            if (master.Start.IsUniversalTime)
+            {
+                recurrenceId.IsUniversalTime = true;
+            }
+            else if (!_configuration.MapStartAndDueAsFloating)
+            {
+                recurrenceId.SetTimeZone(localIcalTimeZone);
+            }
+
+            return recurrenceId;
+        }
+
+        private static iCalDateTime CreateDateOnly(DateTime value)
+        {
+            return new iCalDateTime(value.Date)
+            {
+                HasTime = false
+            };
+        }
+
+        private static void RemoveDurationWhenDueIsPresent(IICalendar calendar)
+        {
+            foreach (var todo in calendar.Todos)
+            {
+                if (todo.Due != null)
+                    todo.Properties.Remove(new CalendarProperty("DURATION"));
+            }
+        }
+
+        private static IICalendar CloneCalendar(IICalendar source)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            // DDay.iCal components carry parent/calendar references. Serializing and
+            // deserializing gives us an independent component graph while preserving
+            // unknown/custom properties, VTIMEZONE data and historical exceptions.
+            var serializer =
+                new DDay.iCal.Serialization.iCalendar.iCalendarSerializer();
+            var serialized = serializer.SerializeToString(source);
+
+            using (var reader = new System.IO.StringReader(serialized))
+            {
+                var calendars =
+                    (iCalendarCollection) serializer.Deserialize(reader);
+
+                if (calendars.Count == 0)
+                    throw new InvalidOperationException(
+                        "Could not clone task calendar: deserializer returned no calendar.");
+
+                return calendars[0];
+            }
         }
 
         public void Map1To2(
@@ -743,18 +983,23 @@ namespace CalDavSynchronizer.Implementation.Tasks
                 }
             }
 
-            // Remove Outlook completed copies which are no longer represented by a
-            // RECURRENCE-ID component on the server. This also removes duplicate copies.
+            // Do not delete Outlook dead occurrences merely because the currently
+            // loaded CalDAV resource does not contain them yet. In a bidirectional
+            // synchronization a freshly completed Outlook occurrence can be present
+            // locally before its RECURRENCE-ID has been uploaded. Deleting it here
+            // loses the local change and makes the occurrence appear open again.
+            //
+            // Duplicates for a date which is represented on the server are safe to
+            // remove, because one matching Outlook copy was already retained above.
             foreach (var existingException in target.RecurrenceExceptions)
             {
                 if (matchedExisting.Contains(existingException))
                     continue;
 
                 var existingDate = GetOutlookRecurrenceExceptionDate(existingException);
-                if (existingDate.HasValue && completedSourceExceptions.ContainsKey(existingDate.Value))
+                if (!existingDate.HasValue ||
+                    !completedSourceExceptions.ContainsKey(existingDate.Value))
                 {
-                    // A duplicate for a date for which another copy was kept.
-                    existingException.Delete();
                     continue;
                 }
 
@@ -763,8 +1008,14 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
             // CalDAV keeps DTSTART/DUE on the recurring master at the original series
             // start. Outlook, on the other hand, exposes a recurring task at its
-            // current outstanding occurrence. Advance the Outlook master over all
-            // completed leading occurrences represented by RECURRENCE-ID components.
+            // current outstanding occurrence. Only advance for completion state that
+            // is already authoritative on the CalDAV side. A locally created Outlook
+            // dead occurrence may not have been uploaded yet; touching the recurrence
+            // master for that local-only change during the CalDAV -> Outlook phase can
+            // re-enter Outlook's recurring-task machinery (and, on current Outlook,
+            // can terminate OUTLOOK.EXE with STATUS_STACK_OVERFLOW). Preserve such local
+            // dead occurrences above and let the subsequent Outlook -> CalDAV phase
+            // export them instead.
             AdvanceMasterPastCompletedOccurrences(
                 target.Inner,
                 completedSourceExceptions.Keys,

@@ -194,6 +194,131 @@ namespace CalDavSynchronizer.Implementation.Tasks
             return initializedIds;
         }
 
+        private Dictionary<string, TaskSlim> GetUnambiguousSeriesRepresentatives(
+            IEnumerable<TaskSlim> tasks)
+        {
+            var representatives =
+                new Dictionary<string, TaskSlim>(StringComparer.Ordinal);
+
+            var seriesGroups =
+                tasks
+                    .Where(t => !string.IsNullOrEmpty(t.SeriesId))
+                    .GroupBy(t => t.SeriesId, StringComparer.Ordinal);
+
+            foreach (var seriesGroup in seriesGroups)
+            {
+                var liveMasters =
+                    seriesGroup
+                        .Where(t => t.IsRecurring && !t.IsDeadOccurrence)
+                        .ToList();
+
+                if (liveMasters.Count == 1)
+                {
+                    representatives[seriesGroup.Key] = liveMasters[0];
+                    continue;
+                }
+
+                if (liveMasters.Count > 1)
+                {
+                    s_logger.WarnFormat(
+                        "Multiple recurring task masters share CalDavSynchronizerSeriesId '{0}'. " +
+                        "Dead occurrences for this series will not be aggregated automatically.",
+                        seriesGroup.Key);
+                    continue;
+                }
+
+                // Outlook keeps completed occurrences of a recurring task as recurring
+                // dead items. After the final occurrence there is no live master left,
+                // so select the chronologically latest dead occurrence as the terminal
+                // series representative. Earlier dead occurrences remain exceptions of
+                // that same CalDAV resource.
+                var terminalMasters =
+                    seriesGroup
+                        .Where(t => t.IsRecurring && t.IsDeadOccurrence)
+                        .ToList();
+
+                if (terminalMasters.Count == 1)
+                {
+                    representatives[seriesGroup.Key] = terminalMasters[0];
+                    continue;
+                }
+
+                if (terminalMasters.Count == 0)
+                    continue;
+
+                var terminalMastersWithDate =
+                    terminalMasters
+                        .Select(t => new
+                        {
+                            Task = t,
+                            Date = GetTaskOccurrenceDate(t)
+                        })
+                        .ToList();
+
+                if (terminalMastersWithDate.Any(t => !t.Date.HasValue))
+                {
+                    s_logger.WarnFormat(
+                        "Recurring dead occurrences for CalDavSynchronizerSeriesId '{0}' " +
+                        "cannot be ordered because at least one has neither StartDate nor DueDate. " +
+                        "They will not be aggregated automatically.",
+                        seriesGroup.Key);
+                    continue;
+                }
+
+                var latestDate =
+                    terminalMastersWithDate.Max(t => t.Date.Value);
+
+                var latestTerminalMasters =
+                    terminalMastersWithDate
+                        .Where(t => t.Date.Value == latestDate)
+                        .Select(t => t.Task)
+                        .ToList();
+
+                if (latestTerminalMasters.Count == 1)
+                {
+                    representatives[seriesGroup.Key] = latestTerminalMasters[0];
+                }
+                else
+                {
+                    s_logger.WarnFormat(
+                        "Multiple recurring dead occurrences share the latest occurrence date {0:d} " +
+                        "for CalDavSynchronizerSeriesId '{1}'. The terminal recurring task is ambiguous " +
+                        "and dead occurrences will not be aggregated automatically.",
+                        latestDate,
+                        seriesGroup.Key);
+                }
+            }
+
+            return representatives;
+        }
+
+        private DateTime? GetTaskOccurrenceDate(TaskSlim taskInfo)
+        {
+            var task =
+                _session.GetTaskItemOrNull(
+                    taskInfo.EntityVersion.Id,
+                    _folderId,
+                    _folderStoreId);
+
+            if (task == null)
+                return null;
+
+            try
+            {
+                if (task.StartDate != OutlookUtility.OUTLOOK_DATE_NONE)
+                    return task.StartDate.Date;
+
+                if (task.DueDate != OutlookUtility.OUTLOOK_DATE_NONE)
+                    return task.DueDate.Date;
+
+                return null;
+            }
+            finally
+            {
+                Marshal.FinalReleaseComObject(task);
+            }
+        }
+
         public Task<IEnumerable<EntityVersion<string, DateTime>>> GetAllVersions(
             IEnumerable<string> idsOfknownEntities,
             int context,
@@ -241,35 +366,22 @@ namespace CalDavSynchronizer.Implementation.Tasks
 
             _taskSnapshot = tasks.ToList();
 
-            var masterGroups =
-                tasks
-                    .Where(t =>
-                        t.IsRecurring &&
-                        !t.IsDeadOccurrence &&
-                        !string.IsNullOrEmpty(t.SeriesId))
-                    .GroupBy(t => t.SeriesId, StringComparer.Ordinal)
-                    .ToList();
-
-            foreach (var duplicateGroup in masterGroups.Where(g => g.Count() > 1))
-            {
-                s_logger.WarnFormat(
-                    "Multiple recurring task masters share CalDavSynchronizerSeriesId '{0}'. " +
-                    "Dead occurrences for this series will not be aggregated automatically.",
-                    duplicateGroup.Key);
-            }
-
-            var unambiguousRecurringMasterSeriesIds =
-                new HashSet<string>(
-                    masterGroups
-                        .Where(g => g.Count() == 1)
-                        .Select(g => g.Key),
-                    StringComparer.Ordinal);
+            var seriesRepresentatives =
+                GetUnambiguousSeriesRepresentatives(tasks);
 
             var topLevelTasks =
                 tasks.Where(t =>
-                    !t.IsDeadOccurrence ||
-                    string.IsNullOrEmpty(t.SeriesId) ||
-                    !unambiguousRecurringMasterSeriesIds.Contains(t.SeriesId));
+                {
+                    if (!t.IsDeadOccurrence || string.IsNullOrEmpty(t.SeriesId))
+                        return true;
+
+                    TaskSlim representative;
+                    return !seriesRepresentatives.TryGetValue(t.SeriesId, out representative) ||
+                           string.Equals(
+                               representative.EntityVersion.Id,
+                               t.EntityVersion.Id,
+                               StringComparison.Ordinal);
+                });
 
             return Task.FromResult<IEnumerable<EntityVersion<string, DateTime>>>(
                 topLevelTasks.Select(t => t.EntityVersion));
@@ -314,27 +426,8 @@ namespace CalDavSynchronizer.Implementation.Tasks
                     .GroupBy(t => t.EntityVersion.Id, StringComparer.Ordinal)
                     .ToDictionary(g => g.Key, g => g.First(), StringComparer.Ordinal);
 
-            var masterGroups =
-                currentTasks
-                    .Where(t =>
-                        t.IsRecurring &&
-                        !t.IsDeadOccurrence &&
-                        !string.IsNullOrEmpty(t.SeriesId))
-                    .GroupBy(t => t.SeriesId, StringComparer.Ordinal)
-                    .ToList();
-
-            foreach (var duplicateGroup in masterGroups.Where(g => g.Count() > 1))
-            {
-                s_logger.WarnFormat(
-                    "Multiple recurring task masters share CalDavSynchronizerSeriesId '{0}'. " +
-                    "Partial synchronization will not normalize dead occurrences for this series.",
-                    duplicateGroup.Key);
-            }
-
-            var masterBySeriesId =
-                masterGroups
-                    .Where(g => g.Count() == 1)
-                    .ToDictionary(g => g.Key, g => g.First(), StringComparer.Ordinal);
+            var representativeBySeriesId =
+                GetUnambiguousSeriesRepresentatives(currentTasks);
 
             var resultById =
                 new Dictionary<string, IIdWithHints<string, DateTime>>(StringComparer.Ordinal);
@@ -360,15 +453,19 @@ namespace CalDavSynchronizer.Implementation.Tasks
                     if (!currentById.TryGetValue(inputId.Id, out taskInfo))
                         previousById.TryGetValue(inputId.Id, out taskInfo);
 
-                    TaskSlim master;
+                    TaskSlim representative;
                     if (taskInfo != null &&
                         taskInfo.IsDeadOccurrence &&
                         !string.IsNullOrEmpty(taskInfo.SeriesId) &&
-                        masterBySeriesId.TryGetValue(taskInfo.SeriesId, out master))
+                        representativeBySeriesId.TryGetValue(
+                            taskInfo.SeriesId,
+                            out representative))
                     {
-                        // The version/deletion hints belong to the completed copy, not to
-                        // the recurring master. Never transfer those hints to the master.
-                        outputId = master.EntityVersion.Id;
+                        // The version/deletion hints belong to a completed occurrence, not
+                        // necessarily to the item which currently represents the series.
+                        // During the final occurrence there is no next live master, so the
+                        // recurring dead occurrence itself becomes the series representative.
+                        outputId = representative.EntityVersion.Id;
                         forceReload = true;
                     }
                 }
@@ -410,6 +507,9 @@ namespace CalDavSynchronizer.Implementation.Tasks
             var result =
                 new List<EntityWithId<string, ITaskItemWrapper>>();
 
+            var seriesRepresentatives =
+                GetUnambiguousSeriesRepresentatives(_taskSnapshot);
+
             foreach (var id in ids)
             {
                 var task =
@@ -428,25 +528,23 @@ namespace CalDavSynchronizer.Implementation.Tasks
                     var seriesId =
                         RecurringTaskSeries.GetSeriesId(task);
 
-                    if (!string.IsNullOrEmpty(seriesId) &&
-                        !RecurringTaskSeries.IsDeadOccurrence(task))
+                    if (!string.IsNullOrEmpty(seriesId))
                     {
-                        var matchingMasterCount =
-                            _taskSnapshot.Count(
-                                t =>
-                                    t.IsRecurring &&
-                                    !t.IsDeadOccurrence &&
-                                    string.Equals(
-                                        t.SeriesId,
-                                        seriesId,
-                                        StringComparison.Ordinal));
-
-                        if (matchingMasterCount == 1)
+                        TaskSlim representative;
+                        if (seriesRepresentatives.TryGetValue(seriesId, out representative) &&
+                            string.Equals(
+                                representative.EntityVersion.Id,
+                                task.EntryID,
+                                StringComparison.Ordinal))
                         {
                             var recurrenceExceptions =
                                 _taskSnapshot.Where(
                                     t =>
                                         t.IsDeadOccurrence &&
+                                        !string.Equals(
+                                            t.EntityVersion.Id,
+                                            representative.EntityVersion.Id,
+                                            StringComparison.Ordinal) &&
                                         string.Equals(
                                             t.SeriesId,
                                             seriesId,
@@ -465,14 +563,6 @@ namespace CalDavSynchronizer.Implementation.Tasks
                                     wrapper.AddRecurrenceException(recurrenceException);
                                 }
                             }
-                        }
-                        else if (matchingMasterCount > 1)
-                        {
-                            s_logger.WarnFormat(
-                                "Recurring task '{0}' has an ambiguous CalDavSynchronizerSeriesId '{1}'. " +
-                                "Dead occurrences will not be attached automatically.",
-                                task.EntryID,
-                                seriesId);
                         }
                     }
 
