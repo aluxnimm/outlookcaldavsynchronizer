@@ -127,8 +127,27 @@ namespace CalDavSynchronizer.Implementation.Tasks
                         "Cloned recurring task calendar contains no master VTODO.");
 
                 // Rebuild the master from Outlook data, but leave copied historical
-                // RECURRENCE-ID components untouched.
-                newTargetCalender.Todos.Remove(clonedExistingMaster);
+                // RECURRENCE-ID components untouched. In DDay.iCal 1.0.2.575,
+                // removing a component can match another component with the same UID.
+                // Since a recurring master shares its UID with all exceptions, locate
+                // the cloned master by object identity and remove that exact child by index.
+                var children = (CalendarObjectList)newTargetCalender.Children;
+                var masterChildIndex = -1;
+
+                for (var i = 0; i < children.Count; i++)
+                {
+                    if (ReferenceEquals(children[i], clonedExistingMaster))
+                    {
+                        masterChildIndex = i;
+                        break;
+                    }
+                }
+
+                if (masterChildIndex < 0)
+                    throw new InvalidOperationException(
+                        "Cloned recurring task master VTODO is not a calendar child.");
+
+                children.RemoveAt(masterChildIndex);
             }
 
             var newTargetTodo = new Todo();
