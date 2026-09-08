@@ -23,8 +23,35 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.Common
 {
+    public class TaskSlim
+    {
+        public TaskSlim(
+            EntityVersion<string, DateTime> entityVersion,
+            string seriesId,
+            bool isRecurring,
+            bool isDeadOccurrence)
+        {
+            EntityVersion = entityVersion;
+            SeriesId = seriesId;
+            IsRecurring = isRecurring;
+            IsDeadOccurrence = isDeadOccurrence;
+        }
+
+        public EntityVersion<string, DateTime> EntityVersion { get; }
+
+        public string SeriesId { get; }
+
+        public bool IsRecurring { get; }
+
+        public bool IsDeadOccurrence { get; }
+    }
+
     public interface IQueryOutlookTaskItemFolderStrategy
     {
-        List<EntityVersion<string, DateTime>> QueryTaskFolder(IOutlookSession session, Folder folder, string filter, IGetVersionsLogger logger);
+        List<TaskSlim> QueryTaskFolder(
+            IOutlookSession session,
+            Folder folder,
+            string filter,
+            IGetVersionsLogger logger);
     }
 }

@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using Microsoft.Office.Interop.Outlook;
 
 namespace CalDavSynchronizer.Implementation.ComWrappers
@@ -23,7 +24,13 @@ namespace CalDavSynchronizer.Implementation.ComWrappers
     public interface ITaskItemWrapper : IDisposable
     {
         TaskItem Inner { get; }
+
+        IReadOnlyList<TaskItem> RecurrenceExceptions { get; }
+
+        void AddRecurrenceException(TaskItem recurrenceException);
+
         void SaveAndReload();
+
         void Replace(TaskItem inner);
     }
 }

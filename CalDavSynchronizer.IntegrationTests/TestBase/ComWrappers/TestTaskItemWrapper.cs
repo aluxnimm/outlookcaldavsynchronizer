@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using CalDavSynchronizer.Implementation.ComWrappers;
 using Microsoft.Office.Interop.Outlook;
 using Action = System.Action;
@@ -25,6 +26,17 @@ namespace CalDavSynchronizer.IntegrationTests.TestBase.ComWrappers
   class TestTaskItemWrapper : TestComWrapperBase<TestTaskItemWrapper>, ITaskItemWrapper
   {
     private readonly ITaskItemWrapper _inner;
+    private readonly List<TaskItem> _recurrenceExceptions = new List<TaskItem>();
+
+    public IReadOnlyList<TaskItem> RecurrenceExceptions => _recurrenceExceptions;
+
+    public void AddRecurrenceException(TaskItem recurrenceException)
+    {
+      if (recurrenceException == null)
+        throw new ArgumentNullException(nameof(recurrenceException));
+
+      _recurrenceExceptions.Add(recurrenceException);
+    }
 
     public TestTaskItemWrapper(Action<TestTaskItemWrapper> onDisposed, ITaskItemWrapper inner) : base(onDisposed)
     {

@@ -623,7 +623,8 @@ namespace CalDavSynchronizer.Scheduling
                 NullStateTokensDataAccess<int, string>.Instance);
 
             return new OutlookSynchronizer<WebResourceName, string>(
-                new NullContextSynchronizerDecorator<string, DateTime, ITaskItemWrapper, WebResourceName, string, IICalendar>(synchronizer));
+                new NullContextSynchronizerDecorator<string, DateTime, ITaskItemWrapper, WebResourceName, string, IICalendar>(synchronizer),
+                atypeRepository.NormalizeIdsForPartialSync);
         }
 
         private async Task<IOutlookSynchronizer> CreateGoogleTaskSynchronizer(Options options, AvailableGoogleTaskApiSynchronizerComponents componentsToFill, GeneralOptions generalOptions, IProfileType profileType)

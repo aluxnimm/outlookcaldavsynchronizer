@@ -16,6 +16,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.Office.Interop.Outlook;
@@ -28,11 +29,36 @@ namespace CalDavSynchronizer.Implementation.ComWrappers
 
         private TaskItem _inner;
         private LoadTaskItemDelegate _load;
+        private readonly List<TaskItem> _recurrenceExceptions = new List<TaskItem>();
+
+        public IReadOnlyList<TaskItem> RecurrenceExceptions => _recurrenceExceptions;
 
         public TaskItemWrapper(TaskItem inner, LoadTaskItemDelegate load)
         {
             _load = load;
             _inner = inner;
+        }
+
+        public void AddRecurrenceException(TaskItem recurrenceException)
+        {
+            if (recurrenceException == null)
+                throw new ArgumentNullException(nameof(recurrenceException));
+
+            _recurrenceExceptions.Add(recurrenceException);
+        }
+
+        private void DisposeRecurrenceExceptions()
+        {
+            foreach (var recurrenceException in _recurrenceExceptions)
+            {
+                if (recurrenceException != null &&
+                    Marshal.IsComObject(recurrenceException))
+                {
+                    Marshal.FinalReleaseComObject(recurrenceException);
+                }
+            }
+
+            _recurrenceExceptions.Clear();
         }
 
         public void SaveAndReload()
@@ -52,6 +78,8 @@ namespace CalDavSynchronizer.Implementation.ComWrappers
 
         public void Dispose()
         {
+            DisposeRecurrenceExceptions();
+
             if (_inner != null)
             {
                 DisposeInner();

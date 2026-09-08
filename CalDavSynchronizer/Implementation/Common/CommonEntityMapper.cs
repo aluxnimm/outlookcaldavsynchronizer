@@ -207,7 +207,14 @@ namespace CalDavSynchronizer.Implementation.Common
             }
         }
 
-        public static void MapCustomProperties1To2(GenericComObjectWrapper<UserProperties> userPropertiesWrapper, ICalendarPropertyList targetProperties, bool mapAllCustomProperties, PropertyMapping[] mappings, IEntitySynchronizationLogger logger, ILog s_logger)
+        public static void MapCustomProperties1To2(
+            GenericComObjectWrapper<UserProperties> userPropertiesWrapper,
+            ICalendarPropertyList targetProperties,
+            bool mapAllCustomProperties,
+            PropertyMapping[] mappings,
+            IEntitySynchronizationLogger logger,
+            ILog s_logger,
+            ISet<string> ignoredOutlookProperties = null)
         {
             if (userPropertiesWrapper.Inner != null && userPropertiesWrapper.Inner.Count > 0)
             {
@@ -215,6 +222,12 @@ namespace CalDavSynchronizer.Implementation.Common
                 {
                     try
                     {
+                        if (ignoredOutlookProperties != null &&
+                            ignoredOutlookProperties.Contains(prop.Name))
+                        {
+                            continue;
+                        }
+
                         if (prop.Value != null && !string.IsNullOrEmpty(prop.Value.ToString()) && (prop.Type == OlUserPropertyType.olText))
                         {
                             var foundMapping = mappings.FirstOrDefault(m => m.OutlookProperty == prop.Name);
@@ -237,12 +250,25 @@ namespace CalDavSynchronizer.Implementation.Common
             }
         }
 
-        public static void MapCustomProperties2To1(ICalendarPropertyList sourceList, GenericComObjectWrapper<UserProperties> userPropertiesWrapper, bool mapAllCustomProperties, PropertyMapping[] mappings, IEntitySynchronizationLogger logger, ILog s_logger)
+        public static void MapCustomProperties2To1(
+            ICalendarPropertyList sourceList,
+            GenericComObjectWrapper<UserProperties> userPropertiesWrapper,
+            bool mapAllCustomProperties,
+            PropertyMapping[] mappings,
+            IEntitySynchronizationLogger logger,
+            ILog s_logger,
+            ISet<string> ignoredOutlookProperties = null)
         {
             var alreadyMappedOutlookProperties = new HashSet<string>();
 
             foreach (var mapping in mappings)
             {
+                if (ignoredOutlookProperties != null &&
+                    ignoredOutlookProperties.Contains(mapping.OutlookProperty))
+                {
+                    continue;
+                }
+
                 var prop = sourceList.FirstOrDefault(p => p.Name == mapping.DavProperty);
                 if (prop != null)
                 {
@@ -277,6 +303,12 @@ namespace CalDavSynchronizer.Implementation.Common
                 foreach (var prop in sourceList.Where(p => p.Name.StartsWith("X-CALDAVSYNCHRONIZER-")))
                 {
                     var outlookProperty = prop.Name.Replace("X-CALDAVSYNCHRONIZER-", "");
+                    if (ignoredOutlookProperties != null &&
+                        ignoredOutlookProperties.Contains(outlookProperty))
+                    {
+                        continue;
+                    }
+
                     if (!alreadyMappedOutlookProperties.Contains(outlookProperty))
                     {
                         try
