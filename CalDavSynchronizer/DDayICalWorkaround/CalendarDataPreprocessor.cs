@@ -205,9 +205,8 @@ namespace CalDavSynchronizer.DDayICalWorkaround
 
         public static string NormalizeLineBreaks(string iCalendarData)
         {
-            // Certain iCal providers like Open-Xchange deliver their data with unexpected linebreaks
-            // which causes DDay.iCal to fail. This can be fixed by normalizing the unexpected \r\r\n to \r\n
-            return iCalendarData.Replace("\r\r\n", "\r\n");
+            // Normalize line endings before parsing, including Open-Xchange's unexpected \r\r\n.
+            return Regex.Replace(iCalendarData, "\r\r\n|\r\n|\r|\n", "\r\n");
         }
 
         public static string EncodeString(string value)
