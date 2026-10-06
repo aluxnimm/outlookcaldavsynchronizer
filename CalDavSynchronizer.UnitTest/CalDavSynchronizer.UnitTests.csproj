@@ -57,6 +57,7 @@
       <Link>Properties\AssemblyInfoVersion.cs</Link>
     </Compile>
     <Compile Include="DDayICalWorkaround\CalendarDataPreprocessorFixture.cs" />
+    <Compile Include="Implementation\Contacts\ContactEntityMapperFixture.cs" />
     <Compile Include="Implementation\Contacts\VCardTypeSwitch\VCardTypeDetectorFixture.cs" />
     <Compile Include="Implementation\Events\ColorCategoryMapperFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

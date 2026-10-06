@@ -330,6 +330,14 @@ namespace CalDavSynchronizer.Implementation.Contacts
                 }
             }
 
+            if (source.EmailAddresses.Count > 3)
+            {
+                var warning = $"The source contact contains {source.EmailAddresses.Count} email addresses, but Outlook supports only 3 email addresses. " +
+                              "Additional email addresses are not synchronized. Review the source contact and choose which addresses to keep in Outlook.";
+                s_logger.Warn(warning);
+                logger.LogWarning(warning);
+            }
+
             MapPostalAdresses2To1(source, target.Inner);
 
             MapTelephoneNumber2To1(source, target.Inner);
