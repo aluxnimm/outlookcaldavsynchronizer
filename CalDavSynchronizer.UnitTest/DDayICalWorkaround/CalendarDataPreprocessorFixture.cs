@@ -27,6 +27,55 @@ namespace CalDavSynchronizer.UnitTest.DDayICalWorkaround
     [TestFixture]
     public class CalendarDataPreprocessorFixture
     {
+        [TestCase("\r\n", "\n", TestName = "NormalizeLineBreaks_MixedCrLfAndLf")]
+        [TestCase("\n", "\r\n", TestName = "NormalizeLineBreaks_MixedLfAndCrLf")]
+        [TestCase("\r", "\r", TestName = "NormalizeLineBreaks_LoneCr")]
+        [TestCase("\n", "\n", TestName = "NormalizeLineBreaks_BareLf")]
+        [TestCase("\r\n", "\r\n", TestName = "NormalizeLineBreaks_CorrectCrLfUnchanged")]
+        [TestCase("\r\r\n", "\r\r\n", TestName = "NormalizeLineBreaks_OpenXchangeLineEndings")]
+        [TestCase("\r\n", "\r", TestName = "NormalizeLineBreaks_MixedCrLfAndCr")]
+        [TestCase("\r", "\n", TestName = "NormalizeLineBreaks_MixedCrAndLf")]
+        public void NormalizeLineBreaks_PreservesContentAndFolding(string firstLineEnding, string secondLineEnding)
+        {
+            string input = "BEGIN:VCALENDAR" + firstLineEnding
+                           + "VERSION:2.0" + secondLineEnding
+                           + "PRODID:-//CalDavSynchronizer//EN" + firstLineEnding
+                           + "BEGIN:VEVENT" + secondLineEnding
+                           + "UID:line-breaks" + firstLineEnding
+                           + "DTSTAMP:20150925T061111Z" + secondLineEnding
+                           + "DTSTART:20151125T133500Z" + firstLineEnding
+                           + "SUMMARY:Folded" + secondLineEnding
+                           + "  summary" + firstLineEnding
+                           + "\t text" + secondLineEnding
+                           + "DESCRIPTION:First\\nsecond" + firstLineEnding
+                           + "  line" + secondLineEnding
+                           + "END:VEVENT" + firstLineEnding
+                           + "END:VCALENDAR" + secondLineEnding;
+            string expected = "BEGIN:VCALENDAR\r\n"
+                              + "VERSION:2.0\r\n"
+                              + "PRODID:-//CalDavSynchronizer//EN\r\n"
+                              + "BEGIN:VEVENT\r\n"
+                              + "UID:line-breaks\r\n"
+                              + "DTSTAMP:20150925T061111Z\r\n"
+                              + "DTSTART:20151125T133500Z\r\n"
+                              + "SUMMARY:Folded\r\n"
+                              + "  summary\r\n"
+                              + "\t text\r\n"
+                              + "DESCRIPTION:First\\nsecond\r\n"
+                              + "  line\r\n"
+                              + "END:VEVENT\r\n"
+                              + "END:VCALENDAR\r\n";
+
+            var processed = CalendarDataPreprocessor.NormalizeLineBreaks(input);
+
+            Assert.That(processed, Is.EqualTo(expected));
+            Assert.That(CalendarDataPreprocessor.NormalizeLineBreaks(processed), Is.EqualTo(expected));
+            var calendar = DeserializeICalendar(processed);
+            Assert.That(calendar.Events.Count, Is.EqualTo(1));
+            Assert.That(calendar.Events[0].Summary, Is.EqualTo("Folded summary text"));
+            Assert.That(calendar.Events[0].Description, Is.EqualTo("First\nsecond line"));
+        }
+
         [Test]
         public void FixTimeZoneComponentOrder_TestRealEvent()
         {

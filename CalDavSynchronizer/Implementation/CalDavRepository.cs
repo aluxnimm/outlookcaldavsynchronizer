@@ -140,15 +140,7 @@ namespace CalDavSynchronizer.Implementation
                         IICalendar calendar;
                         string normalizedICalData, fixedICalData;
 
-                        // fix some linebreak issues with Open-Xchange
-                        if (serialized.Entity.Contains("\r\r\n"))
-                        {
-                            normalizedICalData = CalendarDataPreprocessor.NormalizeLineBreaks(serialized.Entity);
-                        }
-                        else
-                        {
-                            normalizedICalData = serialized.Entity;
-                        }
+                        normalizedICalData = CalendarDataPreprocessor.NormalizeLineBreaks(serialized.Entity);
 
                         // emClient sets DTSTART in VTIMEZONE to year 0001, which causes a 90 sec delay in DDay.iCal to evaluate the recurrence rule.
                         // If we find such a DTSTART we replace it 0001 with 1970 since the historic data is not valid anyway and avoid the performance issue.
